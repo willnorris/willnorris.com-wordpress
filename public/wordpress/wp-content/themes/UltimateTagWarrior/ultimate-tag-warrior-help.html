@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>Ultimate Tag Warrior 3:  Help</title>
+<style type="text/css">
+body, td {font-family:Verdana; font-size:0.8em; line-height:2em;}
+dt {font-weight:bolder; font-size:90%}
+dt code {color:green}
+code {font-size:120%}
+h2 {font-size:150%; color:red;}
+h3 {font-size:140%; color:navy; border-bottom:1px solid blue;}
+h4 {font-size:120%; color:blue;}
+h5 {font-size:110%; color:black;}
+.red {color:red}
+.blue {color:blue}
+.pageblock {border:solid 1px grey; padding:2px; margin:2px;}
+.example {border:solid 1px black; background-color:#EEF; padding:10px; margin:10px}
+.example h5 {margin-top:0px; padding-left:10px;}
+
+</style>
+</head>
+<body>
+<h2>Ultimate Tag Warrior 3:  Help</h2>
+<div style="float:right; background:white; width:25%; margin:5px; padding:5px; border:1px blue solid; font-size:90%"><p><b>Table of Contents</b></p>
+<ul><li><a href="ultimate-tag-warrior-help.html#install">Installation</a></li>
+<li><a href="ultimate-tag-warrior-help.html#admin">Configuation</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help.html#configurationhelp">Help</a></li>
+<li><a href="ultimate-tag-warrior-help.html#configuration">Configuration Options</a></li>
+</ul></li>
+<li><a href="ultimate-tag-warrior-help.html#manage">Manage Tags</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help.html#managehelp">Help</a></li>
+<li><a href="ultimate-tag-warrior-help.html#edittags">Edit Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#assignsynonyms">Assign Synonyms</a></li>
+<li><a href="ultimate-tag-warrior-help.html#tidytags">Tidy Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#convertcats">Convert Categories to Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#customfields">Convert Custom Field Lists to Tags</a></li>
+</ul></li>
+</ul>
+<li><a href="ultimate-tag-warrior-help-themes.html">Adding UTW Tags to Themes</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#singletemplate">Formatting single.php and index.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentposttags">Tags for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentpostrelatedtags">Related tags for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentpostrelatedposts">Related posts for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#inlinetagadder">An inline tag-adder</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#notsomuchwithsuperajax">The deprecated one</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagtemplate">Formatting tag.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#currenttagset">Display the current tag set</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currenttagsetrelatedtags">Display the tags related to the current tag set</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagstemplate">Formatting tags.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagsphpsetup">Create a tag archive page.</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagcloud">Display a tag cloud</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#taggraph">Display a long-tail graph</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagweightedbar">Display a weighted bar.. thing</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#predefinedformats">Predefined Formats</a></li>
+</ul></li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html">Custom Formatting</a>
+<ul><li><a href="ultimate-tag-warrior-help-custom-formatting.html#listbits">The Parts of a Custom Format</li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html#replacementbits">The Parts of a Format String</li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html#customformats">Putting it all together</a></li>
+</ul></li>
+</ul>
+
+</div>
+<p>The Ultimate Tag Warrior is a tagging plugin for WordPress, designed by the rockin' <a href="http://www.neato.co.nz">Christine Davis</a>. The source page for updated information on this plugin is found at <a href="http://www.neato.co.nz/ultimate-tag-warrior/">Ultimate Tag Warrior</a>.</p>
+<p>The Ultimate Tag Warrior (UTW) is designed for WordPress sites to increase the possibilities and functions for tagging posts and expanding site navigation through the creation of lists of tags.  It allows storing a set of keywords (current slang calls these "tags") against posts that behave like categories - the tags can be displayed on a post as links, and when clicked, the visitor is taken to an archive page for that tag. There are also RSS/atom feeds available for each tag. Unlike categories, for example, you can also view archive pages and feeds for sets of tags such as the posts which are tagged with both "photograph" and "food".</p>
+<p>Beyond the category-like behaviour, Ultimate Tag Warrior plugin provides ways of getting an overview of your tags through tag clouds and graphic representation such as a long tail graph and/or weighted bar arrangement. UTW can also be coaxed into linking to other tag-savvy websites such as del.icio.us, Flickr and Technorati.</p>
+<p>To add tags to posts, a menu is created listing all the tags in use on the site right in the <strong>Write Post</strong> panel. Click a tag in the list and it will be instantly added to your tag list. One of the more splendid things that it can do, is use the <strike>Yahoo! content analysis bits and pieces</strike> tagyu.com to look at the text of the current post, and make suggestions for the tags.</p>
+<p>The Ultimate Tag Warrior is not for the timid. While it can be used by anyone to add tags to your posts and site, it has a wide variety of features that allow for a wide range of customization. I'll do my best to showcase the most common usages here, but for more graphic detail, check out the <a href="http://www.neato.co.nz/ultimate-tag-warrior/">Ultimate Tag Warrior</a> main page on my site.</p>
+
+<a name="install"></a><h3>Installation</h3>
+<p>Currently, this plugin works with Wordpress 2.0 (do sing out if you're using 1.5'ish, and I'll see what I can do for you)</p>
+<ol>
+	<li>Copy the files to <code>wp-content/plugins/UltimateTagWarrior</code>.</li>
+	<li>Activate the Plugin: Go to the Plugins Panel and you will see three plugins listed under UltimateTagWarrior.<br />
+<ul>
+<li><b>Ultimate Tag Warrior 3:</b> This is the main plugin.  Its functionality is covered by this document.</li>
+<li><b>Ultimate Tag Warrior: Tag Archive 1.0:</b> Optional Add-on plugin to render an archive view, based on tags. Requires Ultimate Tag Warrior 2.5.1+.</li>
+<li><b>Ultimate Tag Warrior 1.3 Legacy:</b> This is a plugin for compatibility with UTW 1.3.  With this plugin installed,  the syntax of the older plugin will continue to work;  allowing you to use the new plugin code without making changes to your templates.  You probably don't need this (:</li>
+</ul></li>
+<li>Set Options: From the WordPress Administration Panels, choose <b>Options > Tags</b>. Set the  <a href="#admin">options to meet your needs.</a>.</li></ol>
+
+<a name="admin"></a><h3>Configuration</h3>
+<p>Ultimate Tag Warrior offers a wide range of customization options.</p>
+
+<a name="configurationhelp"></a><h4>Help!</h4>
+<p>If you need access to this file for reference or help, or the link to the main <a href="http://www.neato.co.nz/ultimate-tag-warrior/">Ultimate Tag Warrior</a> page, I've provided two links under Help at the top of the screen to guide you.  I've also added convenient links to move between the Configuration and Manage Tags pages.</p>
+
+<a name="configuration"></a><h4>Configuration Options</h4>
+<h5>URL Settings</h5>
+<dl><dt>Use URL rewriting</dt><dd>Enabling this will use the base URL and trailing slash options to render links to local tag pages as <code>/tags/tagname</code> instead of <code>index.php?tag=tagname</code>. Usage of this requires enabling Permalinks and making sure your <code>.htaccess</code> file is writable.</dd>
+<dt>base url</dt><dd>This is the location of the tag "folder" relative to your WordPress site root.  It should have both leading and trailing slashes.  If you change this, either click the <b>Update Permalinks</b> button or manually change your <code>.htaccess</code> file to reflect the change.</dd>
+<dt>Include trailing slash on tag URLs</dt><dd>This will append rewritten URLs with a slash, so instead of <code>/tags/tag</code>, URLs are <code>/tags/tag/</code>.</dd>
+</dl>
+
+<h5>Meta Keywords</h5>
+<dl>
+<dt>Include meta keywords</dt><dd>Enabling this will automagically put a <xmp><meta name="keywords" content="comma, list, of, tags" /></xmp> into the page header.</dd>
+</dl>
+<h5>Embedded Tags</h5>
+<dl><dt>Use embedded tags</dt><dd>Enabling this will cause wordpress to look for embedded tags when saving and displaying posts.  A single embedded tag is marked [tag]like this[/tag],  is added to the post when the post is saved and displays as a link when the post is displayed.  A set of tags is marked [tags]like this, and this[/tags],  and are added to the post when the post is saved,  but do not display on the post.</dd></dl>
+
+<h5>Debugging</h5>
+<dl><dt>Include debugging information</dt><dd>This will include debug information in comments.  (Presently,  there is no debug information (; )</dd></dl>
+
+<h5>Automatic Tag Link Inclusion (Automatic Feed Tags and Content Tags)</h5>
+<dl><dt>Include local tag links in feeds</dt><dd>This will append a comma separated list of tags to the end of content items,  when the content item appears in a feed.</dd>
+<dt>Automatically include primary and secondary tag links</dt><dd>These options allow specifying whether tag links should be included in the post text automatically.  For each set of tag links, there is a list of the pre-defined formats that are available.  The selected format will be used to display the tags.  The prefix will display before the tags,  and the suffix afterwards.  There's also an option to indicate whether the tags should display before or after the content.</dd></dl>
+
+<h5>Global Formatting Settings</h5>
+<dl><dt>Colors and Font sizes</dt><dd>This is the section that sets the font colors and sizes for displaying a tag cloud on your site. The colors must be full six digit hexadecimal values (e.g. <code>#FFFFFF</code> or <code>#8F5B2L</code>).  Font sizes can be set for the most and least popular tags.  Use only positive values for these. At the bottom of the list you can choose the font size unit as percentage, <code>px</code> (pixel, <code>pt</code> (point), or <code>em</code>. Both values use the same units.</dd>
+<dt>Icons to display in icon formats</dt><dd>This allows choosing the icons that display for icon based formats.  You can choose as many icons to include as you would like.  The same set of icons will appear in all locations.  If you need to have different icons in different places;  let me know,  and I'll see if I can think of an alternative that will allow that.</dd>
+<dt>The text to display when there are no tags</dt><dd>This allows controlling the text that displays when there are no tags.  You can leave this blank if you would like (:</dd></dl>
+
+<h5>Editing Options</h5>
+<dl><dt>Automatically add categories as tags</dt><dd>This will add the names of any categories selected to the list of tags. They will appear in the post and in the tag cloud or lists.</dd>
+<dt>Always display tag links on edit post page</dt><dd>You have three choices here for the method to display the list of links to existing tags on the <strong>Write Post</strong> panel.  <strong>None</strong> will not display anything. <strong>Tag List</strong> will display a list of all the existing tags. <strong>Dropdown</strong> will display the list in a dropdown menu.</dd></dl>
+
+<h5>Finally..</h5>
+<dl><dt>Save</dt><dd>To save the changes you've made within this section, click the <strong>Save</strong> button.</dd></dl>
+
+<a name="manage"></a><h3>Manage Tags</h3>
+<a name="managehelp"></a><h4>Help!</h4>
+<p>If you need access to this file for reference or help, or the link to the main <a href="http://www.neato.co.nz/ultimate-tag-warrior/">Ultimate Tag Warrior</a> page, I've provided two links under Help at the top of the screen to guide you.  I've also added convenient links to move between the Configuration and Manage Tags pages.</p>
+
+<a name="edittags"></a><h4>Edit Tags</h4>
+<p>The <strong>Edit Tags</strong> section allows renaming, replacing and deleting tags.  If you add more than one tag, then each of the tags will be associated with each of the posts that were tagged with the original tag.  For example, if you rename the <code>bananas</code> category to "<code>fruit, yellow</code>", then any post that was tagged with <code>banana</code> will become tagged with both <code>fruit</code> <i>and</I> <code>yellow</code> instead.</p>
+<p>If you <strong>Rename</strong> to a tag that is already in use, then the two tags will merge together.</p>
+<p><strong>Deleting</strong> deletes a tag.  <b>You cannot undo this</b>. There is a pesky dialog box that pops up to confirm deletions, so you better be sure about your choice.</p>
+
+<a name="assignsynonyms"></a><h4>Assign Synonyms</h4>
+<p>The <strong>Assign Synonyms</strong> section allows associating synonyms with tags.  It's a way of having multiple words map on to a single tag.  For example,  if you had a <code>photography</code> tag;  you might add <code>photo</code> and <code>photograph</code> as synonyms.  Presently,  the only place where synonyms are used is in the urls of tag pages - with the <code>photo</code> and <code>photograph</code> synonyms in place,  if I go to the /tags/photo page,  then the posts tagged with photography will display.</p>
+
+<a name="tidytags"></a><h4>Tidy Tags</h4>
+<p><b>Use this at your own risk. Backup your database first, including the tag and post2tag tables in your backup.</b></p>
+<p>While Tidy Tags seems to work okay, it does have the potential to mangle your tags.  Use this function if you have a lot of orphaned tags or duplicate tags. Tidy Tags will go through the tags table and clean out orphaned or duplicate tags and sort everything out.</p>
+
+<a name="convertcats"></a><h4>Convert Categories to Tags</h4>
+<p><b>Use this at your own risk. Backup your database first, including the tag and post2tag tables in your backup.</b></p>
+<p><b>Once this is done, it cannot easily be undone.</b>  Clicking this button will add your site's Categories for all of your posts as tags and include them in the post tags, tag lists, and tag cloud.</p>
+
+<a name="customfields"></a><h4>Custom Fields</h4>
+<p>If you are currently using another plugin or custom fields for keywords or tags, you can import these into Ultimate Tag Warrior. In order to work, the keywords or tags must use the <strong>Custom Fields</strong> as seen on the <strong>Advanced Editing</strong> view of the <strong>Write Post</strong> panel.</p>
+<p>Type in the custom field name into the <strong>custom field to import from</strong>. In the box for the <strong>delimiter</strong>, enter the character(s) used to separate each tag in the option field value area. This is usually spaces, commas, semi-colons, or pipe ( | ).</p>
+
+<a name="using"></a><h3>Using Ultimate Tag Warrior</h3>
+<a name="usingtagentry"></a><h4>Adding Tags Via the Write Post Screen</h4>
+<p>This is the vanilla way of adding tags to a post.  When you're on the Write Post (or Edit Post) screen,  there is a text box labelled "Tags".  If you type the tags you would like to associate with the post in the box,  they will be saved when the post gets saved.</p>
+<p>Depending on the editing options you've selected,  there might be a quick-entry-thingamer.  If you have the dropdown option selected,  there will be a dropdown list with all of your tags.  If you select a tag from the list,  it will be added to the tag box.  If you have the tag list option chosen,  a list of links for each of your tags will display;  and clicking on a tag link will add it to the tags box.  Again,  when you save the post,  your tags will be saved also.</p>
+
+<a name="usingsuggestions"></a><h4>Getting Tag Suggestions</h4>
+<p>There is a Get Keyword Suggestions button.  If you click it,  it will send a request to <a href="http://www.tagyu.com">tagyu.com</a> for keyword suggestions.  Clicking on any tags it returns will add those tags to the current post.</p>
+
+<a name="usingembededtags"></a><h4>Using Embedded Tags</h4>
+<p>Embedded tags are tags which form a part of the content.  They enable you to place tags in the middle of your content, rather than just at the end;  and they allow you to add tags without being tied to the write post screen in wordpress.</p>
+<p>For a single tag which is to be converted into an embedded tag link,  the following syntax is used:
+<div class="example">
+[tag]sometag[/tag]
+</div>
+When the post gets saved,  "sometag" will be added to the post as a tag,  and when the post is displayed,  "[tag]sometag[/tag]" will be replaced with a link to the local tag pge for "sometag".  Single tags will also display in any tags-for-posts type lists for the post.
+</p>
+<p>In addition to sprinkling singular tags through your posts,  you can add a block of tags also.
+<div class="example">
+[tags]first tag, second tag[/tags]
+</div>
+If you place a comma separated list within "[tags]" and "[/tags]";  then each of those tags will be added to the post, when the post is saved.  The "[tags]..[/tags]" block will not display when the post is viewed.
+</p>
+<p>The embedded tags functionality will only add tags to a post,  not overwrite them.</p>
+<p><small>And if you don't like the start and end markers,  or the format for the single links,  the values used can all be found at the top of the ultimate-tag-warrior-actions.php file if you want to make changes.  Changing the start and end markers can make the sky fall on your head if you aren't careful;  and if you want to change the way the single links look you'll need to provide a custom format.</small></p>
+</body>
+</html>

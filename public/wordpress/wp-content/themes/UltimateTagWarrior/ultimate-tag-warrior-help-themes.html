@@ -1,0 +1,473 @@
+<html>
+<head>
+<title>Ultimate Tag Warrior 3:  Help</title>
+<style type="text/css">
+body, td {font-family:Verdana; font-size:0.8em; line-height:2em;}
+dt {font-weight:bolder; }
+dt code {color:green}
+code {font-size:120%}
+h2 {font-size:150%; color:red;}
+h3 {font-size:140%; color:navy; border-bottom:1px solid blue;}
+h4 {font-size:120%; color:blue;border-bottom:1px solid blue;}
+.red {color:red}
+.blue {color:blue}
+.pageblock {border:solid 1px grey; padding:2px; margin:2px;}
+.chunk {padding-left:50px;}
+.example {border:solid 1px black; background-color:#EEF; padding:10px; margin:10px}
+.example h5 {margin-top:0px; padding-left:10px;}
+
+.utwtags {border-top: 1px solid blue; padding: 10px 5px 0px; font-size: 80%; font-variant:small-caps;}
+.utwreltags a {font-size: 70%; color:grey; text-decoration:none}
+.utwrelposts a {text-decoration:none}
+.tagheader {font-size:120%; font-weight:bolder}
+</style>
+</head>
+<body>
+<h2>Theme Integration</h3>
+<div style="float:right; background:white; width:25%; margin:5px; padding:5px; border:1px blue solid; font-size:90%"><p><b>Table of Contents</b></p>
+<ul><li><a href="ultimate-tag-warrior-help.html#install">Installation</a></li>
+<li><a href="ultimate-tag-warrior-help.html#admin">Configuation</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help.html#configurationhelp">Help</a></li>
+<li><a href="ultimate-tag-warrior-help.html#configuration">Configuration Options</a></li>
+</ul></li>
+<li><a href="ultimate-tag-warrior-help.html#manage">Manage Tags</a>
+<li><a href="ultimate-tag-warrior-help.html#managehelp">Help</a></li>
+<li><a href="ultimate-tag-warrior-help.html#edittags">Edit Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#assignsynonyms">Assign Synonyms</a></li>
+<li><a href="ultimate-tag-warrior-help.html#tidytags">Tidy Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#convertcats">Convert Categories to Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#customfields">Convert Custom Field Lists to Tags</a></li>
+</ul></li>
+<li><a href="ultimate-tag-warrior-help-themes.html">Adding UTW Tags to Themes</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#singletemplate">Formatting single.php and index.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentposttags">Tags for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentpostrelatedtags">Related tags for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentpostrelatedposts">Related posts for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#inlinetagadder">An inline tag-adder</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#notsomuchwithsuperajax">The deprecated one</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagtemplate">Formatting tag.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#currenttagset">Display the current tag set</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currenttagsetrelatedtags">Display the tags related to the current tag set</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagstemplate">Formatting tags.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagsphpsetup">Create a tag archive page.</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagcloud">Display a tag cloud</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#taggraph">Display a long-tail graph</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagweightedbar">Display a weighted bar.. thing</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#timelord">Special Functionality for date.php/archive.php</a></li>
+
+<li><a href="ultimate-tag-warrior-help-themes.html#predefinedformats">Predefined Formats</a></li>
+</ul></li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html">Custom Formatting</a>
+<ul><li><a href="ultimate-tag-warrior-help-custom-formatting.html#listbits">The Parts of a Custom Format</li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html#replacementbits">The Parts of a Format String</li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html#customformats">Putting it all together</a></li>
+</ul></li>
+</ul>
+
+</div>
+<div class="chunk">
+<p>To add Ultimate Tag Warrior into your WordPress Theme, you will need to edit the appropriate template files. Use a text only editor for editing your WordPress Theme template files.</p>
+<p>Ultimate Tag Warrior template tags are divided into two basic kinds. One is used for displaying tags for the post below the post content in a single post view. The other is used to display all the tags for your site, which may be seen on every page on your site. Each have their own distinct formatting and customization options.</p>
+<p>The core layout for the UTW template tags is as follows:</p>
+<p style="text-align:center"><strong><code>&lt;?php <span class="blue">UTW_FunctionTitle</span> ("<I class="red">$formattype"</I>, "<I class="red">$format</I>", "<I class="red">$limit</i>")</code></strong></p>
+<p>All UTW template tags require at least one parameter, <code>$formattype</code>.  The <code>$formattype</code> values are shorthand ways of describing how to format items in a list of tags.  Different formats can be used with different functions. For more information on the format types, see one of the core views below for the Ultimate Tag Warrior tag lists.</p>
+<p>If <code>$formattype</code> is either the empty string,  or "custom", <code>$format</code> is not used at all.  The default for <code>$limit</code> varies for each of the formatting functions.</p>
+<p>The tags are generated in various ways, but they are all displayed as links. Click on a tag link and the user will be taken to a multi-post view web page listing all the posts associated with that tag, or, if you using the Technorati parameters, to the search page results on the Technorati web site.</p>
+<p>There are five core views of Ultimate Tag Warrior tag list:</p>
+<ul><li><a href="#currentposts">Tags for Current Posts</a></li>
+<li><a href="#currenttag">Tags for Current Tag Sets</a></li>
+<li><a href="#weightedtags">Weighted Tags</a></li>
+<li><a href="#relatedposts">Related Posts or Tags for Current Posts</a></li>
+<li><a href="#ajax">Ajax Function Lists</a></li>
+</ul>
+</div>
+<a name="singletemplate"></a><h4>Formatting single.php and index.php</h4>
+<p>If you are going to manually include tags in your themes,  go to <strong>Options > Tags</strong> and disable the automatically include tags options.  This will prevent multiple sets of tags from displaying.</p>
+<p>The template tags in this section should go inside the wordpress loop.</p>
+<a name="currentposttags"></a><h5>Tags for the current post</h5>
+<div class="chunk">
+<p>For a post, you can include the current tags for the post. the related tags for the post and a list of related posts for the post.  The post tag templates must be within the <a href="http://codex.wordpress.org/The_Loop">WordPress Loop</a>.  Clicking on a local tag link displays a list of the posts within that tag;  displayed using the <code>tag.php</code> template file, if one is present (<code>index.php</code> will be used if <code>tag.php</code> is absent.).</p>
+<p>To customize the tags' look, you can manually add the tags to the <code>index.php</code>, <code>single.php</code>, or whichever template you use to generate the single post view in your Theme.</p>
+<p>To include a list of tags,  use the <code>UTW_ShowTagsForCurrentPost()</code> function,  with either one of the <a href="#predefinedformats">predefined format types</a>,  or a <a href="#customformatting">custom format</a> if there's something different that you'd rather do.
+<div class="example">
+<h5>Example:  Include a simple comma list of tags for the current post</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;div class="utwtags">&lt;?php UTW_ShowTagsForCurrentPost("commalist") ?>&lt;/div></code></li>
+<li>Save the file to your site.</li>
+<li>Open the <code>style.css</code> style sheet file and add a class to <code>utwtags</code> to format the list, such as:<br />
+<code>.utwtags {border-top: 1px solid blue; <br />
+padding: 10px 5px 0px; <br />
+font-size: 80%; font-variant:small-caps;}</code></li>
+<li>Produces
+<div class="example">
+<div class="utwtags"><a href="/tags/apple">Apple</a>, <a href="/tags/banana">Banana</a>, <a href="/tags/orange">Orange</a></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<a name="currentpostrelatedtags"></a><h5>Related tags for the current post</h5>
+<div class="chunk">
+<p>Including related tags is pretty much the same as including tags.  Related tags are found by getting the posts that match all of the tags assigned to the current post;  and listing any tags assigned to those posts that aren't already assigned to the current post.</p>
+<p>Related links are displayed with the <code>UTW_ShowRelatedTagsForCurrentPost</code> function.</p>
+<div class="example">
+<h5>Example:  Include a simple list of related tags for the current post</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;div class="utwreltags">&lt;?php UTW_ShowRelatedTagsForCurrentPost("simplelist") ?>&lt;/div></code></li>
+<li>Save the file to your site.</li>
+<li>Open the <code>style.css</code> style sheet file and add a class to <code>utwreltags</code> to format the list, such as:<br />
+<code>.utwreltags a {font-size: 70%; color:grey; text-decoration:none}</code></li>
+<li>Produces
+<div class="example">
+<div class="utwreltags"><a href="/tags/apple">Apple</a> <a href="/tags/banana">Banana</a> <a href="/tags/orange">Orange</a></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<a name="currentpostrelatedposts"></a><h5>Related posts for the current post</h5>
+<div class="chunk">
+<p>The predefined formats for posts are different to the ones available for lists of tags.  At the moment,  there are just three predefined formats - postsimplelist, posthtmllist and postcommalist.</p>
+<p>Related posts are displayed with the <code>UTW_ShowRelatedPostsForCurrentPost</code> function.</p>
+<div class="example">
+<h5>Example:  Include an HTML list of related posts for the current post</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;ul class="utwrelposts">&lt;?php UTW_ShowRelatedPostsForCurrentPost("posthtmllist") ?>&lt;/ul></code></li>
+<li>Save the file to your site.</li>
+<li>Open the <code>style.css</code> style sheet file and add a class to <code>utwrelposts</code> to format the list, such as:<br />
+<code>.utwrelposts a {text-decoration:none}</code></li>
+<li>Produces
+<div class="example">
+<ul class="utwrelposts"><li><a href="/?p=12">Something fruity</a></li><li><a href="/?p=14">My Fruit Bowl</a></li><li><a href="/?p=11">Seasonal Produce</a></li></ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<a name="inlinetagadder"></a><h5>An inline tag-adder</h5>
+<div class="chunk">
+<p>The inline tag-adder allows putting a magical box on entries that allows adding tags without going to the post editing page.  It uses AJAX.  That's how magic it is.  At the moment,  you need to have a user level of 3 or greater to add tags.  Later,  I'm going to add the option of any logged in user,  or indeed anyone at all to add tags... but not yet - I have to figure out some tag-spammy countermeasures first.</p>
+<p>The function to use for this is <code>UTW_AddTagToCurrentPost</code>;  which has a slightly different set of parameters to the other UTW_ functions.</p>
+<p><code>UTW_AddTagToCurrentPost($format="")</code> is the extent of its parameters for now.  If the name of a predefined format is passed in,  and the moon is in the right position (There needs to be an HTML element with an ID of <code>tags-50</code>,  where 50 is the ID of the current post.  If the element doesn't exist,  then you'll see a javascript error instead of the tags being updated.);  the tag list will be updated dynamically.  Until I think of a convenient way to serialize and deserialze custom formats,  this is going to be restricted to using predefined formats for the tag updates.  Of course,  if you had a custom format;  you probably know enough to add it to the set of predefined formats making this point moot (;</p>
+
+<div class="example">
+<h5>Example:  Include the magical inline tag-adder</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;?php UTW_AddTagToCurrentPost("simplelist") ?></code></li>
+<li>Set up a place to put the tags:<br />
+<code>&lt;span id="tags-&lt;?php the_ID(); ?&gt;"&gt;&lt;?php UTW_ShowTagsForCurrentPost("simplelist") ?&gt;&lt;/span&gt;</code></li>
+<li>Save the file to your site.</li>
+<li>Produces
+<div class="example">
+<input type="text" size="9" id="soloAddTag-22" /> <input type="button" value="+" onClick="sndReq('add', document.getElementById('soloAddTag-22').value, '22', 'simplelist')" /> <span id="tags-12"><a href="/tags/apple">Apple</a> <a href="/tags/banana">Banana</a> <a href="/tags/orange">Orange</a></span>
+</div>
+</li>
+<li>Entering a new tag (like "Junk Food"),  and clicking the + button will add the tag to the post,  then update the display to this
+<div class="example">
+<input type="text" size="9" id="soloAddTag-22" /> <input type="button" value="+" onClick="sndReq('add', document.getElementById('soloAddTag-22').value, '22', 'simplelist')" /> <span id="tags-12"><a href="/tags/apple">Apple</a> <a href="/tags/banana">Banana</a> <a href="/tags/junk_food">Junk Food</a> <a href="/tags/orange">Orange</a></span>
+</div>
+</li>
+<li>Magic, eh?</li>
+</ol>
+</div>
+</div>
+<a name="notsomuchwithsuperajax"></a><h5>The deprecated one</h5>
+<div class="chunk">
+<p>There's a predefined format called superajax that is kicking around.. I'm not that happy with what it does, and how it works;  so I'm pretending that it doesn't exist (:</p>
+</div>
+
+<a name="tagtemplate"></a><h4>Formatting tag.php</h4>
+<div class="chunk">
+<p>Usually,  your tag.php file will include a wordpress loop.  The wordpress loop can contain the same things as in the index.php and single.php section.  There are a few additional functions that are useful for the tag.php template that will be outlined here.</p>
+<p>A Tag Set is the set of tags being displayed on the page.  For /tag/sometag,  the tag set is just "sometag".  For /tag/sometag+anothertag or /tag/sometag|anothertag the tag set is "sometag" and "anothertag".</p>
+<p>The template function <code>is_tag()</code> returns true if the current page is a tag page.  This is useful for conditionally including items in the sidebar.</p>
+</div>
+
+<a name="currenttagset"></a><h5>Display the current tag set</h5>
+<div class="chunk">
+<p>The <code>UTW_ShowCurrentTagSet</code> function is useful for creating titles on a tag page.  There are two predefined formats designed for this task:  tagsetsimplelist and tagsetcommalist.</p>
+<div class="example">
+<h5>Example:  Include an HTML list of related posts for the current post</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;div class="tagheader">&lt;?php UTW_ShowCurrentTagSet("tagsetcommalist") ?>&lt;/div></code></li>
+<li>Save the file to your site.</li>
+<li>Open the <code>style.css</code> style sheet file and add a class to <code>utwrelposts</code> to format the list, such as:<br />
+<code>.tagheader {font-size:120%; font-weight:bolder}</code></li>
+<li>On the page /tags/Apple+Banana+Orange Produces
+<div class="example">
+<div class="tagheader"><a href="/tags/apple">Apple</a>, <a href="/tags/banana">Banana</a> and <a href="/tags/orange">Orange</a></div>
+</div>
+</li>
+<li>On the page /tags/Apple|Banana|Orange Produces
+<div class="example">
+<div class="tagheader"><a href="/tags/apple">Apple</a>, <a href="/tags/banana">Banana</a> or <a href="/tags/orange">Orange</a></div>
+</div>
+</li>
+<li>On the page /tags/Apple Produces
+<div class="example">
+<div class="tagheader"><a href="/tags/apple">Apple</a></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<a name="currenttagsetrelatedtags"></a><h5>Display the tags related to the current tag set</h5>
+<div class="chunk">
+<p>Related tags are found by getting the posts that match all of the tags assigned to the current tag set;  and listing any tags assigned to those posts that aren't already part of the current tag set.</p>
+<p>Related links are displayed with the <code>UTW_ShowRelatedTagsForCurrentTagSet</code> function.</p>
+<div class="example">
+<h5>Example:  Include a simple list of related tags for the current tag set</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;div class="utwreltags">&lt;?php UTW_ShowRelatedTagsForCurrentTagSet("simplelist") ?>&lt;/div></code></li>
+<li>Save the file to your site.</li>
+<li>Open the <code>style.css</code> style sheet file and add a class to <code>utwreltags</code> to format the list, such as:<br />
+<code>.utwreltags a {font-size: 70%; color:grey; text-decoration:none}</code></li>
+<li>Produces
+<div class="example">
+<div class="utwreltags"><a href="/tags/peach">Peach</a> <a href="/tags/pear">Pear</a> <a href="/tags/pumpkin">Pumpkin</a></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<a name="tagstemplate"></a><h4>Formatting tags.php</h4>
+<div class="chunk">
+The tags.php file is intended for providing an overview of all tags;  as opposed to tag.php which shows the posts related to a tag.  The tags.php file also differs from the tag.php file in that it's created as a page template;  rather than being a magic file that UTW looks for.
+</div>
+
+<a name="tagsphpsetup"></a><h5>Create a tag archive page.</h5>
+<div class="chunk">
+<p>This is surprisingly easy (:</p>
+<ol>
+<li>Create a file named <code>tags.php</code> in your theme folder.</li>
+<li>At the top of it,  include this text:
+<xmp><?php
+/*
+Template Name: Tag Archive
+*/
+?></xmp>
+</li>
+<li>Tag Archive will now display in the list of page templates on the 'edit page' page.</li>
+<li>Next,  go to <strong>Write &gt; Write Page</strong>,  give the new page a title;  then select 'Tag Archive' from the list of page templates,  in the <strong>Page Options</strong> section.  Click the 'Create New Page' button.</li>
+<li>Marvel at your greatness</li>
+<li>Add some stuff to the tags.php file,  so that it does something useful</li>
+</ol>
+</div>
+
+<a name="tagcloud"></a><h5>Display a tag cloud</h5>
+<div class="chunk">
+<p>There are predefined formats that allow changing the size, colour, or both;  and there are functions for displaying tags in alphabetical order and popularity order.  To display tags most popular first use the <code>UTW_ShowWeightedTagSet</code> function.  To display tags in alphabetical order use <code>UTW_ShowWeightedTagSetAlphabetical</code></p>
+<p>The font sizes and colours are set from the <strong>Options &gt; Tags</strong> page;  and are used for all tag clouds in your site.</p>
+
+<div class="example">
+<h5>Example:  Include a tag cloud, differentiated by size;  most popular first</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;?php UTW_ShowWeightedTagSet("sizedtagcloud") ?></code></li>
+<li>Save the file to your site.</li>
+<li>Produces
+<div class="example">
+<a href="http://localhost/tags/grapes/" style="font-size:250%">Grapes</a> <a href="http://localhost/tags/mango/" style="font-size:168%">Mango</a> <a href="http://localhost/tags/blueberry/" style="font-size:151%">Blueberry</a> <a href="http://localhost/tags/strawberry/" style="font-size:135%">Strawberry</a> <a href="http://localhost/tags/apple/" style="font-size:135%">Apple</a> <a href="http://localhost/tags/tamarillo/" style="font-size:119%">Tamarillo</a> <a href="http://localhost/tags/pear/" style="font-size:119%">Pear</a> <a href="http://localhost/tags/papaya/" style="font-size:119%">Papaya</a> <a href="http://localhost/tags/banana/" style="font-size:119%">Banana</a> <a href="http://localhost/tags/pineapple/" style="font-size:102%">Pineapple</a> <a href="http://localhost/tags/lemon/" style="font-size:102%">Lemon</a> <a href="http://localhost/tags/cherries/" style="font-size:102%">Cherries</a> <a href="http://localhost/tags/plum/" style="font-size:86%">Plum</a> <a href="http://localhost/tags/orange/" style="font-size:86%">Orange</a>
+</div>
+</li>
+</ol>
+</div>
+
+<p>By default,  tag clouds are limited to the top 150 tags.  In order to display all of the tags in the tag cloud,  the <code>$limit</code> parameter needs to be set to 0.</p>
+
+<div class="example">
+<h5>Example:  Include a tag cloud with colours and sizes, in alphabetical order with all of the tags</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;?php UTW_ShowWeightedTagSetAlphabetical("coloredsizedtagcloud","",0) ?></code></li>
+<li>Save the file to your site.</li>
+<li>Produces
+<div class="example">
+<a href="http://localhost/tags/apple/" style="font-size:135%; color:#a2a2a2">Apple</a> <a href="http://localhost/tags/banana/" style="font-size:119%; color:#b9b9b9">Banana</a> <a href="http://localhost/tags/blueberry/" style="font-size:151%; color:#8b8b8b">Blueberry</a> <a href="http://localhost/tags/cherries/" style="font-size:102%; color:#d0d0d0">Cherries</a> <a href="http://localhost/tags/grapes/" style="font-size:250%; color:#000000">Grapes</a> <a href="http://localhost/tags/lemon/" style="font-size:102%; color:#d0d0d0">Lemon</a> <a href="http://localhost/tags/mango/" style="font-size:168%; color:#737373">Mango</a> <a href="http://localhost/tags/orange/" style="font-size:86%; color:#e7e7e7">Orange</a> <a href="http://localhost/tags/papaya/" style="font-size:119%; color:#b9b9b9">Papaya</a> <a href="http://localhost/tags/pear/" style="font-size:119%; color:#b9b9b9">Pear</a> <a href="http://localhost/tags/pineapple/" style="font-size:102%; color:#d0d0d0">Pineapple</a> <a href="http://localhost/tags/plum/" style="font-size:86%; color:#e7e7e7">Plum</a> <a href="http://localhost/tags/strawberry/" style="font-size:135%; color:#a2a2a2">Strawberry</a> <a href="http://localhost/tags/tamarillo/" style="font-size:119%; color:#b9b9b9">Tamarillo</a>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<a name="taggraph"></a><h5>Display a long-tail graph</h5>
+<div class="chunk">
+<p><em>Beware:  the HTML used to generate the long-tail graph isn't XHTML compliant.</em> (Although, if you know of a way of rendering it so that it is,  let me know! (: )</p>
+<p>For now,  the formatting of the long-tail graph isn't configurable - it's a finicky little beast at the best of times.</p>
+<p>In general,  the <code>UTW_ShowWeightedTagSet</code> function is used for generating a long-tail.  Of course, there's nothing stopping you from using the <code>UTW_ShowWeightedTagSetAlphabetical</code> function... it just wouldn't produce a long-tail curve.</p>
+<p>Each bar of the long-tail graph is 5px wide;  so choose the maximum number of items carefully to avoid weird layout issues caused by a super-wide long-tail graph.</p>
+<div class="example">
+<h5>Example:  Display a long-tail graph</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;?php UTW_ShowWeightedTagSet("weightedlongtail","",10) ?></code></li>
+<li>Save the file to your site.</li>
+<li>Produces
+<div class="example">
+				<style type="text/css">
+				.longtail, .longtail li, { list-style: none; margin: 0; padding: 0; }
+				.longtail {position: relative; height: 100px;}
+				.longtail li a {text-decoration:none;}
+				.longtail:after { display: block; visibility: hidden; content: "."; height: 0; overflow: hidden; clear: both;}
+				.longtail li {float: left; position: relative; height: 100%;width: 5px;margin:0px;background-color:#fff;}
+				.longtail li div {position: absolute;bottom: 0; left: 0;width: 100%;background-color:#000;}
+				</style><ol class="longtail"><li><a href="http://localhost/tags/grapes/" title="Grapes"><div style="height:100%">&#160;</div></a></li><li><a href="http://localhost/tags/mango/" title="Mango"><div style="height:55%">&#160;</div></a></li><li><a href="http://localhost/tags/blueberry/" title="Blueberry"><div style="height:46%">&#160;</div></a></li><li><a href="http://localhost/tags/strawberry/" title="Strawberry"><div style="height:37%">&#160;</div></a></li><li><a href="http://localhost/tags/apple/" title="Apple"><div style="height:37%">&#160;</div></a></li><li><a href="http://localhost/tags/tamarillo/" title="Tamarillo"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/pear/" title="Pear"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/papaya/" title="Papaya"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/banana/" title="Banana"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/pineapple/" title="Pineapple"><div style="height:19%">&#160;</div></a></li></ol></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<a name="tagweightedbar"></a><h5>Display a weighted bar.. thing</h5>
+<div class="chunk">
+<p><em>This isn't XHTML compliant either.</em> (And if you know a way I can do it, so that it is;  you should tell me)</p>
+<p>The weighted bar thing is something I made up.  Which is why it has a stupid non-name.  It displays a bar with more popular tags in wider chunks,  using the same colours as the tag cloud.  This is another one where using the <code>UTW_ShowWeightedTagSet</code> function makes sense;  and <code>UTW_ShowWeightedTagSetAlphabetical</code> looks a bit freakish.</p>
+<p>This suits displaying tag sets up to about 50 tags.  Much more than that and it's too compressed to look like much of anything interesting.</p>
+
+<div class="example">
+<h5>Example:  Display a weighted bar thing</h5>
+<ol>
+<li>In the appropriate template file, add the following example:<br />
+<code>&lt;?php UTW_ShowWeightedTagSet("weightedlinearbar") ?></code></li>
+<li>Save the file to your site.</li>
+<li>Produces
+<div class="example">
+<table cellpadding="0" cellspacing="0" style="border:1px solid black; border-right:0px" width="100%"><tr><td width="22%" style="background-color:#000000; border-right:1px solid black;"><a href="http://localhost/tags/grapes/" title="Grapes" style="color:#000000;"><div width="100%">&#160;</div></a></td><td width="12%" style="background-color:#737373; border-right:1px solid black;"><a href="http://localhost/tags/mango/" title="Mango" style="color:#737373;"><div width="100%">&#160;</div></a></td><td width="10%" style="background-color:#8b8b8b; border-right:1px solid black;"><a href="http://localhost/tags/blueberry/" title="Blueberry" style="color:#8b8b8b;"><div width="100%">&#160;</div></a></td><td width="8%" style="background-color:#a2a2a2; border-right:1px solid black;"><a href="http://localhost/tags/strawberry/" title="Strawberry" style="color:#a2a2a2;"><div width="100%">&#160;</div></a></td><td width="8%" style="background-color:#a2a2a2; border-right:1px solid black;"><a href="http://localhost/tags/apple/" title="Apple" style="color:#a2a2a2;"><div width="100%">&#160;</div></a></td><td width="6%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/tamarillo/" title="Tamarillo" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="6%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/pear/" title="Pear" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="6%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/papaya/" title="Papaya" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="6%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/banana/" title="Banana" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="4%" style="background-color:#d0d0d0; border-right:1px solid black;"><a href="http://localhost/tags/pineapple/" title="Pineapple" style="color:#d0d0d0;"><div width="100%">&#160;</div></a></td><td width="4%" style="background-color:#d0d0d0; border-right:1px solid black;"><a href="http://localhost/tags/lemon/" title="Lemon" style="color:#d0d0d0;"><div width="100%">&#160;</div></a></td><td width="4%" style="background-color:#d0d0d0; border-right:1px solid black;"><a href="http://localhost/tags/cherries/" title="Cherries" style="color:#d0d0d0;"><div width="100%">&#160;</div></a></td><td width="2%" style="background-color:#e7e7e7; border-right:1px solid black;"><a href="http://localhost/tags/plum/" title="Plum" style="color:#e7e7e7;"><div width="100%">&#160;</div></a></td><td width="2%" style="background-color:#e7e7e7; border-right:1px solid black;"><a href="http://localhost/tags/orange/" title="Orange" style="color:#e7e7e7;"><div width="100%">&#160;</div></a></td></tr></table></div>
+</li>
+</ol>
+</div>
+</div>
+
+
+
+<a name="timelord"></a><h4>Special Functionality for date.php/archive.php</h4>
+<div class="chunk">
+<p>This functionality looks at the date range of the current query,  and displays the tags for posts that were published during that daterange.</p>
+<p>For example,  on the /archive/2005/ page,  only the tags from posts in 2005 would display.  Or from /archive/2004/07 tags from posts in July 2004 would display.</p>
+<p>Nifty,  eh?</p>
+<p>There are two template functions available for this purpose:  <code>UTW_ShowTimeSensitiveWeightedTagSet</code> and <code>UTW_ShowTimeSensitiveWeightedTagSetAlphabetical</code>.  Both of these functions are used in the same manner as their non-date-sensitive counterparts (Except for limiting by date, of course (: ).</p>
+</div>
+
+<a name="predefinedformats"></a><h3>Predefined Formats</h3>
+<div class="chunk">
+<table border="1">
+<tr>
+	<th>Format Name</th><th>Description</th><th>Example</th><th>Wordpress loop</th><th>tag.php</th><th>tags.php</th>
+</tr>
+<tr>
+	<td>simplelist</td><td>List of tags separated with spaces</td><td><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a> <a href="http://localhost/tags/pear/" rel="tag">Pear</a> <a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>iconlist</td><td>List of tags separated with spaces, displayed with icons</td><td><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a> <a href="http://www.technorati.com/tag/Papaya" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Papaya" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/papaya" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Papaya" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/papaya/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a> <a href="http://localhost/tags/pear/" rel="tag">Pear</a> <a href="http://www.technorati.com/tag/Pear" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Pear" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/pear" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Pear" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/pear/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a> <a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a> <a href="http://www.technorati.com/tag/Strawberry" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Strawberry" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/strawberry" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Strawberry" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/strawberry/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>htmllist</td><td>List of tags in &lt;li&gt; html tags.  Wrap in &lt;ul&gt; or &lt;ol&gt; as your whims dictate.</td><td><li><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a></li><li><a href="http://localhost/tags/pear/" rel="tag">Pear</a></li><li><a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a></li></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>htmllistandor</td><td>List of tags in &lt;li&gt; html tags, with + and/or | links as appropriate</td><td><li><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a> <a href="http://localhost/tags/cheese+papaya">+</a></li><li><a href="http://localhost/tags/pear/" rel="tag">Pear</a> <a href="http://localhost/tags/cheese+pear">+</a></li><li><a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a> <a href="http://localhost/tags/cheese+strawberry">+</a></li></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>htmllisticons</td><td>As for htmllist,  displayed with icons.</td><td><li><a href="http://www.technorati.com/tag/Papaya" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Papaya" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/papaya" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Papaya" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/papaya/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a></li><li><a href="http://www.technorati.com/tag/Pear" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Pear" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/pear" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Pear" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/pear/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/pear/" rel="tag">Pear</a></li><li><a href="http://www.technorati.com/tag/Strawberry" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Strawberry" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/strawberry" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Strawberry" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/strawberry/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a></li></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>commalist</td><td>List of tags separated with commas</td><td><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a>, <a href="http://localhost/tags/pear/" rel="tag">Pear</a>, <a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>commalisticons</td><td>List of tags separated with commas,  displayed with icons.</td><td><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a> <a href="http://www.technorati.com/tag/Papaya" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Papaya" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/papaya" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Papaya" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/papaya/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a>, <a href="http://localhost/tags/pear/" rel="tag">Pear</a> <a href="http://www.technorati.com/tag/Pear" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Pear" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/pear" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Pear" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/pear/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a>, <a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a> <a href="http://www.technorati.com/tag/Strawberry" rel="tag"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/Strawberry" rel="tag"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/strawberry" rel="tag"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/Strawberry" rel="tag"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://localhost/tags/strawberry/feed/rss2" rel="tag"><img src="rssicon.jpg" border="0" hspace="1"/></a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>commalistwithtaglabel</td><td>Comma list,  but with a "Tags: " label</td><td>Tags: <a href="http://localhost/tags/papaya/" rel="tag">Papaya</a>, <a href="http://localhost/tags/pear/" rel="tag">Pear</a>, <a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>technoraticommalist</td><td>List of links to Technorati, separated with commas.</td><td><a href="http://www.technorati.com/tag/Papaya" rel="tag">Papaya</a>, <a href="http://www.technorati.com/tag/Pear" rel="tag">Pear</a>, <a href="http://www.technorati.com/tag/Strawberry" rel="tag">Strawberry</a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>technoraticommalistwithlabel</td><td>As above,  but includes a "Technorati Tags: " label at the start of the list.</td><td>Technorati Tags: <a href="http://www.technorati.com/tag/Papaya" rel="tag">Papaya</a>, <a href="http://www.technorati.com/tag/Pear" rel="tag">Pear</a>, <a href="http://www.technorati.com/tag/Strawberry" rel="tag">Strawberry</a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>technoraticommalistwithiconlabel</td><td>As above,  but includes the Technorati icon at the start of the list.</td><td><a href="http://www.technorati.com"><img src="technoratiicon.jpg" alt="Technorati"/></a> <a href="http://www.technorati.com/tag/Papaya" rel="tag">Papaya</a>, <a href="http://www.technorati.com/tag/Pear" rel="tag">Pear</a>, <a href="http://www.technorati.com/tag/Strawberry" rel="tag">Strawberry</a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>gadabecommalist</td><td>List of links to gada.be, separated with commas.</td><td><a href="http://papaya.gada.be" rel="tag">Papaya</a>, <a href="http://pear.gada.be" rel="tag">Pear</a>, <a href="http://strawberry.gada.be" rel="tag">Strawberry</a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>andcommalist</td><td>Comma separated list of tags,  with union and intersection links when appropriate<a href="#monkey">*</a>.</td><td><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a> <a href="http://localhost/tags/cheese|papaya">|</a>, <a href="http://localhost/tags/pear/" rel="tag">Pear</a> <a href="http://localhost/tags/cheese|pear">|</a>, <a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a> <a href="http://localhost/tags/cheese|strawberry">|</a></td><td>&nbsp;</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>invisiblecommalist</td><td>Comma separated list,  in a hidden span</td><td><span style="display:none"><a href="http://localhost/tags/papaya/" rel="tag">Papaya</a>, <a href="http://localhost/tags/pear/" rel="tag">Pear</a>, <a href="http://localhost/tags/strawberry/" rel="tag">Strawberry</a></span>&nbsp;</td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>tagsetsimplelist</td><td>List of tags belonging to the current tag set, separated by the current operator (and or or, depending on if it's an "and tag set" or an "or tag set").  Just the tag displays for a single tag.</td><td><a href="/tags/apple">Apple</a> and <a href="/tags/banana">Banana</a> and <a href="/tags/orange">Orange</a></td><td>&nbsp;</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>tagsetcommalist</td><td>Like tagsetsimplelist,  but with commas separating all but the last two items,  with the name of the operator between the final two tags.</td><td><a href="/tags/apple">Apple</a>, <a href="/tags/banana">Banana</a> and <a href="/tags/orange">Orange</a></td><td>&nbsp;</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>tagsettextonly</td><td>Like tagsetcommalist,  but without the tags linking to tag pages.  This is handy for placing in the header</td><td>Apple, Banana and Orange</td><td>&nbsp;</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>weightedlinearbar</td><td>A stripey table that displays wider bars for more popular tags.  The colours used are the same as for tag clouds.</td><td><table cellpadding="0" cellspacing="0" style="border:1px solid black; border-right:0px" width="100%"><tr><td width="23%" style="background-color:#000000; border-right:1px solid black;"><a href="http://localhost/tags/grapes/" title="Grapes" style="color:#000000;"><div width="100%">&#160;</div></a></td><td width="13%" style="background-color:#737373; border-right:1px solid black;"><a href="http://localhost/tags/mango/" title="Mango" style="color:#737373;"><div width="100%">&#160;</div></a></td><td width="11%" style="background-color:#8b8b8b; border-right:1px solid black;"><a href="http://localhost/tags/blueberry/" title="Blueberry" style="color:#8b8b8b;"><div width="100%">&#160;</div></a></td><td width="9%" style="background-color:#a2a2a2; border-right:1px solid black;"><a href="http://localhost/tags/strawberry/" title="Strawberry" style="color:#a2a2a2;"><div width="100%">&#160;</div></a></td><td width="7%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/tamarillo/" title="Tamarillo" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="7%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/pear/" title="Pear" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="7%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/papaya/" title="Papaya" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="7%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/banana/" title="Banana" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="7%" style="background-color:#b9b9b9; border-right:1px solid black;"><a href="http://localhost/tags/apple/" title="Apple" style="color:#b9b9b9;"><div width="100%">&#160;</div></a></td><td width="5%" style="background-color:#d0d0d0; border-right:1px solid black;"><a href="http://localhost/tags/pineapple/" title="Pineapple" style="color:#d0d0d0;"><div width="100%">&#160;</div></a></td><td width="5%" style="background-color:#d0d0d0; border-right:1px solid black;"><a href="http://localhost/tags/lemon/" title="Lemon" style="color:#d0d0d0;"><div width="100%">&#160;</div></a></td><td width="5%" style="background-color:#d0d0d0; border-right:1px solid black;"><a href="http://localhost/tags/cherries/" title="Cherries" style="color:#d0d0d0;"><div width="100%">&#160;</div></a></td><td width="3%" style="background-color:#e7e7e7; border-right:1px solid black;"><a href="http://localhost/tags/plum/" title="Plum" style="color:#e7e7e7;"><div width="100%">&#160;</div></a></td><td width="3%" style="background-color:#e7e7e7; border-right:1px solid black;"><a href="http://localhost/tags/orange/" title="Orange" style="color:#e7e7e7;"><div width="100%">&#160;</div></a></td></tr></table></td><td>&nbsp;</td><td>&nbsp;</td><td>+</td>
+</tr>
+<tr>
+	<td>weightedlongtail</td><td>A long-tail graph of tags.  Beware:  not XHTML compliant.</td><td>				<style type="text/css">
+				.longtail, .longtail li { list-style: none; margin: 0; padding: 0; }
+				.longtail li a {text-decoration:none}
+				.longtail {position: relative; height: 100px;}
+				.longtail:after { display: block; visibility: hidden; content: "."; height: 0; overflow: hidden; clear: both;}
+				.longtail li {float: left; position: relative; height: 100%;width: 5px;margin:0px;background-color:#fff;}
+				.longtail li div {position: absolute;bottom: 0; left: 0;width: 100%;background-color:#000;}
+				</style><ol class="longtail"><li><a href="http://localhost/tags/grapes/" title="Grapes"><div style="height:100%">&#160;</div></a></li><li><a href="http://localhost/tags/mango/" title="Mango"><div style="height:55%">&#160;</div></a></li><li><a href="http://localhost/tags/blueberry/" title="Blueberry"><div style="height:46%">&#160;</div></a></li><li><a href="http://localhost/tags/strawberry/" title="Strawberry"><div style="height:37%">&#160;</div></a></li><li><a href="http://localhost/tags/tamarillo/" title="Tamarillo"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/pear/" title="Pear"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/papaya/" title="Papaya"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/banana/" title="Banana"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/apple/" title="Apple"><div style="height:28%">&#160;</div></a></li><li><a href="http://localhost/tags/pineapple/" title="Pineapple"><div style="height:19%">&#160;</div></a></li><li><a href="http://localhost/tags/lemon/" title="Lemon"><div style="height:19%">&#160;</div></a></li><li><a href="http://localhost/tags/cherries/" title="Cherries"><div style="height:19%">&#160;</div></a></li><li><a href="http://localhost/tags/plum/" title="Plum"><div style="height:10%">&#160;</div></a></li><li><a href="http://localhost/tags/orange/" title="Orange"><div style="height:10%">&#160;</div></a></li></ol></div></td><td>&nbsp;</td><td>&nbsp;</td><td>+</td>
+</tr>
+<tr>
+	<td>weightedlongtailvertical</td><td>A long-tail graph of tags,  going down the page.  This one <em>is</em> XHTML compliant.  Use the <code>longtailvert</code> CSS class to style the text of the tag labels.</td><td><div class="longtailvert"><div style="background-color:#2b79b5; width:100%; \"><a href="http://localhost/tags/grapes/" title="Grapes" style="display:block; ">Grapes</a></div><div style="background-color:#4388bd; width:55%; \"><a href="http://localhost/tags/mango/" title="Mango" style="display:block; ">Mango</a></div><div style="background-color:#5b97c5; width:46%; \"><a href="http://localhost/tags/blueberry/" title="Blueberry" style="display:block; ">Blueberry</a></div><div style="background-color:#5b97c5; width:46%; \"><a href="http://localhost/tags/apple/" title="Apple" style="display:block; ">Apple</a></div><div style="background-color:#73a6ce; width:37%; \"><a href="http://localhost/tags/strawberry/" title="Strawberry" style="display:block; ">Strawberry</a></div><div style="background-color:#8cb6d6; width:28%; \"><a href="http://localhost/tags/tamarillo/" title="Tamarillo" style="display:block; ">Tamarillo</a></div><div style="background-color:#8cb6d6; width:28%; \"><a href="http://localhost/tags/pear/" title="Pear" style="display:block; ">Pear</a></div><div style="background-color:#8cb6d6; width:28%; \"><a href="http://localhost/tags/papaya/" title="Papaya" style="display:block; ">Papaya</a></div><div style="background-color:#8cb6d6; width:28%; \"><a href="http://localhost/tags/banana/" title="Banana" style="display:block; ">Banana</a></div><div style="background-color:#a4c5df; width:19%; \"><a href="http://localhost/tags/something/" title="Something" style="display:block; ">Something</a></div><div style="background-color:#a4c5df; width:19%; \"><a href="http://localhost/tags/sdfsdf/" title="sdfsdf" style="display:block; ">sdfsdf</a></div><div style="background-color:#a4c5df; width:19%; \"><a href="http://localhost/tags/pineapple/" title="Pineapple" style="display:block; ">Pineapple</a></div><div style="background-color:#a4c5df; width:19%; \"><a href="http://localhost/tags/lemon/" title="Lemon" style="display:block; ">Lemon</a></div><div style="background-color:#a4c5df; width:19%; \"><a href="http://localhost/tags/cherries/" title="Cherries" style="display:block; ">Cherries</a></div><div style="background-color:#bcd4e7; width:10%; \"><a href="http://localhost/tags/trevor/" title="Trevor" style="display:block; ">Trevor</a></div></div></td><td>&nbsp;</td><td>&nbsp;</td><td>+</td></tr>
+</tr>
+<tr>
+	<td>coloredtagcloud</td><td>A tag cloud that differentiates between the popularity of tags through colour.  The colours are specified on the <strong>Options &gt; Tags</strong> page.</td><td><a href="http://localhost/tags/apple/" style="color:#b9b9b9">Apple</a> <a href="http://localhost/tags/banana/" style="color:#b9b9b9">Banana</a> <a href="http://localhost/tags/blueberry/" style="color:#8b8b8b">Blueberry</a> <a href="http://localhost/tags/cherries/" style="color:#d0d0d0">Cherries</a> <a href="http://localhost/tags/grapes/" style="color:#000000">Grapes</a> <a href="http://localhost/tags/lemon/" style="color:#d0d0d0">Lemon</a> <a href="http://localhost/tags/mango/" style="color:#737373">Mango</a> <a href="http://localhost/tags/orange/" style="color:#e7e7e7">Orange</a> <a href="http://localhost/tags/papaya/" style="color:#b9b9b9">Papaya</a> <a href="http://localhost/tags/pear/" style="color:#b9b9b9">Pear</a> <a href="http://localhost/tags/pineapple/" style="color:#d0d0d0">Pineapple</a> <a href="http://localhost/tags/plum/" style="color:#e7e7e7">Plum</a> <a href="http://localhost/tags/strawberry/" style="color:#a2a2a2">Strawberry</a> <a href="http://localhost/tags/tamarillo/" style="color:#b9b9b9">Tamarillo</a></td><td>&nbsp;</td><td>&nbsp;</td><td>+</td>
+</tr>
+<tr>
+	<td>sizedtagcloud</td><td>A tag cloud that differentiates between the popularity of tags by using different sized fonts.  The font sizes are specified on the <strong>Options &gt; Tags</strong> page.</td><td><a href="http://localhost/tags/apple/" style="font-size:119%">Apple</a> <a href="http://localhost/tags/banana/" style="font-size:119%">Banana</a> <a href="http://localhost/tags/blueberry/" style="font-size:151%">Blueberry</a> <a href="http://localhost/tags/cherries/" style="font-size:102%">Cherries</a> <a href="http://localhost/tags/grapes/" style="font-size:250%">Grapes</a> <a href="http://localhost/tags/lemon/" style="font-size:102%">Lemon</a> <a href="http://localhost/tags/mango/" style="font-size:168%">Mango</a> <a href="http://localhost/tags/orange/" style="font-size:86%">Orange</a> <a href="http://localhost/tags/papaya/" style="font-size:119%">Papaya</a> <a href="http://localhost/tags/pear/" style="font-size:119%">Pear</a> <a href="http://localhost/tags/pineapple/" style="font-size:102%">Pineapple</a> <a href="http://localhost/tags/plum/" style="font-size:86%">Plum</a> <a href="http://localhost/tags/strawberry/" style="font-size:135%">Strawberry</a> <a href="http://localhost/tags/tamarillo/" style="font-size:119%">Tamarillo</a></td><td>&nbsp;</td><td>&nbsp;</td><td>+</td>
+</tr>
+<tr>
+	<td>coloredsizedtagcloud</td><td>A tag cloud that differentiates between the popularity of tags through colour and size.  The colours and sizes are specified on the <strong>Options &gt; Tags</strong> page.</td><td><a href="http://localhost/tags/apple/" style="font-size:119%; color:#b9b9b9">Apple</a> <a href="http://localhost/tags/banana/" style="font-size:119%; color:#b9b9b9">Banana</a> <a href="http://localhost/tags/blueberry/" style="font-size:151%; color:#8b8b8b">Blueberry</a> <a href="http://localhost/tags/cherries/" style="font-size:102%; color:#d0d0d0">Cherries</a> <a href="http://localhost/tags/grapes/" style="font-size:250%; color:#000000">Grapes</a> <a href="http://localhost/tags/lemon/" style="font-size:102%; color:#d0d0d0">Lemon</a> <a href="http://localhost/tags/mango/" style="font-size:168%; color:#737373">Mango</a> <a href="http://localhost/tags/orange/" style="font-size:86%; color:#e7e7e7">Orange</a> <a href="http://localhost/tags/papaya/" style="font-size:119%; color:#b9b9b9">Papaya</a> <a href="http://localhost/tags/pear/" style="font-size:119%; color:#b9b9b9">Pear</a> <a href="http://localhost/tags/pineapple/" style="font-size:102%; color:#d0d0d0">Pineapple</a> <a href="http://localhost/tags/plum/" style="font-size:86%; color:#e7e7e7">Plum</a> <a href="http://localhost/tags/strawberry/" style="font-size:135%; color:#a2a2a2">Strawberry</a> <a href="http://localhost/tags/tamarillo/" style="font-size:119%; color:#b9b9b9">Tamarillo</a></td><td>&nbsp;</td><td>&nbsp;</td><td>+</td>
+</tr>
+<tr>
+	<td>coloredsizedtagcloudwithcount</td><td>Like coloredsizedtagcloud,  but includes the number of times the tag is used after each tag.</td><td><a href="http://localhost/tags/apple/" style="font-size:119%; color:#b9b9b9">Apple<sub style="font-size:60%; color:#ccc;">3</sub></a> <a href="http://localhost/tags/banana/" style="font-size:119%; color:#b9b9b9">Banana<sub style="font-size:60%; color:#ccc;">3</sub></a> <a href="http://localhost/tags/blueberry/" style="font-size:151%; color:#8b8b8b">Blueberry<sub style="font-size:60%; color:#ccc;">5</sub></a> <a href="http://localhost/tags/cherries/" style="font-size:102%; color:#d0d0d0">Cherries<sub style="font-size:60%; color:#ccc;">2</sub></a> <a href="http://localhost/tags/grapes/" style="font-size:250%; color:#000000">Grapes<sub style="font-size:60%; color:#ccc;">11</sub></a> <a href="http://localhost/tags/lemon/" style="font-size:102%; color:#d0d0d0">Lemon<sub style="font-size:60%; color:#ccc;">2</sub></a> <a href="http://localhost/tags/mango/" style="font-size:168%; color:#737373">Mango<sub style="font-size:60%; color:#ccc;">6</sub></a> <a href="http://localhost/tags/orange/" style="font-size:86%; color:#e7e7e7">Orange<sub style="font-size:60%; color:#ccc;">1</sub></a> <a href="http://localhost/tags/papaya/" style="font-size:119%; color:#b9b9b9">Papaya<sub style="font-size:60%; color:#ccc;">3</sub></a> <a href="http://localhost/tags/pear/" style="font-size:119%; color:#b9b9b9">Pear<sub style="font-size:60%; color:#ccc;">3</sub></a> <a href="http://localhost/tags/pineapple/" style="font-size:102%; color:#d0d0d0">Pineapple<sub style="font-size:60%; color:#ccc;">2</sub></a> <a href="http://localhost/tags/plum/" style="font-size:86%; color:#e7e7e7">Plum<sub style="font-size:60%; color:#ccc;">1</sub></a> <a href="http://localhost/tags/strawberry/" style="font-size:135%; color:#a2a2a2">Strawberry<sub style="font-size:60%; color:#ccc;">4</sub></a> <a href="http://localhost/tags/tamarillo/" style="font-size:119%; color:#b9b9b9">Tamarillo<sub style="font-size:60%; color:#ccc;">3</sub></a></td><td>&nbsp;</td><td>&nbsp;</td><td>+</td>
+</tr>
+<tr>
+	<td>tagcloudlist</td><td>A tag cloud that differentiates between the popularity of tags through colour and size.  The colours and sizes are specified on the <strong>Options &gt; Tags</strong> page.  The tags are presented as an ordered list if you're after something a little more semantic.  CSS away to your hearts content.</td><td><ol><li><a href="http://localhost/tags/apple/" style="font-size:119%; color:#b9b9b9">Apple</a></li><li><a href="http://localhost/tags/banana/" style="font-size:119%; color:#b9b9b9">Banana</a></li><li><a href="http://localhost/tags/blueberry/" style="font-size:151%; color:#8b8b8b">Blueberry</a></li><li><a href="http://localhost/tags/cherries/" style="font-size:102%; color:#d0d0d0">Cherries</a></li><li><a href="http://localhost/tags/grapes/" style="font-size:250%; color:#000000">Grapes</a></li><li><a href="http://localhost/tags/lemon/" style="font-size:102%; color:#d0d0d0">Lemon</a></li><li><a href="http://localhost/tags/mango/" style="font-size:168%; color:#737373">Mango</a></li><li><a href="http://localhost/tags/orange/" style="font-size:86%; color:#e7e7e7">Orange</a></li><li><a href="http://localhost/tags/papaya/" style="font-size:119%; color:#b9b9b9">Papaya</a></li><li><a href="http://localhost/tags/pear/" style="font-size:119%; color:#b9b9b9">Pear</a></li><li><a href="http://localhost/tags/pineapple/" style="font-size:102%; color:#d0d0d0">Pineapple</a></li><li><a href="http://localhost/tags/plum/" style="font-size:86%; color:#e7e7e7">Plum</a></li><li><a href="http://localhost/tags/strawberry/" style="font-size:135%; color:#a2a2a2">Strawberry</a></li><li><a href="http://localhost/tags/tamarillo/" style="font-size:119%; color:#b9b9b9">Tamarillo</a></li></ol></td><td>&nbsp;</td><td>&nbsp;</td><td>+</td>
+</tr>
+<tr>
+	<td>postsimplelist</td><td>List of posts separated with spaces</td><td><a href="/?p=12">Something fruity</a> <a href="/?p=14">My Fruit Bowl</a> <a href="/?p=11">Seasonal Produce</a></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>postcommalist</td><td>List of posts separated with commas</td><td><a href="/?p=12">Something fruity</a>, <a href="/?p=14">My Fruit Bowl</a>, <a href="/?p=11">Seasonal Produce</a></li></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+<tr>
+	<td>posthtmllist</td><td>List of posts in &lt;li&gt; tags.</td><td><li><a href="/?p=12">Something fruity</a></li><li><a href="/?p=14">My Fruit Bowl</a></li><li><a href="/?p=11">Seasonal Produce</a></li></td><td>+</td><td>+</td><td>&nbsp;</td>
+</tr>
+</table>
+<a name="monkey">*</a> If viewing the tag page for a single tag e.g. /tags/apple links for both union and intersection will display.  If viewing the page for an intersection e.g. /tags/apple+banana then only the intersection link will display.  If viewing a union page e.g. /tags/apple|banana then only the union link will display.  On a non-tag page;  then a big nasty gap will display - use the commalist format on these pages (:
+</div>
+</body>
+</html>

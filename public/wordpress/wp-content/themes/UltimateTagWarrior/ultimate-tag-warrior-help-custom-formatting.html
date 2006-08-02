@@ -1,0 +1,194 @@
+<html>
+<head>
+<title>Ultimate Tag Warrior 3:  Help:  Custom Formatting</title>
+<style type="text/css">
+body, td {font-family:Verdana; font-size:0.8em; line-height:2em;}
+dt {font-weight:bolder; }
+dt code {color:green}
+code, xmp {font-size:120%}
+h2 {font-size:150%; color:red;}
+h3 {font-size:140%; color:navy; border-bottom:1px solid blue;}
+h4 {font-size:120%; color:blue;border-bottom:1px solid blue;}
+.red {color:red}
+.blue {color:blue}
+.pageblock {border:solid 1px grey; padding:2px; margin:2px;}
+.chunk {padding-left:50px;}
+.example {border:solid 1px black; background-color:#EEF; padding:10px; margin:10px}
+.example h5 {margin-top:0px; padding-left:10px;}
+
+table, td {border:1px solid #AAA}
+</style>
+</head>
+<body>
+
+<h2>Custom Formatting</h2>
+<div style="float:right; background:white; width:25%; margin:5px; padding:5px; border:1px blue solid; font-size:90%"><p><b>Table of Contents</b></p>
+<ul><li><a href="ultimate-tag-warrior-help.html#install">Installation</a></li>
+<li><a href="ultimate-tag-warrior-help.html#admin">Configuation</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help.html#configurationhelp">Help</a></li>
+<li><a href="ultimate-tag-warrior-help.html#configuration">Configuration Options</a></li>
+</ul></li>
+<li><a href="ultimate-tag-warrior-help.html#manage">Manage Tags</a>
+<li><a href="ultimate-tag-warrior-help.html#managehelp">Help</a></li>
+<li><a href="ultimate-tag-warrior-help.html#edittags">Edit Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#assignsynonyms">Assign Synonyms</a></li>
+<li><a href="ultimate-tag-warrior-help.html#tidytags">Tidy Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#convertcats">Convert Categories to Tags</a></li>
+<li><a href="ultimate-tag-warrior-help.html#customfields">Convert Custom Field Lists to Tags</a></li>
+</ul></li>
+<li><a href="ultimate-tag-warrior-help-themes.html">Adding UTW Tags to Themes</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#singletemplate">Formatting single.php and index.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentposttags">Tags for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentpostrelatedtags">Related tags for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currentpostrelatedposts">Related posts for the current post</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#inlinetagadder">An inline tag-adder</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#notsomuchwithsuperajax">The deprecated one</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagtemplate">Formatting tag.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#currenttagset">Display the current tag set</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#currenttagsetrelatedtags">Display the tags related to the current tag set</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagstemplate">Formatting tags.php</a>
+<ul>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagsphpsetup">Create a tag archive page.</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagcloud">Display a tag cloud</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#taggraph">Display a long-tail graph</a></li>
+<li><a href="ultimate-tag-warrior-help-themes.html#tagweightedbar">Display a weighted bar.. thing</a></li>
+</ul>
+</li>
+<li><a href="ultimate-tag-warrior-help-themes.html#predefinedformats">Predefined Formats</a></li>
+</ul></li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html">Custom Formatting</a>
+<ul><li><a href="ultimate-tag-warrior-help-custom-formatting.html#listbits">The Parts of a Custom Format</li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html#replacementbits">The Parts of a Format String</li>
+<li><a href="ultimate-tag-warrior-help-custom-formatting.html#customformats">Putting it all together</a></li>
+</ul></li>
+</ul>
+
+</div>
+
+<div class="chunk">
+<p>Custom formatting is a way of specifying the way lists of tags should display.  If you want to display tags in a way that the predefined formats can't accomodate,  this is the way to do it.</p>
+<p>A custom format is an associative array of format strings,  which specify how different parts of a tag list display.  Format strings contain placeholders for various bits of tag information.</p>
+</div>
+
+<a name="listbits"></a><h4>The parts of a custom format</h4>
+<div class="chunk">
+<p>This is an overview of the various parts of a custom format.  <code>pre</code> and <code>post</code> wrap everything;  <code>first</code>/<code>default</code>/<code>last</code> is the usual way of displaying tags (default is the only one that's really needed;  first and last provide a way of changing the way the first and last item look.).  <code>single</code> and <code>none</code> are special cases.</p>
+<table border="1" cellpadding="5">
+<tr><td rowspan="3"><strong>pre</strong> - goes in front of the tags</td><td colspan="3"><strong>single</strong> - how to format the tag when there is exactly one tag (useful when using a first format that depends on a last format to close HTML tags and what-not)</td><td rowspan="3"><strong>post</strong> - goes after the tags</td>
+<tr><td><strong>first</strong> - formats the first item differently (when specified.  Otherwise use default)</td><td><strong>default</strong> - the format of the items in the middle of the list</td><td><strong>last</strong> - formats the last item differently (when specified.  Otherwise use default)</td></tr>
+<tr><td colspan="3"><strong>none</strong> - displays when there are no tags</td></tr>
+</table>
+<p>The parts of the format that are going to be included are placed into an array, thusly:</p>
+<xmp>$format = array('pre'=>'<span class="tags">','default'=>'%taglink%','post'=>'</span>');</xmp>
+<p>The order of the parts doesn't matter;  but the case of the array keys does.</p>
+</div>
+
+<a name="replacementbits"></a><h4>The parts of a format string</h4>
+<div class="chunk">
+<p>Each format string can contain bits of text, HTML markup and placeholders.  The placeholders are bits which get replaced by tag specific information like links to tags, icons or frequency of use values.</p>
+</div>
+<a name="replacementbitstag"></a><h5>Replacement bits for a tag format</h5>
+<div class="chunk">
+<table>
+<tr><th>Placeholder</th><th>Description</th><th>Output</th></tr>
+<tr><td>%tagurl%</td><td>The URL of a tag</td><td>http://www.site.com/tags/foo_bar</td></tr>
+<tr><td>%taglink%</td><td>A link to a tag</td><td><a href="http://www.site.com/tags/foo_bar" rel="tag">Foo Bar</a></td></tr>
+<tr><td>%tag%</td><td>The tag, as found in URLs</td><td>foo_bar</td></tr>
+<tr><td>%tagdisplay%</td><td>The tag as displayed (includes spaces)</td><td>Foo Bar</td></tr>
+<tr><td>%tagjsescaped%</td><td>The tag, escaped for including in javascript</td><td>Bar\'s</td></tr>
+<tr><td>%tagcount%</td><td>The number of times the tag is in use</td><td>12</td></tr>
+<tr><td>%tagid%</td><td>The id for the tag</td><td>15</td></tr>
+
+<tr><td>%tagweight%</td><td>The percentage of times this tag is used (#this tag/#tag associations)</td><td>7.56</td></tr>
+<tr><td>%tagweightint%</td><td>The ceiling of %tagweight%</td><td>8</td></tr>
+<tr><td>%tagweightcolor%</td><td>The colour that corresponds to the tag weight</td><td>#888888</td></tr>
+<tr><td>%tagweightfontsize%</td><td>The font size that corresponds to the tag weight</td><td>85%</td></tr>
+<tr><td>%tagrelweight%</td><td>The relative tag weight (#this tag/#the maximum tag).  The most popular has a relative weight of 100%.  If the most popular tag is used 25 times,  and the least popular is used once;  then the least popular has a weight of (1/25) * 100 = 4%</td><td>23.5</td></tr>
+<tr><td>%tagrelweightint%</td><td>The relative tag weight, rounded up to the nearest integer</td><td>24</td></tr>
+<tr><td>%tagrelweightcolor%</td><td>The colour that corresponds to the tag weight</td><td>#111111</td></tr>
+<tr><td>%tagrelweightfontsize%</td><td>The font size that corresponds to the tag weight</td><td>114%</td></tr>
+
+<tr><td>%tagrelweightrank%</td><td>The tag rank of a tag.  If there are tags used 10 times, 8 times, 2 times and once;  the tag rank of 10x is 100,  8x is 75, 2x is 50 and 1x is 25.  This is useful for evening out spikes at the popular end of the scale.</td><td>23.5</td></tr>
+<tr><td>%tagrelweightintrank%</td><td>The tag rank, rounded up to the nearest integer</td><td>24</td></tr>
+<tr><td>%tagrelweightcolorrank%</td><td>The colour that corresponds to the tag rank</td><td>#111111</td></tr>
+<tr><td>%tagrelweightfontsizerank%</td><td>The font size that corresponds to the tag rank</td><td>114%</td></tr>
+
+<tr><td>%relatedtagids%</td><td>A comma separated list of related tag ids</td><td>12,42,56</td></tr>
+
+<tr><td>%intersectionurl%</td><td>If viewing either a tag page, or the intersection of two or more tags,  this is the URL of the page to see the intersection of the current tags,  and the tag being displayed.</td><td>http://www.site.com/tags/Monkey+Fishsticks+Foo_Bar</td></tr>
+<tr><td>%unionurl%</td><td>If viewing either a tag page, or the union of two or more tags,  this is the URL of the page to see the union of the current tags,  and the tag being displayed.</td><td>http://www.site.com/tags/Monkey|Fishsticks|Foo_Bar</td></tr>
+<tr><td>%intersectionicon%</td><td>Link to the intersection url,  with the intersection icon.</td><td><a href="http://www.site.com/tags/Monkey+Fishsticks+Foo_Bar"><img src="./intersectionicon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%intersectionlink%</td><td>Link to the intersection url,  displaying a + as the link text</td><td><a href="http://www.site.com/tags/Monkey+Fishsticks+Foo_Bar">+</a></td></tr>
+<tr><td>%unionicon%</td><td>Link to the union url,  with the union icon</td><td><a href="http://www.site.com/tags/Monkey|Fishsticks|Foo_Bar"><img src="./unionicon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%unionlink%	</td><td>Link to the intersection url,  displaying a | as the link text</td><td><a href="http://www.site.com/tags/Monkey|Fishsticks|Foo_Bar">|</a></td></tr>
+<tr><td>%operatortext%</td><td>On intersection pages,  "and";  on union pages "or".  Otherwise empty.</td><td>and</td></tr>
+<tr><td>%operatorsymbol%</td><td>On intersection pages,  "+";  on union pages "|".  Otherwise empty.</td><td>+</td></tr>
+<tr><td>%technoratitag%</td><td>Link to the Technorati page for the tag.  Turns spaces into +'s in the tag URL</td><td><a href="http://www.technorati.com/tag/foo+bar" rel="tag">Foo Bar</a></td></tr>
+<tr><td>%flickrtag%</td><td>Link to the Flickr page for the tag.  This removes spaces from the tag, in the URL.</td><td><a href="http://www.flickr.com/photos/tags/foobar" rel="tag">Foo Bar</a></td></tr>
+<tr><td>%delicioustag%</td><td>Link to the del.icio.us page for the tag.  The tag in the URL is left unchanged.</td><td><a href="http://del.icio.us/tags/foo_bar">Foo Bar</a></td></tr>
+<tr><td>%wikipediatag%</td><td>Link to the Wikipedia page for the tag.  Spaces are converted to underscores in the tag URL.</td><td><a href="http://en.wikipedia.org/wiki/foo_bar">Foo Bar</a></td></tr>
+<tr><td>%gadabetag%</td><td>Link to the gada.be page for the tag.  Spaces are converted to fullstops in the tag URL.</td><td><a href="http://foo.bar.gada.be">Foo Bar</a></td></tr>
+<tr><td>%znifftag%</td><td>Link to the Zniff page for the tag.  Spaces are converted to underscores in the tag URL.</td><td><a href="http://zniff.com/?s=%22foo_bar%22&sort=">Foo Bar</a></td></tr>
+<tr><td>%rsstag%</td><td>A link to the RSS feed for the tag</td><td><a href="http://www.site.com/tags/foo_bar/feed/rss">Foo Bar</a></td></tr>
+<tr><td>%technoratiurl%</td><td>The url to Technorati, with an icon</td><td>http://www.technorati.com/tag/foo+bar</td></tr>
+<tr><td>%flickrurl%</td><td>The url Flickr</td><td>http://www.flickr.com/photos/tags/foobar</td></tr>
+<tr><td>%deliciousurl%</td><td>The url to del.icio.us</td><td>http://del.icio.us/tags/foo_bar</td></tr>
+<tr><td>%wikipediaurl%</td><td>The url to Wikipedia</td><td>http://en.wikipedia.org/wiki/foo_bar</td></tr>
+<tr><td>%gadabeurl%</td><td>The url to gada.be</td><td>http://foo.bar.gada.be</td></tr>
+<tr><td>%zniffurl%</td><td>The url to Zniff</td><td>http://zniff.com/?s=%22foo_bar%22&sort=</td></tr>
+<tr><td>%rssurl%</td><td>The url to the RSS feed</td><td>http://www.site.com/tags/foo_bar/feed/rss</td></tr>
+<tr><td>%technoratiicon%</td><td>Links to Technorati, with an icon</td><td><a href="http://www.technorati.com/tag/foo+bar" rel="tag"><img src="./technoratiicon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%flickricon%</td><td>Links to Flickr, with an icon</td><td><a href="http://www.flickr.com/photos/tags/foobar" rel="tag"><img src="./flickricon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%deliciousicon%</td><td>Links to del.icio.us with an icon</td><td><a href="http://del.icio.us/tags/foo_bar" rel="tag"><img src="./deliciousicon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%wikipediaicon%</td><td>Links to Wikipedia with an icon</td><td><a href="http://en.wikipedia.org/wiki/foo_bar" rel="tag"><img src="./wikiicon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%gadabeicon%</td><td>Links to gada.be with an icon</td><td><a href="http://foo.bar.gada.be" rel="tag"><img src="./gadaicon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%znifficon%</td><td>Links to Zniff with an icon</td><td><a href="http://zniff.com/?s=%22foo_bar%22&sort=" rel="tag"><img src="./znifficon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%rssicon%</td><td>Link to the RSS feed, with an icon</td><td><a href="http://www.site.com/tags/foo_bar/feed/rss" rel="tag"><img src="./rssicon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%tagsetrssicon%</td><td>Link to the RSS feed of the current tagset, with an icon</td><td><a href="http://www.site.com/tags/banana+monkey/feed/rss" rel="tag"><img src="./rssicon.jpg" border="0" hspace="1"></a></td></tr>
+<tr><td>%icons%</td><td>Display a set of icons.  The union and intersection icons only display when appropriate;  the other icons can be toggled on and off through the Options page.</td><td><a href="http://www.technorati.com/tag/foo+bar"><img src="technoratiicon.jpg" border="0" hspace="1"/></a><a href="http://www.flickr.com/photos/tags/foobar"><img src="flickricon.jpg" border="0" hspace="1"/></a><a href="http://del.icio.us/tag/foo_bar"><img src="deliciousicon.jpg" border="0" hspace="1"/></a><a href="http://en.wikipedia.org/wiki/foo_bar"><img src="wikiicon.jpg" border="0" hspace="1"/></a><a href="http://foo.bar.gada.be" rel="tag"><img src="./gadaicon.jpg" border="0" hspace="1"></a><a href="http://zniff.com/?s=%22foo_bar%22&sort=" rel="tag"><img src="./znifficon.jpg" border="0" hspace="1"></a><a href="http://www.site.com/tags/foo_bar/feed/rss2"><img src="rssicon.jpg" border="0" hspace="1"/></a><a href="http://www.site.com/tags/monkey+foo_bar/"><img src="intersectionicon.jpg" border="0" hspace="1"/></a><a href="http://www.site.com/tags/monkey|foo_bar/"><img src="unionicon.jpg" border="0" hspace="1"/></a></td></tr>
+<tr><td>%postid%</td><td>The ID of the current post</td><td>11</td></tr>
+</table>
+</div>
+<a name="replacementbitspost"></a><h5>Replacement bits for a posts format</h5>
+<div class="chunk">
+<p>There aren't as many placeholders for posts as there are for tags.  I figure that most of the time posts will be displayed in the Wordpress Loop;  and as such the standard posty-bits are available.  Let me know if there's anything else you need (:</p>
+<table>
+<tr><th>Placeholder</th><th>Description</th><th>Output</th></tr>
+<tr><td>%title%</td><td>The title of a post.</td><td>Something about Apples</td></tr>
+<tr><td>%postlink%</td><td>A link to a post</td><td><a href="/?p=9">Something about Apples</a></td></tr>
+<tr><td>%excerpt%</td><td>The excerpt of a post</td><td>Apples are a marvellous thing.  Filled with appley goodness</td></tr>
+<tr><td>%postdate%</td><td>The date of the post,  formatted using the default date format from the Options > General page</td><td>13 January, 2006</td></tr>
+<tr><td>%content%</td><td>The contents of a post</td><td>...</td></tr>
+</table>
+</div>
+
+<a name="customformats"></a><h4>Putting it all together</h4>
+<div class="chunk"><p>This is a simple format with everything!  It renders tags inside a span named tags-134 (where 134 is the ID of the current post);  and puts square brackets around the whole list.</p>
+<div class="example">
+<code>$format = array( <i>// Create an array</i><br />
+ &nbsp; &nbsp; 'pre'=>'&lt;span class="tags-%postid%"&gt;', <i>// specify a "pre" string.  This will go in front of the list of tags.</i><br />
+ &nbsp; &nbsp; 'single'=>'[%taglink%]', <i>// The display for a single tag.  It includes both square brackets.</i><br />
+ &nbsp; &nbsp; 'first'=>'[%taglink% ', <i>// The display for the first item,  when there are two or more.</i><br />
+ &nbsp; &nbsp; 'default'=>'%taglink% ', <i>// The display of the items in the middle of the list</i><br />
+ &nbsp; &nbsp; 'last'=>'%taglink%]', <i>// The display of the last item.</i><br />
+ &nbsp; &nbsp; 'none'=>'[No Tags]', <i>// The text that displays when there are no tags specified.</i><br />
+ &nbsp; &nbsp; 'post'=>'&lt;/span&gt;'); <i>// Close off the span from the pre format part.</i></code></div>
+<p>Not all of the formatting bits are required (including <code>default</code> is strongly recommended, however);  so if the format you are constructing doesn't need one of the bits,  or doesn't need anything to display,  you can leave it out.  This is a simpler format that uses only a subset of the formatting parts:  it shows each tag in a box, separated by pipes;  with no <code>pre</code> or <code>post</code> wrapping the list and nothing displayed when there are no tags.</p>
+<div class="example">
+<code>$format = array(<br />
+ &nbsp; &nbsp; 'single'=>'[%taglink%]', <i>// Self-closing single item</i><br />
+ &nbsp; &nbsp; 'default'=>'[%taglink%] | ', <i>// First isn't needed,  since it is the same as the default</i><br />
+ &nbsp; &nbsp; 'last'=>'[%taglink%]'); <i>// Different behaviour for the last (no pipe)</i><br />
+</div>
+<p>For more examples, have a look in the <code>GetFormatForType</code> function in <code>ultimate-tag-warrior-core.php</code> - each of the predefined formats has an underlying custom format (even the long tail graph).</p>
+</div>
+</body>
+</html>
