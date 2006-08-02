@@ -32,7 +32,7 @@ case 'addcat':
 	
 	wp_insert_category($_POST);
 
-	header('Location: categories.php?message=1#addcat');
+	wp_redirect('categories.php?message=1#addcat');
 break;
 
 case 'delete':
@@ -44,12 +44,13 @@ case 'delete':
 
 	$cat_name = get_catname($cat_ID);
 
-	if ( 1 == $cat_ID )
+	// Don't delete the default cats.
+	if ( $cat_ID == get_option('default_category') )
 		die(sprintf(__("Can't delete the <strong>%s</strong> category: this is the default one"), $cat_name));
 
 	wp_delete_category($cat_ID);
 
-	header('Location: categories.php?message=2');
+	wp_redirect('categories.php?message=2');
 
 break;
 
@@ -104,7 +105,7 @@ case 'editedcat':
 	
 	wp_update_category($_POST);
 
-	header('Location: categories.php?message=3');
+	wp_redirect('categories.php?message=3');
 break;
 
 default:

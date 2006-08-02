@@ -32,10 +32,10 @@ function mysql2date($dateformatstring, $mysqlstring, $translate = true) {
 		$dateweekday = $weekday[date('w', $i)];
 		$dateweekday_abbrev = $weekday_abbrev[$dateweekday];
 		$dateformatstring = ' '.$dateformatstring;
-		$dateformatstring = preg_replace("/([^\\\])D/", "\${1}".backslashit($dateweekday_abbrev), $dateformatstring);
-		$dateformatstring = preg_replace("/([^\\\])F/", "\${1}".backslashit($datemonth), $dateformatstring);
-		$dateformatstring = preg_replace("/([^\\\])l/", "\${1}".backslashit($dateweekday), $dateformatstring);
-		$dateformatstring = preg_replace("/([^\\\])M/", "\${1}".backslashit($datemonth_abbrev), $dateformatstring);
+		$dateformatstring = preg_replace("/([^\\\])D/", "\\1".backslashit($dateweekday_abbrev), $dateformatstring);
+		$dateformatstring = preg_replace("/([^\\\])F/", "\\1".backslashit($datemonth), $dateformatstring);
+		$dateformatstring = preg_replace("/([^\\\])l/", "\\1".backslashit($dateweekday), $dateformatstring);
+		$dateformatstring = preg_replace("/([^\\\])M/", "\\1".backslashit($datemonth_abbrev), $dateformatstring);
 
 		$dateformatstring = substr($dateformatstring, 1, strlen($dateformatstring)-1);
 	}
@@ -71,10 +71,10 @@ function date_i18n($dateformatstring, $unixtimestamp) {
 		$dateweekday = $weekday[date('w', $i)];
 		$dateweekday_abbrev = $weekday_abbrev[$dateweekday];
 		$dateformatstring = ' '.$dateformatstring;
-		$dateformatstring = preg_replace("/([^\\\])D/", "\${1}".backslashit($dateweekday_abbrev), $dateformatstring);
-		$dateformatstring = preg_replace("/([^\\\])F/", "\${1}".backslashit($datemonth), $dateformatstring);
-		$dateformatstring = preg_replace("/([^\\\])l/", "\${1}".backslashit($dateweekday), $dateformatstring);
-		$dateformatstring = preg_replace("/([^\\\])M/", "\${1}".backslashit($datemonth_abbrev), $dateformatstring);
+		$dateformatstring = preg_replace("/([^\\\])D/", "\\1".backslashit($dateweekday_abbrev), $dateformatstring);
+		$dateformatstring = preg_replace("/([^\\\])F/", "\\1".backslashit($datemonth), $dateformatstring);
+		$dateformatstring = preg_replace("/([^\\\])l/", "\\1".backslashit($dateweekday), $dateformatstring);
+		$dateformatstring = preg_replace("/([^\\\])M/", "\\1".backslashit($datemonth_abbrev), $dateformatstring);
 		$dateformatstring = substr($dateformatstring, 1, strlen($dateformatstring)-1);
 	}
 	$j = @date($dateformatstring, $i);
@@ -748,6 +748,8 @@ function &get_category(&$category, $output = OBJECT) {
 		}
 	}
 
+	$_category = apply_filters('get_category', $_category);
+
 	if ( !isset($_category->fullpath) ) {
 		$_category = set_category_path($_category);
 		wp_cache_replace($_category->cat_ID, $_category, 'category');	
@@ -994,7 +996,7 @@ function debug_fclose($fp) {
 }
 
 function spawn_pinger() {
-	global $wpdb;
+	global $wpdb, $wp_version;
 	$doping = false;
 	if ( $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE TRIM(to_ping) != '' LIMIT 1") )
 		$doping = true;
@@ -1010,7 +1012,7 @@ function spawn_pinger() {
 		$parts = parse_url($ping_url);
 		$argyle = @ fsockopen($parts['host'], $_SERVER['SERVER_PORT'], $errno, $errstr, 0.01);
 		if ( $argyle )
-			fputs($argyle, "GET {$parts['path']}?time=".time()." HTTP/1.0\r\nHost: {$_SERVER['HTTP_HOST']}\r\n\r\n");
+			fputs($argyle, "GET {$parts['path']}?time=".time()." HTTP/1.0\r\nHost: {$_SERVER['HTTP_HOST']}\r\nUser-Agent: WordPress/{$wp_version}\r\n\r\n");
        }
 }
 
@@ -1252,6 +1254,7 @@ function remove_filter($tag, $function_to_remove, $priority = 10, $accepted_args
 
 	// rebuild the list of filters
 	if ( isset($wp_filter[$tag]["$priority"]) ) {
+		$new_function_list = array();
 		foreach($wp_filter[$tag]["$priority"] as $filter) {
 			if ( $filter['function'] != $function_to_remove ) {
 				$new_function_list[] = $filter;
@@ -1738,24 +1741,24 @@ function get_theme_data($theme_file) {
 	preg_match("|Author URI:(.*)|i", $theme_data, $author_uri);
 	preg_match("|Template:(.*)|i", $theme_data, $template);
 	if ( preg_match("|Version:(.*)|i", $theme_data, $version) )
-		$version = $version[1];
+		$version = trim($version[1]);
 	else
 		$version ='';
 	if ( preg_match("|Status:(.*)|i", $theme_data, $status) )
-		$status = $status[1];
+		$status = trim($status[1]);
 	else
-		$status ='publish';
+		$status = 'publish';
 
-	$description = wptexturize($description[1]);
+	$description = wptexturize(trim($description[1]));
 
 	$name = $theme_name[1];
 	$name = trim($name);
 	$theme = $name;
 
 	if ( '' == $author_uri[1] ) {
-		$author = $author_name[1];
+		$author = trim($author_name[1]);
 	} else {
-		$author = '<a href="' . $author_uri[1] . '" title="' . __('Visit author homepage') . '">' . $author_name[1] . '</a>';
+		$author = '<a href="' . trim($author_uri[1]) . '" title="' . __('Visit author homepage') . '">' . trim($author_name[1]) . '</a>';
 	}
 
 	return array('Name' => $name, 'Title' => $theme, 'Description' => $description, 'Author' => $author, 'Version' => $version, 'Template' => $template[1], 'Status' => $status);
@@ -2082,6 +2085,13 @@ function add_query_arg() {
 			$uri = @func_get_arg(2);
 	}
 
+	if ( preg_match('|^https?://|i', $uri, $matches) ) {
+		$protocol = $matches[0];
+		$uri = substr($uri, strlen($protocol));
+	} else {
+		$protocol = '';
+	}
+
 	if ( strstr($uri, '?') ) {
 		$parts = explode('?', $uri, 2);
 		if ( 1 == count($parts) ) {
@@ -2091,8 +2101,7 @@ function add_query_arg() {
 			$base = $parts[0] . '?';
 			$query = $parts[1];
 		}
-	}
-	else if ( strstr($uri, '/') ) {
+	} else if ( !empty($protocol) || strstr($uri, '/') ) {
 		$base = $uri . '?';
 		$query = '';
 	} else {
@@ -2115,7 +2124,7 @@ function add_query_arg() {
 			$ret .= "$k=$v";
 		}
 	}
-	$ret = $base . $ret;
+	$ret = $protocol . $base . $ret;
 	return trim($ret, '?');
 }
 
@@ -2309,11 +2318,189 @@ function get_num_queries() {
 }
 
 function wp_nonce_url($actionurl, $action = -1) {
-	return add_query_arg('_wpnonce', wp_create_nonce($action), $actionurl);
+	return wp_specialchars(add_query_arg('_wpnonce', wp_create_nonce($action), $actionurl));
 }
 
 function wp_nonce_field($action = -1) {
 	echo '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce($action) . '" />';
+	wp_referer_field();
+}
+
+function wp_referer_field() {
+	$ref = wp_specialchars($_SERVER['REQUEST_URI']);
+	echo '<input type="hidden" name="_wp_http_referer" value="'. $ref . '" />';
+	if ( wp_get_original_referer() ) {
+		$original_ref = wp_specialchars(stripslashes(wp_get_original_referer()));
+		echo '<input type="hidden" name="_wp_original_http_referer" value="'. $original_ref . '" />';
+	}
+}
+
+function wp_original_referer_field() {
+	echo '<input type="hidden" name="_wp_original_http_referer" value="' . wp_specialchars(stripslashes($_SERVER['REQUEST_URI'])) . '" />';
+}
+
+function wp_get_referer() {
+	foreach ( array($_REQUEST['_wp_http_referer'], $_SERVER['HTTP_REFERER']) as $ref )
+		if ( !empty($ref) )
+			return $ref;
+	return false;
+}
+
+function wp_get_original_referer() {
+	if ( !empty($_REQUEST['_wp_original_http_referer']) )
+		return $_REQUEST['_wp_original_http_referer'];
+	return false;
+}
+
+function wp_explain_nonce($action) {
+	if ( $action !== -1 && preg_match('/([a-z]+)-([a-z]+)(_(.+))?/', $action, $matches) ) {
+		$verb = $matches[1];
+		$noun = $matches[2];
+
+		$trans = array();
+		$trans['update']['attachment'] = array(__('Are you sure you want to edit this attachment: &quot;%s&quot;?'), 'get_the_title');
+
+		$trans['add']['category'] = array(__('Are you sure you want to add this category?'), false);
+		$trans['delete']['category'] = array(__('Are you sure you want to delete this category: &quot;%s&quot;?'), 'get_catname');
+		$trans['update']['category'] = array(__('Are you sure you want to edit this category: &quot;%s&quot;?'), 'get_catname');
+
+		$trans['delete']['comment'] = array(__('Are you sure you want to delete this comment: &quot;%s&quot;?'), 'use_id');
+		$trans['unapprove']['comment'] = array(__('Are you sure you want to unapprove this comment: &quot;%s&quot;?'), 'use_id');
+		$trans['approve']['comment'] = array(__('Are you sure you want to approve this comment: &quot;%s&quot;?'), 'use_id');
+		$trans['update']['comment'] = array(__('Are you sure you want to edit this comment: &quot;%s&quot;?'), 'use_id');
+		$trans['bulk']['comments'] = array(__('Are you sure you want to bulk modify comments?'), false);
+		$trans['moderate']['comments'] = array(__('Are you sure you want to moderate comments?'), false);
+
+		$trans['add']['bookmark'] = array(__('Are you sure you want to add this bookmark?'), false);
+		$trans['delete']['bookmark'] = array(__('Are you sure you want to delete this bookmark: &quot;%s&quot;?'), 'use_id');
+		$trans['update']['bookmark'] = array(__('Are you sure you want to edit this bookmark: &quot;%s&quot;?'), 'use_id');
+		$trans['bulk']['bookmarks'] = array(__('Are you sure you want to bulk modify bookmarks?'), false);
+
+		$trans['add']['page'] = array(__('Are you sure you want to add this page?'), false);
+		$trans['delete']['page'] = array(__('Are you sure you want to delete this page: &quot;%s&quot;?'), 'get_the_title');
+		$trans['update']['page'] = array(__('Are you sure you want to edit this page: &quot;%s&quot;?'), 'get_the_title');
+
+		$trans['edit']['plugin'] = array(__('Are you sure you want to edit this plugin file: &quot;%s&quot;?'), 'use_id');
+		$trans['activate']['plugin'] = array(__('Are you sure you want to activate this plugin: &quot;%s&quot;?'), 'use_id');
+		$trans['deactivate']['plugin'] = array(__('Are you sure you want to deactivate this plugin: &quot;%s&quot;?'), 'use_id');
+
+		$trans['add']['post'] = array(__('Are you sure you want to add this post?'), false);
+		$trans['delete']['post'] = array(__('Are you sure you want to delete this post: &quot;%s&quot;?'), 'get_the_title');
+		$trans['update']['post'] = array(__('Are you sure you want to edit this post: &quot;%s&quot;?'), 'get_the_title');
+
+		$trans['add']['user'] = array(__('Are you sure you want to add this user?'), false);
+		$trans['delete']['users'] = array(__('Are you sure you want to delete users?'), false);
+		$trans['bulk']['users'] = array(__('Are you sure you want to bulk modify users?'), false);
+		$trans['update']['user'] = array(__('Are you sure you want to edit this user: &quot;%s&quot;?'), 'get_author_name');
+		$trans['update']['profile'] = array(__('Are you sure you want to modify the profile for: &quot;%s&quot;?'), 'get_author_name');
+
+		$trans['update']['options'] = array(__('Are you sure you want to edit your settings?'), false);
+		$trans['update']['permalink'] = array(__('Are you sure you want to change your permalink structure to: %s?'), 'use_id');
+		$trans['edit']['file'] = array(__('Are you sure you want to edit this file: &quot;%s&quot;?'), 'use_id');
+		$trans['edit']['theme'] = array(__('Are you sure you want to edit this theme file: &quot;%s&quot;?'), 'use_id');
+		$trans['switch']['theme'] = array(__('Are you sure you want to switch to this theme: &quot;%s&quot;?'), 'use_id');
+
+		if ( isset($trans[$verb][$noun]) ) {
+			if ( !empty($trans[$verb][$noun][1]) ) {
+				$lookup = $trans[$verb][$noun][1];
+				$object = $matches[4];
+				if ( 'use_id' != $lookup )
+					$object = call_user_func($lookup, $object);
+				return sprintf($trans[$verb][$noun][0], $object);
+			} else {
+				return $trans[$verb][$noun][0];
+			}
+		}
+	}
+
+	return __('Are you sure you want to do this');
+}
+
+function wp_nonce_ays($action) {
+	global $pagenow, $menu, $submenu, $parent_file, $submenu_file;
+
+	$adminurl = get_settings('siteurl') . '/wp-admin';
+	if ( wp_get_referer() )
+		$adminurl = wp_get_referer();
+
+	$title = __('WordPress Confirmation');
+	// Remove extra layer of slashes.
+	$_POST   = stripslashes_deep($_POST  );
+	if ( $_POST ) {
+		$q = http_build_query($_POST);
+		$q = explode( ini_get('arg_separator.output'), $q);
+		$html .= "\t<form method='post' action='$pagenow'>\n";
+		foreach ( (array) $q as $a ) {
+			$v = substr(strstr($a, '='), 1);
+			$k = substr($a, 0, -(strlen($v)+1));
+			$html .= "\t\t<input type='hidden' name='" . wp_specialchars( urldecode($k), 1 ) . "' value='" . wp_specialchars( urldecode($v), 1 ) . "' />\n";
+		}
+		$html .= "\t\t<input type='hidden' name='_wpnonce' value='" . wp_create_nonce($action) . "' />\n";
+		$html .= "\t\t<div id='message' class='confirm fade'>\n\t\t<p>" . wp_explain_nonce($action) . "</p>\n\t\t<p><a href='$adminurl'>" . __('No') . "</a> <input type='submit' value='" . __('Yes') . "' /></p>\n\t\t</div>\n\t</form>\n";
+	} else {
+		$html .= "\t<div id='message' class='confirm fade'>\n\t<p>" . wp_explain_nonce($action) . "</p>\n\t<p><a href='$adminurl'>" . __('No') . "</a> <a href='" . add_query_arg( '_wpnonce', wp_create_nonce($action), $_SERVER['REQUEST_URI'] ) . "'>" . __('Yes') . "</a></p>\n\t</div>\n";
+	}
+	$html .= "</body>\n</html>";
+	wp_die($html, $title);
+}
+
+function wp_die($message, $title = '') {
+	header('Content-Type: text/html; charset=utf-8');
+
+	if ( empty($title) )
+		$title = __('WordPress &rsaquo; Error');
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title><?php echo $title ?></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style media="screen" type="text/css">
+	<!--
+	html {
+		background: #eee;
+	}
+	body {
+		background: #fff;
+		color: #000;
+		font-family: Georgia, "Times New Roman", Times, serif;
+		margin-left: 25%;
+		margin-right: 25%;
+		padding: .2em 2em;
+	}
+
+	h1 {
+		color: #006;
+		font-size: 18px;
+		font-weight: lighter;
+	}
+
+	h2 {
+		font-size: 16px;
+	}
+
+	p, li, dt {
+		line-height: 140%;
+		padding-bottom: 2px;
+	}
+
+	ul, ol {
+		padding: 5px 5px 5px 20px;
+	}
+	#logo {
+		margin-bottom: 2em;
+	}
+	-->
+	</style>
+</head>
+<body>
+	<h1 id="logo"><img alt="WordPress" src="<?php echo get_settings('siteurl'); ?>/wp-admin/images/wordpress-logo.png" /></h1>
+	<p><?php echo $message; ?></p>
+</body>
+</html>
+<?php
+
+	die();
 }
 
 ?>

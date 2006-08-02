@@ -57,7 +57,7 @@ case 'post':
 	if ( isset($_POST['save']) )
 		$location = "post.php?action=edit&post=$post_ID";
 
-	header("Location: $location");
+	wp_redirect($location);
 	exit();
 	break;
 
@@ -110,13 +110,18 @@ case 'editpost':
 	
 	$post_ID = edit_post();
 
+	$referredby = '';
+	if ( !empty($_POST['referredby']) )
+		$referredby = preg_replace('|https?://[^/]+|i', '', $_POST['referredby']);
+	$referer = preg_replace('|https?://[^/]+|i', '', wp_get_referer());
+	
 	if ($_POST['save']) {
-		$location = $_SERVER['HTTP_REFERER'];
+		$location = wp_get_referer();
 	} elseif ($_POST['updatemeta']) {
-		$location = $_SERVER['HTTP_REFERER'] . '&message=2#postcustom';
+		$location = wp_get_referer() . '&message=2#postcustom';
 	} elseif ($_POST['deletemeta']) {
-		$location = $_SERVER['HTTP_REFERER'] . '&message=3#postcustom';
-	} elseif (isset($_POST['referredby']) && $_POST['referredby'] != $_SERVER['HTTP_REFERER']) {
+		$location = wp_get_referer() . '&message=3#postcustom';
+	} elseif (!empty($referredby) && $referredby != $referer) {
 		$location = $_POST['referredby'];
 		if ( $_POST['referredby'] == 'redo' )
 			$location = get_permalink( $post_ID );
@@ -125,7 +130,8 @@ case 'editpost':
 	} else {
 		$location = 'post.php';
 	}
-	header ('Location: ' . $location); // Send user on their way while we keep working
+
+	wp_redirect($location); // Send user on their way while we keep working
 
 	exit();
 	break;
@@ -147,11 +153,11 @@ case 'delete':
 			die( __('Error in deleting...') );
 	}
 
-	$sendback = $_SERVER['HTTP_REFERER'];
+	$sendback = wp_get_referer();
 	if (strstr($sendback, 'post.php')) $sendback = get_settings('siteurl') .'/wp-admin/post.php';
 	elseif (strstr($sendback, 'attachments.php')) $sendback = get_settings('siteurl') .'/wp-admin/attachments.php';
 	$sendback = preg_replace('|[^a-z0-9-~+_.?#=&;,/:]|i', '', $sendback);
-	header ('Location: ' . $sendback);
+	wp_redirect($sendback);
 	break;
 
 case 'editcomment':
@@ -234,10 +240,10 @@ case 'deletecomment':
 	wp_set_comment_status($comment->comment_ID, "delete");
 	do_action('delete_comment', $comment->comment_ID);
 
-	if (($_SERVER['HTTP_REFERER'] != "") && (false == $noredir)) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+	if ((wp_get_referer() != "") && (false == $noredir)) {
+		wp_redirect(wp_get_referer());
 	} else {
-		header('Location: '. get_settings('siteurl') .'/wp-admin/edit.php?p='.$p.'&c=1#comments');
+		wp_redirect(get_settings('siteurl') .'/wp-admin/edit.php?p='.$p.'&c=1#comments');
 	}
 
 	break;
@@ -261,10 +267,10 @@ case 'unapprovecomment':
 
 	wp_set_comment_status($comment->comment_ID, "hold");
 
-	if (($_SERVER['HTTP_REFERER'] != "") && (false == $noredir)) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+	if ((wp_get_referer() != "") && (false == $noredir)) {
+		wp_redirect(wp_get_referer());
 	} else {
-		header('Location: '. get_settings('siteurl') .'/wp-admin/edit.php?p='.$p.'&c=1#comments');
+		wp_redirect(get_settings('siteurl') .'/wp-admin/edit.php?p='.$p.'&c=1#comments');
 	}
 
 	break;
@@ -285,7 +291,7 @@ case 'mailapprovecomment':
 			wp_notify_postauthor($comment->comment_ID);
 	}
 
-	header('Location: ' . get_option('siteurl') . '/wp-admin/moderation.php?approved=1');
+	wp_redirect(get_option('siteurl') . '/wp-admin/moderation.php?approved=1');
 
 	break;
 
@@ -312,25 +318,28 @@ case 'approvecomment':
 	}
 
 
-	if (($_SERVER['HTTP_REFERER'] != "") && (false == $noredir)) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+	if ((wp_get_referer() != "") && (false == $noredir)) {
+		wp_redirect(wp_get_referer());
 	} else {
-		header('Location: '. get_settings('siteurl') .'/wp-admin/edit.php?p='.$p.'&c=1#comments');
+		wp_redirect(get_settings('siteurl') .'/wp-admin/edit.php?p='.$p.'&c=1#comments');
 	}
 
 	break;
 
 case 'editedcomment':
 
-	check_admin_referer('update-comment');
+	$comment_ID = (int) $_POST['comment_ID'];
+	$comment_post_ID = (int)  $_POST['comment_post_ID'];
+
+	check_admin_referer('update-comment_' . $comment_ID);
 
 	edit_comment();
 
 	$referredby = $_POST['referredby'];
 	if (!empty($referredby)) {
-		header('Location: ' . $referredby);
+		wp_redirect($referredby);
 	} else {
-		header ("Location: edit.php?p=$comment_post_ID&c=1#comments");
+		wp_redirect("edit.php?p=$comment_post_ID&c=1#comments");
 	}
 
 	break;

@@ -361,7 +361,7 @@ function edit_user($user_id = 0) {
 	if (isset ($_POST['pass2']))
 		$pass2 = $_POST['pass2'];
 
-	if (isset ($_POST['role'])) {
+	if (isset ($_POST['role']) && current_user_can('edit_users')) {
 		if($user_id != $current_user->id || $wp_roles->role_objects[$_POST['role']]->has_cap('edit_users'))
 			$user->role = $_POST['role'];
 	}
@@ -599,7 +599,7 @@ function cat_rows($parent = 0, $level = 0, $categories = 0) {
 					$default_cat_id = get_option('default_category');
 
 					if ($category->cat_ID != $default_cat_id)
-						$edit .= "<td><a href='" . wp_nonce_url("categories.php?action=delete&amp;cat_ID=$category->cat_ID", 'delete-category_' . $category->cat_ID ) . "' onclick=\"return deleteSomething( 'cat', $category->cat_ID, '" . sprintf(__("You are about to delete the category &quot;%s&quot;.  All of its posts will go to the default category.\\n&quot;OK&quot; to delete, &quot;Cancel&quot; to stop."), wp_specialchars($category->cat_name, 1))."' );\" class='delete'>".__('Delete')."</a>";
+						$edit .= "<td><a href='" . wp_nonce_url("categories.php?action=delete&amp;cat_ID=$category->cat_ID", 'delete-category_' . $category->cat_ID ) . "' onclick=\"return deleteSomething( 'cat', $category->cat_ID, '" . sprintf(__("You are about to delete the category &quot;%s&quot;.  All of its posts will go to the default category.\\n&quot;OK&quot; to delete, &quot;Cancel&quot; to stop."), js_escape($category->cat_name))."' );\" class='delete'>".__('Delete')."</a>";
 					else
 						$edit .= "<td style='text-align:center'>".__("Default");
 				}
@@ -643,7 +643,7 @@ function page_rows($parent = 0, $level = 0, $pages = 0) {
     <td><?php echo mysql2date('Y-m-d g:i a', $post->post_modified); ?></td> 
 	<td><a href="<?php the_permalink(); ?>" rel="permalink" class="edit"><?php _e('View'); ?></a></td>
     <td><?php if ( current_user_can('edit_pages') ) { echo "<a href='post.php?action=edit&amp;post=$id' class='edit'>" . __('Edit') . "</a>"; } ?></td> 
-    <td><?php if ( current_user_can('edit_pages') ) { echo "<a href='" . wp_nonce_url("post.php?action=delete&amp;post=$id", 'delete-post_' . $id) .  "' class='delete' onclick=\"return deleteSomething( 'page', " . $id . ", '" . sprintf(__("You are about to delete the &quot;%s&quot; page.\\n&quot;OK&quot; to delete, &quot;Cancel&quot; to stop."), addslashes(wp_specialchars(get_the_title(),'double')) ) . "' );\">" . __('Delete') . "</a>"; } ?></td> 
+    <td><?php if ( current_user_can('edit_pages') ) { echo "<a href='" . wp_nonce_url("post.php?action=delete&amp;post=$id", 'delete-post_' . $id) .  "' class='delete' onclick=\"return deleteSomething( 'page', " . $id . ", '" . sprintf(__("You are about to delete the &quot;%s&quot; page.\\n&quot;OK&quot; to delete, &quot;Cancel&quot; to stop."), js_escape(get_the_title()) ) . "' );\">" . __('Delete') . "</a>"; } ?></td> 
   </tr> 
 
 <?php
@@ -1214,6 +1214,7 @@ function user_can_access_admin_page() {
 	global $pagenow;
 	global $menu;
 	global $submenu;
+	global $plugin_page;
 
 	$parent = get_admin_page_parent();
 
@@ -1229,13 +1230,21 @@ function user_can_access_admin_page() {
 	}
 
 	if (isset ($submenu[$parent])) {
-		foreach ($submenu[$parent] as $submenu_array) {
-			if ($submenu_array[2] == $pagenow) {
-				if (!current_user_can($submenu_array[1])) {
-					return false;
-				} else {
-					return true;
+		if ( isset($plugin_page) ) {
+			foreach ($submenu[$parent] as $submenu_array) {
+				if ( $submenu_array[2] == $plugin_page ) {
+					if (!current_user_can($submenu_array[1]))
+						return false;
 				}
+			}
+		}
+
+		foreach ($submenu[$parent] as $submenu_array) {		
+			if ($submenu_array[2] == $pagenow) {
+				if (!current_user_can($submenu_array[1]))
+					return false;
+				else
+					return true;
 			}
 		}
 	}
@@ -1482,23 +1491,23 @@ function get_plugin_data($plugin_file) {
 	preg_match("|Author:(.*)|i", $plugin_data, $author_name);
 	preg_match("|Author URI:(.*)|i", $plugin_data, $author_uri);
 	if (preg_match("|Version:(.*)|i", $plugin_data, $version))
-		$version = $version[1];
+		$version = trim($version[1]);
 	else
 		$version = '';
 
-	$description = wptexturize($description[1]);
+	$description = wptexturize(trim($description[1]));
 
 	$name = $plugin_name[1];
 	$name = trim($name);
 	$plugin = $name;
 	if ('' != $plugin_uri[1] && '' != $name) {
-		$plugin = '<a href="'.$plugin_uri[1].'" title="'.__('Visit plugin homepage').'">'.$plugin.'</a>';
+		$plugin = '<a href="' . trim($plugin_uri[1]) . '" title="'.__('Visit plugin homepage').'">'.$plugin.'</a>';
 	}
 
 	if ('' == $author_uri[1]) {
-		$author = $author_name[1];
+		$author = trim($author_name[1]);
 	} else {
-		$author = '<a href="'.$author_uri[1].'" title="'.__('Visit author homepage').'">'.$author_name[1].'</a>';
+		$author = '<a href="' . trim($author_uri[1]) . '" title="'.__('Visit author homepage').'">' . trim($author_name[1]) . '</a>';
 	}
 
 	return array ('Name' => $name, 'Title' => $plugin, 'Description' => $description, 'Author' => $author, 'Version' => $version, 'Template' => $template[1]);
@@ -1664,45 +1673,6 @@ function wp_handle_upload(&$file, $overrides = false) {
 		__("Missing a temporary folder."),
 		__("Failed to write file to disk."));
 
-	// Accepted MIME types are set here as PCRE. Override with $override['mimes'].
-	$mimes = apply_filters('upload_mimes', array (
-		'jpg|jpeg|jpe' => 'image/jpeg',
-		'gif' => 'image/gif',
-		'png' => 'image/png',
-		'bmp' => 'image/bmp',
-		'tif|tiff' => 'image/tiff',
-		'ico' => 'image/x-icon',
-		'asf|asx|wax|wmv|wmx' => 'video/asf',
-		'avi' => 'video/avi',
-		'mov|qt' => 'video/quicktime',
-		'mpeg|mpg|mpe' => 'video/mpeg',
-		'txt|c|cc|h' => 'text/plain',
-		'rtx' => 'text/richtext',
-		'css' => 'text/css',
-		'htm|html' => 'text/html',
-		'mp3|mp4' => 'audio/mpeg',
-		'ra|ram' => 'audio/x-realaudio',
-		'wav' => 'audio/wav',
-		'ogg' => 'audio/ogg',
-		'mid|midi' => 'audio/midi',
-		'wma' => 'audio/wma',
-		'rtf' => 'application/rtf',
-		'js' => 'application/javascript',
-		'pdf' => 'application/pdf',
-		'doc' => 'application/msword',
-		'pot|pps|ppt' => 'application/vnd.ms-powerpoint',
-		'wri' => 'application/vnd.ms-write',
-		'xla|xls|xlt|xlw' => 'application/vnd.ms-excel',
-		'mdb' => 'application/vnd.ms-access',
-		'mpp' => 'application/vnd.ms-project',
-		'swf' => 'application/x-shockwave-flash',
-		'class' => 'application/java',
-		'tar' => 'application/x-tar',
-		'zip' => 'application/zip',
-		'gz|gzip' => 'application/x-gzip',
-		'exe' => 'application/x-msdownload'
-	));
-
 	// All tests are on by default. Most can be turned off by $override[{test_name}] = false;
 	$test_form = true;
 	$test_size = true;
@@ -1730,17 +1700,11 @@ function wp_handle_upload(&$file, $overrides = false) {
 	if (! @ is_uploaded_file($file['tmp_name']) )
 		return $upload_error_handler($file, __('Specified file failed upload test.'));
 
-	// A correct MIME type will pass this test.
+	// A correct MIME type will pass this test. Override $mimes or use the upload_mimes filter.
 	if ( $test_type ) {
-		$type = false;
-		$ext = false;
-		foreach ($mimes as $ext_preg => $mime_match) {
-			$ext_preg = '![^.]\.(' . $ext_preg . ')$!i';
-			if ( preg_match($ext_preg, $file['name'], $ext_matches) ) {
-				$type = $mime_match;
-				$ext = $ext_matches[1];
-			}
-		}
+		$wp_filetype = wp_check_filetype($file['name'], $mimes);
+
+		extract($wp_filetype);
 
 		if ( !$type || !$ext )
 			return $upload_error_handler($file, __('File type does not meet security guidelines. Try another.'));
@@ -1767,7 +1731,8 @@ function wp_handle_upload(&$file, $overrides = false) {
 			else
 				$filename = str_replace("$number$ext", ++$number . $ext, $filename);
 		}
-		$filename = preg_replace('#\.(?![^.]+$)#', '-', $filename);
+		$filename = str_replace($ext, '', $filename);
+		$filename = sanitize_title_with_dashes($filename) . $ext;
 	}
 
 	// Move the file to the uploads dir
@@ -1809,7 +1774,7 @@ o.action.value = 'view';
 o.submit();
 }
 </script>
-<form enctype="multipart/form-data" id="uploadForm" method="POST" action="<?php echo $action ?>">
+<form enctype="multipart/form-data" id="uploadForm" method="post" action="<?php echo $action ?>">
 <label for="upload"><?php _e('File:'); ?></label><input type="file" id="upload" name="import" />
 <input type="hidden" name="action" value="save" />
 <div id="buttons">

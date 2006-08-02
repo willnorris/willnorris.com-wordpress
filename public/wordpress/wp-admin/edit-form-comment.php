@@ -6,7 +6,7 @@ $form_extra = "' />\n<input type='hidden' name='comment_ID' value='" . $comment-
 ?>
 
 <form name="post" action="post.php" method="post" id="post">
-<?php wp_nonce_field('update-comment' . $comment->comment_ID) ?>
+<?php wp_nonce_field('update-comment_' . $comment->comment_ID) ?>
 <div class="wrap">
 <input type="hidden" name="user_ID" value="<?php echo $user_ID ?>" />
 <input type="hidden" name="action" value='<?php echo $form_action . $form_extra ?>' />
@@ -89,7 +89,7 @@ else
 </script>
 
 <p class="submit"><input type="submit" name="editcomment" id="editcomment" value="<?php echo $submitbutton_text ?>" style="font-weight: bold;" tabindex="6" />
-  <input name="referredby" type="hidden" id="referredby" value="<?php echo $_SERVER['HTTP_REFERER']; ?>" />
+  <input name="referredby" type="hidden" id="referredby" value="<?php echo wp_get_referer(); ?>" />
 </p>
 
 </div>

@@ -57,7 +57,7 @@ function kubrick_header_color_string() {
 	$color = kubrick_header_color();
 	if ( false === $color )
 		return 'white';
-		
+
 	return $color;
 }
 
@@ -100,21 +100,21 @@ function kubrick_add_theme_page() {
 					}
 				}
 			} else {
-	
+
 				if ( isset($_REQUEST['headerimage']) ) {
 					if ( '' == $_REQUEST['headerimage'] )
 						delete_option('kubrick_header_image');
 					else
 						update_option('kubrick_header_image', $_REQUEST['headerimage']);
 				}
-	
+
 				if ( isset($_REQUEST['fontcolor']) ) {
 					if ( '' == $_REQUEST['fontcolor'] )
 						delete_option('kubrick_header_color');
 					else
 						update_option('kubrick_header_color', $_REQUEST['fontcolor']);
 				}
-	
+
 				if ( isset($_REQUEST['fontdisplay']) ) {
 					if ( '' == $_REQUEST['fontdisplay'] || 'inline' == $_REQUEST['fontdisplay'] )
 						delete_option('kubrick_header_display');
@@ -123,7 +123,7 @@ function kubrick_add_theme_page() {
 				}
 			}
 			//print_r($_REQUEST);
-			header("Location: themes.php?page=functions.php&saved=true");
+			wp_redirect("themes.php?page=functions.php&saved=true");
 			die;
 		}
 		add_action('admin_head', 'kubrick_theme_page_head');
@@ -135,6 +135,7 @@ function kubrick_theme_page_head() {
 ?>
 <script type="text/javascript" src="../wp-includes/js/colorpicker.js"></script>
 <script type='text/javascript'>
+// <![CDATA[
 	function pickColor(color) {
 		ColorPicker_targetInput.value = color;
 		kUpdate(ColorPicker_targetInput.id);
@@ -239,6 +240,7 @@ function kubrick_theme_page_head() {
 		document.getElementById('nonJsForm').style.display = 'none';
 	}
 	addLoadEvent(kInit);
+// ]]>
 </script>
 <style type='text/css'>
 	#headwrap {
@@ -268,7 +270,7 @@ function kubrick_theme_page_head() {
 		font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
 		font-size: 1.2em;
 		text-align: center;
-	}	
+	}
 	#kubrick-header #header {
 		text-decoration: none;
 		color: <?php echo kubrick_header_color_string(); ?>;
@@ -351,13 +353,13 @@ function kubrick_theme_page() {
 		</div>
 		<br />
 		<div id="nonJsForm">
-			<form method="POST">
+			<form method="post" action="">
 				<div class="zerosize"><input type="submit" name="defaultsubmit" value="Save" /></div>
 				<label for="njfontcolor">Font Color:</label><input type="text" name="njfontcolor" id="njfontcolor" value="<?php echo kubrick_header_color(); ?>" /> Any CSS color (<code>red</code> or <code>#FF0000</code> or <code>rgb(255, 0, 0)</code>)<br />
 				<label for="njuppercolor">Upper Color:</label><input type="text" name="njuppercolor" id="njuppercolor" value="#<?php echo kubrick_upper_color(); ?>" /> HEX only (<code>#FF0000</code> or <code>#F00</code>)<br />
 				<label for="njlowercolor">Lower Color:</label><input type="text" name="njlowercolor" id="njlowercolor" value="#<?php echo kubrick_lower_color(); ?>" /> HEX only (<code>#FF0000</code> or <code>#F00</code>)<br />
 				<input type="hidden" name="hi" id="hi" value="<?php echo kubrick_header_image(); ?>" />
-				<label> </label><input type="submit" name="toggledisplay" id="toggledisplay" value="Toggle Text" />
+				<input type="submit" name="toggledisplay" id="toggledisplay" value="Toggle Text" />
 				<input type="submit" name="defaults" value="Use Defaults" />
 				<input type="submit" class="defbutton" name="submitform" value="&nbsp;&nbsp;Save&nbsp;&nbsp;" />
 				<input type="hidden" name="action" value="save" />
@@ -381,7 +383,7 @@ function kubrick_theme_page() {
 			</form>
 			<div id="colorPickerDiv" style="z-index: 100;background:#eee;border:1px solid #ccc;position:absolute;visibility:hidden;"> </div>
 			<div id="advanced">
-				<form id="jsAdvanced" style="display:none;">
+				<form id="jsAdvanced" style="display:none;" action="">
 					<label for="advfontcolor">Font Color (CSS): </label><input type="text" id="advfontcolor" onchange="advUpdate(this.value, 'fontcolor')" value="<?php echo kubrick_header_color(); ?>" /><br />
 					<label for="advuppercolor">Upper Color (HEX): </label><input type="text" id="advuppercolor" onchange="advUpdate(this.value, 'uppercolor')" value="#<?php echo kubrick_upper_color(); ?>" /><br />
 					<label for="advlowercolor">Lower Color (HEX): </label><input type="text" id="advlowercolor" onchange="advUpdate(this.value, 'lowercolor')" value="#<?php echo kubrick_lower_color(); ?>" /><br />

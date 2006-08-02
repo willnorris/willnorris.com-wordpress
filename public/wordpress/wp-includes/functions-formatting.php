@@ -98,10 +98,14 @@ function seems_utf8($Str) { # by bmorel at ssi dot fr
 
 function wp_specialchars( $text, $quotes = 0 ) {
 	// Like htmlspecialchars except don't double-encode HTML entities
-	$text = preg_replace('/&([^#])(?![a-z1-4]{1,8};)/', '&#038;$1', $text);-
+	$text = preg_replace('/&([^#])(?![a-z1-4]{1,8};)/', '&#038;$1', $text);
 	$text = str_replace('<', '&lt;', $text);
 	$text = str_replace('>', '&gt;', $text);
-	if ( $quotes ) {
+	if ( 'double' === $quotes ) {
+		$text = str_replace('"', '&quot;', $text);
+	} elseif ( 'single' === $quotes ) {
+		$text = str_replace("'", '&#039;', $text);
+	} elseif ( $quotes ) {
 		$text = str_replace('"', '&quot;', $text);
 		$text = str_replace("'", '&#039;', $text);
 	}
@@ -141,6 +145,9 @@ function utf8_uri_encode( $utf8_string ) {
 }
 
 function remove_accents($string) {
+	if ( !preg_match('/[\x80-\xff]/', $string) )
+		return $string;
+
 	if (seems_utf8($string)) {
 		$chars = array(
 		// Decompositions for Latin-1 Supplement
@@ -501,6 +508,9 @@ function balanceTags($text, $is_comment = 0) {
 	return $newtext;
 }
 
+function force_balance_tags($text) {
+	return balanceTags($text, 0, true);
+}
 
 function format_to_edit($content, $richedit = false) {
 	$content = apply_filters('format_to_edit', $content);
@@ -517,10 +527,11 @@ function format_to_post($content) {
 
 function zeroise($number,$threshold) { // function to add leading zeros when necessary
 	return sprintf('%0'.$threshold.'s', $number);
-	}
+}
 
 
 function backslashit($string) {
+	$string = preg_replace('/^([0-9])/', '\\\\\\\\\1', $string);
 	$string = preg_replace('/([a-z])/i', '\\\\\1', $string);
 	return $string;
 }
@@ -570,10 +581,11 @@ function antispambot($emailaddy, $mailto=0) {
 }
 
 function make_clickable($ret) {
-	$ret = ' ' . $ret . ' ';
-	$ret = preg_replace("#([\s>])(https?)://([^\s<>{}()]+[^\s.,<>{}()])#i", "$1<a href='$2://$3' rel='nofollow'>$2://$3</a>", $ret);
-	$ret = preg_replace("#(\s)www\.([a-z0-9\-]+)\.([a-z0-9\-.\~]+)((?:/[^ <>{}()\n\r]*[^., <>{}()\n\r]?)?)#i", "$1<a href='http://www.$2.$3$4' rel='nofollow'>www.$2.$3$4</a>", $ret);
-	$ret = preg_replace("#(\s)([a-z0-9\-_.]+)@([a-z0-9\-_.]+)\.([^,< \n\r]+)#i", "$1<a href=\"mailto:$2@$3.$4\">$2@$3.$4</a>", $ret);
+	$ret = ' ' . $ret;
+	$ret = preg_replace("#(^|[\n ])([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "$1<a href='$2' rel='nofollow'>$2</a>", $ret);
+	$ret = preg_replace("#(^|[\n ])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "$1<a href='http://$2' rel='nofollow'>$2</a>", $ret);
+	$ret = preg_replace("#(\s)([a-z0-9\-_.]+)@([^,< \n\r]+)#i", "$1<a href=\"mailto:$2@$3\">$2@$3</a>", $ret);
+	$ret = substr($ret, 1);
 	$ret = trim($ret);
 	return $ret;
 }
@@ -1018,6 +1030,7 @@ function wp_richedit_pre($text) {
 // Escape single quotes, specialchar double quotes, and fix line endings.
 function js_escape($text) {
 	$text = wp_specialchars($text, 'double');
-	return preg_replace("/\r?\n/", "\\n", addslashes($text));	
+	$text = str_replace('&#039;', "'", $text);
+	return preg_replace("/\r?\n/", "\\n", addslashes($text));
 }
 ?>

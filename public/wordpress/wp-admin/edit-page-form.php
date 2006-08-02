@@ -14,7 +14,7 @@ if (0 == $post_ID) {
 	$form_extra = "<input type='hidden' id='post_ID' name='post_ID' value='$post_ID' />";
 }
 
-$sendto = $_SERVER['HTTP_REFERER'];
+$sendto = wp_get_referer();
 
 if ( 0 != $post_ID && $sendto == get_permalink($post_ID) )
  	$sendto = 'redo';
@@ -32,17 +32,17 @@ if (isset($mode) && 'bookmarklet' == $mode) {
 }
 ?>
 <input type="hidden" name="user_ID" value="<?php echo $user_ID ?>" />
-<input type="hidden" name="action" value='<?php echo $form_action ?>' />
+<input type="hidden" id="hiddenaction" name="action" value='<?php echo $form_action ?>' />
 <?php echo $form_extra ?>
 <input type="hidden" name="post_status" value="static" />
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function focusit() { // focus on first input field
 	document.post.title.focus();
 }
 addLoadEvent(focusit);
-//-->
+// ]]>
 </script>
 <div id="poststuff">
 
@@ -74,7 +74,7 @@ addLoadEvent(focusit);
 </fieldset>
 
 <?php if ( 0 != count( get_page_templates() ) ) { ?>
-<fieldset id="pageparent" class="dbx-box">
+<fieldset id="pagetemplate" class="dbx-box">
 <h3 class="dbx-handle"><?php _e('Page Template:') ?></h3> 
 <div class="dbx-content"><p><select name="page_template">
 		<option value='default'><?php _e('Default Template'); ?></option>
@@ -213,14 +213,16 @@ if($metadata = has_meta($post_ID)) {
 	meta_form();
 ?>
 </div>
+<div id="ajax-response"></div>
 </fieldset>
 
 <?php do_action('dbx_page_advanced'); ?>
 
 </div>
 
-<?php if ('edit' == $action) : ?>
-		<input name="deletepost" class="delete" type="submit" id="deletepost" tabindex="10" value="<?php _e('Delete this page') ?>" <?php echo "onclick=\"return confirm('" . sprintf(__("You are about to delete this page \'%s\'\\n  \'Cancel\' to stop, \'OK\' to delete."), $wpdb->escape($post->post_title) ) . "')\""; ?> />
+<?php if ('edit' == $action) :
+	$delete_nonce = wp_create_nonce( 'delete-page_' . $post_ID ); ?>
+	<input name="deletepost" class="button" type="submit" id="deletepost" tabindex="10" value="<?php _e('Delete this page') ?>" <?php echo "onclick=\"if ( confirm('" . sprintf(__("You are about to delete this page \'%s\'\\n  \'Cancel\' to stop, \'OK\' to delete."), js_escape($post->post_title) ) . "') ) { document.forms.post._wpnonce.value = '$delete_nonce'; return true;}return false;\""; ?> />
 <?php endif; ?>
 </form>
 

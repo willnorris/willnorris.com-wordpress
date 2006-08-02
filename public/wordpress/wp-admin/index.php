@@ -43,7 +43,6 @@ if ( $comments || $numcomments ) :
 <?php if ( $numcomments ) : ?>
 <p><strong><a href="moderation.php"><?php echo sprintf(__('Comments in moderation (%s)'), number_format($numcomments) ); ?> &raquo;</a></strong></p>
 <?php endif; ?>
-</div>
 
 <ul>
 <?php 
@@ -56,8 +55,9 @@ foreach ($comments as $comment) {
 }
 ?>
 </ul>
-
+</div>
 <?php endif; ?>
+
 
 <?php
 if ( $recentposts = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE post_status = 'publish' AND post_date_gmt < '$today' ORDER BY post_date DESC LIMIT 5") ) :

@@ -18,7 +18,6 @@ function unregister_GLOBALS() {
 
 unregister_GLOBALS(); 
 
-$HTTP_USER_AGENT = getenv('HTTP_USER_AGENT');
 unset( $wp_filter, $cache_userdata, $cache_lastcommentmodified, $cache_lastpostdate, $cache_settings, $category_cache, $cache_categories );
 
 if ( ! isset($blog_id) )
@@ -197,6 +196,8 @@ $_GET    = add_magic_quotes($_GET   );
 $_POST   = add_magic_quotes($_POST  );
 $_COOKIE = add_magic_quotes($_COOKIE);
 $_SERVER = add_magic_quotes($_SERVER);
+
+do_action('sanitize_comment_cookies');
 
 $wp_query   = new WP_Query();
 $wp_rewrite = new WP_Rewrite();

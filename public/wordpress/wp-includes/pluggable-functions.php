@@ -221,7 +221,7 @@ function auth_redirect() {
 			 (empty($_COOKIE[USER_COOKIE])) ) {
 		nocache_headers();
 	
-		header('Location: ' . get_settings('siteurl') . '/wp-login.php?redirect_to=' . urlencode($_SERVER['REQUEST_URI']));
+		wp_redirect(get_settings('siteurl') . '/wp-login.php?redirect_to=' . urlencode($_SERVER['REQUEST_URI']));
 		exit();
 	}
 }
@@ -229,44 +229,25 @@ endif;
 
 if ( !function_exists('check_admin_referer') ) :
 function check_admin_referer($action = -1) {
-	global $pagenow;
 	$adminurl = strtolower(get_settings('siteurl')).'/wp-admin';
-	$referer = strtolower($_SERVER['HTTP_REFERER']);
+	$referer = strtolower(wp_get_referer());
 	if ( !wp_verify_nonce($_REQUEST['_wpnonce'], $action) &&
 		!(-1 == $action && strstr($referer, $adminurl)) ) {
-		
-		$html  = "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>\n<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>\n\n";
-		$html .= "<head>\n\t<title>" . __('WordPress Confirmation') . "</title>\n";
-		$html .= "</head>\n<body>\n";
-		if ( $_POST ) {
-			$q = http_build_query($_POST);
-			$q = explode( ini_get('arg_separator.output'), $q);
-			$html .= "\t<form method='post' action='$pagenow'>\n";
-			foreach ( (array) $q as $a ) {
-				$v = substr(strstr($a, '='), 1);
-				$k = substr($a, 0, -(strlen($v)+1));
-				$html .= "\t\t<input type='hidden' name='" . wp_specialchars( urldecode($k), 1 ) . "' value='" . wp_specialchars( urldecode($v), 1 ) . "' />\n";
-			}
-			$html .= "\t\t<input type='hidden' name='_wpnonce' value='" . wp_create_nonce($action) . "' />\n";
-			$html .= "\t\t<p>" . __('Are you sure you want to do this?') . "</p>\n\t\t<p><a href='$adminurl'>No</a> <input type='submit' value='" . __('Yes') . "' /></p>\n\t</form>\n";
-		} else {
-			$html .= "\t<p>" . __('Are you sure you want to do this?') . "</p>\n\t\t<p><a href='$adminurl'>No</a> <a href='" . add_query_arg( '_wpnonce', wp_create_nonce($action), $_SERVER['REQUEST_URI'] ) . "'>" . __('Yes') . "</a></p>\n";
-		}
-		$html .= "</body>\n</html>";
-
-		die($html);
+		wp_nonce_ays($action);
+		die();
 	}
-	do_action('check_admin_referer');
-}endif;
+	do_action('check_admin_referer', $action);
+}
+endif;
 
 if ( !function_exists('check_ajax_referer') ) :
 function check_ajax_referer() {
 	$cookie = explode('; ', urldecode(empty($_POST['cookie']) ? $_GET['cookie'] : $_POST['cookie'])); // AJAX scripts must pass cookie=document.cookie
 	foreach ( $cookie as $tasty ) {
 		if ( false !== strpos($tasty, USER_COOKIE) )
-			$user = substr(strstr($tasty, '='), 1);
+			$user = urldecode(substr(strstr($tasty, '='), 1)); // Nasty double encoding
 		if ( false !== strpos($tasty, PASS_COOKIE) )
-			$pass = substr(strstr($tasty, '='), 1);
+			$pass = urldecode(substr(strstr($tasty, '='), 1));
 	}
 	if ( wp_login( $user, $pass, true ) )
 		return true;
@@ -280,7 +261,10 @@ if ( !function_exists('wp_redirect') ) :
 function wp_redirect($location) {
 	global $is_IIS;
 
-	$location = str_replace( array("\n", "\r"), '', $location);
+	$location = preg_replace('|[^a-z0-9-~+_.?#=&;,/:%]|i', '', $location);
+
+	$strip = array('%0d', '%0a');
+	$location = str_replace($strip, '', $location);
 
 	if ($is_IIS)
 		header("Refresh: 0;url=$location");
