@@ -1,0 +1,82 @@
+/* CSS Document */
+
+
+div.MPHWhiteBandBigLeft			{
+		position:absolute;
+		left:0px;
+		top:0px;
+		overflow:visible;
+		height:384px;
+		width:384px;
+		background-image:url(http://willnorris.com/whiteband/images/big_left.gif);
+		background-repeat:no-repeat;
+		background-position:-150px -150px;
+		background-color:transparent;
+		margin:0;
+		padding:0;
+		color:#000;
+		font-family:helvetica,verdana,arial,tahoma,sans-serif;
+		z-index:1000000000;
+		border:none;
+		float:none;
+			}
+			
+div.MPHWhiteBandBigRight			{
+		position:absolute;
+		left:100%;
+		top:0px;
+		overflow:visible;
+		height:384px;
+		width:384px;
+		background-image:url(http://willnorris.com/whiteband/images/big_right.gif);
+		background-repeat:no-repeat;
+		background-position:-150px -150px;
+		background-color:transparent;
+		margin:0 0 0 -384px;
+		padding:0;
+		color:#000;
+		font-family:helvetica,verdana,arial,tahoma,sans-serif;
+		z-index:1000000000;
+		border:none;
+		float:none;
+			}
+
+div.MPHWhiteBandSmallLeft			{
+		position:absolute;
+		left:0px;
+		top:0px;
+		overflow:visible;
+		height:163px;
+		width:163px;
+		background-image:url(http://willnorris.com/whiteband/images/small_left.gif);
+		background-repeat:no-repeat;
+		background-position:-200px -200px;
+		background-color:transparent;
+		margin:0;
+		padding:0;
+		color:#000;
+		font-family:helvetica,verdana,arial,tahoma,sans-serif;
+		z-index:1000000000;
+		border:none;
+		float:none;
+			}
+
+div.MPHWhiteBandSmallRight			{
+		position:absolute;
+		left:100%;
+		top:0px;
+		overflow:visible;
+		height:163px;
+		width:163px;
+		background-image:url(http://willnorris.com/whiteband/images/small_right.gif);
+		background-repeat:no-repeat;
+		background-position:-200px -200px;
+		background-color:transparent;
+		margin:0 0 0 -163px;
+		padding:0;
+		color:#000;
+		font-family:helvetica,verdana,arial,tahoma,sans-serif;
+		z-index:1000000000;
+		border:none;
+		float:none;
+			}
