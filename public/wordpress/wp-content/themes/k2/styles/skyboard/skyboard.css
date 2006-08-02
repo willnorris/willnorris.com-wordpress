@@ -1,0 +1,70 @@
+/*
+	CSS files kept in the 'styles' directory can be used to
+	costumize your K2 installation without having to mess
+	with the core K2 files. This in turn makes it easier to
+	upgrade to new K2 versions as well as debug any potential
+	problems.
+
+	You select schemes from the K2 Options page in the
+	'Presentation' section of your WordPress administration.
+	
+	Author Name	: 	Will Norris
+	Author Site	: 	http://willnorris.com
+	Style Name	: 	SkyBoard
+	Style URI	:	http://willnorris.com
+	Version		: 	0.1
+	Comments	: 	
+*/
+
+body {
+	font-size: 57%;
+	background: #ddd;
+}
+
+#header {
+	background: url('skyboard.jpg') center center no-repeat;
+	width: 100%;
+	height: 224px;
+}
+
+h1 {
+	text-align: center;
+}
+
+#page {
+	padding: 0;
+	border: 1px solid #bbb;
+	border-top: none;
+}
+
+ul.menu li a {
+	font-size: 1.0em;
+	font-weight: bold;
+}
+
+ul.menu li a:hover {
+	background: #000;
+	color: #FFF;
+	opacity: 0.5;
+}
+
+ul.menu li.current_page_item a,
+ul.menu li.current_page_item a:hover {
+	opacity: 1;
+}
+
+div.widget {
+	opacity: 0.4;
+}
+
+div.widget_search, div.widget_recent_entries, div.widget:hover {
+	opacity: 1;
+}
+
+#primary .itemtext h3 {
+	font-size: 1.5em;
+}
+
+.metadata {
+	line-height: 2em;
+}
