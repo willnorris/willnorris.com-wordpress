@@ -1,0 +1,122 @@
+// In a will to reduce the size of downloadable code, licenses for the 
+// files that are part of the package of 'Extended Live Archive' plugin 
+// for Wordpress are grouped thereafter.
+//
+// +----------------------------------------------------------------------+
+// |            License for af-extended-live-archive.js.php               |
+// +----------------------------------------------------------------------+
+// | Most of the code is :                                                |
+// +----------------------------------------------------------------------+
+// | Orginial Code Care Of:                                               |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 2004 Bitflux GmbH                                      |
+// +----------------------------------------------------------------------+
+// | Licensed under the Apache License, Version 2.0 (the "License");      |
+// | you may not use this file except in compliance with the License.     |
+// | You may obtain a copy of the License at                              |
+// | http://www.apache.org/licenses/LICENSE-2.0                           |
+// | Unless required by applicable law or agreed to in writing, software  |
+// | distributed under the License is distributed on an "AS IS" BASIS,    |
+// | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or      |
+// | implied. See the License for the specific language governing         |
+// | permissions and limitations under the License.                       |
+// +----------------------------------------------------------------------+
+// | Author: Bitflux GmbH <devel@bitflux.ch>                              |
+// |         http://blog.bitflux.ch/p1735.html                            |
+// +----------------------------------------------------------------------+
+// | Heavily Modified by Jeff Minard (07/09/04), Jonas Rabbe (2005-05-08) |
+// | and Arnaud Froment (since 2005-07-10)                                |
+// +----------------------------------------------------------------------+
+// | Same stuff as above, yo!                                             |
+// +----------------------------------------------------------------------+
+// | Author: Jeff Minard <jeff-js@creatimation.net>                       |
+// |         http://www.creatimation.net                                  |
+// | Author: Jonas Rabbe <jonas@rabbe.com>                                |
+// |         http://www.jonas.rabbe.com                                   |
+// | Author: Arnaud Froment                                               |
+// |         http://www.sonsofskadi.net                                   |
+// +----------------------------------------------------------------------+
+// | What is this nonsense?? (2005-05-08)                                 |
+// +----------------------------------------------------------------------+
+// | This is a script that, by using XMLHttpRequest javascript objects    |
+// | you can quickly add some very click live interactive feed back to    |
+// | your pages that require server side interaction.                     |
+// |                                                                      |
+// | This javascript has been modified to make a 'digging archive' as     |
+// | outlined by Michael Heilemann in his dissection of Freya             |
+// | [http://binarybonsai.com/archives/2004/11/21/freya-dissection/]      |
+// +----------------------------------------------------------------------+
+//
+// +----------------------------------------------------------------------+
+// | The Function af_elaEventElement                                      |
+// | is courtesy of Chris Boulton [http://www.surfionline.com]            |
+// +----------------------------------------------------------------------+
+//
+// +----------------------------------------------------------------------+
+// | The Function af_elaAddEvent                                          |
+// | was found at http://www.scottandrew.com/weblog/articles/cbs-events   |
+// +----------------------------------------------------------------------+
+//
+// +----------------------------------------------------------------------+
+// |                   License for af-ela-style.css                       |
+// +----------------------------------------------------------------------+
+// | This CSS is primarily a rework based on the style sheet Michael      |
+// | Heilemann put together to support an earlier revision of this plugin |
+// | withing his little-more-than-just-a-theme-for-wordpress, K2.         |
+// | [http://binarybonsai.com/wordpress/k2/]                              |
+// +----------------------------------------------------------------------+
+//
+//
+// +----------------------------------------------------------------------+
+// |       License for af-ela.php & af-extended-live-archive.php          |
+// +----------------------------------------------------------------------+
+// |	Support script for the Extended Live Archive WordPress Plugin.    |
+// | Extended Live Archives is extensively based on code from Jonas Rabbe |
+// | and his Super Archives Plugin. This is merely an extension to this   |
+// | already existing wonderful plugin (see                               |
+// | http://www.jonas.rabbe.com/archives/2005                             |
+// |       /05/08/super-archives-plugin-for-wordpress/)                   |
+// | for more info.                                                       |
+// |                                                                      |
+// | Copyright 2005  Arnaud Froment                                       |
+// | Copyright 2005  Jonas Rabbe  (email : jonas@rabbe.com)               |
+// |                                                                      |
+// | This program is free software; you can redistribute it and/or modify |
+// | it under the terms of the GNU General Public License as published by |
+// | the Free Software Foundation; either version 2 of the License, or    |
+// | (at your option) any later version.                                  |
+// |                                                                      |
+// | This program is distributed in the hope that it will be useful,      |
+// | but WITHOUT ANY WARRANTY; without even the implied warranty of       |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        |
+// | GNU General Public License for more details.                         |
+// |                                                                      |
+// | You should have received a copy of the GNU General Public License    |
+// | along with this program; if not, write to the Free Software          |
+// | Foundation, Inc., 59 Temple Place, Suite 330,                        |
+// | Boston, MA  02111-1307  USA                                          |
+// +----------------------------------------------------------------------+
+//
+//
+// +----------------------------------------------------------------------+
+// |          License for af-extended-live-archive-options.php            |
+// +----------------------------------------------------------------------+
+// |    Options Page for the Extended Live Archive WordPress Plugin.      |
+// |                                                                      |
+// | Copyright 2005  Arnaud Froment                                       |
+// |                                                                      |
+// | This program is free software; you can redistribute it and/or modify |
+// | it under the terms of the GNU General Public License as published by |
+// | the Free Software Foundation; either version 2 of the License, or    |
+// | (at your option) any later version.                                  |
+// |                                                                      |
+// | This program is distributed in the hope that it will be useful,      |
+// | but WITHOUT ANY WARRANTY; without even the implied warranty of       |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        |
+// | GNU General Public License for more details.                         |
+// |                                                                      |
+// | You should have received a copy of the GNU General Public License    |
+// | along with this program; if not, write to the Free Software          |
+// | Foundation, Inc., 59 Temple Place, Suite 330,                        |
+// | Boston, MA  02111-1307  USA                                          |
+// +----------------------------------------------------------------------+

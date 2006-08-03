@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>ReadMe for Extended Live Archive Plugin, version 0.10beta </title>
+</head>
+<body>
+    <h1>ReadMe for Extended Live Archive Plugin, version 0.10beta </h1>
+    <p>The Extended Live Archive plugin is one selfcontained bundle called af-extended-live-archive, which should be put into the plugin folder to yield the following structure:</p>
+    <pre>
+	wp-content/
+		\_...
+		\_ plugins/
+	   		\_...
+	   		\_ af-extended-live-archive/
+	   		    \_ elalicenses.txt
+				\_ af-extended-live-archive.php
+				\_ af-extended-live-archive-include.php
+				\_ af-extended-live-archive-options.php
+	   			\_ includes/
+					\_ af-extended-live-archive.js
+					\_ af-ela.php
+					\_ af-ela-style.css
+				\_ cache/
+				    \_ empty directory used to store the cache files
+</pre>
+    <p>The plugin provides a single template function called af_ela_super_archive(). It writes some javascript information in the page it's called in and initializes the whole thing. Some parameter can be passed to the template function
+    <strong>However, it is STRONGLY recommended that one uses the option panel the plugin is adding to the admin pages to configure ELA. </strong></p>
+    <p>Doing so, all one has to do to display the Extended Live Archive is to add a <code>&lt;?php af_ela_super_archive(); ?&gt;</code> call wherever one wants the stuff to show up.</p>
+    <p>Note that if you are using K2, beta one r96 or after, the archives page is already doing that for you.</p>
+    <p>To install the plugin, 
+    <ol>
+    	<li>upload the af-extended-archive directory and its content to your wp-content/plugins/ directory. </li>
+    	<li>make sure the cache directory permission are set to 0777 (refer to your webhost knowledge-base if need be)</li>
+    	<li>Then, visit the option->Ext. Live Archive page once to initialize it.</li>
+    </ol>
+    <p>The plugin HomePage can be found somewhere in <a href="http://www.sonsofskadi.net/extended-live-archive/">SonsOfSkadi.net</a> and the support forum is over at <a href="http://www.flickr.com/groups/ela-support/">Flickr</a>.<p>  
+</body>
+</html>
