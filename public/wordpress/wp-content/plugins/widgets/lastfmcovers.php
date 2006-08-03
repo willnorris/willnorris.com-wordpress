@@ -84,6 +84,7 @@ function widget_lastfmcovers_init() {
     	if ($_getoond < $maxcount) {
     	  if (array_key_exists("image", $_cd)) {
     		  if ((false === strpos($_cd['image'], "no_album")) && (false === strpos($_cd['image'], "noalbum"))) {
+			  if (function_exists('url_cache')) $_cd['image'] = url_cache($_cd['image']);
     	      $_alttitle = $_cd['name'] . "&nbsp;&raquo;&nbsp;" . $_cd['artist'] . "&nbsp;&raquo;&nbsp;" . str_replace('%', $_cd['playcount'], $countdesc);
     	      $_imgstyle = ($imgwidth > 0) ? ' style="width: ' . $imgwidth . 'px; height: ' . $imgwidth . 'px; padding: 8px 8px 0px 0px;"' : ' class="lastfmcover"';
     	      $_result .= '<a href="' . $_cd['url'] . '"><img' . $_imgstyle . ' src="' . $_cd['image'] . '" alt="' . $_alttitle . '" title="' . $_alttitle . '" /></a>';
@@ -163,6 +164,7 @@ class RSSParserLastFm {
   var $parents = array();  // parent branches of current branch
  
   function RSSParserLastFm($url) {
+  if (function_exists('url_cache')) $url = url_cache($url);
    $this->curptr =& $this->struct;  // set ref to base
    $xmlparser = xml_parser_create();
    xml_set_object($xmlparser, $this);

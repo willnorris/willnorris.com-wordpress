@@ -32,7 +32,7 @@ function add_microid_on_post($content = '')
 
 function add_microid_on_comment($comment = '')
 {
-	$microid = microid_hash(get_comment_author_email(), get_comment_author_url());
+	$microid = microid_hash(get_comment_author_email(), get_permalink());
 	return "<div class='microid-$microid'>$comment</div>";
 }
 

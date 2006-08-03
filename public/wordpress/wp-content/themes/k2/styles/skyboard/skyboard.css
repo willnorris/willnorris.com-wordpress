@@ -61,6 +61,10 @@ div.widget_search, div.widget_recent_entries, div.widget:hover {
 	opacity: 1;
 }
 
+.secondary h2 {
+	display: block;
+}
+
 #primary .itemtext h3 {
 	font-size: 1.5em;
 }

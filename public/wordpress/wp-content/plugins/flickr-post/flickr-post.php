@@ -83,7 +83,7 @@ function fp_add_photos ( $content ) {
   
   // Get the photos.
 
-  list( $ids, $uris, $titles ) = fp_get_photos( $user_id, $slug, $id );
+  list( $ids, $uris, $titles, $pages ) = fp_get_photos( $user_id, $slug, $id );
 
   if ( ! $ids ) return $content;
 
@@ -98,9 +98,10 @@ function fp_add_photos ( $content ) {
     $uri = $uris[$id];
     $title = $titles[$id];
     $thumbnail = url_cache( $uri.'_s.jpg' );
+    $page = $pages[$id];
     $image = $uri.'_o.jpg';
 
-    $fp_photos .= '<a href="'.$image.'" rel="bookmark" title="'.$title.'">';
+    $fp_photos .= '<a href="'.$page.'" rel="bookmark" title="'.$title.'">';
     $fp_photos .= "<img";
 
     if ( $class )
@@ -232,6 +233,7 @@ function fp_get_photos ( $user_id, $slug, $post_id ) {
   $ids = array();
   $titles = array();
   $urls = array();
+  $pages = array();
 
   if ( ! $response ) return;
  
@@ -252,12 +254,14 @@ function fp_get_photos ( $user_id, $slug, $post_id ) {
         $urls[$ph_id] = "http://static.flickr.com/$ph_server/";
         $urls[$ph_id] .= $ph_id . "_" . $ph_secret;
 
+        $pages[$ph_id] = 'http://www.flickr.com/photos/' . get_option( 'fp_flickr_username' ) . '/' . $ph_id .'/';
+
         $titles[$ph_id] = $ph_title;
       }
     }
   }
 
-  return array( $ids, $urls, $titles );
+  return array( $ids, $urls, $titles, $pages );
 }
 
 
