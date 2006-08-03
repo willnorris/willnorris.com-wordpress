@@ -58,6 +58,9 @@ function url_cache ( $url, $username = "", $password = "", $timeout = 3600 ) {
 
   if ( $url == "" ) return;
 
+  // Decode HTML Entities
+  $url = html_entity_decode($url);
+
   // Return the local URL if the file is currently cached.
 
   if ( uc_is_cached( $url, $timeout ) )
@@ -175,7 +178,9 @@ function uc_get_local_file ( $url ) {
 
   // Work out where the local file should be placed.
 
-  $cache_dir = ABSPATH . "wp-content/cache/";
+  $cache_dir = ABSPATH . "wp-content/cache/uc/";
+
+  if (!file_exists($cache_dir)) mkdir($cache_dir);
 
   // Calculate a hash of the remote URL and extract the file extension. 
 
@@ -187,7 +192,7 @@ function uc_get_local_file ( $url ) {
 
   // Return the absolute path to the local file.
 
-  return $cache_dir . "uc.$hash.$extension";
+  return $cache_dir . "$hash.$extension";
 }
 
 
@@ -204,7 +209,7 @@ function uc_get_local_url ( $url ) {
 
   // Work out the base of the local URL.
 
-  $cache_url = get_option( 'siteurl' ) . "/wp-content/cache/";
+  $cache_url = get_option( 'siteurl' ) . "/wp-content/cache/uc/";
 
   // Calculate a hash of the remote URL and extract the file extension. 
 
@@ -216,7 +221,7 @@ function uc_get_local_url ( $url ) {
 
   // Return the local URL.
 
-  return $cache_url . "uc.$hash.$extension";
+  return $cache_url . "$hash.$extension";
 }
 
 
@@ -283,6 +288,7 @@ function uc_get_contents ( $url, $username, $password ) {
   curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, 1 );
   curl_setopt( $handle, CURLOPT_TIMEOUT, 4 );
   curl_setopt( $handle, CURLOPT_USERAGENT, $url_cache_ua );
+  curl_setopt( $handle, CURLOPT_FOLLOWLOCATION, true);
 
   $buffer = curl_exec( $handle );
 
