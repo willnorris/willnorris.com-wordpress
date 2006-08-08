@@ -162,12 +162,10 @@ function get_recent_flickr_photos () {
         $url = "http://static.flickr.com/$ph_server/";
         $url .= $ph_id . "_" . $ph_secret;
       
-        $page = FP_PHOTO_URL . get_option( 'fp_flickr_username' ) . '/' . $ph_id .'/';
-
         $thumbnail = url_cache( $url . "_s.jpg" );
         $image = $url . "_o.jpg";
       
-        echo "<a href=\"$page\"";
+        echo "<a href=\"$image\"";
         echo " rel=\"bookmark\" title=\"$ph_title\">";
         echo "<img";
 
@@ -256,7 +254,7 @@ function fp_get_photos ( $user_id, $slug, $post_id ) {
         $urls[$ph_id] = "http://static.flickr.com/$ph_server/";
         $urls[$ph_id] .= $ph_id . "_" . $ph_secret;
 
-        $pages[$ph_id] = FP_PHOTO_URL . get_option( 'fp_flickr_username' ) . '/' . $ph_id .'/';
+        $pages[$ph_id] = 'http://www.flickr.com/photos/' . get_option( 'fp_flickr_username' ) . '/' . $ph_id .'/';
 
         $titles[$ph_id] = $ph_title;
       }
@@ -312,39 +310,5 @@ function fp_get_the_slug () {
 
   return $wpdb->get_var( "SELECT post_name FROM $wpdb->posts WHERE ID = $id" );
 }
-
-function widget_flickrpost_init() {
-
-	function widget_flickrpost($args) {
-		extract($args);
-		$options = (array) get_option('widget_flickrpost');
-
-		echo $before_widget;
-		echo $before_title . '<a href="' . FP_PHOTO_URL . get_option('fp_flickr_username') . '/">'.$options['title'].'</a>' . $after_title;
-		get_recent_flickr_photos();
-		echo $after_widget;
-	}
-
-	function widget_flickrpost_control() {
-		$options = $newoptions = get_option('widget_flickrpost');
-		if ( $_POST['flickrpost-submit'] ) {
-			$newoptions['title'] = strip_tags(stripslashes($_POST['flickrpost-title']));
-		}
-		if ($options != $newoptions) {
-			$options = $newoptions;
-			update_option('widget_flickrpost', $options);
-		}
-		?>
-			<div style="text-align: right">
-				<label for="flickrpost-title" style="line-height: 35px; display: block;"><?php _e('Widget title:', 'widgets'); ?> <input type="text" id="flickrpost-title" name="flickrpost-title" value="<?php echo wp_specialchars($options['title'], true); ?>" /></label>
-				<input type="hidden" name="flickrpost-submit" id="flickrpost-submit" value="1" />
-			</div>
-		<?php
-	}
-
-	register_sidebar_widget(array('FlickrPost', 'widgets'), 'widget_flickrpost');
-	register_widget_control(array('FlickrPost', 'widgets'), 'widget_flickrpost_control');
-}
-add_action('widgets_init', 'widget_flickrpost_init');
 
 ?>
