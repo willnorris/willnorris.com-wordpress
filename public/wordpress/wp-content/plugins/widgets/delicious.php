@@ -51,6 +51,8 @@ function widget_delicious_init() {
 		$json_url = 'http://del.icio.us/feeds/json/' . rawurlencode($options['username']);
 		$json_url.= count($options['tags']) ? '/' . rawurlencode(implode('+', $options['tags'])) : '';
 		$json_url.= '?count=' . ((int) $options['count']) . ';';
+
+		if (function_exists('url_cache')) $json_url = url_cache($json_url);
 		?>
 		<?php echo $before_widget; ?>
 			<?php echo $before_title . "<a href='http://del.icio.us/{$options['username']}'>{$options['title']}</a>" . $after_title; ?><div id="delicious-box" style="margin:0;padding:0;border:none;"> </div>
