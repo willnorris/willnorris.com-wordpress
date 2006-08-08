@@ -152,4 +152,42 @@ function delicious_recent_links ( $before = "<li>", $after = "</li>", $dateforma
   }
 }
 
+
+function widget_deliciousinfo_init() {
+
+	function widget_deliciousinfo($args) {
+		extract($args);
+		$options = (array) get_option('widget_deliciousinfo');
+
+		echo $before_widget;
+		echo $before_title . '<a href="http://del.icio.us/' . get_option('di_delicious_username') . '/">'.$options['title'].'</a>' . $after_title;
+		echo '<ul>';
+		delicious_recent_links();
+		echo '</ul>';
+		echo $after_widget;
+	}
+
+	function widget_deliciousinfo_control() {
+		$options = $newoptions = get_option('widget_deliciousinfo');
+		if ( $_POST['deliciousinfo-submit'] ) {
+			$newoptions['title'] = strip_tags(stripslashes($_POST['deliciousinfo-title']));
+		}
+		if ($options != $newoptions) {
+			$options = $newoptions;
+			update_option('widget_deliciousinfo', $options);
+		}
+		?>
+			<div style="text-align: right">
+				<label for="deliciousinfo-title" style="line-height: 35px; display: block;"><?php _e('Widget title:', 'widgets'); ?> <input type="text" id="deliciousinfo-title" name="deliciousinfo-title" value="<?php echo wp_specialchars($options['title'], true); ?>" /></label>
+				<input type="hidden" name="deliciousinfo-submit" id="deliciousinfo-submit" value="1" />
+			</div>
+		<?php
+	}
+
+	register_sidebar_widget(array('DeliciousInfo', 'widgets'), 'widget_deliciousinfo');
+	register_widget_control(array('DeliciousInfo', 'widgets'), 'widget_deliciousinfo_control');
+}
+
+add_action('widgets_init', 'widget_deliciousinfo_init');
+
 ?>
