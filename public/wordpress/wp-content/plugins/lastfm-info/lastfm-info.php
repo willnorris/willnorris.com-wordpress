@@ -168,4 +168,40 @@ function li_print_track( $track, $before, $after, $dateformat ) {
   echo "\n";
 }
 
+function widget_lastfminfo_init() {
+
+	function widget_lastfminfo($args) {
+		extract($args);
+		$options = (array) get_option('widget_lastfminfo');
+
+		echo $before_widget;
+		echo $before_title . '<a href="http://last.fm/user/' . get_option('li_lastfm_username') . '">'.$options['title'].'</a>' . $after_title;
+		echo '<ul>';
+		lastfm_playlist();
+		echo '</ul>';
+		echo $after_widget;
+	}
+
+	function widget_lastfminfo_control() {
+		$options = $newoptions = get_option('widget_lastfminfo');
+		if ( $_POST['lastfminfo-submit'] ) {
+			$newoptions['title'] = strip_tags(stripslashes($_POST['lastfminfo-title']));
+		}
+		if ($options != $newoptions) {
+			$options = $newoptions;
+			update_option('widget_lastfminfo', $options);
+		}
+		?>
+			<div style="text-align: right">
+				<label for="lastfminfo-title" style="line-height: 35px; display: block;"><?php _e('Widget title:', 'widgets'); ?> <input type="text" id="lastfminfo-title" name="lastfminfo-title" value="<?php echo wp_specialchars($options['title'], true); ?>" /></label>
+				<input type="hidden" name="lastfminfo-submit" id="lastfminfo-submit" value="1" />
+			</div>
+		<?php
+	}
+
+	register_sidebar_widget(array('lastfmInfo', 'widgets'), 'widget_lastfminfo');
+	register_widget_control(array('lastfmInfo', 'widgets'), 'widget_lastfminfo_control');
+}
+
+add_action('widgets_init', 'widget_lastfminfo_init');
 ?>
