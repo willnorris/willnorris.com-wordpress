@@ -57,7 +57,7 @@ div.widget {
 	opacity: 0.4;
 }
 
-div.widget_search, div.widget_recent_entries, div.widget:hover {
+div.widget_search, div.widget:hover {
 	opacity: 1;
 }
 
@@ -71,4 +71,29 @@ div.widget_search, div.widget_recent_entries, div.widget:hover {
 
 .metadata {
 	line-height: 2em;
+}
+
+.widgettitle a {
+	background: url('arrow.png') center right no-repeat;
+	padding-right: 15px;
+}
+
+img.flickrpost {
+	margin: 5px;
+	padding: 3px;
+	border: 1px solid #ccc;
+	max-width: 100%;
+}
+
+img.lastfmcover {
+	width: 60px;
+	height: 60px;
+
+	border: 1px solid #ccc;
+	margin: 0.5em;
+	padding: 3px;
+}
+
+div.widget_deliciousinfo .more {
+	display: none;
 }
