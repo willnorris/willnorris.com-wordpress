@@ -94,6 +94,6 @@ img.lastfmcover {
 	padding: 3px;
 }
 
-div.widget_deliciousinfo .more {
+div.widget_deliciousinfo .more, div.widget_lastfminfo .more {
 	display: none;
 }
