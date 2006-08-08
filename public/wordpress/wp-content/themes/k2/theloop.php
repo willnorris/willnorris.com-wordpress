@@ -76,7 +76,7 @@
 
 					<?php /* Edit Link */ edit_post_link(__('Edit','k2_domain'), '<span class="editlink">','</span>'); ?>
 
-					<?php /* Tags */ if (is_single() and function_exists(UTW_ShowTagsForCurrentPost)) { ?>
+					<?php /* Tags */ if (function_exists(UTW_ShowTagsForCurrentPost)) { ?>
 						<span class="tagdata"><?php _e('Tags:','k2_domain'); ?> <?php UTW_ShowTagsForCurrentPost("commalist") ?>.</span>
 					<?php } ?>
 				</small>
@@ -109,7 +109,7 @@
 				
 					<?php /* Edit Link */ edit_post_link(__('Edit','k2_domain'), '<span class="editlink">','</span>'); ?>
 				
-					<?php /* Tags */ if (is_single() and function_exists(UTW_ShowTagsForCurrentPost)) { ?>
+					<?php /* Tags */ if (function_exists(UTW_ShowTagsForCurrentPost)) { ?>
 						<span class="tagdata"><?php _e('Tags:','k2_domain'); ?> <?php UTW_ShowTagsForCurrentPost("commalist") ?>.</span>
 					<?php } ?>
 				</small>
