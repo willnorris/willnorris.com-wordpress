@@ -31,7 +31,7 @@ function widget_lastfmcovers_init() {
 		$imgwidth     = $options['imgwidth'];
 		$countdesc    = $options['countdesc'];
 
-		echo $before_widget . $before_title . $title . $after_title;
+		echo $before_widget . $before_title . '<a href="http://last.fm/user/' . $username . '/">' . $title . '</a>' . $after_title;
 
     echo runForCover($username, $imgwidth, $count, $countdesc);
 
