@@ -175,7 +175,7 @@ function widget_lastfminfo_init() {
 		$options = (array) get_option('widget_lastfminfo');
 
 		echo $before_widget;
-		echo $before_title . '<a href="http://last.fm/user/' . get_option('li_lastfm_username') . '"/>'.$options['title'].'</a>' . $after_title;
+		echo $before_title . '<a href="http://last.fm/user/' . get_option('li_lastfm_username') . '/">'.$options['title'].'</a>' . $after_title;
 		echo '<ul>';
 		lastfm_playlist();
 		echo '</ul>';
