@@ -177,14 +177,17 @@ function widget_lastfminfo_init() {
 		echo $before_widget;
 		echo $before_title . '<a href="http://last.fm/user/' . get_option('li_lastfm_username') . '/">'.$options['title'].'</a>' . $after_title;
 
-		$content = lastfm_playlist();
+		ob_start();
+		lastfm_playlist();
+		$content = ob_get_clean();
+
 		if ($content) {
 			$content = "<ul>$content</ul>";
 		} else {
 			$content = '<p><em>no music right now</em></p>';
 		}
 
-		echo "$content";
+		echo $content;
 		echo $after_widget;
 	}
 
