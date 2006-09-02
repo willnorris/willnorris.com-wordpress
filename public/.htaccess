@@ -9,6 +9,10 @@ Options +Multiviews
 
     RewriteRule ^jeremiah/? http://wrangler.internetranch.net/~wnorris/jeremiah/ [L,R]
     RewriteRule ^contact /about/ [L,R]
+
+	RewriteCond %{SERVER_PORT} !443
+	RewriteCond %{REQUEST_URI} ^/(webmail.*) [NC]
+	RewriteRule .* https://willnorris.com/%1 [L,R]
 </IfModule>
 
 # BEGIN WordPress
