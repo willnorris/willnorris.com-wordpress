@@ -7,6 +7,8 @@ Options +Multiviews
 <IfModule mod_rewrite.c>
     RewriteEngine on
 
+	RewriteRule ^photos/?(.*)? http://www.flickr.com/photos/wnorris/$1 [L,R]
+
     RewriteRule ^jeremiah/? http://wrangler.internetranch.net/~wnorris/jeremiah/ [L,R]
     RewriteRule ^contact /about/ [L,R]
 
