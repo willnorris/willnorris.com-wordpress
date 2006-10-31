@@ -14,19 +14,37 @@ CHANGES
 
 function gravatar($rating = false, $size = false, $default = false, $border = false) {
 	global $comment;
-	$out = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($comment->comment_author_email);
+	$url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($comment->comment_author_email);
 	if($rating && $rating != '')
-		$out .= "&amp;rating=".$rating;
+		$url .= "&amp;rating=".$rating;
 	if($size && $size != '')
-		$out .="&amp;size=".$size;
+		$url .="&amp;size=".$size;
 	if($default && $default != '')
-		$out .= "&amp;default=".urlencode($default);
+		$url .= "&amp;default=".urlencode($default);
 	if($border && $border != '')
-		$out .= "&amp;border=".$border;
+		$url .= "&amp;border=".$border;
 
-	if (function_exists('url_cache')) $out = url_cache($out);
+	if (function_exists('url_cache')) $cached = url_cache($url);
 
-	echo $out;
+	if (ereg(get_option('siteurl'), $cached)) {
+		echo $cached;
+	} else {
+		echo gravatar_cache_default($url, $default);
+	}
+}
+
+
+function gravatar_cache_default($url, $default) {
+
+	$contents = uc_get_contents($default, null, null);
+
+	if ($contents)
+		uc_cache_contents($url, $contents);
+
+	if (uc_is_cached($url, 3600))
+		return uc_get_local_url($url);
+	else 
+		return $url;
 }
 
 ?>
