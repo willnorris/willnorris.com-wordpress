@@ -2,9 +2,8 @@
 /*
 Plugin Name: Akismet
 Plugin URI: http://akismet.com/
-Description: Akismet checks your comments against the Akismet web serivce to see if they look like spam or not. You need a <a href="http://wordpress.com/api-keys/">WordPress.com API key</a> to use this service. You can review the spam it catches under "Manage" and it automatically deletes old spam after 15 days. Hat tip: <a href="http://ioerror.us/">Michael Hampton</a> and <a href="http://chrisjdavis.org/">Chris J. Davis</a> for help with the plugin.
-Author: Matt Mullenweg
-Version: 1.15
+Description: Akismet checks your comments against the Akismet web serivce to see if they look like spam or not. You need a <a href="http://wordpress.com/api-keys/">WordPress.com API key</a> to use this service. You can review the spam it catches under "Manage" and it automatically deletes old spam after 15 days. To show off your Akismet stats just put <code>&lt;?php akismet_counter(); ?></code> in your template.
+Version: 1.2.1
 Author URI: http://photomatt.net/
 */
 
@@ -25,13 +24,13 @@ if ( ! function_exists('wp_nonce_field') ) {
 function ksd_config_page() {
 	global $wpdb;
 	if ( function_exists('add_submenu_page') )
-		add_submenu_page('plugins.php', __('Akismet Configuration'), __('Akismet Configuration'), 'manage_options', __FILE__, 'akismet_conf');
+		add_submenu_page('plugins.php', __('Akismet Configuration'), __('Akismet Configuration'), 'manage_options', 'akismet-key-config', 'akismet_conf');
 }
 
 function akismet_conf() {
 	global $akismet_nonce;
 	if ( isset($_POST['submit']) ) {
-		if ( !current_user_can('manage_options') )
+		if ( function_exists('current_user_can') && !current_user_can('manage_options') )
 			die(__('Cheatin&#8217; uh?'));
 
 		check_admin_referer($akismet_nonce);
@@ -74,9 +73,8 @@ function akismet_verify_key( $key ) {
 
 if ( !get_option('wordpress_api_key') && !isset($_POST['submit']) ) {
 	function akismet_warning() {
-	$path = plugin_basename(__FILE__);
 		echo "
-		<div id='akismet-warning' class='updated fade-ff0000'><p><strong>".__('Akismet is not active.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your WordPress.com API key</a> for it to work.'), "plugins.php?page=$path")."</p></div>
+		<div id='akismet-warning' class='updated fade-ff0000'><p><strong>".__('Akismet is not active.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your WordPress.com API key</a> for it to work.'), "plugins.php?page=akismet-key-config")."</p></div>
 		<style type='text/css'>
 		#adminmenu { margin-bottom: 5em; }
 		#akismet-warning { position: absolute; top: 7em; }
@@ -89,7 +87,7 @@ if ( !get_option('wordpress_api_key') && !isset($_POST['submit']) ) {
 
 $ksd_api_host = get_option('wordpress_api_key') . '.rest.akismet.com';
 $ksd_api_port = 80;
-$ksd_user_agent = "WordPress/$wp_version | Akismet/1.15";
+$ksd_user_agent = "WordPress/$wp_version | Akismet/1.2.1";
 
 // Returns array with headers in $response[0] and entity in $response[1]
 function ksd_http_post($request, $host, $path, $port = 80) {
@@ -97,14 +95,14 @@ function ksd_http_post($request, $host, $path, $port = 80) {
 
 	$http_request  = "POST $path HTTP/1.0\r\n";
 	$http_request .= "Host: $host\r\n";
-	$http_request .= "Content-Type: application/x-www-form-urlencoded; charset=" . get_settings('blog_charset') . "\r\n";
+	$http_request .= "Content-Type: application/x-www-form-urlencoded; charset=" . get_option('blog_charset') . "\r\n";
 	$http_request .= "Content-Length: " . strlen($request) . "\r\n";
 	$http_request .= "User-Agent: $ksd_user_agent\r\n";
 	$http_request .= "\r\n";
 	$http_request .= $request;
 
 	$response = '';
-	if( false !== ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
+	if( false != ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
 		fwrite($fs, $http_request);
 
 		while ( !feof($fs) )
@@ -202,13 +200,14 @@ function ksd_manage_page() {
 	global $wpdb;
 	$count = sprintf(__('Akismet Spam (%s)'), ksd_spam_count());
 	if ( function_exists('add_management_page') )
-		add_management_page(__('Akismet Spam'), $count, 'moderate_comments', __FILE__, 'ksd_caught');
+		add_management_page(__('Akismet Spam'), $count, 'moderate_comments', 'akismet-admin', 'ksd_caught');
 }
 
 function ksd_caught() {
 	global $wpdb, $comment;
+	
 	if (isset($_POST['submit']) && 'recover' == $_POST['action'] && ! empty($_POST['not_spam'])) {
-		if ( ! current_user_can('moderate_comments') )
+		if ( function_exists('current_user_can') && !current_user_can('moderate_comments') )
 			die(__('You do not have sufficient permission to moderate comments.'));
 		
 		$i = 0;
@@ -224,7 +223,7 @@ function ksd_caught() {
 		echo '<div class="updated"><p>' . sprintf(__('%1$s comments recovered.'), $i) . "</p></div>";
 	}
 	if ('delete' == $_POST['action']) {
-		if ( ! current_user_can('moderate_comments') )
+		if ( function_exists('current_user_can') && !current_user_can('moderate_comments') )
 			die(__('You do not have sufficient permission to moderate comments.'));
 
 		$delete_time = addslashes( $_POST['display_time'] );
@@ -264,10 +263,51 @@ if (0 == $spam_count) {
 <h2><?php _e('Latest Spam'); ?></h2>
 <?php echo '<p>'.__('These are the latest comments identified as spam by Akismet. If you see any mistakes, simply mark the comment as "not spam" and Akismet will learn from the submission. If you wish to recover a comment from spam, simply select the comment, and click Not Spam. After 15 days we clean out the junk for you.').'</p>'; ?>
 <?php
-$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_approved = 'spam' ORDER BY comment_date DESC LIMIT 150");
+if ( isset( $_GET['apage'] ) )
+	$page = (int) $_GET['apage'];
+else
+	$page = 1;
+$start = ( $page - 1 ) * 50;
+$end = $start + 50;
+$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_approved = 'spam' ORDER BY comment_date DESC LIMIT $start, $end");
+$total = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'spam'" );
 
 if ($comments) {
 ?>
+
+<?php if ( $total > 50 ) {
+$total_pages = ceil( $total / 50 );
+$r = '';
+if ( 1 < $page ) {
+	$args['apage'] = ( 1 == $page - 1 ) ? '' : $page - 1;
+	$r .=  '<a class="prev" href="' . add_query_arg( $args ) . '">&laquo; '. __('Previous Page') .'</a>' . "\n";
+}
+if ( ( $total_pages = ceil( $total / 50 ) ) > 1 ) {
+	for ( $page_num = 1; $page_num <= $total_pages; $page_num++ ) :
+		if ( $page == $page_num ) :
+			$r .=  "<span>$page_num</span>\n";
+		else :
+			$p = false;
+			if ( $page_num < 3 || ( $page_num >= $page - 3 && $page_num <= $page + 3 ) || $page_num > $total_pages - 3 ) :
+				$args['apage'] = ( 1 == $page_num ) ? '' : $page_num;
+				$r .= '<a class="page-numbers" href="' . add_query_arg($args) . '">' . ( $page_num ) . "</a>\n";
+				$in = true;
+			elseif ( $in == true ) :
+				$r .= "...\n";
+				$in = false;
+			endif;
+		endif;
+	endfor;
+}
+if ( ( $page ) * 50 < $total || -1 == $total ) {
+	$args['apage'] = $page + 1;
+	$r .=  '<a class="next" href="' . add_query_arg($args) . '">'. __('Next Page') .' &raquo;</a>' . "\n";
+}
+echo "<p>$r</p>";
+?>
+
+<?php } ?>
+
 <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 <input type="hidden" name="action" value="recover" />
 <ul id="spam-list" class="commentlist" style="list-style: none; margin: 0; padding: 0;">
@@ -275,7 +315,7 @@ if ($comments) {
 $i = 0;
 foreach($comments as $comment) {
 	$i++;
-	$comment_date = mysql2date(get_settings("date_format") . " @ " . get_settings("time_format"), $comment->comment_date);
+	$comment_date = mysql2date(get_option("date_format") . " @ " . get_option("time_format"), $comment->comment_date);
 	$post = get_post($comment->comment_post_ID);
 	$post_title = $post->post_title;
 	if ($i % 2) $class = 'class="alternate"';
@@ -326,9 +366,170 @@ function akismet_stats() {
 		return;
 	$path = plugin_basename(__FILE__);
 	echo '<h3>'.__('Spam').'</h3>';
-	echo '<p>'.sprintf(__('<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comments</a>.'), 'http://akismet.com/', "edit.php?page=$path", number_format($count) ).'</p>';
+	echo '<p>'.sprintf(__('<a href="%1$s">Akismet</a> has protected your site from <a href="%2$s">%3$s spam comments</a>.'), 'http://akismet.com/', "edit.php?page=akismet-admin", number_format($count) ).'</p>';
 }
 
 add_action('activity_box_end', 'akismet_stats');
+
+function widget_akismet_register() {
+	if ( function_exists('register_sidebar_widget') ) :
+	function widget_akismet($args) {
+		extract($args);
+		$options = get_option('widget_akismet');
+		$count = number_format(get_option('akismet_spam_count'));
+		$text = __('%d spam comments have been blocked by <a href="http://akismet.com">Akismet</a>.');
+		?>
+			<?php echo $before_widget; ?>
+				<?php echo $before_title . $options['title'] . $after_title; ?>
+				<div id="akismetwrap"><div id="akismetstats"><a id="aka" href="http://akismet.com" title=""><div id="akismet1"><span id="akismetcount"><?php echo $count; ?></span> <span id="akismetsc"><?php _e('spam comments') ?></span></div> <div id="akismet2"><span id="akismetbb"><?php _e('blocked by') ?></span><br /><span id="akismeta">Akismet</span></div></a></div></div>
+			<?php echo $after_widget; ?>
+	<?php
+	}
+	
+	function widget_akismet_style() {
+		?>
+		<style type="text/css">
+#aka, #aka:link, #aka:hover, #aka:visited, #aka:active {
+	color: #fff;
+	text-decoration: none;
+}
+
+#aka:hover{
+	border: none;
+	text-decoration: none;
+}
+
+#aka:hover #akismet1{
+	display: none;
+}
+
+#aka:hover #akismet2{
+	display: block;
+}
+
+#akismet1{
+	display: block;
+}
+
+#akismet2{
+	display: none;
+	padding-top: 2px;
+}
+
+#akismeta{
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 18px;
+	text-decoration: none;
+}
+
+#akismetcount{
+	display: block;
+	font: 15px Verdana,Arial,Sans-Serif;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#akismetwrap #akismetstats{
+	background: url(<?php echo get_option('siteurl'); ?>/wp-content/plugins/akismet/akismet.gif) no-repeat top left;
+	border: none;
+	color: #fff;
+	font: 11px 'Trebuchet MS','Myriad Pro',sans-serif;
+	height: 40px;
+	line-height: 100%;
+	overflow: hidden;
+	padding: 8px 0 0;
+	text-align: center;
+	width: 120px;
+}
+
+
+		</style>
+		<?php
+	}
+
+	function widget_akismet_control() {
+		$options = $newoptions = get_option('widget_akismet');
+		if ( $_POST["akismet-submit"] ) {
+			$newoptions['title'] = strip_tags(stripslashes($_POST["akismet-title"]));
+			if ( empty($newoptions['title']) ) $newoptions['title'] = 'Spam Blocked';
+		}
+		if ( $options != $newoptions ) {
+			$options = $newoptions;
+			update_option('widget_akismet', $options);
+		}
+		$title = htmlspecialchars($options['title'], ENT_QUOTES);
+	?>
+				<p><label for="akismet-title"><?php _e('Title:'); ?> <input style="width: 250px;" id="akismet-title" name="akismet-title" type="text" value="<?php echo $title; ?>" /></label></p>
+				<input type="hidden" id="akismet-submit" name="akismet-submit" value="1" />
+	<?php
+	}
+
+	register_sidebar_widget('Akismet', 'widget_akismet', null, 'akismet');
+	register_widget_control('Akismet', 'widget_akismet_control', 300, 75, 'akismet');
+	if ( is_active_widget('widget_akismet') )
+		add_action('wp_head', 'widget_akismet_style');
+	endif;
+}
+add_action('init', 'widget_akismet_register');
+
+// Counter for non-widget users
+function akismet_counter() {
+?>
+<style type="text/css">
+#akismetwrap #aka,#aka:link,#aka:hover,#aka:visited,#aka:active{color:#fff;text-decoration:none}
+#aka:hover{border:none;text-decoration:none}
+#aka:hover #akismet1{display:none}
+#aka:hover #akismet2,#akismet1{display:block}
+#akismet2{display:none;padding-top:2px}
+#akismeta{font-size:16px;font-weight:bold;line-height:18px;text-decoration:none}
+#akismetcount{display:block;font:15px Verdana,Arial,Sans-Serif;font-weight:bold;text-decoration:none}
+#akismetwrap #akismetstats{background:url(<?php echo get_option('siteurl'); ?>/wp-content/plugins/akismet/akismet.gif) no-repeat top left;border:none;color:#fff;font:11px 'Trebuchet MS','Myriad Pro',sans-serif;height:40px;line-height:100%;overflow:hidden;padding:8px 0 0;text-align:center;width:120px}
+</style>
+<?php
+$count = number_format(get_option('akismet_spam_count'));
+?>
+<div id="akismetwrap"><div id="akismetstats"><a id="aka" href="http://akismet.com" title=""><div id="akismet1"><span id="akismetcount"><?php echo $count; ?></span> <span id="akismetsc"><?php _e('spam comments') ?></span></div> <div id="akismet2"><span id="akismetbb"><?php _e('blocked by') ?></span><br /><span id="akismeta">Akismet</span></div></a></div></div>
+<?php
+}
+
+if ( 'moderation.php' == $pagenow ) {
+	function akismet_recheck_button( $page ) {
+		$button = "<a href='edit.php?page=akismet-admin&amp;recheckqueue=true' style='display: block; width: 100px; position: absolute; right: 7%; padding: 5px; font-size: 14px; text-decoration: underline; background: #fff; border: 1px solid #ccc;'>Recheck Queue for Spam</a>";
+		$page = str_replace( '<div class="wrap">', '<div class="wrap">' . $button, $page );
+		return $page;
+	}
+
+	if ( $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = '0'" ) )
+		ob_start( 'akismet_recheck_button' );
+}
+
+function akismet_recheck_queue() {
+	global $wpdb, $ksd_api_host, $ksd_api_port;
+
+	if ( !isset( $_GET['recheckqueue'] ) )
+		return;
+
+	$moderation = $wpdb->get_results( "SELECT * FROM $wpdb->comments WHERE comment_approved = '0'", ARRAY_A );
+	foreach ( $moderation as $c ) {
+		$c['user_ip']    = $c['comment_author_IP'];
+		$c['user_agent'] = $c['comment_agent'];
+		$c['referrer']   = '';
+		$c['blog']       = get_option('home');
+		$id = $c['comment_ID'];
+		
+		$query_string = '';
+		foreach ( $c as $key => $data )
+		$query_string .= $key . '=' . urlencode( stripslashes($data) ) . '&';
+		
+		$response = ksd_http_post($query_string, $ksd_api_host, '/1.1/comment-check', $ksd_api_port);
+		if ( 'true' == $response[1] ) {
+			$wpdb->query( "UPDATE $wpdb->comments SET comment_approved = 'spam' WHERE comment_ID = $id" );
+		}
+	}
+	wp_redirect( $_SERVER['HTTP_REFERER'] );
+	exit;
+}
+add_action( 'load-manage_page_akismet-admin', 'akismet_recheck_queue' );
 
 ?>

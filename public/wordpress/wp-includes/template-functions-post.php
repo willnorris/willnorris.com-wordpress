@@ -77,6 +77,9 @@ function get_the_content($more_link_text = '(more...)', $stripteaser = 0, $more_
 	else
 		$file = $pagenow; //$_SERVER['PHP_SELF'];
 
+	if ( $page > count($pages) ) // if the requested page doesn't exist
+		$page = count($pages); // give them the highest numbered page that DOES exist
+
 	$content = $pages[$page-1];
 	$content = explode('<!--more-->', $content, 2);
 	if ( (preg_match('/<!--noteaser-->/', $post->post_content) && ((!$multipage) || ($page==1))) )
@@ -197,6 +200,8 @@ function get_post_custom( $post_id = 0 ) {
 	if ( ! $post_id )
 		$post_id = $id;
 
+	$post_id = (int) $post_id;
+
 	if ( isset($post_meta_cache[$post_id]) )
 		return $post_meta_cache[$post_id];
 
@@ -204,7 +209,7 @@ function get_post_custom( $post_id = 0 ) {
 		// Change from flat structure to hierarchical:
 		$post_meta_cache = array();
 		foreach ( $meta_list as $metarow ) {
-			$mpid = $metarow['post_id'];
+			$mpid = (int) $metarow['post_id'];
 			$mkey = $metarow['meta_key'];
 			$mval = $metarow['meta_value'];
 
@@ -253,11 +258,14 @@ function post_custom( $key = '' ) {
 
 // this will probably change at some point...
 function the_meta() {
-	global $id, $post_meta_cache;
+	global $id;
 
 	if ( $keys = get_post_custom_keys() ) {
 		echo "<ul class='post-meta'>\n";
 		foreach ( $keys as $key ) {
+			$keyt = trim($key);
+			if ( '_' == $keyt{0} )
+				continue;
 			$values = array_map('trim', get_post_custom_values($key));
 			$value = implode($values,', ');
 			echo "<li><span class='post-meta-key'>$key:</span> $value</li>\n";
@@ -410,13 +418,13 @@ function _page_level_out($parent, $page_tree, $args, $depth = 0, $echo = true) {
 
 	foreach ( $page_tree[$parent]['children'] as $page_id ) {
 		$cur_page = $page_tree[$page_id];
-		$title = $cur_page['title'];
+		$title = wp_specialchars($cur_page['title']);
 
 		$css_class = 'page_item';
 		if ( $page_id == $queried_obj->ID )
 			$css_class .= ' current_page_item';
 
-		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_page_link($page_id) . '" title="' . wp_specialchars($title) . '">' . $title . '</a>';
+		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_page_link($page_id) . '" title="' . $title . '">' . $title . '</a>';
 
 		if ( isset($cur_page['ts']) ) {
 			$format = get_settings('date_format');

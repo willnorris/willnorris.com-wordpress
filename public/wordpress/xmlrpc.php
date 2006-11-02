@@ -58,31 +58,8 @@ function starify($string) {
 	return str_repeat('*', $i);
 }
 
-logIO("I", $HTTP_RAW_POST_DATA);
-
-
-function mkdir_p($target) {
-	// from php.net/mkdir user contributed notes 
-	if (file_exists($target)) {
-	  if (!is_dir($target)) {
-	    return false;
-	  } else {
-	    return true;
-	  }
-	}
-
-	// Attempting to create the directory may clutter up our display.
-	if (@mkdir($target)) {
-	  return true;
-	}
-
-	// If the above failed, attempt to create the parent node, then try again.
-	if (mkdir_p(dirname($target))) {
-	  return mkdir_p($target);
-	}
-
-	return false;
-}
+if ( isset($HTTP_RAW_POST_DATA) )
+  logIO("I", $HTTP_RAW_POST_DATA);
 
 
 class wp_xmlrpc_server extends IXR_Server {
@@ -157,7 +134,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	function escape(&$array) {
 		global $wpdb;
 
-		foreach ($array as $k => $v) {
+		foreach ( (array) $array as $k => $v ) {
 			if (is_array($v)) {
 				$this->escape($array[$k]);
 			} else if (is_object($v)) {

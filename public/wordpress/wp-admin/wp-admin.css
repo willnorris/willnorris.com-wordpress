@@ -357,6 +357,14 @@ table .vers, table .name {
 	text-align: center;
 }
 
+textarea.all-options, input.all-options {
+	width: 250px;
+}
+
+input.disabled, textarea.disabled {
+	background: #ccc;
+}
+
 #adminmenu {
 	background: #6da6d1;
 	border-top: 3px solid #448abd;

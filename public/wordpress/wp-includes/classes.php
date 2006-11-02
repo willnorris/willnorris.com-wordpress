@@ -109,7 +109,7 @@ class WP_Query {
 			// If year, month, day, hour, minute, and second are set, a single 
 			// post is being queried.        
 			$this->is_single = true;
-		} elseif ('' != $qv['static'] || '' != $qv['pagename'] || '' != $qv['page_id']) {
+		} elseif ('' != $qv['static'] || '' != $qv['pagename'] || (int) $qv['page_id']) {
 			$this->is_page = true;
 			$this->is_single = false;
 		} elseif (!empty($qv['s'])) {
@@ -246,8 +246,12 @@ class WP_Query {
 	}
 
 	function set_404() {
+		$is_feed = $this->is_feed;
+
 		$this->init_query_flags();
-		$this->is_404 = true;	
+		$this->is_404 = true;
+
+		$this->is_feed = $is_feed;
 	}
 	
 	function get($query_var) {
@@ -805,7 +809,7 @@ class retrospam_mgr {
 		$list = array_unique( $list );
 		$this->spam_words = $list;
 
-		$this->comment_list = $wpdb->get_results("SELECT comment_ID AS ID, comment_content AS text, comment_approved AS approved, comment_author_url AS url, comment_author_ip AS ip, comment_author_email AS email FROM $wpdb->comments ORDER BY comment_ID ASC");
+		$this->comment_list = (array) $wpdb->get_results("SELECT comment_ID AS ID, comment_content AS text, comment_approved AS approved, comment_author_url AS url, comment_author_ip AS ip, comment_author_email AS email FROM $wpdb->comments ORDER BY comment_ID ASC");
 	}	// End of class constructor
 
 	function move_spam( $id_list ) {
@@ -818,9 +822,9 @@ class retrospam_mgr {
 				$cnt++;
 			}
 		}
-		echo "<div class='updated'><p>$cnt comment";
-		if ($cnt != 1 ) echo "s";
-		echo " moved to the moderation queue.</p></div>\n";
+		echo "<div class='updated'><p> ";
+		printf(__('%d comment(s) moved to the moderation queue.'), $cnt);
+		echo "</p></div>\n";
 	}	// End function move_spam
 
 	function find_spam() {
@@ -849,7 +853,7 @@ class retrospam_mgr {
 		$numfound = count($counters[found]);
 		$numqueue = $counters[in_queue];
 
-		$body = '<p>' . sprintf(__('Suspected spam comments: <strong>%s</strong>'), $numfound) . '</p>';
+		$body = '<p>' . sprintf(__('Suspected spam comments: %s'), "<strong>$numfound</strong>") . '</p>';
 
 		if ( count($counters[found]) > 0 ) {
 			$id_list = implode( ',', $counters[found] );
@@ -1032,6 +1036,7 @@ class WP_Rewrite {
 				$front = $front . 'date/';
 				break;
 			}
+			$tok_index++;
 		}
 
 		$this->date_structure = $front . $date_endian;
@@ -1499,7 +1504,7 @@ class WP {
 
 			$pathinfo = $_SERVER['PATH_INFO'];
 			$pathinfo_array = explode('?', $pathinfo);
-			$pathinfo = $pathinfo_array[0];
+			$pathinfo = str_replace("%", "%25", $pathinfo_array[0]);
 			$req_uri = $_SERVER['REQUEST_URI'];
 			$req_uri_array = explode('?', $req_uri);
 			$req_uri = $req_uri_array[0];
@@ -1616,6 +1621,8 @@ class WP {
 			nocache_headers();
 		if ( !empty($this->query_vars['error']) && '404' == $this->query_vars['error'] ) {
 			status_header( 404 );
+			if ( !is_user_logged_in() )
+				nocache_headers();
 			@header('Content-type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
 		} else if ( empty($this->query_vars['feed']) ) {
 			@header('Content-type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
@@ -1705,6 +1712,7 @@ class WP {
 		if ( (0 == count($wp_query->posts)) && !is_404() && !is_search() && ( $this->did_permalink || (!empty($_SERVER['QUERY_STRING']) && (false === strpos($_SERVER['REQUEST_URI'], '?'))) ) ) {
 			$wp_query->set_404();
 			status_header( 404 );
+			nocache_headers();
 		}	elseif( is_404() != true ) {
 			status_header( 200 );
 		}

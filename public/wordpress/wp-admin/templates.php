@@ -71,14 +71,17 @@ default:
 
 	update_recently_edited($file);
 
-	if (!is_file($real_file))
+	if ( !is_file($real_file) ) {
 		$error = true;
-	
-	if (!$error) {
+	} else {
 		$f = @ fopen($real_file, 'r');
 		if ( $f ) {
-			$content = fread($f, filesize($real_file));
-			$content = htmlspecialchars($content);
+			if ( filesize($real_file ) > 0 ) {
+				$content = fread($f, filesize($real_file));
+				$content = htmlspecialchars($content);
+			} else {
+				$content = '';
+			}
 		} else {
 			$error = true;
 		}
@@ -108,7 +111,7 @@ if ( $recents ) :
 <?php
 echo '<ol>';
 foreach ($recents as $recent) :
-	echo "<li><a href='templates.php?file=$recent'>" . get_file_description(basename($recent)) . "</a></li>";
+	echo "<li><a href='templates.php?file=" . wp_specialchars($recent, true) . "'>" . get_file_description(basename($recent)) . "</a></li>";
 endforeach;
 echo '</ol>';
 endif;

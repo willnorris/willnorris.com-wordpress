@@ -4,7 +4,7 @@ Plugin Name: WordPress Database Backup
 Plugin URI: http://www.skippy.net/blog/plugins/
 Description: On-demand backup of your WordPress database.
 Author: Scott Merrill
-Version: 1.7
+Version: 1.8
 Author URI: http://www.skippy.net/
 
 Much of this was modified from Mark Ghosh's One Click Backup, which
@@ -69,7 +69,8 @@ class wpdbBackup {
 			$via = isset($_GET['via']) ? $_GET['via'] : 'http';
 			
 			$this->backup_file = $_GET['backup'];
-			
+			$this->validate_file($this->backup_file);
+
 			switch($via) {
 			case 'smtp':
 			case 'email':
@@ -95,6 +96,7 @@ class wpdbBackup {
 		}
 		if (isset($_GET['fragment'] )) {
 			list($table, $segment, $filename) = explode(':', $_GET['fragment']);
+			$this->validate_file($filename);
 			$this->backup_fragment($table, $segment, $filename);
 		}
 
@@ -881,6 +883,18 @@ class wpdbBackup {
 		
 		return;
 	} // wp_cron_db_backup
+
+	function validate_file($file) {
+		if (false !== strpos($file, '..'))
+			die(__("Cheatin' uh ?"));
+
+		if (false !== strpos($file, './'))
+			die(__("Cheatin' uh ?"));
+
+		if (':' == substr($file, 1, 1))
+			die(__("Cheatin' uh ?"));
+	}
+
 }
 
 function wpdbBackup_init() {

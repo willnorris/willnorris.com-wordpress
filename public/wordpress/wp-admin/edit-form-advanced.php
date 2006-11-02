@@ -39,7 +39,7 @@ if ('' != $post->pinged) {
 	$pings = '<p>'. __('Already pinged:') . '</p><ul>';
 	$already_pinged = explode("\n", trim($post->pinged));
 	foreach ($already_pinged as $pinged_url) {
-		$pings .= "\n\t<li>$pinged_url</li>";
+		$pings .= "\n\t<li>" . wp_specialchars($pinged_url) . "</li>";
 	}
 	$pings .= '</ul>';
 }
@@ -97,7 +97,7 @@ addLoadEvent(focusit);
 <div id="categorychecklist"><?php dropdown_categories(get_settings('default_category')); ?></div></div>
 </fieldset>
 
-<fieldset class="dbx-box">
+<fieldset id="poststatusdiv" class="dbx-box">
 <h3 class="dbx-handle"><?php _e('Post Status') ?></h3> 
 <div class="dbx-content"><?php if ( current_user_can('publish_posts') ) : ?>
 <label for="post_status_publish" class="selectit"><input id="post_status_publish" name="post_status" type="radio" value="publish" <?php checked($post->post_status, 'publish'); ?> /> <?php _e('Published') ?></label>
@@ -107,7 +107,7 @@ addLoadEvent(focusit);
 </fieldset>
 
 <?php if ( current_user_can('edit_posts') ) : ?>
-<fieldset class="dbx-box">
+<fieldset id="posttimestampdiv" class="dbx-box">
 <h3 class="dbx-handle"><?php _e('Post Timestamp'); ?>:</h3>
 <div class="dbx-content"><?php touch_time(($action == 'edit')); ?></div>
 </fieldset>
@@ -151,6 +151,7 @@ endforeach;
  }
 ?>
 <?php the_quicktags(); ?>
+</fieldset>
 
 <div><textarea <?php if ( user_can_richedit() ) echo 'title="true" '; ?>rows="<?php echo $rows; ?>" cols="40" name="content" tabindex="2" id="content"><?php echo user_can_richedit() ? wp_richedit_pre($post->post_content) : $post->post_content; ?></textarea></div>
 </fieldset>
@@ -225,7 +226,7 @@ if (current_user_can('upload_files')) {
 	$uploading_iframe_src = wp_nonce_url("inline-uploading.php?action=view&amp;post=$uploading_iframe_ID", 'inlineuploading');
 	$uploading_iframe_src = apply_filters('uploading_iframe_src', $uploading_iframe_src);
 	if ( false != $uploading_iframe_src )
-		echo '<iframe id="uploading" border="0" src="' . $uploading_iframe_src . '">' . __('This feature requires iframe support.') . '</iframe>';
+		echo '<iframe id="uploading" frameborder="0" src="' . $uploading_iframe_src . '">' . __('This feature requires iframe support.') . '</iframe>';
 }
 ?>
 
@@ -243,7 +244,7 @@ if (current_user_can('upload_files')) {
 </div>
 
 <div class="dbx-box-wrapper">
-<fieldset class="dbx-box">
+<fieldset id="trackbacksdiv" class="dbx-box">
 <div class="dbx-handle-wrapper">
 <h3 class="dbx-handle"><?php _e('Trackbacks') ?></h3>
 </div>
@@ -275,6 +276,7 @@ if($metadata = has_meta($post_ID)) {
 }
 	meta_form();
 ?>
+</div>
 </div>
 </fieldset>
 </div>
