@@ -5,14 +5,14 @@ if (empty($wp)) {
 	wp('feed=rss2');
 }
 
-header('Content-type: text/xml; charset=' . get_settings('blog_charset'), true);
+header('Content-type: text/xml; charset=' . get_option('blog_charset'), true);
 $more = 1;
 
 ?>
-<?php echo '<?xml version="1.0" encoding="'.get_settings('blog_charset').'"?'.'>'; ?>
+<?php echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
 
 <!-- generator="wordpress/<?php bloginfo_rss('version') ?>" -->
-<rss version="2.0" 
+<rss version="2.0"
 	xmlns:content="http://purl.org/rss/1.0/modules/content/"
 	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -27,7 +27,7 @@ $more = 1;
 	<generator>http://wordpress.org/?v=<?php bloginfo_rss('version'); ?></generator>
 	<language><?php echo get_option('rss_language'); ?></language>
 	<?php do_action('rss2_head'); ?>
-	<?php $items_count = 0; if ($posts) { foreach ($posts as $post) { start_wp(); ?>
+	<?php while( have_posts()) : the_post(); ?>
 	<item>
 		<title><?php the_title_rss() ?></title>
 		<link><?php permalink_single_rss() ?></link>
@@ -37,12 +37,12 @@ $more = 1;
 		<?php the_category_rss() ?>
 
 		<guid isPermaLink="false"><?php the_guid(); ?></guid>
-<?php if (get_settings('rss_use_excerpt')) : ?>
+<?php if (get_option('rss_use_excerpt')) : ?>
 		<description><![CDATA[<?php the_excerpt_rss() ?>]]></description>
 <?php else : ?>
 		<description><![CDATA[<?php the_excerpt_rss() ?>]]></description>
 	<?php if ( strlen( $post->post_content ) > 0 ) : ?>
-		<content:encoded><![CDATA[<?php the_content('', 0, '') ?>]]></content:encoded>
+		<content:encoded><![CDATA[<?php the_content() ?>]]></content:encoded>
 	<?php else : ?>
 		<content:encoded><![CDATA[<?php the_excerpt_rss() ?>]]></content:encoded>
 	<?php endif; ?>
@@ -51,6 +51,6 @@ $more = 1;
 <?php rss_enclosure(); ?>
 	<?php do_action('rss2_item'); ?>
 	</item>
-	<?php $items_count++; if (($items_count == get_settings('posts_per_rss')) && empty($m)) { break; } } } ?>
+	<?php endwhile; ?>
 </channel>
 </rss>

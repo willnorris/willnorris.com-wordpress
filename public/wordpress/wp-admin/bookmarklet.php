@@ -3,7 +3,7 @@ $mode = 'bookmarklet';
 require_once('admin.php');
 
 if ( ! current_user_can('edit_posts') )
-	die ("Cheatin' uh?");
+	wp_die(__('Cheatin&#8217; uh?'));
 
 if ('b' == $a):
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -25,32 +25,32 @@ $post = get_default_post_to_edit();
 
 $popuptitle = wp_specialchars(stripslashes($popuptitle));
 $text       = wp_specialchars(stripslashes(urldecode($text)));
-	
+
 $popuptitle = funky_javascript_fix($popuptitle);
 $text       = funky_javascript_fix($text);
-	
+
 $post_title = wp_specialchars($_REQUEST['post_title']);
 if (!empty($post_title))
 	$post->post_title =  stripslashes($post_title);
 else
 	$post->post_title = $popuptitle;
-	
-  
-$content  = wp_specialchars($_REQUEST['content']);
-$popupurl = wp_specialchars($_REQUEST['popupurl']);
-    if ( !empty($content) ) {
-        $post->post_content = wp_specialchars( stripslashes($_REQUEST['content']) );
-    } else {
-        $post->post_content = '<a href="'.$popupurl.'">'.$popuptitle.'</a>'."\n$text";
-    }
 
-    /* /big funky fixes */
+
+$content  = wp_specialchars($_REQUEST['content']);
+$popupurl = attribute_escape($_REQUEST['popupurl']);
+if ( !empty($content) ) {
+	$post->post_content = wp_specialchars( stripslashes($_REQUEST['content']) );
+} else {
+	$post->post_content = '<a href="'.$popupurl.'">'.$popuptitle.'</a>'."\n$text";
+}
+
+/* /big funky fixes */
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title><?php bloginfo('name') ?> &rsaquo; Bookmarklet &#8212; WordPress</title>
-<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_settings('blog_charset'); ?>" />
+<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 <link rel="stylesheet" href="wp-admin.css" type="text/css" />
 
 <style type="text/css">
@@ -77,15 +77,15 @@ $popupurl = wp_specialchars($_REQUEST['popupurl']);
 }
 
 #wpbookmarklet .wrap {
-    border: 0px;
+	border: 0px;
 }
 
 #wpbookmarklet #postdiv {
-    margin-bottom: 0.5em;
+	margin-bottom: 0.5em;
 }
 
 #wpbookmarklet #titlediv {
-    margin-bottom: 1em;
+	margin-bottom: 1em;
 }
 
 -->

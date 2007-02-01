@@ -24,13 +24,13 @@
 			<p>You are currently browsing the <a href="<?php bloginfo('home'); ?>/"><?php echo bloginfo('name'); ?></a> weblog archives
 			for <?php the_time('F, Y'); ?>.</p>
 
-      <?php /* If this is a yearly archive */ } elseif (is_year()) { ?>
+			<?php /* If this is a yearly archive */ } elseif (is_year()) { ?>
 			<p>You are currently browsing the <a href="<?php bloginfo('home'); ?>/"><?php echo bloginfo('name'); ?></a> weblog archives
 			for the year <?php the_time('Y'); ?>.</p>
 
-		 <?php /* If this is a monthly archive */ } elseif (is_search()) { ?>
+			<?php /* If this is a monthly archive */ } elseif (is_search()) { ?>
 			<p>You have searched the <a href="<?php echo bloginfo('home'); ?>/"><?php echo bloginfo('name'); ?></a> weblog archives
-			for <strong>'<?php echo wp_specialchars($s); ?>'</strong>. If you are unable to find anything in these search results, you can try one of these links.</p>
+			for <strong>'<?php the_search_query(); ?>'</strong>. If you are unable to find anything in these search results, you can try one of these links.</p>
 
 			<?php /* If this is a monthly archive */ } elseif (isset($_GET['paged']) && !empty($_GET['paged'])) { ?>
 			<p>You are currently browsing the <a href="<?php echo bloginfo('home'); ?>/"><?php echo bloginfo('name'); ?></a> weblog archives.</p>
@@ -46,14 +46,10 @@
 				</ul>
 			</li>
 
-			<li><h2>Categories</h2>
-				<ul>
-				<?php wp_list_cats('sort_column=name&optioncount=1&hierarchical=0'); ?>
-				</ul>
-			</li>
+			<?php wp_list_categories('show_count=1&title_li=<h2>Categories</h2>'); ?>
 
 			<?php /* If this is the frontpage */ if ( is_home() || is_page() ) { ?>
-				<?php get_links_list(); ?>
+				<?php wp_list_bookmarks(); ?>
 
 				<li><h2>Meta</h2>
 				<ul>

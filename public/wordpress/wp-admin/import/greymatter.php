@@ -6,7 +6,7 @@ class GM_Import {
 
 	function header() {
 		echo '<div class="wrap">';
-		echo '<h2>'.__('Import Greymatter').'</h2>';
+		echo '<h2>'.__('Import GreyMatter').'</h2>';
 	}
 
 	function footer() {
@@ -66,10 +66,10 @@ class GM_Import {
 		$string = str_replace("|*|","<br />\n",$string);
 		return($string);
 	}
-	
+
 	function import() {
 		global $wpdb;
-	
+
 		$wpvarstoreset = array('gmpath', 'archivespath', 'lastentry');
 		for ($i=0; $i<count($wpvarstoreset); $i += 1) {
 			$wpvar = $wpvarstoreset[$i];
@@ -87,10 +87,10 @@ class GM_Import {
 		}
 
 		if (!chdir($archivespath))
-			die(sprintf(__("Wrong path, %s\ndoesn't exist\non the server"), $archivespath));
+			wp_die(sprintf(__("Wrong path, %s\ndoesn't exist\non the server"), $archivespath));
 
 		if (!chdir($gmpath))
-			die(sprintf(__("Wrong path, %s\ndoesn't exist\non the server"), $gmpath));
+			wp_die(sprintf(__("Wrong path, %s\ndoesn't exist\non the server"), $gmpath));
 			
 		$this->header();
 ?>
@@ -136,11 +136,11 @@ class GM_Import {
 <li><?php _e('importing posts, comments, and karma...') ?><br /><ul><?php
 
 	chdir($archivespath);
-	
+
 	for($i = 0; $i <= $lastentry; $i = $i + 1) {
-		
+
 		$entryfile = "";
-		
+
 		if ($i<10000000) {
 			$entryfile .= "0";
 			if ($i<1000000) {
@@ -194,7 +194,7 @@ class GM_Import {
 			$post_status = 'publish'; //in greymatter, there are no drafts
 			$comment_status = 'open';
 			$ping_status = 'closed';
-			
+
 			if ($post_ID = post_exists($post_title, '', $post_date)) {
 				echo ' ';
 				_e('(already exists)');
@@ -281,7 +281,7 @@ class GM_Import {
 	?>
 </ul><strong><?php _e('Done') ?></strong></li></ul>
 <p>&nbsp;</p>
-<p><?php _e('Completed Greymatter import!') ?></p>
+<p><?php _e('Completed GreyMatter import!') ?></p>
 <?php
 	$this->footer();
 	}
@@ -303,11 +303,11 @@ class GM_Import {
 	}
 
 	function GM_Import() {
-		// Nothing.	
+		// Nothing.
 	}
 }
 
 $gm_import = new GM_Import();
 
-register_importer('greymatter', __('Greymatter'), __('Import posts and comments from your Greymatter blog'), array ($gm_import, 'dispatch'));
+register_importer('greymatter', __('GreyMatter'), __('Import users, posts, and comments from a Greymatter blog'), array ($gm_import, 'dispatch'));
 ?>

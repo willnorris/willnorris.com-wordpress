@@ -1,251 +1,49 @@
 <?php
+
+
 // Links
 // Copyright (C) 2002, 2003 Mike Little -- mike@zed1.com
 
-require_once('admin.php');
+require_once ('admin.php');
 
-$title = __('Manage Links');
+wp_enqueue_script( 'listman' );
+
+wp_reset_vars(array('action', 'cat_id', 'linkurl', 'name', 'image', 'description', 'visible', 'target', 'category', 'link_id', 'submit', 'order_by', 'links_show_cat_id', 'rating', 'rel', 'notes', 'linkcheck[]'));
+
+if (empty ($cat_id))
+	$cat_id = 'all';
+
+if (empty ($order_by))
+	$order_by = 'order_name';
+
+$title = __('Manage Blogroll');
 $this_file = $parent_file = 'link-manager.php';
-$list_js = true;
+include_once ("./admin-header.php");
 
-$wpvarstoreset = array('action','cat_id', 'linkurl', 'name', 'image',
-                       'description', 'visible', 'target', 'category', 'link_id',
-                       'submit', 'order_by', 'links_show_cat_id', 'rating', 'rel',
-                       'notes', 'linkcheck[]');
+if (!current_user_can('manage_links'))
+	wp_die(__("You do not have sufficient permissions to edit the links for this blog."));
 
-for ($i=0; $i<count($wpvarstoreset); $i += 1) {
-    $wpvar = $wpvarstoreset[$i];
-    if (!isset($$wpvar)) {
-        if (empty($_POST["$wpvar"])) {
-            if (empty($_GET["$wpvar"])) {
-                $$wpvar = '';
-            } else {
-                $$wpvar = $_GET["$wpvar"];
-            }
-        } else {
-            $$wpvar = $_POST["$wpvar"];
-        }
-    }
+switch ($order_by) {
+	case 'order_id' :
+		$sqlorderby = 'id';
+		break;
+	case 'order_url' :
+		$sqlorderby = 'url';
+		break;
+	case 'order_desc' :
+		$sqlorderby = 'description';
+		break;
+	case 'order_owner' :
+		$sqlorderby = 'owner';
+		break;
+	case 'order_rating' :
+		$sqlorderby = 'rating';
+		break;
+	case 'order_name' :
+	default :
+		$sqlorderby = 'name';
+		break;
 }
-
-$links_show_cat_id = $_COOKIE['links_show_cat_id_' . COOKIEHASH];
-$links_show_order = $_COOKIE['links_show_order_' . COOKIEHASH];
-
-if ('' != $_POST['assign']) $action = 'assign';
-if ('' != $_POST['visibility']) $action = 'visibility';
-if ('' != $_POST['move']) $action = 'move';
-if ('' != $_POST['linkcheck']) $linkcheck = $_POST[linkcheck];
-
-switch ($action) {
-  case 'assign':
-  {
-	check_admin_referer('bulk-bookmarks');
-
-    // check the current user's level first.
-    if ( !current_user_can('manage_links') )
-      die (__("Cheatin' uh ?"));
-
-    //for each link id (in $linkcheck[]): if the current user level >= the
-    //userlevel of the owner of the link then we can proceed.
-
-    if (count($linkcheck) == 0) {
-        wp_redirect($this_file);
-        exit;
-    }
-    $all_links = join(',', $linkcheck);
-    $results = $wpdb->get_results("SELECT link_id, link_owner FROM $wpdb->links LEFT JOIN $wpdb->users ON link_owner = ID WHERE link_id in ($all_links)");
-    foreach ($results as $row) {
-       $ids_to_change[] = $row->link_id;
-    }
-
-    // should now have an array of links we can change
-    $all_links = join(',', $ids_to_change);
-    $q = $wpdb->query("update $wpdb->links SET link_owner='$newowner' WHERE link_id IN ($all_links)");
-
-    wp_redirect($this_file);
-    break;
-  }
-  case 'visibility':
-  {
-  	check_admin_referer('bulk-bookmarks');
-
-    // check the current user's level first.
-    if ( !current_user_can('manage_links') )
-      die (__("Cheatin' uh ?"));
-
-    //for each link id (in $linkcheck[]): toggle the visibility
-    if (count($linkcheck) == 0) {
-        wp_redirect($this_file);
-        exit;
-    }
-    $all_links = join(',', $linkcheck);
-    $results = $wpdb->get_results("SELECT link_id, link_visible FROM $wpdb->links WHERE link_id in ($all_links)");
-    foreach ($results as $row) {
-        if ($row->link_visible == 'Y') { // ok to proceed
-            $ids_to_turnoff[] = $row->link_id;
-        } else {
-            $ids_to_turnon[] = $row->link_id;
-        }
-    }
-
-    // should now have two arrays of links to change
-    if (count($ids_to_turnoff)) {
-        $all_linksoff = join(',', $ids_to_turnoff);
-        $q = $wpdb->query("update $wpdb->links SET link_visible='N' WHERE link_id IN ($all_linksoff)");
-    }
-
-    if (count($ids_to_turnon)) {
-        $all_linkson = join(',', $ids_to_turnon);
-        $q = $wpdb->query("update $wpdb->links SET link_visible='Y' WHERE link_id IN ($all_linkson)");
-    }
-
-    wp_redirect($this_file);
-    break;
-  }
-  case 'move':
-  {
-	check_admin_referer('bulk-bookmarks');
-
-    // check the current user's level first.
-    if ( !current_user_can('manage_links') )
-      die (__("Cheatin' uh ?"));
-
-    //for each link id (in $linkcheck[]) change category to selected value
-    if (count($linkcheck) == 0) {
-        wp_redirect($this_file);
-        exit;
-    }
-    $all_links = join(',', $linkcheck);
-    // should now have an array of links we can change
-    $q = $wpdb->query("update $wpdb->links SET link_category='$category' WHERE link_id IN ($all_links)");
-
-    wp_redirect($this_file);
-    break;
-  }
-
-  case 'Add':
-  {
-  	check_admin_referer('add-bookmark');
-
-	add_link();
-	
-    wp_redirect(wp_get_referer() . '?added=true');
-    break;
-  } // end Add
-
-  case 'editlink':
-  {
-	$link_id = (int) $_POST['link_id'];
-	check_admin_referer('update-bookmark_' . $link_id);
- 	
-	if (isset($links_show_cat_id) && ($links_show_cat_id != ''))
-		$cat_id = $links_show_cat_id;
-
-	if (!isset($cat_id) || ($cat_id == '')) {
-		if (!isset($links_show_cat_id) || ($links_show_cat_id == ''))
-			$cat_id = 'All';
-	}
-	$links_show_cat_id = $cat_id;
-
-	edit_link($link_id);
-	
-    setcookie('links_show_cat_id_' . COOKIEHASH, $links_show_cat_id, time()+600);
-    wp_redirect($this_file);
-    break;
-  } // end Save
-
-  case 'delete':
-  {
-	$link_id = (int) $_GET['link_id'];
-	check_admin_referer('delete-bookmark_' . $link_id);
-
-    if ( !current_user_can('manage_links') )
-      die (__("Cheatin' uh ?"));
-
-	wp_delete_link($link_id);
-	
-    if (isset($links_show_cat_id) && ($links_show_cat_id != ''))
-        $cat_id = $links_show_cat_id;
-
-    if (!isset($cat_id) || ($cat_id == '')) {
-        if (!isset($links_show_cat_id) || ($links_show_cat_id == ''))
-        $cat_id = 'All';
-    }
-    $links_show_cat_id = $cat_id;
-    setcookie('links_show_cat_id_' . COOKIEHASH, $links_show_cat_id, time()+600);
-    wp_redirect($this_file);
-    break;
-  } // end Delete
-
-  case 'linkedit': {
-	$xfn_js = true;
-	include_once ('admin-header.php');
-	if ( !current_user_can('manage_links') )
-		die(__('You do not have sufficient permissions to edit the links for this blog.'));
-	
-	$link_id = (int) $_GET['link_id'];
-	
-	if ( !$link = get_link_to_edit($link_id) )
-		die( __('Link not found.') );
-	
-	include('edit-link-form.php');
-	break;
-  } // end linkedit
-  case __("Show"):
-  {
-    if (!isset($cat_id) || ($cat_id == '')) {
-        if (!isset($links_show_cat_id) || ($links_show_cat_id == ''))
-        $cat_id = 'All';
-    }
-    $links_show_cat_id = $cat_id;
-    if (!isset($order_by) || ($order_by == '')) {
-        if (!isset($links_show_order) || ($links_show_order == ''))
-        $order_by = 'order_name';
-    }
-    $links_show_order = $order_by;
-    //break; fall through
-  } // end Show
-  case "popup":
-  {
-    $link_url = stripslashes($_GET["linkurl"]);
-    $link_name = stripslashes($_GET["name"]);
-    //break; fall through
-  }
-  default:
-  {
-    if (isset($links_show_cat_id) && ($links_show_cat_id != ''))
-        $cat_id = $links_show_cat_id;
-
-    if (!isset($cat_id) || ($cat_id == '')) {
-        if (!isset($links_show_cat_id) || ($links_show_cat_id == ''))
-        $cat_id = 'All';
-    }
-    $links_show_cat_id = $cat_id;
-    if (isset($links_show_order) && ($links_show_order != ''))
-        $order_by = $links_show_order;
-
-    if (!isset($order_by) || ($order_by == ''))
-        $order_by = 'order_name';
-    $links_show_order = $order_by;
-
-    setcookie('links_show_cat_id_' . COOKIEHASH, $links_show_cat_id, time()+600);
-    setcookie('links_show_order_' . COOKIEHASH, $links_show_order, time()+600);
-    include_once ("./admin-header.php");
-    if ( !current_user_can('manage_links') )
-      die(__("You do not have sufficient permissions to edit the links for this blog."));
-
-    switch ($order_by)
-    {
-        case 'order_id':     $sqlorderby = 'id';          break;
-        case 'order_url':    $sqlorderby = 'url';         break;
-        case 'order_desc':   $sqlorderby = 'description'; break;
-        case 'order_owner':  $sqlorderby = 'owner';       break;
-        case 'order_rating': $sqlorderby = 'rating';      break;
-        case 'order_name':
-        default:             $sqlorderby = 'name';        break;
-    }
-
-  if ($action != "popup") {
 ?>
 <script type="text/javascript">
 <!--
@@ -263,183 +61,145 @@ function checkAll(form)
 //-->
 </script>
 
-<div class="wrap">
-    <form name="cats" method="post" action="">
-    <table width="75%" cellpadding="3" cellspacing="3">
-      <tr>
-        <td>
-        <?php _e('<strong>Show</strong> links in category:'); ?><br />
-        </td>
-        <td>
-          <?php _e('<strong>Order</strong> by:');?>
-        </td>
-		<td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td>
 <?php
-    $results = $wpdb->get_results("SELECT cat_id, cat_name, auto_toggle FROM $wpdb->linkcategories ORDER BY cat_id");
-    echo "        <select name=\"cat_id\">\n";
-    echo "          <option value=\"All\"";
-    if ($cat_id == 'All')
-      echo " selected='selected'";
-    echo "> " . __('All') . "</option>\n";
-    foreach ($results as $row) {
-      echo "          <option value=\"".$row->cat_id."\"";
-      if ($row->cat_id == $cat_id)
-        echo " selected='selected'";
-        echo ">".$row->cat_id.": ".wp_specialchars($row->cat_name);
-        if ($row->auto_toggle == 'Y')
-            echo ' '.__('(auto toggle)');
-        echo "</option>\n";
-    }
-    echo "        </select>\n";
+if ( isset($_GET['deleted']) ) {
+	echo '<div style="background-color: rgb(207, 235, 247);" id="message" class="updated fade"><p>';
+	$deleted = (int) $_GET['deleted'];
+	printf(__ngettext('%s link deleted.', '%s links deleted', $deleted), $deleted);
+	echo '</p></div>';
+}
 ?>
-        </td>
-        <td>
-          <select name="order_by">
-            <option value="order_id"     <?php if ($order_by == 'order_id')     echo " selected='selected'";?>><?php _e('Link ID') ?></option>
-            <option value="order_name"   <?php if ($order_by == 'order_name')   echo " selected='selected'";?>><?php _e('Name') ?></option>
-            <option value="order_url"    <?php if ($order_by == 'order_url')    echo " selected='selected'";?>><?php _e('URI') ?></option>
-            <option value="order_desc"   <?php if ($order_by == 'order_desc')   echo " selected='selected'";?>><?php _e('Description') ?></option>
-            <option value="order_owner"  <?php if ($order_by == 'order_owner')  echo " selected='selected'";?>><?php _e('Owner') ?></option>
-            <option value="order_rating" <?php if ($order_by == 'order_rating') echo " selected='selected'";?>><?php _e('Rating') ?></option>
-          </select>
-        </td>
-        <td>
-          <input type="submit" name="action" value="<?php _e('Show') ?>" />
-        </td>
-      </tr>
-    </table>
-    </form>
 
-</div>
-
-<form name="links" id="links" method="post" action="">
 <div class="wrap">
 
-    <?php wp_nonce_field('bulk-bookmarks') ?>
-    <input type="hidden" name="link_id" value="" />
-    <input type="hidden" name="action" value="" />
-    <input type="hidden" name="order_by" value="<?php echo wp_specialchars($order_by, 1); ?>" />
-    <input type="hidden" name="cat_id" value="<?php echo (int) $cat_id ?>" />
-  <table id="the-list-x" width="100%" cellpadding="3" cellspacing="3">
-    <tr>
-      <th width="15%"><?php _e('Name') ?></th>
-      <th><?php _e('URI') ?></th>
-      <th><?php _e('Category') ?></th>
-      <th><?php _e('rel') ?></th>
-      <th><?php _e('Image') ?></th>
-      <th><?php _e('Visible') ?></th>
-      <th colspan="2"><?php _e('Action') ?></th>
-      <th>&nbsp;</th>
-  </tr>
-<?php
-    $sql = "SELECT link_url, link_name, link_image, link_description, link_visible,
-            link_category AS cat_id, cat_name AS category, $wpdb->users.user_login, link_id,
-            link_rating, link_rel
-            FROM $wpdb->links
-            LEFT JOIN $wpdb->linkcategories ON $wpdb->links.link_category = $wpdb->linkcategories.cat_id
-            LEFT JOIN $wpdb->users ON $wpdb->users.ID = $wpdb->links.link_owner ";
+<h2><?php _e('Blogroll Management'); ?></h2>
+<p><?php _e('Here you <a href="link-add.php">add links</a> to sites that you visit often and share them on your blog. When you have a list of links in your sidebar to other blogs, it&#8217;s called a &#8220;blogroll.&#8221;'); ?></p>
+<form id="cats" method="get" action="">
+<p><?php
+$categories = get_categories("hide_empty=1&type=link");
+$select_cat = "<select name=\"cat_id\">\n";
+$select_cat .= '<option value="all"'  . (($cat_id == 'all') ? " selected='selected'" : '') . '>' . __('All') . "</option>\n";
+foreach ((array) $categories as $cat)
+	$select_cat .= '<option value="' . $cat->cat_ID . '"' . (($cat->cat_ID == $cat_id) ? " selected='selected'" : '') . '>' . wp_specialchars($cat->cat_name) . "</option>\n";
+$select_cat .= "</select>\n";
 
-    if (isset($cat_id) && ($cat_id != 'All')) {
-      $sql .= " WHERE link_category = $cat_id ";
-    }
-    $sql .= ' ORDER BY link_' . $sqlorderby;
+$select_order = "<select name=\"order_by\">\n";
+$select_order .= '<option value="order_id"' . (($order_by == 'order_id') ? " selected='selected'" : '') . '>' .  __('Link ID') . "</option>\n";
+$select_order .= '<option value="order_name"' . (($order_by == 'order_name') ? " selected='selected'" : '') . '>' .  __('Name') . "</option>\n";
+$select_order .= '<option value="order_url"' . (($order_by == 'order_url') ? " selected='selected'" : '') . '>' .  __('Address') . "</option>\n";
+$select_order .= '<option value="order_rating"' . (($order_by == 'order_rating') ? " selected='selected'" : '') . '>' .  __('Rating') . "</option>\n";
+$select_order .= "</select>\n";
 
-    // echo "$sql";
-    $links = $wpdb->get_results($sql);
-    if ($links) {
-        foreach ($links as $link) {
-      	    $link->link_name = wp_specialchars($link->link_name);
-      	    $link->link_category = wp_specialchars($link->link_category);
-      	    $link->link_description = wp_specialchars($link->link_description);
-            $link->link_url = wp_specialchars($link->link_url);
-            $short_url = str_replace('http://', '', $link->link_url);
-            $short_url = str_replace('www.', '', $short_url);
-            if ('/' == substr($short_url, -1))
-                $short_url = substr($short_url, 0, -1);
-            if (strlen($short_url) > 35)
-                $short_url =  substr($short_url, 0, 32).'...';
-
-            $image = ($link->link_image != null) ? __('Yes') : __('No');
-            $visible = ($link->link_visible == 'Y') ? __('Yes') : __('No');
-            ++$i;
-            $style = ($i % 2) ? '' : ' class="alternate"';
+printf(__('Currently showing %1$s links ordered by %2$s'), $select_cat, $select_order);
 ?>
-    <tr id="link-<?php echo $link->link_id; ?>" valign="middle" <?php echo $style; ?>>
-		<td><strong><?php echo $link->link_name; ?></strong><br />
-<?php			
-        echo sprintf(__('Description: %s'), $link->link_description) . "</td>";
-        echo "<td><a href=\"$link->link_url\" title=\"" . sprintf(__('Visit %s'), $link->link_name) . "\">$short_url</a></td>";
-        echo <<<LINKS
-        <td>$link->category</td>
-        <td>$link->link_rel</td>
-        <td align='center'>$image</td>
-        <td align='center'>$visible</td>
-LINKS;
-            $show_buttons = 1; // default
+<input type="submit" name="action" value="<?php _e('Update &raquo;') ?>" /></p>
+</form>
+<?php
+$link_columns = array(
+	'name'       => '<th width="15%">' . __('Name') . '</th>',
+	'url'       => '<th>' . __('URL') . '</th>',
+	'categories' => '<th>' . __('Categories') . '</th>',
+	'rel'      => '<th style="text-align: center">' . __('rel') . '</th>',
+	'visible'   => '<th style="text-align: center">' . __('Visible') . '</th>',
+	'action'   => '<th colspan="2" style="text-align: center">' . __('Action') . '</th>',
+);
+$link_columns = apply_filters('manage_link_columns', $link_columns);
+?>
 
-            if ($show_buttons) {
-        echo '<td><a href="link-manager.php?link_id=' . $link->link_id . '&amp;action=linkedit" class="edit">' . __('Edit') . '</a></td>';
- 		echo '<td><a href="' . wp_nonce_url('link-manager.php?link_id='.$link->link_id.'&amp;action=delete', 'delete-bookmark_' . $link->link_id ) . '"'." class='delete' onclick=\"return deleteSomething( 'link', $link->link_id , '".sprintf(__("You are about to delete the &quot;%s&quot; bookmark to %s.\\n&quot;Cancel&quot; to stop, &quot;OK&quot; to delete."), js_escape($link->link_name), js_escape($link->link_url)).'\' );">'.__('Delete').'</a></td>';
-        echo '<td><input type="checkbox" name="linkcheck[]" value="' . $link->link_id . '" /></td>';
-            } else {
-              echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>\n";
-            }
+<?php
+if ( 'all' == $cat_id )
+	$cat_id = '';
+$links = get_bookmarks( "category=$cat_id&hide_invisible=0&orderby=$sqlorderby&hide_empty=0" );
+if ( $links ) {
+?>
 
+<form id="links" method="post" action="link.php">
+<?php wp_nonce_field('bulk-bookmarks') ?>
+<input type="hidden" name="link_id" value="" />
+<input type="hidden" name="action" value="" />
+<input type="hidden" name="order_by" value="<?php echo attribute_escape($order_by); ?>" />
+<input type="hidden" name="cat_id" value="<?php echo (int) $cat_id ?>" />
+<table class="widefat">
+	<thead>
+	<tr>
+<?php foreach($link_columns as $column_display_name) {
+	echo $column_display_name;
+} ?>
+	<th style="text-align: center"><input type="checkbox" onclick="checkAll(document.getElementById('links'));" /></th>
+	</tr>
+	</thead>
+	<tbody id="the-list">
+<?php
+	foreach ($links as $link) {
+		$link->link_name = attribute_escape($link->link_name);
+		$link->link_description = wp_specialchars($link->link_description);
+		$link->link_url = attribute_escape($link->link_url);
+		$link->link_category = wp_get_link_cats($link->link_id);
+		$short_url = str_replace('http://', '', $link->link_url);
+		$short_url = str_replace('www.', '', $short_url);
+		if ('/' == substr($short_url, -1))
+			$short_url = substr($short_url, 0, -1);
+		if (strlen($short_url) > 35)
+			$short_url = substr($short_url, 0, 32).'...';
+
+		$visible = ($link->link_visible == 'Y') ? __('Yes') : __('No');
+		++ $i;
+		$style = ($i % 2) ? '' : ' class="alternate"';
+		?><tr id="link-<?php echo $link->link_id; ?>" valign="middle" <?php echo $style; ?>><?php
+		foreach($link_columns as $column_name=>$column_display_name) {
+			switch($column_name) {
+				case 'name':
+					?><td><strong><?php echo $link->link_name; ?></strong><br /><?php
+					echo $link->link_description . "</td>";
+					break;
+				case 'url':
+					echo "<td><a href='$link->link_url' title='".sprintf(__('Visit %s'), $link->link_name)."'>$short_url</a></td>";
+					break;
+				case 'categories':
+					?><td><?php
+					$cat_names = array();
+					foreach ($link->link_category as $category) {
+						$cat_name = get_the_category_by_ID($category);
+						$cat_name = wp_specialchars($cat_name);
+						if ( $cat_id != $category )
+							$cat_name = "<a href='link-manager.php?cat_id=$category'>$cat_name</a>";
+						$cat_names[] = $cat_name;
+					}
+					echo implode(', ', $cat_names);
+					?> </td><?php
+					break;
+				case 'rel':
+					?><td><?php echo $link->link_rel; ?></td><?php
+					break;
+				case 'visible':
+					?><td align='center'><?php echo $visible; ?></td><?php
+					break;
+				case 'action':
+					echo '<td><a href="link.php?link_id='.$link->link_id.'&amp;action=edit" class="edit">'.__('Edit').'</a></td>';
+					echo '<td><a href="' . wp_nonce_url('link.php?link_id='.$link->link_id.'&amp;action=delete', 'delete-bookmark_' . $link->link_id ) . '"'." onclick=\"return deleteSomething( 'link', $link->link_id , '".js_escape(sprintf(__("You are about to delete the '%s' link to %s.\n'Cancel' to stop, 'OK' to delete."), $link->link_name, $link->link_url )).'\' );" class="delete">'.__('Delete').'</a></td>';
+					break;
+				default:
+					?>
+					<td><?php do_action('manage_link_custom_column', $column_name, $id); ?></td>
+					<?php
+					break;
+
+			}
+		}
+		echo '<td align="center"><input type="checkbox" name="linkcheck[]" value="'.$link->link_id.'" /></td>';
 		echo "\n    </tr>\n";
-        }
-    }
+	}
 ?>
+	</tbody>
 </table>
 
 <div id="ajax-response"></div>
 
-</div>
-
-<div class="wrap">
-  <table width="100%" cellpadding="3" cellspacing="3">
-    <tr><th colspan="4"><?php _e('Manage Multiple Links:') ?></th></tr>
-    <tr><td colspan="4"><?php _e('Use the checkboxes on the right to select multiple links and choose an action below:') ?></td></tr>
-    <tr>
-        <td>
-          <?php _e('Assign ownership to:'); ?>
-<?php
-    $results = $wpdb->get_results("SELECT ID, user_login FROM $wpdb->users ORDER BY ID");
-    echo "          <select name=\"newowner\" size=\"1\">\n";
-    foreach ($results as $row) {
-      echo "            <option value=\"".$row->ID."\"";
-      echo ">".$row->user_login;
-      echo "</option>\n";
-    }
-    echo "          </select>\n";
-?>
-        <input name="assign" type="submit" id="assign" value="<?php _e('Go') ?>" />
-        </td>
-        <td>
-          <input name="visibility" type="submit" id="visibility" value="<?php _e('Toggle Visibility') ?>" />
-        </td>
-        <td>
-          <?php _e('Move to category:'); link_category_dropdown('category'); ?> <input name="move" type="submit" id="move" value="<?php _e('Go') ?>" />
-        </td>
-        <td align="right">
-          <a href="#" onclick="checkAll(document.getElementById('links')); return false; "><?php _e('Toggle Checkboxes') ?></a>
-        </td>
-    </tr>
-</table>
-
-<?php
-  } // end if !popup
-?>
-</div>
+<p class="submit"><input type="submit" class="button" name="deletebookmarks" id="deletebookmarks" value="<?php _e('Delete Checked Links') ?> &raquo;" onclick="return confirm('<?php echo js_escape(__("You are about to delete these links permanently.\n'Cancel' to stop, 'OK' to delete.")); ?>')" /></p>
 </form>
 
+<?php } ?>
 
-<?php
-    break;
-  } // end default
-} // end case
-?>
+</div>
 
 <?php include('admin-footer.php'); ?>

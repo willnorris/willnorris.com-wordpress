@@ -1,26 +1,26 @@
 /**
- * $RCSfile: form_utils.js,v $
- * $Revision: 1.5 $
- * $Date: 2005/10/25 16:01:51 $
+ * $Id: form_utils.js 43 2006-08-08 16:10:07Z spocke $
  *
  * Various form utilitiy functions.
  *
  * @author Moxiecode
- * @copyright Copyright © 2005, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright © 2004-2006, Moxiecode Systems AB, All rights reserved.
  */
 
+var themeBaseURL = tinyMCE.baseURL + '/themes/' + tinyMCE.getParam("theme");
+
 function getColorPickerHTML(id, target_form_element) {
-	var html = "";
+	var h = "";
 
-	html += '<a id="' + id + '_link" href="javascript:void(0);" onkeydown="pickColor(event,\'' + target_form_element +'\');" onmousedown="pickColor(event,\'' + target_form_element +'\');return false;">';
-	html += '<img id="' + id + '" src="../../themes/advanced/images/color.gif"';
-	html += ' onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');"';
-	html += ' onmouseout="tinyMCE.restoreClass(this);"';
-	html += ' onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');"';
-	html += ' width="20" height="16" border="0" title="' + tinyMCE.getLang('lang_browse') + '"';
-	html += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" /></a>';
+	h += '<a id="' + id + '_link" href="javascript:void(0);" onkeydown="pickColor(event,\'' + target_form_element +'\');" onmousedown="pickColor(event,\'' + target_form_element +'\');return false;">';
+	h += '<img id="' + id + '" src="' + themeBaseURL + '/images/color.gif"';
+	h += ' onmouseover="this.className=\'mceButtonOver\'"';
+	h += ' onmouseout="this.className=\'mceButtonNormal\'"';
+	h += ' onmousedown="this.className=\'mceButtonDown\'"';
+	h += ' width="20" height="16" border="0" title="' + tinyMCE.getLang('lang_browse') + '"';
+	h += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" /></a>';
 
-	return html;
+	return h;
 }
 
 function pickColor(e, target_form_element) {
@@ -57,10 +57,10 @@ function getBrowserHTML(id, target_form_element, type, prefix) {
 	var html = "";
 
 	html += '<a id="' + id + '_link" href="javascript:openBrower(\'' + id + '\',\'' + target_form_element + '\', \'' + type + '\',\'' + option + '\');" onmousedown="return false;">';
-	html += '<img id="' + id + '" src="../../themes/advanced/images/browse.gif"';
-	html += ' onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');"';
-	html += ' onmouseout="tinyMCE.restoreClass(this);"';
-	html += ' onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');"';
+	html += '<img id="' + id + '" src="' + themeBaseURL + '/images/browse.gif"';
+	html += ' onmouseover="this.className=\'mceButtonOver\';"';
+	html += ' onmouseout="this.className=\'mceButtonNormal\';"';
+	html += ' onmousedown="this.className=\'mceButtonDown\';"';
 	html += ' width="20" height="18" border="0" title="' + tinyMCE.getLang('lang_browse') + '"';
 	html += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" /></a>';
 
@@ -74,7 +74,7 @@ function openBrower(img_id, target_form_element, type, option) {
 		tinyMCEPopup.openBrowser(target_form_element, type, option);
 }
 
-function selectByValue(form_obj, field_name, value, add_custom) {
+function selectByValue(form_obj, field_name, value, add_custom, ignore_case) {
 	if (!form_obj || !form_obj.elements[field_name])
 		return;
 
@@ -84,7 +84,7 @@ function selectByValue(form_obj, field_name, value, add_custom) {
 	for (var i=0; i<sel.options.length; i++) {
 		var option = sel.options[i];
 
-		if (option.value == value) {
+		if (option.value == value || (ignore_case && option.value.toLowerCase() == value.toLowerCase())) {
 			option.selected = true;
 			found = true;
 		} else
@@ -92,9 +92,10 @@ function selectByValue(form_obj, field_name, value, add_custom) {
 	}
 
 	if (!found && add_custom && value != '') {
-		var option = new Option('Value: ' + value, value);
+		var option = new Option(value, value);
 		option.selected = true;
 		sel.options[sel.options.length] = option;
+		sel.selectedIndex = sel.options.length - 1;
 	}
 
 	return found;
@@ -109,8 +110,13 @@ function getSelectValue(form_obj, field_name) {
 	return elm.options[elm.selectedIndex].value;
 }
 
+function addSelectValue(form_obj, field_name, name, value) {
+	var s = form_obj.elements[field_name];
+	var o = new Option(name, value);
+	s.options[s.options.length] = o;
+}
+
 function addClassesToList(list_id, specific_option) {
-return;
 	// Setup class droplist
 	var styleSelectElm = document.getElementById(list_id);
 	var styles = tinyMCE.getParam('theme_advanced_styles', false);

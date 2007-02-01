@@ -41,7 +41,7 @@ structure.onfocus = function () { document.getElementById('custom_selection').ch
 
 var aInputs = document.getElementsByTagName('input');
 
-for (var i = 0; i < aInputs.length; i++) {		
+for (var i = 0; i < aInputs.length; i++) {
 aInputs[i].onclick = aInputs[i].onkeyup = upit;
 }
 }
@@ -66,7 +66,7 @@ if ( isset($_POST['permalink_structure']) || isset($_POST['category_base']) ) {
 			$permalink_structure = preg_replace('#/+#', '/', '/' . $_POST['permalink_structure']);
 		$wp_rewrite->set_permalink_structure($permalink_structure);
 	}
-	
+
 	if ( isset($_POST['category_base']) ) {
 		$category_base = $_POST['category_base'];
 		if (! empty($category_base) )
@@ -74,9 +74,9 @@ if ( isset($_POST['permalink_structure']) || isset($_POST['category_base']) ) {
 		$wp_rewrite->set_category_base($category_base);
 	}
 }
-	
-$permalink_structure = get_settings('permalink_structure');
-$category_base = get_settings('category_base');
+
+$permalink_structure = get_option('permalink_structure');
+$category_base = get_option('category_base');
 
 if ( (!file_exists($home_path.'.htaccess') && is_writable($home_path)) || is_writable($home_path.'.htaccess') )
 	$writable = true;
@@ -102,7 +102,10 @@ else
 
 <div class="wrap"> 
   <h2><?php _e('Customize Permalink Structure') ?></h2> 
-  <p><?php _e('By default WordPress uses web URIs which have question marks and lots of numbers in them, however WordPress offers you the ability to create a custom URI structure for your permalinks and archives. This can improve the aesthetics, usability, and forward-compatibility of your links. A <a href="http://codex.wordpress.org/Using_Permalinks">number of tags are available</a>, and here are some examples to get you started.'); ?></p>
+<form name="form" action="options-permalink.php" method="post"> 
+<?php wp_nonce_field('update-permalink') ?>
+<p class="submit"><input type="submit" name="submit" value="<?php _e('Update Permalink Structure &raquo;') ?>" /></p>
+  <p><?php _e('By default WordPress uses web <abbr title="Universal Resource Locator">URL</abbr>s which have question marks and lots of numbers in them, however WordPress offers you the ability to create a custom URL structure for your permalinks and archives. This can improve the aesthetics, usability, and forward-compatibility of your links. A <a href="http://codex.wordpress.org/Using_Permalinks">number of tags are available</a>, and here are some examples to get you started.'); ?></p>
 
 <?php
 $prefix = '';
@@ -116,25 +119,23 @@ $structures = array(
 	$prefix . '/archives/%post_id%'
 	);
 ?>
-<form name="form" action="options-permalink.php" method="post"> 
-<?php wp_nonce_field('update-permalink') ?>
 <h3><?php _e('Common options:'); ?></h3>
 <p>
 	<label>
 <input name="selection" type="radio" value="" class="tog" <?php checked('', $permalink_structure); ?> /> 
-<?php _e('Default'); ?><br /> <span> &raquo; <code><?php echo get_settings('home'); ?>/?p=123</code></span>
+<?php _e('Default'); ?><br /> <span> &raquo; <code><?php echo get_option('home'); ?>/?p=123</code></span>
    </label>
 </p>
 <p>
 	<label>
 <input name="selection" type="radio" value="<?php echo $structures[1]; ?>" class="tog" <?php checked($structures[1], $permalink_structure); ?> /> 
-<?php _e('Date and name based'); ?><br /> <span> &raquo; <code><?php echo get_settings('home') . $prefix . '/' . date('Y') . '/' . date('m') . '/' . date('d') . '/sample-post/'; ?></code></span>
+<?php _e('Date and name based'); ?><br /> <span> &raquo; <code><?php echo get_option('home') . $prefix . '/' . date('Y') . '/' . date('m') . '/' . date('d') . '/sample-post/'; ?></code></span>
    </label>
 </p>
 <p>
 	<label>
 <input name="selection" type="radio" value="<?php echo $structures[2]; ?>" class="tog" <?php checked($structures[2], $permalink_structure); ?> /> 
-<?php _e('Numeric'); ?><br /> <span> &raquo; <code><?php echo get_settings('home') . $prefix  ; ?>/archives/123</code></span>
+<?php _e('Numeric'); ?><br /> <span> &raquo; <code><?php echo get_option('home') . $prefix  ; ?>/archives/123</code></span>
    </label>
 </p>
 <p>
@@ -143,21 +144,21 @@ $structures = array(
 <?php if ( !in_array($permalink_structure, $structures) ) { ?>
 checked="checked"
 <?php } ?>
- /> 
-<?php _e('Custom, specify below'); ?>	
+ />
+<?php _e('Custom, specify below'); ?>
 </label>
 <br />
 </p>
-<p id="customstructure"><?php _e('Custom structure'); ?>: <input name="permalink_structure" id="permalink_structure" type="text" class="code" style="width: 60%;" value="<?php echo wp_specialchars($permalink_structure, 1); ?>" size="50" /></p>
+<p id="customstructure"><?php _e('Custom structure'); ?>: <input name="permalink_structure" id="permalink_structure" type="text" class="code" style="width: 60%;" value="<?php echo attribute_escape($permalink_structure); ?>" size="50" /></p>
 
 <h3><?php _e('Optional'); ?></h3>
 <?php if ($is_apache) : ?>
-	<p><?php _e('If you like, you may enter a custom prefix for your category URIs here. For example, <code>/taxonomy/tags</code> would make your category links like <code>http://example.org/taxonomy/tags/uncategorized/</code>. If you leave this blank the default will be used.') ?></p>
+	<p><?php _e('If you like, you may enter a custom prefix for your category <abbr title="Universal Resource Locator">URL</abbr>s here. For example, <code>/taxonomy/tags</code> would make your category links like <code>http://example.org/taxonomy/tags/uncategorized/</code>. If you leave this blank the default will be used.') ?></p>
 <?php else : ?>
-	<p><?php _e('If you like, you may enter a custom prefix for your category URIs here. For example, <code>/index.php/taxonomy/tags</code> would make your category links like <code>http://example.org/index.php/taxonomy/tags/uncategorized/</code>. If you leave this blank the default will be used.') ?></p>
+	<p><?php _e('If you like, you may enter a custom prefix for your category <abbr title="Universal Resource Locator">URL</abbr>s here. For example, <code>/index.php/taxonomy/tags</code> would make your category links like <code>http://example.org/index.php/taxonomy/tags/uncategorized/</code>. If you leave this blank the default will be used.') ?></p>
 <?php endif; ?>
 	<p> 
-  <?php _e('Category base'); ?>: <input name="category_base" type="text" class="code"  value="<?php echo wp_specialchars($category_base, 1); ?>" size="30" /> 
+  <?php _e('Category base'); ?>: <input name="category_base" type="text" class="code"  value="<?php echo attribute_escape($category_base); ?>" size="30" /> 
      </p> 
     <p class="submit"> 
       <input type="submit" name="submit" value="<?php _e('Update Permalink Structure &raquo;') ?>" /> 
@@ -168,7 +169,7 @@ checked="checked"
 <form action="options-permalink.php" method="post">
 <?php wp_nonce_field('update-permalink') ?>
    <p>
-<textarea rows="5" style="width: 98%;" name="rules"><?php echo $wp_rewrite->mod_rewrite_rules(); ?>
+<textarea rows="5" style="width: 98%;" name="rules"><?php echo wp_specialchars($wp_rewrite->mod_rewrite_rules()); ?>
 </textarea>
     </p>
 </form>

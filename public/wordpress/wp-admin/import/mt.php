@@ -11,7 +11,7 @@ class MT_Import {
 
 	function header() {
 		echo '<div class="wrap">';
-		echo '<h2>'.__('Import Movable Type and Typepad').'</h2>';
+		echo '<h2>'.__('Import Movable Type or TypePad').'</h2>';
 	}
 
 	function footer() {
@@ -21,9 +21,11 @@ class MT_Import {
 	function greet() {
 		$this->header();
 ?>
-<p><?php _e('Howdy! We&#8217;re about to begin the process to import all of your Movable Type entries into WordPress. To begin, select a file to upload and click Import.'); ?></p>
+<div class="narrow">
+<p><?php _e('Howdy! We&#8217;re about to begin importing all of your Movable Type or Typepad entries into WordPress. To begin, choose a file to upload and click Upload file and import.'); ?></p>
 <?php wp_import_upload_form( add_query_arg('step', 1) ); ?>
 	<p><?php _e('The importer is smart enough not to import duplicates, so you can run this multiple times without worry if&#8212;for whatever reason&#8212;it doesn\'t finish. If you get an <strong>out of memory</strong> error try splitting up the import file into pieces.'); ?> </p>
+</div>
 <?php
 		$this->footer();
 	}
@@ -53,9 +55,9 @@ class MT_Import {
 		$pass = 'changeme';
 		if (!(in_array($author, $this->mtnames))) { //a new mt author name is found
 			++ $this->j;
-			$this->mtnames[$this->j] = $author; //add that new mt author name to an array 
+			$this->mtnames[$this->j] = $author; //add that new mt author name to an array
 			$user_id = username_exists($this->newauthornames[$this->j]); //check if the new author name defined by the user is a pre-existing wp user
-			if (!$user_id) { //banging my head against the desk now. 
+			if (!$user_id) { //banging my head against the desk now.
 				if ($newauthornames[$this->j] == 'left_blank') { //check if the user does not want to change the authorname
 					$user_id = wp_create_user($author, $pass);
 					$this->newauthornames[$this->j] = $author; //now we have a name, in the place of left_blank.
@@ -397,7 +399,7 @@ class MT_Import {
 
 	function import() {
 		$this->id = (int) $_GET['id'];
-		
+
 		$this->file = get_attached_file($this->id);
 		$this->get_authors_from_post();
 		$this->get_entries();
@@ -430,5 +432,5 @@ class MT_Import {
 
 $mt_import = new MT_Import();
 
-register_importer('mt', __('Movable Type and Typepad'), __('Imports <strong>posts and comments</strong> from your Movable Type or Typepad blog'), array ($mt_import, 'dispatch'));
+register_importer('mt', __('Movable Type and TypePad'), __('Import posts and comments from a Movable Type or Typepad blog'), array ($mt_import, 'dispatch'));
 ?>

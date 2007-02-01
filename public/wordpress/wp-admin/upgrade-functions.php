@@ -1,7 +1,148 @@
 <?php
 
+if ( file_exists(ABSPATH . 'wp-content/install.php') )
+	require (ABSPATH . 'wp-content/install.php');
 require_once(ABSPATH . '/wp-admin/admin-functions.php');
+require_once(ABSPATH . '/wp-admin/admin-db.php');
 require_once(ABSPATH . '/wp-admin/upgrade-schema.php');
+require_once(ABSPATH . WPINC . '/registration.php');
+
+if ( !function_exists('wp_install') ) :
+function wp_install($blog_title, $user_name, $user_email, $public, $meta='') {
+	global $wp_rewrite;
+
+	wp_check_mysql_version();
+	wp_cache_flush();
+	make_db_current_silent();
+	populate_options();
+	populate_roles();
+
+	update_option('blogname', $blog_title);
+	update_option('admin_email', $user_email);
+	update_option('blog_public', $public);
+	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
+	$guessurl = preg_replace('|/wp-admin/.*|i', '', $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+	update_option('siteurl', $guessurl);
+
+	// If not a public blog, don't ping.
+	if ( ! $public )
+		update_option('default_pingback_flag', 0);
+
+	// Create default user.  If the user already exists, the user tables are
+	// being shared among blogs.  Just set the role in that case.
+	$user_id = username_exists($user_name);
+	if ( !$user_id ) {
+		$random_password = substr(md5(uniqid(microtime())), 0, 6);
+		$user_id = wp_create_user($user_name, $random_password, $user_email);
+	} else {
+		$random_password = __('User already exists.  Password inherited.');
+	}
+
+	$user = new WP_User($user_id);
+	$user->set_role('administrator');
+
+	wp_install_defaults($user_id);
+
+	$wp_rewrite->flush_rules();
+
+	wp_new_blog_notification($blog_title, $guessurl, $user_id, $random_password);
+
+	wp_cache_flush();
+
+	return array('url' => $guessurl, 'user_id' => $user_id, 'password' => $random_password);
+}
+endif;
+
+if ( !function_exists('wp_install_defaults') ) :
+function wp_install_defaults($user_id) {
+	global $wpdb;
+
+	// Default category
+	$wpdb->query("INSERT INTO $wpdb->categories (cat_ID, cat_name, category_nicename, category_count, category_description) VALUES ('0', '".$wpdb->escape(__('Uncategorized'))."', '".sanitize_title(__('Uncategorized'))."', '1', '')");
+
+	// Default link category
+	$wpdb->query("INSERT INTO $wpdb->categories (cat_ID, cat_name, category_nicename, link_count, category_description) VALUES ('0', '".$wpdb->escape(__('Blogroll'))."', '".sanitize_title(__('Blogroll'))."', '7', '')");
+
+	// Now drop in some default links
+	$wpdb->query("INSERT INTO $wpdb->links (link_url, link_name, link_category, link_rss, link_notes) VALUES ('http://inphotos.org/', 'Donncha', 0, 'http://inphotos.org/feed/', '');");
+	$wpdb->query( "INSERT INTO $wpdb->link2cat (`link_id`, `category_id`) VALUES (1, 2)" );
+
+	$wpdb->query("INSERT INTO $wpdb->links (link_url, link_name, link_category, link_rss, link_notes) VALUES ('http://zengun.org/weblog/', 'Michel', 0, 'http://zengun.org/weblog/feed/', '');");
+	$wpdb->query( "INSERT INTO $wpdb->link2cat (`link_id`, `category_id`) VALUES (2, 2)" );
+
+	$wpdb->query("INSERT INTO $wpdb->links (link_url, link_name, link_category, link_rss, link_notes) VALUES ('http://boren.nu/', 'Ryan', 0, 'http://boren.nu/feed/', '');");
+	$wpdb->query( "INSERT INTO $wpdb->link2cat (`link_id`, `category_id`) VALUES (3, 2)" );
+
+	$wpdb->query("INSERT INTO $wpdb->links (link_url, link_name, link_category, link_rss, link_notes) VALUES ('http://photomatt.net/', 'Matt', 0, 'http://xml.photomatt.net/feed/', '');");
+	$wpdb->query( "INSERT INTO $wpdb->link2cat (`link_id`, `category_id`) VALUES (4, 2)" );
+
+	$wpdb->query("INSERT INTO $wpdb->links (link_url, link_name, link_category, link_rss, link_notes) VALUES ('http://zed1.com/journalized/', 'Mike', 0, 'http://zed1.com/journalized/feed/', '');");
+	$wpdb->query( "INSERT INTO $wpdb->link2cat (`link_id`, `category_id`) VALUES (5, 2)" );
+
+	$wpdb->query("INSERT INTO $wpdb->links (link_url, link_name, link_category, link_rss, link_notes) VALUES ('http://www.alexking.org/', 'Alex', 0, 'http://www.alexking.org/blog/wp-rss2.php', '');");
+	$wpdb->query( "INSERT INTO $wpdb->link2cat (`link_id`, `category_id`) VALUES (6, 2)" );
+
+	$wpdb->query("INSERT INTO $wpdb->links (link_url, link_name, link_category, link_rss, link_notes) VALUES ('http://dougal.gunters.org/', 'Dougal', 0, 'http://dougal.gunters.org/feed/', '');");
+	$wpdb->query( "INSERT INTO $wpdb->link2cat (`link_id`, `category_id`) VALUES (7, 2)" );
+
+	// First post
+	$now = date('Y-m-d H:i:s');
+	$now_gmt = gmdate('Y-m-d H:i:s');
+	$wpdb->query("INSERT INTO $wpdb->posts (post_author, post_date, post_date_gmt, post_content, post_excerpt, post_title, post_category, post_name, post_modified, post_modified_gmt, comment_count, to_ping, pinged, post_content_filtered) VALUES ($user_id, '$now', '$now_gmt', '".$wpdb->escape(__('Welcome to WordPress. This is your first post. Edit or delete it, then start blogging!'))."', '', '".$wpdb->escape(__('Hello world!'))."', '0', '".$wpdb->escape(__('hello-world'))."', '$now', '$now_gmt', '1', '', '', '')");
+
+	$wpdb->query( "INSERT INTO $wpdb->post2cat (`rel_id`, `post_id`, `category_id`) VALUES (1, 1, 1)" );
+
+	// Default comment
+	$wpdb->query("INSERT INTO $wpdb->comments (comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_date, comment_date_gmt, comment_content) VALUES ('1', '".$wpdb->escape(__('Mr WordPress'))."', '', 'http://wordpress.org/', '$now', '$now_gmt', '".$wpdb->escape(__('Hi, this is a comment.<br />To delete a comment, just log in and view the post&#039;s comments. There you will have the option to edit or delete them.'))."')");
+
+	// First Page
+	$wpdb->query("INSERT INTO $wpdb->posts (post_author, post_date, post_date_gmt, post_content, post_excerpt, post_title, post_category, post_name, post_modified, post_modified_gmt, post_status, post_type, to_ping, pinged, post_content_filtered) VALUES ($user_id, '$now', '$now_gmt', '".$wpdb->escape(__('This is an example of a WordPress page, you could edit this to put information about yourself or your site so readers know where you are coming from. You can create as many pages like this one or sub-pages as you like and manage all of your content inside of WordPress.'))."', '', '".$wpdb->escape(__('About'))."', '0', '".$wpdb->escape(__('about'))."', '$now', '$now_gmt', 'publish', 'page', '', '', '')");
+}
+endif;
+
+if ( !function_exists('wp_new_blog_notification') ) :
+function wp_new_blog_notification($blog_title, $blog_url, $user_id, $password) {
+	$user = new WP_User($user_id);
+	$email = $user->user_email;
+	$name = $user->user_login;
+	$message_headers = 'From: "' . $blog_title . '" <wordpress@' . $_SERVER['SERVER_NAME'] . '>';
+	$message = sprintf(__("Your new WordPress blog has been successfully set up at:
+
+%1\$s
+
+You can log in to the administrator account with the following information:
+
+Username: %2\$s
+Password: %3\$s
+
+We hope you enjoy your new weblog. Thanks!
+
+--The WordPress Team
+http://wordpress.org/
+"), $blog_url, $name, $password);
+
+	@wp_mail($email, __('New WordPress Blog'), $message, $message_headers);
+}
+endif;
+
+if ( !function_exists('wp_upgrade') ) :
+function wp_upgrade() {
+	global $wp_current_db_version, $wp_db_version;
+
+	$wp_current_db_version = __get_option('db_version');
+
+	// We are up-to-date.  Nothing to do.
+	if ( $wp_db_version == $wp_current_db_version )
+		return;
+
+	wp_check_mysql_version();
+	wp_cache_flush();
+	make_db_current_silent();
+	upgrade_all();
+	wp_cache_flush();
+}
+endif;
+
 // Functions to be called in install and upgrade scripts
 function upgrade_all() {
 	global $wp_current_db_version, $wp_db_version, $wp_rewrite;
@@ -20,7 +161,7 @@ function upgrade_all() {
 		if ( !empty($template) )
 			$wp_current_db_version = 2541;
 	}
-	
+
 	populate_options();
 
 	if ( $wp_current_db_version < 2541 ) {
@@ -29,12 +170,18 @@ function upgrade_all() {
 		upgrade_110();
 		upgrade_130();
 	}
-	
+
 	if ( $wp_current_db_version < 3308 )
 		upgrade_160();
 
+	if ( $wp_current_db_version < 4772 )
+		upgrade_210();
+
+	if ( $wp_current_db_version < 4351 )
+		upgrade_old_slugs();
+
 	$wp_rewrite->flush_rules();
-	
+
 	update_option('db_version', $wp_db_version);
 }
 
@@ -45,16 +192,16 @@ function upgrade_100() {
 	$posts = $wpdb->get_results("SELECT ID, post_title, post_name FROM $wpdb->posts WHERE post_name = ''");
 	if ($posts) {
 		foreach($posts as $post) {
-			if ('' == $post->post_name) { 
+			if ('' == $post->post_name) {
 				$newtitle = sanitize_title($post->post_title);
 				$wpdb->query("UPDATE $wpdb->posts SET post_name = '$newtitle' WHERE ID = '$post->ID'");
 			}
 		}
 	}
-	
+
 	$categories = $wpdb->get_results("SELECT cat_ID, cat_name, category_nicename FROM $wpdb->categories");
 	foreach ($categories as $category) {
-		if ('' == $category->category_nicename) { 
+		if ('' == $category->category_nicename) {
 			$newtitle = sanitize_title($category->cat_name);
 			$wpdb->query("UPDATE $wpdb->categories SET category_nicename = '$newtitle' WHERE cat_ID = '$category->cat_ID'");
 		}
@@ -74,7 +221,7 @@ function upgrade_100() {
 	else:
 		$catwhere = '';
 	endif;
-	
+
 	$allposts = $wpdb->get_results("SELECT ID, post_category FROM $wpdb->posts WHERE post_category != '0' $catwhere");
 	if ($allposts) :
 		foreach ($allposts as $post) {
@@ -108,20 +255,20 @@ function upgrade_101() {
 
 function upgrade_110() {
 	global $wpdb;
-	
-    // Set user_nicename.
+
+	// Set user_nicename.
 	$users = $wpdb->get_results("SELECT ID, user_nickname, user_nicename FROM $wpdb->users");
- 	foreach ($users as $user) {
- 		if ('' == $user->user_nicename) { 
- 			$newname = sanitize_title($user->user_nickname);
- 			$wpdb->query("UPDATE $wpdb->users SET user_nicename = '$newname' WHERE ID = '$user->ID'");
- 		}
- 	}
+	foreach ($users as $user) {
+		if ('' == $user->user_nicename) {
+			$newname = sanitize_title($user->user_nickname);
+			$wpdb->query("UPDATE $wpdb->users SET user_nicename = '$newname' WHERE ID = '$user->ID'");
+		}
+	}
 
 	$users = $wpdb->get_results("SELECT ID, user_pass from $wpdb->users");
 	foreach ($users as $row) {
 		if (!preg_match('/^[A-Fa-f0-9]{32}$/', $row->user_pass)) {
-			   $wpdb->query('UPDATE '.$wpdb->users.' SET user_pass = MD5(\''.$row->user_pass.'\') WHERE ID = \''.$row->ID.'\'');
+			$wpdb->query('UPDATE '.$wpdb->users.' SET user_pass = MD5(\''.$row->user_pass.'\') WHERE ID = \''.$row->ID.'\'');
 		}
 	}
 
@@ -163,63 +310,63 @@ function upgrade_110() {
 }
 
 function upgrade_130() {
-    global $wpdb, $table_prefix;
+	global $wpdb;
 
-    // Remove extraneous backslashes.
+	// Remove extraneous backslashes.
 	$posts = $wpdb->get_results("SELECT ID, post_title, post_content, post_excerpt, guid, post_date, post_name, post_status, post_author FROM $wpdb->posts");
 	if ($posts) {
 		foreach($posts as $post) {
-            $post_content = addslashes(deslash($post->post_content));
-            $post_title = addslashes(deslash($post->post_title));
-            $post_excerpt = addslashes(deslash($post->post_excerpt));
+			$post_content = addslashes(deslash($post->post_content));
+			$post_title = addslashes(deslash($post->post_title));
+			$post_excerpt = addslashes(deslash($post->post_excerpt));
 			if ( empty($post->guid) )
 				$guid = get_permalink($post->ID);
 			else
 				$guid = $post->guid;
 
-            $wpdb->query("UPDATE $wpdb->posts SET post_title = '$post_title', post_content = '$post_content', post_excerpt = '$post_excerpt', guid = '$guid' WHERE ID = '$post->ID'");
+			$wpdb->query("UPDATE $wpdb->posts SET post_title = '$post_title', post_content = '$post_content', post_excerpt = '$post_excerpt', guid = '$guid' WHERE ID = '$post->ID'");
 		}
 	}
 
-    // Remove extraneous backslashes.
+	// Remove extraneous backslashes.
 	$comments = $wpdb->get_results("SELECT comment_ID, comment_author, comment_content FROM $wpdb->comments");
 	if ($comments) {
 		foreach($comments as $comment) {
-            $comment_content = addslashes(deslash($comment->comment_content));
-            $comment_author = addslashes(deslash($comment->comment_author));
-            $wpdb->query("UPDATE $wpdb->comments SET comment_content = '$comment_content', comment_author = '$comment_author' WHERE comment_ID = '$comment->comment_ID'");
+			$comment_content = addslashes(deslash($comment->comment_content));
+			$comment_author = addslashes(deslash($comment->comment_author));
+			$wpdb->query("UPDATE $wpdb->comments SET comment_content = '$comment_content', comment_author = '$comment_author' WHERE comment_ID = '$comment->comment_ID'");
 		}
 	}
 
-    // Remove extraneous backslashes.
+	// Remove extraneous backslashes.
 	$links = $wpdb->get_results("SELECT link_id, link_name, link_description FROM $wpdb->links");
 	if ($links) {
 		foreach($links as $link) {
-            $link_name = addslashes(deslash($link->link_name));
-            $link_description = addslashes(deslash($link->link_description));
-            $wpdb->query("UPDATE $wpdb->links SET link_name = '$link_name', link_description = '$link_description' WHERE link_id = '$link->link_id'");
+			$link_name = addslashes(deslash($link->link_name));
+			$link_description = addslashes(deslash($link->link_description));
+			$wpdb->query("UPDATE $wpdb->links SET link_name = '$link_name', link_description = '$link_description' WHERE link_id = '$link->link_id'");
 		}
 	}
 
-    // The "paged" option for what_to_show is no more.
-    if ($wpdb->get_var("SELECT option_value FROM $wpdb->options WHERE option_name = 'what_to_show'") == 'paged') {
-        $wpdb->query("UPDATE $wpdb->options SET option_value = 'posts' WHERE option_name = 'what_to_show'");
-    }
+	// The "paged" option for what_to_show is no more.
+	if ($wpdb->get_var("SELECT option_value FROM $wpdb->options WHERE option_name = 'what_to_show'") == 'paged') {
+		$wpdb->query("UPDATE $wpdb->options SET option_value = 'posts' WHERE option_name = 'what_to_show'");
+	}
 
-		$active_plugins = __get_option('active_plugins');
+	$active_plugins = __get_option('active_plugins');
 
-		// If plugins are not stored in an array, they're stored in the old
-		// newline separated format.  Convert to new format.
-		if ( !is_array( $active_plugins ) ) {
-			$active_plugins = explode("\n", trim($active_plugins));
-			update_option('active_plugins', $active_plugins);
-		}
+	// If plugins are not stored in an array, they're stored in the old
+	// newline separated format.  Convert to new format.
+	if ( !is_array( $active_plugins ) ) {
+		$active_plugins = explode("\n", trim($active_plugins));
+		update_option('active_plugins', $active_plugins);
+	}
 
 	// Obsolete tables
-	$wpdb->query('DROP TABLE IF EXISTS ' . $table_prefix . 'optionvalues');
-	$wpdb->query('DROP TABLE IF EXISTS ' . $table_prefix . 'optiontypes');
-	$wpdb->query('DROP TABLE IF EXISTS ' . $table_prefix . 'optiongroups');
-	$wpdb->query('DROP TABLE IF EXISTS ' . $table_prefix . 'optiongroup_options');
+	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'optionvalues');
+	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'optiontypes');
+	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'optiongroups');
+	$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'optiongroup_options');
 
 	// Update comments table to use comment_type
 	$wpdb->query("UPDATE $wpdb->comments SET comment_type='trackback', comment_content = REPLACE(comment_content, '<trackback />', '') WHERE comment_content LIKE '<trackback />%'");
@@ -240,7 +387,7 @@ function upgrade_130() {
 }
 
 function upgrade_160() {
-	global $wpdb, $table_prefix, $wp_current_db_version;
+	global $wpdb, $wp_current_db_version;
 
 	populate_roles_160();
 
@@ -253,7 +400,7 @@ function upgrade_160() {
 		if ( !empty( $user->user_nickname ) )
 			update_usermeta( $user->ID, 'nickname', $wpdb->escape($user->user_nickname) );
 		if ( !empty( $user->user_level ) )
-			update_usermeta( $user->ID, $table_prefix . 'user_level', $user->user_level );
+			update_usermeta( $user->ID, $wpdb->prefix . 'user_level', $user->user_level );
 		if ( !empty( $user->user_icq ) )
 			update_usermeta( $user->ID, 'icq', $wpdb->escape($user->user_icq) );
 		if ( !empty( $user->user_aim ) )
@@ -277,22 +424,22 @@ function upgrade_160() {
 			$id = $wpdb->escape( $id );
 			$wpdb->query("UPDATE $wpdb->users SET display_name = '$id' WHERE ID = '$user->ID'");
 		endif;
-		
+
 		// FIXME: RESET_CAPS is temporary code to reset roles and caps if flag is set.
-		$caps = get_usermeta( $user->ID, $table_prefix . 'capabilities');
+		$caps = get_usermeta( $user->ID, $wpdb->prefix . 'capabilities');
 		if ( empty($caps) || defined('RESET_CAPS') ) {
-			$level = get_usermeta($user->ID, $table_prefix . 'user_level');
+			$level = get_usermeta($user->ID, $wpdb->prefix . 'user_level');
 			$role = translate_level_to_role($level);
-			update_usermeta( $user->ID, $table_prefix . 'capabilities', array($role => true) );
+			update_usermeta( $user->ID, $wpdb->prefix . 'capabilities', array($role => true) );
 		}
-			
+
 	endforeach;
 	$old_user_fields = array( 'user_firstname', 'user_lastname', 'user_icq', 'user_aim', 'user_msn', 'user_yim', 'user_idmode', 'user_ip', 'user_domain', 'user_browser', 'user_description', 'user_nickname', 'user_level' );
 	$wpdb->hide_errors();
 	foreach ( $old_user_fields as $old )
 		$wpdb->query("ALTER TABLE $wpdb->users DROP $old");
 	$wpdb->show_errors();
-	
+
 	if ( 0 == $wpdb->get_var("SELECT SUM(category_count) FROM $wpdb->categories") ) { // Create counts
 		$categories = $wpdb->get_col("SELECT cat_ID FROM $wpdb->categories");
 		foreach ( $categories as $cat_id ) {
@@ -318,33 +465,127 @@ function upgrade_160() {
 			post_mime_type = '$object->post_type',
 			post_type = ''
 			WHERE ID = $object->ID");
-			
+
 			$meta = get_post_meta($object->ID, 'imagedata', true);
 			if ( ! empty($meta['file']) )
-				add_post_meta($object->ID, '_wp_attached_file', $meta['file']);
+				update_attached_file( $object->ID, $meta['file'] );
 		}
 	}
 }
+
+function upgrade_210() {
+	global $wpdb, $wp_current_db_version;
+
+	if ( $wp_current_db_version < 3506 ) {
+		// Update status and type.
+		$posts = $wpdb->get_results("SELECT ID, post_status FROM $wpdb->posts");
+
+		if ( ! empty($posts) ) foreach ($posts as $post) {
+			$status = $post->post_status;
+			$type = 'post';
+
+			if ( 'static' == $status ) {
+				$status = 'publish';
+				$type = 'page';
+			} else if ( 'attachment' == $status ) {
+				$status = 'inherit';
+				$type = 'attachment';
+			}
+
+			$wpdb->query("UPDATE $wpdb->posts SET post_status = '$status', post_type = '$type' WHERE ID = '$post->ID'");
+		}
+	}
+
+	if ( $wp_current_db_version < 3845 ) {
+		populate_roles_210();
+	}
+
+	if ( $wp_current_db_version < 3531 ) {
+		// Give future posts a post_status of future.
+		$now = gmdate('Y-m-d H:i:59');
+		$wpdb->query ("UPDATE $wpdb->posts SET post_status = 'future' WHERE post_status = 'publish' AND post_date_gmt > '$now'");
+
+		$posts = $wpdb->get_results("SELECT ID, post_date FROM $wpdb->posts WHERE post_status ='future'");
+		if ( !empty($posts) )
+			foreach ( $posts as $post )
+				wp_schedule_single_event(mysql2date('U', $post->post_date), 'publish_future_post', array($post->ID));
+	}
+
+	if ( $wp_current_db_version < 3570 ) {
+		// Create categories for link categories if a category with the same
+		// name doesn't exist.  Create a map of link cat IDs to cat IDs.
+		$link_cat_id_map = array();
+		$link_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM " . $wpdb->prefix . 'linkcategories');
+		foreach ( $link_cats as $link_cat) {
+			if ( $cat_id = category_exists($link_cat->cat_name) ) {
+				$link_cat_id_map[$link_cat->cat_id] = $cat_id;
+				$default_link_cat = $cat_id;
+			} else {
+				$link_cat_id_map[$link_cat->cat_id] = wp_create_category($link_cat->cat_name);
+				$default_link_cat = $link_cat_id_map[$link_cat->cat_id];
+			}
+		}
+
+		// Associate links to cats.
+		$links = $wpdb->get_results("SELECT link_id, link_category FROM $wpdb->links");
+		if ( !empty($links) ) foreach ( $links as $link ) {
+			if ( 0 == $link->link_category )
+				continue;
+			if ( ! isset($link_cat_id_map[$link->link_category]) )
+				continue;
+			$link_cat = $link_cat_id_map[$link->link_category];
+			$cat = $wpdb->get_row("SELECT * FROM $wpdb->link2cat WHERE link_id = '$link->link_id' AND category_id = '$link_cat'");
+			if ( !$cat ) {
+				$wpdb->query("INSERT INTO $wpdb->link2cat (link_id, category_id)
+					VALUES ('$link->link_id', '$link_cat')");
+			}
+		}
+
+		// Set default to the last category we grabbed during the upgrade loop.
+		update_option('default_link_category', $default_link_cat);
+
+		// Count links per category.
+		if ( 0 == $wpdb->get_var("SELECT SUM(link_count) FROM $wpdb->categories") ) {
+			$categories = $wpdb->get_col("SELECT cat_ID FROM $wpdb->categories");
+			foreach ( $categories as $cat_id ) {
+				$count = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->link2cat, $wpdb->links WHERE $wpdb->links.link_id = $wpdb->link2cat.link_id AND category_id = '$cat_id'");
+				$wpdb->query("UPDATE $wpdb->categories SET link_count = '$count' WHERE cat_ID = '$cat_id'");
+			}
+		}
+	}
+
+	if ( $wp_current_db_version < 4772 ) {
+		// Obsolete linkcategories table
+		$wpdb->query('DROP TABLE IF EXISTS ' . $wpdb->prefix . 'linkcategories');
+	}
+}
+
+function upgrade_old_slugs() {
+	// upgrade people who were using the Redirect Old Slugs plugin
+	global $wpdb;
+	$wpdb->query("UPDATE $wpdb->postmeta SET meta_key = '_wp_old_slug' WHERE meta_key = 'old_slug'");
+}
+
 
 // The functions we use to actually do stuff
 
 // General
 function maybe_create_table($table_name, $create_ddl) {
-    global $wpdb;
-    foreach ($wpdb->get_col("SHOW TABLES",0) as $table ) {
-        if ($table == $table_name) {
-            return true;
-        }
-    }
-    //didn't find it try to create it.
-    $q = $wpdb->query($create_ddl);
-    // we cannot directly tell that whether this succeeded!
-    foreach ($wpdb->get_col("SHOW TABLES",0) as $table ) {
-        if ($table == $table_name) {
-            return true;
-        }
-    }
-    return false;
+	global $wpdb;
+	foreach ($wpdb->get_col("SHOW TABLES",0) as $table ) {
+		if ($table == $table_name) {
+			return true;
+		}
+	}
+	//didn't find it try to create it.
+	$q = $wpdb->query($create_ddl);
+	// we cannot directly tell that whether this succeeded!
+	foreach ($wpdb->get_col("SHOW TABLES",0) as $table ) {
+		if ($table == $table_name) {
+			return true;
+		}
+	}
+	return false;
 }
 
 function drop_index($table, $index) {
@@ -373,22 +614,22 @@ function add_clean_index($table, $index) {
  **           false on error
  */
 function maybe_add_column($table_name, $column_name, $create_ddl) {
-    global $wpdb, $debug;
-    foreach ($wpdb->get_col("DESC $table_name", 0) as $column ) {
-        if ($debug) echo("checking $column == $column_name<br />");
-        if ($column == $column_name) {
-            return true;
-        }
-    }
-    //didn't find it try to create it.
-    $q = $wpdb->query($create_ddl);
-    // we cannot directly tell that whether this succeeded!
-    foreach ($wpdb->get_col("DESC $table_name", 0) as $column ) {
-        if ($column == $column_name) {
-            return true;
-        }
-    }
-    return false;
+	global $wpdb, $debug;
+	foreach ($wpdb->get_col("DESC $table_name", 0) as $column ) {
+		if ($debug) echo("checking $column == $column_name<br />");
+		if ($column == $column_name) {
+			return true;
+		}
+	}
+	//didn't find it try to create it.
+	$q = $wpdb->query($create_ddl);
+	// we cannot directly tell that whether this succeeded!
+	foreach ($wpdb->get_col("DESC $table_name", 0) as $column ) {
+		if ($column == $column_name) {
+			return true;
+		}
+	}
+	return false;
 }
 
 
@@ -397,7 +638,7 @@ function get_alloptions_110() {
 	global $wpdb;
 	if ($options = $wpdb->get_results("SELECT option_name, option_value FROM $wpdb->options")) {
 		foreach ($options as $option) {
-			// "When trying to design a foolproof system, 
+			// "When trying to design a foolproof system,
 			//  never underestimate the ingenuity of the fools :)" -- Dougal
 			if ('siteurl' == $option->option_name) $option->option_value = preg_replace('|/+$|', '', $option->option_value);
 			if ('home' == $option->option_name) $option->option_value = preg_replace('|/+$|', '', $option->option_value);
@@ -428,35 +669,35 @@ function __get_option($setting) {
 }
 
 function deslash($content) {
-    // Note: \\\ inside a regex denotes a single backslash.
+	// Note: \\\ inside a regex denotes a single backslash.
 
-    // Replace one or more backslashes followed by a single quote with
-    // a single quote.
-    $content = preg_replace("/\\\+'/", "'", $content);
+	// Replace one or more backslashes followed by a single quote with
+	// a single quote.
+	$content = preg_replace("/\\\+'/", "'", $content);
 
-    // Replace one or more backslashes followed by a double quote with
-    // a double quote.
-    $content = preg_replace('/\\\+"/', '"', $content);
+	// Replace one or more backslashes followed by a double quote with
+	// a double quote.
+	$content = preg_replace('/\\\+"/', '"', $content);
 
-    // Replace one or more backslashes with one backslash.
-    $content = preg_replace("/\\\+/", "\\", $content);
+	// Replace one or more backslashes with one backslash.
+	$content = preg_replace("/\\\+/", "\\", $content);
 
-    return $content;
+	return $content;
 }
 
 function dbDelta($queries, $execute = true) {
 	global $wpdb;
-	
+
 	// Seperate individual queries into an array
 	if( !is_array($queries) ) {
 		$queries = explode( ';', $queries );
 		if('' == $queries[count($queries) - 1]) array_pop($queries);
 	}
-	
+
 	$cqueries = array(); // Creation Queries
 	$iqueries = array(); // Insertion Queries
 	$for_update = array();
-	
+
 	// Create a tablename index for an array ($cqueries) of queries
 	foreach($queries as $qry) {
 		if(preg_match("|CREATE TABLE ([^ ]*)|", $qry, $matches)) {
@@ -475,7 +716,7 @@ function dbDelta($queries, $execute = true) {
 		else {
 			// Unrecognized query type
 		}
-	}	
+	}
 
 	// Check to see which tables and fields exist
 	if($tables = $wpdb->get_col('SHOW TABLES;')) {
@@ -494,13 +735,13 @@ function dbDelta($queries, $execute = true) {
 				$flds = explode("\n", $qryline);
 
 				//echo "<hr/><pre>\n".print_r(strtolower($table), true).":\n".print_r($cqueries, true)."</pre><hr/>";
-				
+
 				// For every field line specified in the query
 				foreach($flds as $fld) {
 					// Extract the field name
 					preg_match("|^([^ ]*)|", trim($fld), $fvals);
 					$fieldname = $fvals[1];
-					
+
 					// Verify the found field name
 					$validfield = true;
 					switch(strtolower($fieldname))
@@ -516,18 +757,18 @@ function dbDelta($queries, $execute = true) {
 						break;
 					}
 					$fld = trim($fld);
-					
+
 					// If it's a valid field, add it to the field array
 					if($validfield) {
 						$cfields[strtolower($fieldname)] = trim($fld, ", \n");
 					}
 				}
-				
+
 				// Fetch the table column structure from the database
 				$tablefields = $wpdb->get_results("DESCRIBE {$table};");
-								
+
 				// For every field in the table
-				foreach($tablefields as $tablefield) {				
+				foreach($tablefields as $tablefield) {
 					// If the table field exists in the field array...
 					if(array_key_exists(strtolower($tablefield->Field), $cfields)) {
 						// Get the field type from the query
@@ -540,7 +781,7 @@ function dbDelta($queries, $execute = true) {
 							$cqueries[] = "ALTER TABLE {$table} CHANGE COLUMN {$tablefield->Field} " . $cfields[strtolower($tablefield->Field)];
 							$for_update[$table.'.'.$tablefield->Field] = "Changed type of {$table}.{$tablefield->Field} from {$tablefield->Type} to {$fieldtype}";
 						}
-						
+
 						// Get the default value from the array
 							//echo "{$cfields[strtolower($tablefield->Field)]}<br>";
 						if(preg_match("| DEFAULT '(.*)'|i", $cfields[strtolower($tablefield->Field)], $matches)) {
@@ -567,11 +808,11 @@ function dbDelta($queries, $execute = true) {
 					$cqueries[] = "ALTER TABLE {$table} ADD COLUMN $fielddef";
 					$for_update[$table.'.'.$fieldname] = 'Added column '.$table.'.'.$fieldname;
 				}
-				
+
 				// Index stuff goes here
 				// Fetch the table index structure from the database
 				$tableindices = $wpdb->get_results("SHOW INDEX FROM {$table};");
-				
+
 				if($tableindices) {
 					// Clear the index array
 					unset($index_ary);
@@ -600,7 +841,7 @@ function dbDelta($queries, $execute = true) {
 						}
 						$index_columns = '';
 						// For each column in the index
-						foreach($index_data['columns'] as $column_data) {					
+						foreach($index_data['columns'] as $column_data) {
 							if($index_columns != '') $index_columns .= ',';
 							// Add the field to the column list string
 							$index_columns .= $column_data['fieldname'];
@@ -608,7 +849,7 @@ function dbDelta($queries, $execute = true) {
 								$index_columns .= '('.$column_data['subpart'].')';
 							}
 						}
-						// Add the column list to the index create string 
+						// Add the column list to the index create string
 						$index_string .= ' ('.$index_columns.')';
 
 						if(!(($aindex = array_search($index_string, $indices)) === false)) {
@@ -842,6 +1083,15 @@ function translate_level_to_role($level) {
 	case 0:
 		return 'subscriber';
 	}
+}
+
+function wp_check_mysql_version() {
+	global $wp_version;
+
+	// Make sure the server has MySQL 4.0
+	$mysql_version = preg_replace('|[^0-9\.]|', '', @mysql_get_server_info());
+	if ( version_compare($mysql_version, '4.0.0', '<') )
+		die(sprintf(__('<strong>ERROR</strong>: WordPress %s requires MySQL 4.0.0 or higher'), $wp_version));
 }
 
 ?>

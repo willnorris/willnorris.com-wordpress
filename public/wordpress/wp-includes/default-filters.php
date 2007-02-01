@@ -24,10 +24,8 @@ add_filter('pre_comment_author_url', 'strip_tags');
 add_filter('pre_comment_author_url', 'trim');
 add_filter('pre_comment_author_url', 'clean_url');
 
-add_filter('pre_comment_content', 'stripslashes', 1);
 add_filter('pre_comment_content', 'wp_rel_nofollow', 15);
 add_filter('pre_comment_content', 'balanceTags', 30);
-add_filter('pre_comment_content', 'addslashes', 50);
 
 add_filter('pre_comment_author_name', 'wp_filter_kses');
 add_filter('pre_comment_author_email', 'wp_filter_kses');
@@ -39,6 +37,8 @@ add_filter('comment_author', 'convert_chars');
 add_filter('comment_author', 'wp_specialchars');
 
 add_filter('comment_email', 'antispambot');
+
+add_filter('comment_flood_filter', 'wp_throttle_comment_flood', 10, 3);
 
 add_filter('comment_url', 'clean_url');
 
@@ -141,11 +141,31 @@ add_filter('bloginfo_rss', 'ent2ncr', 8);
 add_filter('the_author', 'ent2ncr', 8);
 
 // Misc filters
+add_filter('option_ping_sites', 'privacy_ping_filter');
 add_filter('option_blog_charset', 'wp_specialchars');
+add_filter('mce_plugins', '_mce_load_rtl_plugin');
+add_filter('mce_buttons', '_mce_add_direction_buttons');
+
+// Redirect Old Slugs
+add_action('template_redirect', 'wp_old_slug_redirect');
+add_action('edit_post', 'wp_check_for_changed_slugs');
+add_action('edit_form_advanced', 'wp_remember_old_slug');
 
 // Actions
-add_action('publish_post', 'generic_ping');
 add_action('wp_head', 'rsd_link');
+add_action('wp_head', 'locale_stylesheet');
+add_action('publish_future_post', 'wp_publish_post', 10, 1);
+add_action('wp_head', 'noindex', 1);
+add_action('wp_head', 'wp_print_scripts');
+if(!defined('DOING_CRON'))
+	add_action('init', 'wp_cron');
+add_action('do_feed_rdf', 'do_feed_rdf', 10, 1);
+add_action('do_feed_rss', 'do_feed_rss', 10, 1);
+add_action('do_feed_rss2', 'do_feed_rss2', 10, 1);
+add_action('do_feed_atom', 'do_feed_atom', 10, 1);
+add_action('do_pings', 'do_all_pings', 10, 1);
+add_action('do_robots', 'do_robots');
 add_action('sanitize_comment_cookies', 'sanitize_comment_cookies');
-
+add_action('admin_print_scripts', 'wp_print_scripts', 20);
+add_action('mce_options', '_mce_set_direction');
 ?>

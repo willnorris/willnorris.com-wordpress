@@ -8,6 +8,8 @@ function wp_cache_add($key, $data, $flag = '', $expire = 0) {
 function wp_cache_close() {
 	global $wp_object_cache;
 
+	if ( ! isset($wp_object_cache) )
+		return;
 	return $wp_object_cache->save();
 }
 
@@ -30,9 +32,7 @@ function wp_cache_get($id, $flag = '') {
 }
 
 function wp_cache_init() {
-	global $wp_object_cache;
-
-	$wp_object_cache = new WP_Object_Cache();
+	$GLOBALS['wp_object_cache'] =& new WP_Object_Cache();
 }
 
 function wp_cache_replace($key, $data, $flag = '', $expire = 0) {
@@ -67,7 +67,7 @@ class WP_Object_Cache {
 	var $secret = '';
 
 	function acquire_lock() {
-		// Acquire a write lock. 
+		// Acquire a write lock.
 		$this->mutex = @fopen($this->cache_dir.$this->flock_filename, 'w');
 		if ( false == $this->mutex)
 			return false;
@@ -109,7 +109,7 @@ class WP_Object_Cache {
 		$this->cache = array ();
 		$this->dirty_objects = array ();
 		$this->non_existant_objects = array ();
-		
+
 		$this->release_lock();
 
 		return true;
@@ -190,16 +190,6 @@ class WP_Object_Cache {
 			if ($dogs = $wpdb->get_results("SELECT * FROM $wpdb->categories")) {
 				foreach ($dogs as $catt)
 					$this->cache['category'][$catt->cat_ID] = $catt;
-
-				foreach ($this->cache['category'] as $catt) {
-					$curcat = $catt->cat_ID;
-					$fullpath = '/'.$this->cache['category'][$catt->cat_ID]->category_nicename;
-					while ($this->cache['category'][$curcat]->category_parent != 0) {
-						$curcat = $this->cache['category'][$curcat]->category_parent;
-						$fullpath = '/'.$this->cache['category'][$curcat]->category_nicename.$fullpath;
-					}
-					$this->cache['category'][$catt->cat_ID]->fullpath = $fullpath;
-				}
 			}
 		} else
 			if ('options' == $group) {
@@ -249,15 +239,15 @@ class WP_Object_Cache {
 		while ($index < count($stack)) {
 			# Get indexed directory from stack
 			$dir = $stack[$index];
-      
+
 			$dh = @ opendir($dir);
 			if (!$dh)
 				return false;
-      
+
 			while (($file = @ readdir($dh)) !== false) {
 				if ($file == '.' or $file == '..')
 					continue;
-					
+
 				if (@ is_dir($dir . DIRECTORY_SEPARATOR . $file))
 					$stack[] = $dir . DIRECTORY_SEPARATOR . $file;
 				else if (@ is_file($dir . DIRECTORY_SEPARATOR . $file))
@@ -363,7 +353,7 @@ class WP_Object_Cache {
 					if (@ copy($temp_file, $cache_file))
 						@ unlink($temp_file);
 					else
-						$errors++;	
+						$errors++;
 				}
 				@ chmod($cache_file, $file_perms);
 			}
@@ -372,7 +362,7 @@ class WP_Object_Cache {
 		$this->dirty_objects = array();
 
 		$this->release_lock();
-		
+
 		if ( $errors )
 			return false;
 
@@ -404,7 +394,13 @@ class WP_Object_Cache {
 	}
 
 	function WP_Object_Cache() {
+		return $this->__construct();
+	}
+	
+	function __construct() {
 		global $blog_id;
+
+		register_shutdown_function(array(&$this, "__destruct"));
 
 		if (defined('DISABLE_CACHE'))
 			return;
@@ -439,6 +435,11 @@ class WP_Object_Cache {
 			$this->secret = DB_PASSWORD . DB_USER . DB_NAME . DB_HOST . ABSPATH;
 
 		$this->blog_id = $this->hash($blog_id);
+	}
+
+	function __destruct() {
+		$this->save();
+		return true;	
 	}
 }
 ?>

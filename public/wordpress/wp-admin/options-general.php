@@ -11,6 +11,7 @@ include('./admin-header.php');
 <h2><?php _e('General Options') ?></h2>
 <form method="post" action="options.php"> 
 <?php wp_nonce_field('update-options') ?>
+<p class="submit"><input type="submit" name="Submit" value="<?php _e('Update Options &raquo;') ?>" /></p>
 <table class="optiontable"> 
 <tr valign="top"> 
 <th scope="row"><?php _e('Weblog title:') ?></th> 
@@ -23,11 +24,11 @@ include('./admin-header.php');
 <?php _e('In a few words, explain what this weblog is about.') ?></td> 
 </tr> 
 <tr valign="top"> 
-<th scope="row"><?php _e('WordPress address (URI):') ?></th> 
+<th scope="row"><?php _e('WordPress address (URL):') ?></th> 
 <td><input name="siteurl" type="text" id="siteurl" value="<?php form_option('siteurl'); ?>" size="40" class="code" /></td> 
 </tr> 
 <tr valign="top">
-<th scope="row"><?php _e('Blog address (URI):') ?></th>
+<th scope="row"><?php _e('Blog address (URL):') ?></th>
 <td><input name="home" type="text" id="home" value="<?php form_option('home'); ?>" size="40" class="code" /><br /><?php _e('If you want your blog homepage <a href="http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory">to be different than the directory</a> you installed WordPress in, enter that address here.'); ?></td>
 </tr>
 <tr valign="top"> 
@@ -39,10 +40,10 @@ include('./admin-header.php');
 <tr valign="top"> 
 <th scope="row"><?php _e('Membership:') ?></th> 
 <td> <label for="users_can_register"> 
-<input name="users_can_register" type="checkbox" id="users_can_register" value="1" <?php checked('1', get_settings('users_can_register')); ?> /> 
+<input name="users_can_register" type="checkbox" id="users_can_register" value="1" <?php checked('1', get_option('users_can_register')); ?> /> 
 <?php _e('Anyone can register') ?></label><br />
 <label for="comment_registration">
-<input name="comment_registration" type="checkbox" id="comment_registration" value="1" <?php checked('1', get_settings('comment_registration')); ?> /> 
+<input name="comment_registration" type="checkbox" id="comment_registration" value="1" <?php checked('1', get_option('comment_registration')); ?> /> 
 <?php _e('Users must be registered and logged in to comment') ?>
 </label>
 </td> 
@@ -50,12 +51,7 @@ include('./admin-header.php');
 <tr valign="top"> 
 <th scope="row"><?php _e('New User Default Role:') ?></th> 
 <td><label for="default_role"> 
-<select name="default_role" id="default_role"><?php 
-foreach($wp_roles->role_names as $role => $name) {
-	$selected = (get_settings('default_role') == $role) ? 'selected="selected"' : '';
-	echo "<option {$selected} value=\"{$role}\">{$name}</option>";
-}
-?></select></label>
+<select name="default_role" id="default_role"><?php wp_dropdown_roles( get_option('default_role') ); ?></select></label>
 </td> 
 </tr> 
 </table> 
@@ -69,17 +65,17 @@ foreach($wp_roles->role_names as $role => $name) {
 <tr>
 <th scope="row"><?php _e('Times in the weblog should differ by:') ?> </th>
 <td><input name="gmt_offset" type="text" id="gmt_offset" size="2" value="<?php form_option('gmt_offset'); ?>" /> 
-<?php _e('hours') ?> </td>
+<?php _e('hours') ?> (<?php _e('Your timezone offset, for example <code>-6</code> for Central Time.'); ?>)</td>
 </tr>
 <tr>
 <th scope="row"><?php _e('Default date format:') ?></th>
 <td><input name="date_format" type="text" id="date_format" size="30" value="<?php form_option('date_format'); ?>" /><br />
-<?php _e('Output:') ?> <strong><?php echo mysql2date(get_settings('date_format'), current_time('mysql')); ?></strong></td>
+<?php _e('Output:') ?> <strong><?php echo mysql2date(get_option('date_format'), current_time('mysql')); ?></strong></td>
 </tr>
 <tr>
 <th scope="row"><?php _e('Default time format:') ?></th>
 <td><input name="time_format" type="text" id="time_format" size="30" value="<?php form_option('time_format'); ?>" /><br />
-<?php _e('Output:') ?> <strong><?php echo gmdate(get_settings('time_format'), current_time('timestamp')); ?></strong></td>
+<?php _e('Output:') ?> <strong><?php echo gmdate(get_option('time_format'), current_time('timestamp')); ?></strong></td>
 </tr> 
 <tr>
 <th scope="row">&nbsp;</th>
@@ -90,9 +86,8 @@ foreach($wp_roles->role_names as $role => $name) {
 <td><select name="start_of_week" id="start_of_week">
 <?php
 for ($day_index = 0; $day_index <= 6; $day_index++) :
-if ($day_index == get_settings('start_of_week')) $selected = " selected='selected'";
-else $selected = '';
-echo "\n\t<option value='$day_index' $selected>$weekday[$day_index]</option>";
+	$selected = (get_option('start_of_week') == $day_index) ? 'selected="selected"' : '';
+	echo "\n\t<option value='$day_index' $selected>" . $wp_locale->get_weekday($day_index) . '</option>';
 endfor;
 ?>
 </select></td>
@@ -100,7 +95,7 @@ endfor;
 </table>
 </fieldset> 
 
-<p class="submit"><input type="submit" name="Submit" value="<?php _e('Update Options') ?> &raquo;" />
+<p class="submit"><input type="submit" name="Submit" value="<?php _e('Update Options &raquo;') ?>" />
 <input type="hidden" name="action" value="update" /> 
 <input type="hidden" name="page_options" value="blogname,blogdescription,siteurl,admin_email,users_can_register,gmt_offset,date_format,time_format,home,start_of_week,comment_registration,default_role" /> 
 </p>

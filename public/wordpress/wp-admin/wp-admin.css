@@ -20,6 +20,12 @@ a.delete:hover {
 	color: #fff;
 }
 
+#devnews h4 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 18px;
+	font-weight: normal;
+}
+
 #planetnews ul {
 	list-style: none;
 	margin: 0;
@@ -38,6 +44,63 @@ a.delete:hover {
 	background: #ddd;
 	height: 6em;
 	overflow: hidden;
+}
+
+#planetnews cite {
+	font-size: 11px;
+}
+
+#planetnews li .post {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 18px;
+	display: block;
+	height: 60px;
+	overflow: hidden;
+}
+
+#planetnews .hidden {
+	display: none;
+}
+
+.readmore {
+	clear: both;
+	text-align: right;
+	margin-right: 5em;
+}
+
+.widefat {
+	width: 100%;
+}
+
+.widefat td, .widefat th {
+	padding: 5px 6px;
+}
+
+.widefat th {
+	text-align: left;
+}
+
+.plugins p {
+	margin: 4px;
+	padding: 0;
+}
+
+.plugins .name {
+	font-size: 16px;
+}
+
+.import-system {
+	font-size: 16px;
+}
+
+thead, .thead {
+	background: #dfdfdf
+}
+
+#import-upload-form {
+	margin: auto;
+	background: #eee;
+	padding: 1em;
 }
 
 a.edit, a.delete, a.edit:hover, a.delete:hover {
@@ -91,17 +154,14 @@ fieldset legend {
 	padding: .1em .3em;
 }
 
-fieldset span.cat-nest {
-	display: block;
-	margin-left: 10px;
-}
-
 fieldset.options {
 	padding: 1em;
 }
 
 fieldset.options legend {
-	font-size: 16px;
+	font-size: 1.5em;
+	font-weight: bold;
+	font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 form, label input {
@@ -110,23 +170,10 @@ form, label input {
 }
 
 h2 {
-	border-bottom: .5em solid #f0f8ff;
+	border-bottom: .5em solid #e5f3ff;
 	color: #333;
-	font: normal 30px/5px serif;
+	font: normal 32px/5px serif;
 	margin: 5px 10px;
-}
-
-h2 small.quickjump {
-	display: block;
-	text-align: right;
-}
-
-h2 small.quickjump a {
-	text-decoration: none;
-	border-bottom: 0;
-	font-size: 15px;
-	background: #f0f8ff;
-	padding: 5px 10px;
 }
 
 img, #footer a {
@@ -147,7 +194,7 @@ li, dd {
 }
 
 p, li, dl, dd, dt {
-	line-height: 130%;
+	line-height: 140%;
 }
 
 textarea, input, select {
@@ -163,9 +210,8 @@ textarea, input, select {
 	border-style: none;
 	padding: 0px;
 	margin-bottom: 16px;
-	height: 15em;
+	height: 18em;
 	width: 100%;
-/*	overflow-y: hidden;*/
 }
 
 form#upload th {
@@ -241,8 +287,14 @@ form#upload #post_content {
 }
 
 .commentlist li {
-	border-bottom: 1px solid #369;
-	padding: .3em 1em;
+	border-bottom: 1px solid #ccc;
+	padding: 1em 1em .2em;
+	margin: 0;
+}
+
+.commentlist p {
+	padding: 0;
+	margin: 0 0 .8em;
 }
 
 .clear {
@@ -277,7 +329,7 @@ form#upload #post_content {
 	font: 12px Georgia, "Times New Roman", Times, serif;
 }
 
-.submit input, .submit input:focus, .button {
+.submit input, .submit input:focus, .button, .button:focus {
 	background: url( images/fade-butt.png );
 	border: 3px double #999;
 	border-left-color: #ccc;
@@ -291,6 +343,14 @@ form#upload #post_content {
 	border: 3px double #ccc;
 	border-left-color: #999;
 	border-top-color: #999;
+}
+
+.button, .button:focus {
+	padding: 0.15em;
+}
+
+* html .button {
+	padding: 0;
 }
 
 .submit, .editform th, #postcustomsubmit {
@@ -308,6 +368,8 @@ form#upload #post_content {
 .optiontable th {
 	width: 33%;
 	text-align: right;
+	font-size: 1.3em;
+	font-weight: normal;
 }
 
 .unapproved {
@@ -326,8 +388,20 @@ form#upload #post_content {
 	color: #009ef0;
 }
 
-.updated {
-	background: #CFEBF7 url(images/notice.gif) no-repeat 1em ;
+.approve {
+	display: none;
+}
+
+.unapproved .approve {
+	display: inline;
+}
+
+.unapproved .unapprove {
+	display: none;
+}
+
+.updated, .confirm {
+	background: #CFEBF7 url(images/notice.gif) no-repeat 1em;
 	border: 1px solid #2580B2;
 	margin: 1em 5% 10px;
 	padding: 0 1em 0 3em;
@@ -345,15 +419,28 @@ form#upload #post_content {
 	border: 1px solid #ccc;
 	clear: both;
 	margin: 15px 5%;
-	padding: .5em 1em;
+	padding: 1em;
+}
+
+.narrow {
+	width: 450px;
+	margin: auto;
+}
+
+.narrow p {
+	line-height: 150%;
 }
 
 .wrap h2 {
-	margin: .8em 0 .5em;
+	margin: .4em 0 .5em;
 	clear: both;
 }
 
-table .vers, table .name {
+* html .wrap h2 {
+	margin-top: 1em;
+}
+
+table .vers {
 	text-align: center;
 }
 
@@ -366,14 +453,16 @@ input.disabled, textarea.disabled {
 }
 
 #adminmenu {
-	background: #6da6d1;
+	background: #83B4D8;
 	border-top: 3px solid #448abd;
 	margin: 0;
-	padding: .2em .2em .2em 2em;
+	padding: .2em .2em .3em 2em;
 }
+
 
 #adminmenu .current, #submenu .current {
 	font-weight: bold;
+	text-decoration: none;
 }
 
 #adminmenu a {
@@ -382,10 +471,10 @@ input.disabled, textarea.disabled {
 	font-weight: normal;
 	margin: 0;
 	padding: 3px 5px;
-	text-decoration: none;
+	border-bottom: none;
 }
 
-#adminmenu a:hover, .current {
+#adminmenu a:hover, #adminmenu a.current {
 	background: #ddeaf4;
 	color: #333;
 }
@@ -397,11 +486,23 @@ input.disabled, textarea.disabled {
 	text-align: center;
 }
 
-#submenu {
+#adminmenu a.current {
+	background: #0d324f;
+	border-right: 2px solid #4f96c8;
+	border-top: 1px solid #96c0de;
+	color: #fff;
+	padding-bottom: 8px;
+}
+
+#submenu, #minisub {
 	background: #0d324f;
 	border-bottom: none;
 	margin: 0;
 	padding: 3px 2em 0 3em;
+}
+
+#minisub {
+	height: 6px;
 }
 
 #submenu .current {
@@ -415,7 +516,7 @@ input.disabled, textarea.disabled {
 	border: none;
 	color: #fff;
 	font-size: 12px;
-	padding: .3em .4em .33em;
+	padding: .3em .4em .4em;
 }
 
 #submenu a:hover {
@@ -424,7 +525,8 @@ input.disabled, textarea.disabled {
 }
 
 #submenu li {
-	line-height: 170%;
+	line-height: 180%;
+	height: 25px;
 }
 
 
@@ -432,12 +534,7 @@ input.disabled, textarea.disabled {
 	border: none;
 }
 
-#titlediv, #guiddiv {
-	margin: 0 8px 0 0;
-	padding: 0px;
-}
-
-#postdiv {
+#postdiv, #titlediv, #guiddiv {
 	margin: 0 8px 0 0;
 	padding: 0px;
 }
@@ -452,13 +549,14 @@ input.disabled, textarea.disabled {
 	width: 100%;
 }
 
+#postdivrich #content {
+	padding: .7em;
+	line-height: 140%;
+}
+
 #titlediv input, #guiddiv input {
 	margin: 0px;
 	width: 100%;
-}
-
-#quicktags {
-	margin-left: -1px;
 }
 
 #currenttheme img {
@@ -469,9 +567,38 @@ input.disabled, textarea.disabled {
 	width: 300px;
 }
 
-#deletepost:hover {
+input.delete:hover {
 	background: #ce0000;
 	color: #fff;
+}
+
+#deletebookmarks:hover {
+	background: #ce0000;
+	color: #fff;
+}
+
+#postdivrich #quicktags {
+	background: #f0f0ee;
+	padding: 0px;
+	border: 1px solid #ccc;
+	border-bottom: none;
+}
+
+#postdiv #quicktags {
+	padding-right: 6px;
+}
+
+#postdivrich #quicktags {
+	display: none;
+}
+
+#quicktags #ed_toolbar {
+	padding: 0px 2px;
+}
+
+#ed_toolbar input {
+	background: #fff url( images/fade-butt.png ) repeat-x 0px -2px;
+	margin: 3px 2px 2px;
 }
 
 #quicktags #ed_strong {
@@ -493,10 +620,12 @@ input.disabled, textarea.disabled {
 
 #quicktags #ed_code {
 	font-family: "Courier New", Courier, mono;
+	margin-bottom: 3px;
 }
 
 #title {
-	font-size: 1.5em;
+	font-size: 1.7em;
+	padding: 4px;
 }
 
 #postexcerpt div, #attachmentlinks div {
@@ -522,61 +651,161 @@ input.disabled, textarea.disabled {
 #footer {
 	clear: both;
 	text-align: center;
+	width: 500px;
+	margin: auto;
+	height: 100px;
 }
 
-#login {
-	background: #fff;
-	border: 1px solid #a2a2a2;
-	margin: 5em auto;
-	padding: 1.5em;
-	width: 25em;
+#footer .docs {
+	padding-top: 19px;
+	line-height: 160%;
 }
 
-#login #login_error {
-	background: #c00;
-	border: 1px solid #a40000;
-	color: #fff;
-	font-size: 16px;
-	font-weight: bold;
-	padding: .5em;
-	text-align: center;
+#footer .docs a {
+	text-decoration: underline;
 }
-
-#login h1 {
-	background: url(images/wordpress-logo.png) no-repeat top left;
-	margin-top: 0;
-}
-
-#login h1 a {
-	display: block;
-	text-indent: -1000px;
-	height: 66px;
-	border-bottom: none;
-}
-
-#login input {
-	padding: 3px;
-}
-
-#login ul {
-	list-style: none;
+#footer .logo {
+	float: left;
 	margin: 0;
 	padding: 0;
 }
 
-#login ul li {
-	display: inline;
-	margin-left: 1.4em;
+#login {
+	position: relative;
+	background: url('images/login-bkg-tile.gif') no-repeat top center;
+	color: #fff;
+	margin: 5em auto 1em;
+	padding: 20px 0 0;
+	width: 425px;
+	_width: 390px;
+}
+
+#login form {
+	background: url('images/login-bkg-bottom.gif') no-repeat bottom center;
+	padding: 0 50px 25px;
+	_width: 325px;
+	_margin: 0 auto;
+}
+
+#login #login_error {
+	background: #0e3350;
+	border: 1px solid #2571ab;
+	color: #ebcd4e;
+	font-size: 11px;
+	font-weight: bold;
+	padding: .6em;
+	width: 310px;
+	margin: 0 50px;
 	text-align: center;
 }
 
-#login #log, #pwd {
-	font-size: 1.7em;
-	width: 80%;
+#login p { 
+	font-size: 12px;
+}
+
+#login p.message { 
+	width: 310px;
+	margin: 0 auto 1em;
+}
+
+#login #login_error a {
+	color: #ebcd4e;
+	border-color: #ebcd4e;
+}
+
+#login #send {
+	color: #fff;
+	text-align: left;
+	font-weight: normal;
+	font-size: 1.1em;
+	_width: 325px;
+	_margin: 0 auto 15px;
+}
+
+#login h1 a {
+	margin: 0 auto;
+	height: 88px;
+	width: 320px;
+	display: block;
+	border-bottom: none;
+}
+
+#login .hide {
+	display: none;
+}
+
+#login .message {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#login .register {
+	font-size: 20px;
+}
+
+#login input {
+	padding: 4px;
+}
+
+.login ul, #protected #login .bottom {
+	list-style: none;
+	width: 325px;
+	margin: 0 auto;
+	padding: 0;
+	line-height: 1.2;
+}
+
+.login ul li {
+	font-size: 11px;
+}
+
+.login ul li a {
+	color: #0d324f;
+	border: none;
+}
+
+#login ul li a:hover {
+	color: #fff;
+}
+
+#login .input {
+	font-size: 1.8em;
+	margin-top: 3px;
+	width: 97%;
+}
+
+#login p label { 
+	font-size: 11px;
 }
 
 #login #submit {
-	font-size: 1.7em;
+	margin: 0;
+	font-size: 15px;
+}
+
+.plugins p {
+}
+
+#login .fullwidth {
+	width: 320px;
+}
+
+#searchform {
+	float: left;
+	margin-right: 1em;
+	width: 18em;
+}
+
+#viewarc {
+	float: left;
+	width: 23em;
+	margin-bottom: 1em;
+}
+
+#viewcat {
+	float: left;
+	width: 30em;
+	margin-bottom: 1em;
 }
 
 #postcustom .updatemeta, #postcustom .deletemeta {
@@ -621,9 +850,10 @@ input.disabled, textarea.disabled {
 #templateside {
 	float: right;
 	width: 170px;
+	overflow: hidden;
 }
 
-#templateside h3, #postcustom p {
+#templateside h3, #postcustom p.submit {
 	margin: 0;
 }
 
@@ -670,7 +900,7 @@ input.disabled, textarea.disabled {
 
 #zeitgeist {
 	background: #eee;
-	border: 1px solid #69c;
+	border: 1px solid #c5c5c5;
 	float: right;
 	font-size: 90%;
 	margin-bottom: .5em;
@@ -682,6 +912,10 @@ input.disabled, textarea.disabled {
 
 #zeitgeist h2, fieldset legend a {
 	border-bottom: none;
+}
+
+* html #zeitgeist h2 {
+	padding-top: 10px;
 }
 
 #zeitgeist h2 {
@@ -721,9 +955,17 @@ input.disabled, textarea.disabled {
 	background: #8B8;
 }
 
+#namediv, #emaildiv, #uridiv {
+	float: left;
+}
+
+#ajax-response {
+	padding: .5em;
+}
+
 /* A handy div class for hiding controls.
-   Some browsers will disable them when you
-   set display:none; */
+Some browsers will disable them when you
+set display:none; */
 .zerosize {
 	height: 0px;
 	width: 0px;
@@ -763,9 +1005,9 @@ input.disabled, textarea.disabled {
 }
 
 /****************************************************************
-  avoid padding, margins or borders on dbx-box, 
-  to reduce visual discrepancies between it and the clone.  
-  overall, dbx-box is best left as visually unstyled as possible 
+avoid padding, margins or borders on dbx-box,
+to reduce visual discrepancies between it and the clone.
+overall, dbx-box is best left as visually unstyled as possible
 *****************************************************************/
 .dbx-box {
 	margin:0;
@@ -807,21 +1049,38 @@ input.disabled, textarea.disabled {
 	margin-top: .5em;
 }
 
-#categorydiv div div {
+#categorydiv ul {
+	list-style: none;
+	padding: 0;
+	margin-left: 10px;
+}
+
+#categorychecklist {
 	height: 12em;
 	overflow: auto;
+	margin-top: 8px;
+}
+
+#categorychecklist li {
+	margin: 0;
+	padding: 0;
 }
 
 #ajaxcat input {
 	border: 1px solid #ccc;
 }
 
+#your-profile #rich_editing {
+	border: none;
+	background: #fff;
+}
+
 #your-profile fieldset {
 	border: 1px solid #ccc;
 	float: left;
 	width: 40%;
-	padding: .5em 2em;
-	margin: 1em; 
+	padding: .5em 2em 1em;
+	margin: 1em 1em 1em 0;
 }
 
 #your-profile fieldset input  {
@@ -885,10 +1144,12 @@ input.disabled, textarea.disabled {
 	margin-left: 7px;
 	margin-bottom: -7px;
 	padding: 6px 1em 0 3px;
+	height: 19px;
+	font-size: 12px;
 	background: #2685af url(images/box-head-right.gif) no-repeat top right;
 }
 
-#advancedstuff div.dbx-handle-wrapper {
+#advancedstuff div.dbx-h-andle-wrapper {
 	margin: 0 0 0 -7px;
 	background: #fff url(images/box-head-left.gif) no-repeat top left;
 }
@@ -904,7 +1165,7 @@ input.disabled, textarea.disabled {
 	padding-right: 17px;
 }
 
-#advancedstuff div.dbx-content-wrapper {
+#advancedstuff div.dbx-c-ontent-wrapper {
 	margin-left: -7px;
 	margin-right: 0;
 	background: url(images/box-bg-left.gif) repeat-y left;
@@ -916,11 +1177,11 @@ input.disabled, textarea.disabled {
 	background: url(images/box-butt-right.gif) no-repeat bottom right;
 }
 
-#advancedstuff div.dbx-box-wrapper {
+#advancedstuff div.dbx-b-ox-wrapper {
 	background: url(images/box-butt-left.gif) no-repeat bottom left;
 }
 
-#advancedstuff .dbx-box-closed div.dbx-content-wrapper {
+#advancedstuff .dbx-box-closed div.dbx-c-ontent-wrapper {
 	padding-bottom: 2px;
 	background: url(images/box-butt-left.gif) no-repeat bottom left;
 }
@@ -934,7 +1195,7 @@ input.disabled, textarea.disabled {
 .dbx-handle-cursor {
 	cursor: move;
 }
-	
+
 /* toggle images */
 a.dbx-toggle, a.dbx-toggle:visited {
 	display:block;
@@ -989,8 +1250,13 @@ a.dbx-toggle, a.dbx-toggle:visited {
 	filter: alpha(opacity=80);
 }
 
-#newcat { width: 120px; margin-right: 5px; }
-input#catadd { 	background: #a4a4a4;
+#newcat {
+	width: 120px;
+	margin-right: 5px;
+}
+
+input #catadd {
+	background: #a4a4a4;
 	border-bottom: 1px solid #898989;
 	border-left: 1px solid #bcbcbc;
 	border-right: 1px solid #898989;
@@ -1003,13 +1269,66 @@ input#catadd { 	background: #a4a4a4;
 	height: 20px;
 	margin-bottom: 2px;
 	text-align: center;
-	width: 37px; }
+	width: 37px;
+}
+
 #howto {
 	font-size: 11px;
 	margin: 0 5px;
 	display: block;
 }
+
 #jaxcat {
 	margin: 0;
 	padding: 0;
+}
+
+#ajax-response.alignleft {
+	margin-left: 2em;
+}
+
+#postdivrich #edButtons {
+	padding-left: 3px;
+}
+
+#postdivrich #content, #postdivrich #content:active {
+	border: 1px solid #ccc;
+}
+
+#edButtons input, #edButtons input:active {
+	margin: 0px 2px -1px;
+}
+
+#edButtons input.edButtonFore, #edButtons input.edButtonFore:active {
+	background: #f0f0ee;
+	border-bottom: 1px solid #f0f0ee;
+}
+
+#edButtons input.edButtonBack, #edButtons input.edButtonBack:active {
+	background: #fff url( images/fade-butt.png ) repeat-x 0px 15px;
+	border-bottom: 1px solid #ccc;
+}
+
+.page-numbers {
+	padding: 4px 7px;
+	border: 1px solid #fff;
+	margin-right: 3px;
+}
+
+a.page-numbers {
+	border: 1px solid #ccc;
+}
+
+a.page-numbers:hover {
+	border: 1px solid #999;
+}
+
+.page-numbers.current {
+	border: 1px solid #999;
+	font-weight: bold;
+}
+
+.pagenav span {
+	font-weight: bold;
+	margin: 0 6px;
 }

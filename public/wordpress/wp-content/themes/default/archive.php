@@ -6,7 +6,7 @@
 
 		 <?php $post = $posts[0]; // Hack. Set $post so that the_date() works. ?>
 <?php /* If this is a category archive */ if (is_category()) { ?>
-		<h2 class="pagetitle">Archive for the '<?php echo single_cat_title(); ?>' Category</h2>
+		<h2 class="pagetitle">Archive for the &#8216;<?php echo single_cat_title(); ?>&#8217; Category</h2>
 
  	  <?php /* If this is a daily archive */ } elseif (is_day()) { ?>
 		<h2 class="pagetitle">Archive for <?php the_time('F jS, Y'); ?></h2>
@@ -16,9 +16,6 @@
 
 		<?php /* If this is a yearly archive */ } elseif (is_year()) { ?>
 		<h2 class="pagetitle">Archive for <?php the_time('Y'); ?></h2>
-
-	  <?php /* If this is a search */ } elseif (is_search()) { ?>
-		<h2 class="pagetitle">Search Results</h2>
 
 	  <?php /* If this is an author archive */ } elseif (is_author()) { ?>
 		<h2 class="pagetitle">Author Archive</h2>
@@ -43,7 +40,7 @@
 					<?php the_content() ?>
 				</div>
 
-				<p class="postmetadata">Posted in <?php the_category(', ') ?> | <?php edit_post_link('Edit', '', ' | '); ?>  <?php comments_popup_link('No Comments &#187;', '1 Comment &#187;', '% Comments &#187;'); ?></p> 
+				<p class="postmetadata">Posted in <?php the_category(', ') ?> | <?php edit_post_link('Edit', '', ' | '); ?>  <?php comments_popup_link('No Comments &#187;', '1 Comment &#187;', '% Comments &#187;'); ?></p>
 
 			</div>
 

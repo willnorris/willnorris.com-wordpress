@@ -34,7 +34,7 @@ addLoadEvent(focusit);
     <legend><a href="http://wordpress.org/docs/reference/post/#post" title="<?php _e('Help with post field') ?>"><?php _e('Post') ?></a></legend>
 <?php the_quicktags(); ?>
 <?php
- $rows = get_settings('default_post_edit_rows');
+ $rows = get_option('default_post_edit_rows');
  if (($rows < 3) || ($rows > 100)) {
      $rows = 10;
  }
@@ -51,20 +51,20 @@ edCanvas = document.getElementById('content');
 
 <input type="hidden" name="post_pingback" value="<?php echo get_option('default_pingback_flag') ?>" id="post_pingback" />
 
-<p><label for="trackback"> <?php printf(__('<a href="%s" title="Help on trackbacks"><strong>TrackBack</strong> a <abbr title="Universal Resource Identifier">URI</abbr></a>:</label> (Separate multiple <abbr title="Universal Resource Identifier">URI</abbr>s with spaces.)<br />'), 'http://wordpress.org/docs/reference/post/#trackback') ?>
+<p><label for="trackback"> <?php printf(__('<a href="%s" title="Help on trackbacks"><strong>TrackBack</strong> a <abbr title="Universal Resource Locator">URL</abbr></a>:</label> (Separate multiple <abbr title="Universal Resource Locator">URL</abbr>s with spaces.)'), 'http://wordpress.org/docs/reference/post/#trackback'); echo '<br />'; ?>
 	<input type="text" name="trackback_url" style="width: 360px" id="trackback" tabindex="7" /></p>
 
-<p class="submit"><input name="saveasdraft" type="submit" id="saveasdraft" tabindex="9" value="<?php _e('Save as Draft') ?>" /> 
-  <input name="saveasprivate" type="submit" id="saveasprivate" tabindex="10" value="<?php _e('Save as Private') ?>" />
+<p class="submit"><input name="saveasdraft" type="submit" id="saveasdraft" tabindex="9" value="<?php _e('Save as Draft') ?>" />
+	<input name="saveasprivate" type="submit" id="saveasprivate" tabindex="10" value="<?php _e('Save as Private') ?>" />
 
 	 <?php if ( current_user_can('edit_posts') ) : ?>
-  <input name="publish" type="submit" id="publish" tabindex="6" style="font-weight: bold;" value="<?php _e('Publish') ?>" /> 
+	<input name="publish" type="submit" id="publish" tabindex="6" style="font-weight: bold;" value="<?php _e('Publish') ?>" />
 <?php endif; ?>
 
 <?php if ('bookmarklet' != $mode) {
-      echo '<input name="advanced" type="submit" id="advancededit" tabindex="7" value="' .  __('Advanced Editing &raquo;') . '" />';
-  } ?>
-  <input name="referredby" type="hidden" id="referredby" value="<?php if ( wp_get_referer() ) echo urlencode(wp_get_referer()); ?>" />
+		echo '<input name="advanced" type="submit" id="advancededit" tabindex="7" value="' .  __('Advanced Editing &raquo;') . '" />';
+	} ?>
+	<input name="referredby" type="hidden" id="referredby" value="<?php if ( wp_get_referer() ) echo urlencode(wp_get_referer()); ?>" />
 </p>
 
 <?php do_action('simple_edit_form', ''); ?>

@@ -1,13 +1,13 @@
-<?php
-
-require_once('../../../wp-config.php');
-
-?>
+<?php require_once('../../../wp-config.php'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" <?php language_attributes(); ?>>
 <head>
+<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 <title><?php _e('Rich Editor Help') ?></title>
-<link rel="stylesheet" href="<?php echo get_settings('siteurl') ?>/wp-admin/wp-admin.css?version=<?php bloginfo('version'); ?>" type="text/css" />
+<link rel="stylesheet" href="<?php echo get_option('siteurl') ?>/wp-admin/wp-admin.css?version=<?php bloginfo('version'); ?>" type="text/css" />
+<?php if ( ('rtl' == $wp_locale->text_direction) ) : ?>
+<link rel="stylesheet" href="<?php echo get_option('siteurl') ?>/wp-admin/rtl.css?version=<?php bloginfo('version'); ?>" type="text/css" />
+<?php endif; ?> 
 <style type="text/css">
 	#wphead {
 		padding-top: 5px;
@@ -78,6 +78,20 @@ require_once('../../../wp-config.php');
 		border-bottom: 0px;
 	}
 </style>
+<?php if ( ('rtl' == $wp_locale->text_direction) ) : ?>
+<style type="text/css">
+	#wphead, #adminmenu {
+		padding-left: auto;
+		padding-right: 15px;
+	}
+	#flipper {
+		margin: 5px 0 3px 10px;
+	}
+	#keys .left, .top, .action { text-align: right; }
+	#keys .right { text-align: left; }
+	td b { font-family: Tahoma, "Times New Roman", Times, serif }
+</style>
+<?php endif; ?> 
 <script type="text/javascript">
 	window.onkeydown = window.onkeypress = function (e) {
 		e = e ? e : window.event;
@@ -93,7 +107,7 @@ require_once('../../../wp-config.php');
 			c = d('content'+i.toString());
 			t = d('tab'+i.toString());
 			if ( n == i ) {
-				c.className = '';	
+				c.className = '';
 				t.className = 'current';
 			} else {
 				c.className = 'hidden';
@@ -118,29 +132,27 @@ require_once('../../../wp-config.php');
 
 <div id="content1">
 	<h2><?php _e('Rich Editing Basics') ?></h2>
-	<p><?php _e('<em>Rich editing</em>, also called WYSIWYG for What You See Is What You Get, means your text is formatted as you type. The rich editor creates HTML code behind the scenes while you concentrate on writing. Font styles, links and images all appear just as they will on the internet.') ?></p>
-	<p><?php _e('WordPress includes TinyMCE, a rich editor that works well in most web browsers used today. It is powerful but it has limitations. Pasting text from other word processors may not give the results you expect. If you do not like the way the rich editor works, you may turn it off in the My Profile form, under Users in the admin menu.') ?></p>
-	<p><?php _e('Because HTML code depends on the less-than character (&lt;) to render web pages, this character is reserved for HTML code. If you want a "<" to be visible on your site, you must encode it as "&amp;lt;" without the quotes.') ?></p>
+	<p><?php _e('<em>Rich editing</em>, also called WYSIWYG for What You See Is What You Get, means your text is formatted as you type. The rich editor creates HTML code behind the scenes while you concentrate on writing. Font styles, links and images all appear approximately as they will on the internet.') ?></p>
+	<p><?php _e('WordPress includes a rich HTML editor that works well in most web browsers used today. It is powerful but it has limitations. Pasting text from other word processors may not give the results you expect. If you do not like the way the rich editor works, you may turn it off in the Your Profile and Personal Options form, under Users in the admin menu.') ?></p>
 </div>
 
 <div id="content2" class="hidden">
 	<h2><?php _e('Advanced Rich Editing') ?></h2>
 	<h3><?php _e('Images and Attachments') ?></h3>
-	<p><?php _e('Some (not all) browsers allow you to drag images and other items directly into the editor. Most <a href="http://www.mozilla.org/products/firefox/" title="Mozilla.org, home of the Firefox web browser" target="_blank">Firefox</a> users can drag images from the uploading box (directly below the editor) and see their images instantly, complete with a link. If you cannot do this, use your clipboard Copy and Paste functions to insert the image and link tags. The rich editor will display the images after you have saved the post or used the HTML Editor to refresh the display.') ?></p>
+	<p><?php _e('There is a button in the editor toolbar for inserting images that are already hosted somewhere on the internet. If you have a URL for an image, click this button and enter the URL in the box which appears.') ?></p>
+	<p><?php _e('If you need to upload an image or sound file from your computer, you can use the uploading tool below the editor. The tool will attempt to create a thumbnail-sized image when you upload an image. To insert your uploaded image into the post, first click on the thumbnail to reveal a menu of options. Clicking on a "Using.." or "Linked..." option will change that option. For instance, you might want to use the thumbnail in the post and link it to a page showing the original with a caption. When you have selected the options you like, click "Send to Editor" and your image or file will appear in the post you are editing.') ?></p>
 	<h3><?php _e('HTML in the Rich Editor') ?></h3>
-	<p><?php _e('When you want to include HTML elements that are not generated by the toolbar buttons, you must enter it by hand. Examples are &lt;pre> and &lt;code>. Simply type the code into the editor. If the code is valid and allowed by the editor, you should see it rendered the next time you update the display, usually by saving or using the HTML Editor. If you want to display "&lt;" on the web, you must encode it as "&amp;lt;" in the editor.') ?></p>
-	<h3><?php _e('The HTML Editor') ?></h3>
-	<p><?php _e('The editor will not always understand your intentions as your editing gets more complex. Use the HTML Editor to sort out any rough spots, such as extra elements or attributes. WordPress will strip all empty &lt;p> tags and &lt;br /> tags in favor of simple newline characters. However, it will preserve any tag such as this: &lt;p class="anyclass">&lt;/p>. When using the HTML editor, all less-thans are double-encoded: &amp;amp;lt;. This ensures they display as &amp;lt; in the rich editor and &lt; on the web.') ?></p>
+	<p><?php _e('Any HTML entered directly into the rich editor will show up as text when the post is viewed. What you see is what you get. When you want to include HTML elements that cannot be generated with the toolbar buttons, you must enter it by hand in the HTML editor. Examples are tables and &lt;code&gt;. To do this, click the HTML button and edit the code, then click Update. If the code is valid and understood by the editor, you should see it rendered immediately.') ?></p>
 </div>
 
 <div id="content3" class="hidden">
 	<h2><?php _e('Writing at Full Speed') ?></h2>
 	<p><?php _e('Rather than reaching for your mouse to click on the toolbar, use these access keys. Windows and Linux use Alt+&lt;letter>. Macintosh uses Ctrl+&lt;letter>.') ?></p>
 	<table id="keys" width="100%" border="0">
-		<tr class="top"><th class="key center"><?php _e('Key') ?></th><th class="left"><?php _e('Action') ?></th><th class="key center"><?php _e('Key') ?></th><th class="left"><?php _e('Action') ?></th></tr>
-		<tr><th>b</th><td><strong><?php _e('Bold') ?></strong></td><th>f</th><td class="align left"><?php _e('Align Left') ?></td></tr>
-		<tr><th>i</th><td><em><?php _e('Italic') ?></em></td><th>c</th><td class="align center"><?php _e('Align Center') ?></td></tr>
-		<tr><th>d</th><td><strike><?php _e('Strikethrough') ?></strike></td><th>r</th><td class="align right"><?php _e('Align Right') ?></td></tr>
+		<tr class="top"><th class="key center"><?php _e('Letter') ?></th><th class="left"><?php _e('Action') ?></th><th class="key center"><?php _e('Letter') ?></th><th class="left"><?php _e('Action') ?></th></tr>
+		<tr><th>n</th><td><?php _e('Check Spelling') ?></td><th>f</th><td class="align left"><?php _e('Align Left') ?></td></tr>
+		<tr><th>j</th><td><?php _e('Justify Text') ?></td><th>c</th><td class="align center"><?php _e('Align Center') ?></td></tr>
+		<tr><th>k</th><td><strike><?php _e('Strikethrough') ?></strike></td><th>r</th><td class="align right"><?php _e('Align Right') ?></td></tr>
 		<tr><th>l</th><td><b>&bull;</b> <?php _e('List') ?></td><th>a</th><td><?php _e('Insert <span class="anchor">Anchor</span>') ?></td></tr>
 		<tr><th>o</th><td>1. <?php _e('List') ?></td><th>s</th><td><?php _e('Unlink Anchor') ?></td></tr>
 		<tr><th>q</th><td>&rarr;<?php _e('Quote/Indent') ?></td><th>m</th><td><?php _e('Insert Image') ?></td></tr>
@@ -152,7 +164,7 @@ require_once('../../../wp-config.php');
 
 <div id="content4" class="hidden">
 	<h2><?php _e('About TinyMCE'); ?></h2>
-	<p><?php printf(__('Version: %s'), '2.0RC4') ?></p>
+	<p><?php printf(__('Version: %s'), '2.0.8') ?></p>
 	<p><?php printf(__('TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under %sLGPL</a>	by Moxiecode Systems AB. It has the ability to convert HTML TEXTAREA fields or other HTML elements to editor instances.'), '<a href="'.get_bloginfo('home').'/wp-includes/js/tinymce/license.txt" target="_blank" title="'.__('GNU Library General Public Licence').'">') ?></p>
 	<p><?php _e('Copyright &copy; 2005, <a href="http://www.moxiecode.com" target="_blank">Moxiecode Systems AB</a>, All rights reserved.') ?></p>
 	<p><?php _e('For more information about this software visit the <a href="http://tinymce.moxiecode.com" target="_blank">TinyMCE website</a>.') ?></p>

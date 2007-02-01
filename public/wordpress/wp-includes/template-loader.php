@@ -1,8 +1,11 @@
 <?php
 if ( defined('WP_USE_THEMES') && constant('WP_USE_THEMES') ) {
 	do_action('template_redirect');
-	if ( is_feed() ) {
-		include(ABSPATH . '/wp-feed.php');
+	if ( is_robots() ) {
+		do_action('do_robots');
+		exit;
+	} else if ( is_feed() ) {
+		do_feed();
 		exit;
 	} else if ( is_trackback() ) {
 		include(ABSPATH . '/wp-trackback.php');
@@ -31,7 +34,7 @@ if ( defined('WP_USE_THEMES') && constant('WP_USE_THEMES') ) {
 		exit;
 	} else if ( is_category() && $template = get_category_template()) {
 		include($template);
-		exit;		
+		exit;
 	} else if ( is_author() && $template = get_author_template() ) {
 		include($template);
 		exit;
@@ -55,8 +58,11 @@ if ( defined('WP_USE_THEMES') && constant('WP_USE_THEMES') ) {
 	}
 } else {
 	// Process feeds and trackbacks even if not using themes.
-	if ( is_feed() ) {
-		include(ABSPATH . '/wp-feed.php');
+	if ( is_robots() ) {
+		do_action('do_robots');
+		exit;
+	} else if ( is_feed() ) {
+		do_feed();
 		exit;
 	} else if ( is_trackback() ) {
 		include(ABSPATH . '/wp-trackback.php');
