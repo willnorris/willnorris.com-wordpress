@@ -170,8 +170,28 @@ class wpdb {
 		$this->result = @mysql_query($query, $this->dbh);
 		++$this->num_queries;
 	
-		if (SAVEQUERIES)
-			$this->queries[] = array( $query, $this->timer_stop() );
+		# edit 2007-02-01 wnorris #
+		# Trying to get better debugging information on database queries 
+		# see (http://www.stilglog.com/2006/02/17/debugging-wordpress-database-queries/)
+
+		# WAS:
+		#if (SAVEQUERIES)
+		#	$this->queries[] = array( $query, $this->timer_stop() );
+
+		if (SAVEQUERIES) {
+			$backtrace = debug_backtrace();
+			$bta = array();
+			foreach($backtrace as $bt) {
+				$bts = "{$bt['file']}:{$bt['line']}:";
+				if (isset($bt['class'])) {
+					$bts .= $bt['class'] . '::';
+				}
+				$bts .= $bt['function'];
+				$bta[] = $bts;
+			}
+			$this->queries[] = array( $query, $this->timer_stop(), $bta );
+		}
+		# end edit #
 
 		// If there is an error then take note of it..
 		if ( mysql_error($this->dbh) ) {
