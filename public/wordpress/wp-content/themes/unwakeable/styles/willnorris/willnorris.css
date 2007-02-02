@@ -19,14 +19,20 @@
 #page {
 	/* The entire design is contained within the 'page' id */
 	padding-top: 0;
+	width: 880px;
 	}
 	
+* html #page { width: 870px; }
+
 #header {
 	/* Contains the H1 and menu */
+	width: auto;
 	}
 	
-.primary {
+#primary {
 	/* Contains the main column */
+	width: 590px;
+	padding: 20px 10px 10px 0;
 	}
 
 .hentry {
