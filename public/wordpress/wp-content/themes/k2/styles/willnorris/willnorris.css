@@ -94,11 +94,15 @@ div#search {
 	margin: 0;
 	position: auto;
 }
-#s {
-	width: 100px;
-	display: inline;
-}
 */
+#search br {
+	display: none;
+}
+#s {
+	width: 60%;
+	display: inline;
+	margin-right: 1em;
+}
 
 #footer {
 	width: 800px;
