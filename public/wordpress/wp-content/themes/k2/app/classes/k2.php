@@ -25,6 +25,7 @@ class K2 {
 			false, '1.5.0');
 
 		// Register our scripts with WordPress, version is Last Changed Revision
+		/*
 		wp_register_script('k2rollingarchives',
 			get_bloginfo('template_directory') . '/js/rollingarchives.js.php',
 			array('scriptaculous-slider', 'k2trimmer'), '224');
@@ -43,6 +44,7 @@ class K2 {
 		wp_register_script('k2sbm',
 			get_bloginfo('template_directory') . '/js/sbm.js.php',
 			array('scriptaculous-effects', 'scriptaculous-dragdrop'), '248');
+			*/
 
 
 		// There may be some things we need to do before K2 is initialised
