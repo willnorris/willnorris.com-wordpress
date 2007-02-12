@@ -3,7 +3,7 @@
  * Plugin Name: Permalink Redirect
  * Plugin URI: http://fucoder.com/code/permalink-redirect/
  * Description: This plugin ensures that pages and entries are always accessed via the permalink. Otherwise, a 301 redirect will be issued.
- * Version: 0.6.0
+ * Version: 0.6.2
  * Author: Scott Yang
  * Author URI: http://scott.yang.id.au/
  */
@@ -11,7 +11,7 @@
 class YLSY_PermalinkRedirect {
     function admin_menu() {
         add_options_page('Permalink Redirect Manager', 'Permalink Redirect', 5,
-                         __FILE__, array('YLSY_PermalinkRedirect', 'admin_page'));
+            __FILE__, array('YLSY_PermalinkRedirect', 'admin_page'));
     }
 
     function admin_page() {
@@ -34,7 +34,7 @@ class YLSY_PermalinkRedirect {
             <table class="optiontable"> 
                 <tr>
                     <th scope="row">FeedBurner Redirect:</th> 
-                    <td>http://feed.feedburner.com/<input name="permalink_redirect_feedburner" type="text" id="permalink_redirect_feedburner" value="<?php echo htmlspecialchars($feedburner) ?>" size="25" /></td> 
+                    <td>http://feeds.feedburner.com/<input name="permalink_redirect_feedburner" type="text" id="permalink_redirect_feedburner" value="<?php echo htmlspecialchars($feedburner) ?>" size="25" /></td> 
                 </tr> 
             </table>
         </fieldset>
@@ -50,7 +50,12 @@ class YLSY_PermalinkRedirect {
     }
 
     function execute() {
-        $requested = parse_url($_SERVER['REQUEST_URI']);
+        global $withcomments;
+
+        $requested = @parse_url($_SERVER['REQUEST_URI']);
+        if ($requested === false)
+            return;
+
         $requested = $requested['path'];
 
         if (is_404() || is_trackback() || is_search() ||
@@ -61,7 +66,7 @@ class YLSY_PermalinkRedirect {
         // NOTE this might not always get executed. For feeds,
         // WP::send_headers() might send back a 304 before template_redirect
         // action can be called.
-        if (is_feed()) {
+        if (is_feed() && !is_archive() && !$withcomments) {
             $feedburner = get_settings('permalink_redirect_feedburner');
             if ($feedburner && !YLSY_PermalinkRedirect::is_feedburner()) {
                 header('HTTP/1.1 302 Found');
@@ -76,7 +81,13 @@ class YLSY_PermalinkRedirect {
         $link = YLSY_PermalinkRedirect::guess_permalink();
         if (!$link)
             return;
-        $permalink = parse_url($link);
+        $permalink = @parse_url($link);
+
+        // WP2.1: If a static page has been set as the front-page, we'll get 
+        // empty string here.
+        if (!$permalink['path'])
+            $permalink['path'] = '/';
+
         if ($requested != $permalink['path']) {
             header('HTTP/1.1 301 Moved Permanently');
             header('Status: 301 Moved Permanently');
@@ -120,14 +131,15 @@ class YLSY_PermalinkRedirect {
                 $author = get_userdata(get_query_var('author'));
                 if ($author === false)
                     return false;
-                $link = get_author_link(false, $author->ID, $author->user_nicename);
+                $link = get_author_link(false, $author->ID,
+                    $author->user_nicename);
             } else {
                 // XXX: get_author_link() bug in WP 1.5.1.2
                 //      s/author_nicename/user_nicename/
                 global $cache_userdata;
                 $userid = get_query_var('author');
                 $link = get_author_link(false, $userid,
-                                        $cache_userdata[$userid]->user_nicename);
+                    $cache_userdata[$userid]->user_nicename);
             }
         } elseif (is_category() && $haspost) {
             $link = get_category_link(get_query_var('cat'));
@@ -141,7 +153,14 @@ class YLSY_PermalinkRedirect {
         } elseif (is_year() && $haspost) {
             $link = get_year_link(get_query_var('year'));
         } elseif (is_home()) {
-            $link = trailingslashit(get_settings('home'));
+            // WP2.1. Handling "Posts page" option. 
+            if ((get_option('show_on_front') == 'page') &&
+                ($reqpage = get_option('page_for_posts'))) 
+            {
+                $link = get_permalink($reqpage);
+            } else {
+                $link = trailingslashit(get_settings('home'));
+            }
         } else {
             return false;
         }
@@ -180,4 +199,4 @@ class YLSY_PermalinkRedirect {
 
 add_action('admin_menu', array('YLSY_PermalinkRedirect', 'admin_menu'));
 add_action('template_redirect', array('YLSY_PermalinkRedirect', 'execute'));
-?>
+
