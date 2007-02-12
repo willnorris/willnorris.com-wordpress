@@ -954,7 +954,7 @@ function widget_recent_entries($args) {
 			<?php echo $before_title . $title . $after_title; ?>
 			<ul>
 			<?php  while ($r->have_posts()) : $r->the_post(); ?>
-			<li><a href="<?php the_permalink() ?>"><?php if ( get_the_title() ) the_title(); else the_ID(); ?> </a> (<?=the_date('M j')?>)</li>
+			<li><a href="<?php the_permalink() ?>"><?php if ( get_the_title() ) the_title(); else the_ID(); ?> </a> (<?php the_date('M j') ?>)</li>
 			<?php endwhile; ?>
 			</ul>
 		<?php echo $after_widget; ?>
