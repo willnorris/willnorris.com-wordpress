@@ -125,3 +125,9 @@ body.flex #footer {
 .entry-tags {
 	margin-top: 3px;
 }
+
+
+.widget_recent_entries li, .widget_categories li {
+	color: #ccc;
+}
+
