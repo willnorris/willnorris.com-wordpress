@@ -8,8 +8,8 @@
 	<meta name="generator" content="WordPress <?php bloginfo('version'); ?>"/>
 	<meta name="template" content="K2 <?php if (function_exists('k2info')) { k2info('version'); } ?>" />
  	<meta name="description" content="<?php bloginfo('description'); ?>" />
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php bloginfo('stylesheet_url'); ?>" />
-	<link rel="stylesheet" type="text/css" media="print" href="<?php bloginfo('template_url'); ?>/css/print.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://files.willnorris.com/wordpress/themes/unwakeable/style.css" />
+	<link rel="stylesheet" type="text/css" media="print" href="http://files.willnorris.com/wordpress/themes/unwakeable/css/print.css" />
 	<?php /* Custom Style */ if (get_option('unwakeable_scheme') != '') { ?>
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php k2info('scheme'); ?>" />
 	<?php } ?>
@@ -22,22 +22,22 @@
 	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 	<?php } ?>
 
-	<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/k2functions.js"></script>
-	<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/prototype.js.php"></script>
-	<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/effects.js.php"></script>
-	<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/slider.js.php"></script>
+	<script type="text/javascript" src="http://files.willnorris.com/wordpress/themes/unwakeable/js/k2functions.js"></script>
+	<script type="text/javascript" src="http://files.willnorris.com/wordpress/themes/unwakeable/js/prototype.js"></script>
+	<script type="text/javascript" src="http://files.willnorris.com/wordpress/themes/unwakeable/js/effects.js"></script>
+	<script type="text/javascript" src="http://files.willnorris.com/wordpress/themes/unwakeable/js/slider.js"></script>
 
 	<?php /* Live Commenting */ if ((get_option('unwakeable_livecommenting') == 1) and ((is_page() or is_single()) and (!isset($_GET['jal_edit_comments'])) and ('open' == $post-> comment_status) or ('comment' == $post-> comment_type) )) { ?>
-	<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/comments.js.php"></script>
+	<script type="text/javascript" src="http://files.willnorris.com/wordpress/themes/unwakeable/js/comments.js"></script>
 	<?php } ?>
 
 	<?php /* LiveSearch */ if (get_option('unwakeable_livesearch') == 1) { ?>
-	<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/livesearch.js.php"></script>
+	<script type="text/javascript" src="http://files.willnorris.com/wordpress/themes/unwakeable/js/livesearch.js"></script>
 	<?php } ?>
 
 	<?php /* Rolling Archives */ if (get_option('unwakeable_rollingarchives') == 1) { ?>
-	<script type="text/javascript" src="<?php bloginfo('template_directory'); ?>/js/rollingarchives.js.php"></script>
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php bloginfo('template_directory'); ?>/css/rollingarchives.css" />
+	<script type="text/javascript" src="http://files.willnorris.com/wordpress/themes/unwakeable/js/rollingarchives.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="http://files.willnorris.com/wordpress/themes/unwakeable/css/rollingarchives.css" />
 	<?php } ?>
 
 	<?php /* Hide Author Elements */ if (!is_user_logged_in() and (is_page() or is_single()) and ($comment_author = $_COOKIE['comment_author_'.COOKIEHASH]) and ('open' == $post-> comment_status) or ('comment' == $post-> comment_type) ) { ?>
