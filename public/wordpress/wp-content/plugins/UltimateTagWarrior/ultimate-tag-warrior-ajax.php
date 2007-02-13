@@ -1,8 +1,15 @@
 <?php
-ini_set("include_path", ini_get('include_path') . PATH_SEPARATOR . ".");
+/* Maybe you'll need this.. maybe you won't...
+$path = ini_get('include_path');
+if (!(substr($path, strlen( $path ) - strlen(PATH_SEPARATOR)) === PATH_SEPARATOR)) {
+	$path .= PATH_SEPARATOR;
+}
+$path .= $_SERVER['DOCUMENT_ROOT'] . "/wp-content/plugins/UltimateTagWarrior";
+ini_set("include_path", $path);
+*/
 
 require('../../../wp-blog-header.php');
-include_once('ultimate-tag-warrior-core.php');
+require_once('ultimate-tag-warrior-core.php');
 
 $appID = "wp-UltimateTagWarrior";
 
@@ -53,7 +60,6 @@ switch($action) {
 		echo "$post-$tag|";
 		echo $utw->FormatTags($utw->GetTagsForTagString('"' . $tag . '"'), $utw->GetFormatForType($format . "item"));
 		break;
-
 
 	case 'requestKeywords':
 
@@ -164,6 +170,7 @@ switch($action) {
 			echo "No tag suggestions";
 		}
 		break;
+
 
 	case 'editsynonyms':
 

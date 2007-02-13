@@ -198,7 +198,7 @@ font-size: 80%; font-variant:small-caps;}</code></li>
 <div class="chunk">
 <p>Usually,  your tag.php file will include a wordpress loop.  The wordpress loop can contain the same things as in the index.php and single.php section.  There are a few additional functions that are useful for the tag.php template that will be outlined here.</p>
 <p>A Tag Set is the set of tags being displayed on the page.  For /tag/sometag,  the tag set is just "sometag".  For /tag/sometag+anothertag or /tag/sometag|anothertag the tag set is "sometag" and "anothertag".</p>
-<p>The template function <code>is_tag()</code> returns true if the current page is a tag page.  This is useful for conditionally including items in the sidebar.</p>
+<p>The template function <code>is_tag()</code> (or <code>is_utwtag()</code>) returns true if the current page is a tag page.  This is useful for conditionally including items in the sidebar.</p>
 </div>
 
 <a name="currenttagset"></a><h5>Display the current tag set</h5>

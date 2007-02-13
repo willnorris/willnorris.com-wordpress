@@ -6,8 +6,6 @@ $tabletag_synonyms = $table_prefix . "tag_synonyms";
 $lzndomain = "ultimate-tag-warrior";
 $current_build = 7;
 
-require_once('ultimate-tag-warrior-actions.php');
-
 $siteurl = get_option('siteurl');
 $baseurl = get_option('utw_base_url');
 $home = get_option('home');
@@ -32,7 +30,8 @@ $_tagcache = array();
 $_posttagcache = array();
 $_relatedtagsmap = array();
 
-$typelimitsql = "(post_status = 'publish' OR post_status = 'static')";  // include pages
+$typelimitsql = "(post_type = 'post' OR post_type = 'page')";  // include pages
+$typelimitsql = "(post_type = 'post')";  // don't include pages - comment this out if you want!!
 
 class UltimateTagWarriorCore {
 
@@ -275,9 +274,7 @@ SQL;
 
 		if (!is_numeric($postID)) return;
 
-		$default = get_option('default_category');
-
-		$categories = $wpdb->get_results("SELECT c.cat_name FROM $wpdb->post2cat p2c INNER JOIN $wpdb->categories c ON p2c.category_id = c.cat_id WHERE p2c.post_id = $postID AND c.cat_ID != $default");
+		$categories = $wpdb->get_results("SELECT c.cat_name FROM $wpdb->post2cat p2c INNER JOIN $wpdb->categories c ON p2c.category_id = c.cat_id WHERE p2c.post_id = $postID");
 		$tags = $this->GetTagsForPost($postID);
 
 		$alltags = array();
@@ -538,13 +535,18 @@ SQL;
 		}
 
 		if ($postID) {
-			$q = "SELECT DISTINCT t.tag FROM $tabletags t INNER JOIN $tablepost2tag p2t ON p2t.tag_id = t.tag_id INNER JOIN $wpdb->posts p ON p2t.post_id = p.ID AND p.ID=$postID ORDER BY t.tag ASC $limitclause";
-
 			$tags = get_post_meta($postID, '_utw_tags_' . $limit, true); // check the postmeta cache... this is already in memory!
 			if ( false == $tags ) {
 				$q = "SELECT DISTINCT t.tag FROM $tabletags t INNER JOIN $tablepost2tag p2t ON p2t.tag_id = t.tag_id INNER JOIN $wpdb->posts p ON p2t.post_id = p.ID AND p.ID=$postID ORDER BY t.tag ASC $limitclause";
 				$tags = $wpdb->get_results($q);
-				add_post_meta($postID, '_utw_tags_' . $limit, $tags);
+				if (count($tags) > 0) {
+					add_post_meta($postID, '_utw_tags_' . $limit, $tags);
+				} else {
+					add_post_meta($postID, '_utw_tags_' . $limit, "no tags");
+				}
+			}
+			if ($tags == "no tags") {
+				$tags = array();
 			}
 			$_posttagcache[$postID . ':' . $limit] = $tags;
 
@@ -1399,6 +1401,7 @@ SQL;
 			$predefinedFormats["commalist"] = array ("default"=>", %taglink%", "first"=>"%taglink%", "none"=>$notagtext );
 			$predefinedFormats["commalistwithtaglabel"] = array ("single"=>"Tag:  %taglink%", "default"=>", %taglink%", "first"=>"Tags: %taglink%", "none"=>$notagtext );
 			$predefinedFormats["commalisticons"] = array ("default"=>", %taglink% %icons%", "first"=>"%taglink% %icons%", "none"=>$notagtext );
+			$predefinedFormats["invisibletechnoraticommalist"] = array ("pre"=>'<span style="display:none">', "default"=>", %technoratitag%", "first"=>"%technoratitag%", 'post'=>'</span>' );
 			$predefinedFormats["technoraticommalist"] = array ("default"=>", %technoratitag%", "first"=>"%technoratitag%", "none"=>$notagtext );
 			$predefinedFormats["technoraticommalistwithlabel"] = array ("default"=>", %technoratitag%", "first"=>"Technorati Tags: %technoratitag%", "none"=>$notagtext );
 			$predefinedFormats["technoraticommalistwithiconlabel"] = array ("default"=>", %technoratitag%", "first"=>"<a href=\"http://www.technorati.com/tag/\"><img src=\"$siteurl/wp-content/plugins$install_directory/technoratiicon.jpg\" alt=\"Technorati\"/></a> %technoratitag%", "none"=>$notagtext );
@@ -1423,7 +1426,7 @@ SQL;
 			$default .= "<a href=\"javascript:sndReq('expand$relStr', '%tag%', '%postid%', '$formattype')\">&raquo;</a> </span>";
 			$aft .= "</span>";
 
-			$predefinedFormats["superajax"] = array("pre"=>"<span id=\"tags-%postid%\">","default"=>$default, "post"=>"$aft");;
+			$predefinedFormats["superajax"] = array("pre"=>"<script src=\"" . $this->GetAjaxJavascriptUrl() . "\" type=\"text/javascript\"></script><span id=\"tags-%postid%\">","default"=>$default, "post"=>"$aft");;
 			$predefinedFormats["superajaxitem"] = $default;
 			$predefinedFormats["superajaxrelated"] = $default;
 			$predefinedFormats["superajaxrelateditem"] = $default;
@@ -1518,6 +1521,14 @@ CSS;
 
 		return intval($fontsize) . $fontunits;
 	}
+	
+	function GetAjaxJavascriptUrl() {
+		global $install_directory, $wp_query;
+
+		$rpcurl = get_option('siteurl') . "/wp-content/plugins$install_directory/ultimate-tag-warrior-ajax.php";
+		$jsurl = get_option('siteurl') . "/wp-content/plugins$install_directory/ultimate-tag-warrior-ajax-js.php";
+		return "$jsurl?ajaxurl=$rpcurl";
+	}
 }
 
 
@@ -1525,7 +1536,7 @@ CSS;
 Retrieves the posts for the tags specified in get_query_var("tag").  Gets the intersection when there are multiple tags.
 */
 function ultimate_get_posts() {
-	global $wpdb, $table_prefix, $posts, $table_prefix, $tableposts, $id, $wp_query, $request, $utw;
+	global $wpdb, $table_prefix, $posts, $id, $wp_query, $request, $utw, $typelimitsql;
 	$tabletags = $table_prefix . 'tags';
 	$tablepost2tag = $table_prefix . "post2tag";
 
@@ -1547,10 +1558,11 @@ function ultimate_get_posts() {
 
 	$tags = array_unique($tags);
 	$tagcount = count($tags);
-
+	
 	if (strpos($request, "HAVING COUNT(ID)") == false && !$or_query) {
-		$request = preg_replace("/GROUP BY +$tableposts.ID /", "GROUP BY $tableposts.ID HAVING COUNT(ID) = $tagcount ", $request);
+		$request = preg_replace("/ORDER BY/", "HAVING COUNT(ID) = $tagcount ORDER BY", $request);
 	}
+	$request = preg_replace("/post_type = 'post'/","$typelimitsql", $request);
 
 	$posts = $wpdb->get_results($request);
 	// As requested by Splee and copperleaf
