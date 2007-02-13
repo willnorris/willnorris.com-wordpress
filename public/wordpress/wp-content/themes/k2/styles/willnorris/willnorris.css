@@ -1,5 +1,5 @@
 body {
-	background: url('http://files.willnorris.com/wordpress/themes/k2/images/bg.png') fixed;
+	/* background: url('http://files.willnorris.com/wordpress/themes/k2/images/bg.png') fixed; */
 }
 
 #page {
@@ -8,6 +8,10 @@ body {
 	padding: 0;
 	background: #FFF;
 	border-bottom: 0;
+}
+
+.content {
+	border-bottom: 1px solid #FFF;
 }
 
 body.flex #page {
@@ -123,7 +127,16 @@ body.flex #footer {
 
 
 .entry-tags {
-	margin-top: 3px;
+	/* margin-top: 3px; */
+	padding-left: 0;
+	background: none;
+}
+
+.entry-edit {
+	position: absolute;
+	right: 0;
+	top: 2em;
+	opacity: 0.5;
 }
 
 
@@ -131,3 +144,7 @@ body.flex #footer {
 	color: #ccc;
 }
 
+.chronodata {
+	padding-left: 0;
+	background: none;
+}
