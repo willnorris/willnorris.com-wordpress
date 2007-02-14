@@ -1,5 +1,5 @@
 body {
-	/* background: url('http://files.willnorris.com/wordpress/themes/k2/images/bg.png') fixed; */
+	background: url('http://files.willnorris.com/wordpress/themes/k2/images/bg.png') fixed;
 }
 
 #page {
@@ -71,9 +71,17 @@ body.flex #page {
 	display: none;
 }
 
-h2, h3, h4 {
-	font-family: arial;
+h2, h3 {
 	letter-spacing: 1px;
+}
+#primary h4 { 
+	font-size: 1.5em; 
+	font-weight: bold;
+}
+#primary h5 {
+	font-size: 1.5em;
+	font-weight: normal;
+	margin-bottom: 1em;
 }
 
 .pagetitle h2 {
@@ -144,7 +152,27 @@ body.flex #footer {
 	color: #ccc;
 }
 
-.chronodata {
+#commentlist li .comment-meta, .chronodata {
 	padding-left: 0;
 	background: none;
+}
+
+#comment-personaldetails dt {
+	margin-top: 1em;
+}
+#comment-personaldetails dd {
+	margin-left: 2em;
+}
+
+input#openid_url_comment_form {
+   background: url('http://files.willnorris.com/wordpress/images/openid-input-bg.gif') no-repeat;
+   background-color: #fff;
+   background-position: 0 50%;
+   color: #000;
+   padding-left: 18px;
+}
+
+#commentlist .openid .commentauthor {
+   background: url('http://files.willnorris.com/wordpress/images/openid-input-bg.gif') center left no-repeat;
+   padding-left: 18px;
 }
