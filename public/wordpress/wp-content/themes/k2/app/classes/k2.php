@@ -21,7 +21,8 @@ class K2 {
 		// Register our prototype, WP 2.1 is using 1.5.0RC1
 		wp_deregister_script('prototype');
 		wp_register_script('prototype',
-			get_bloginfo('template_directory') . '/js/prototype.js.php',
+			get_settings('siteurl') . '/wp-includes/js/prototype.js',
+			#get_bloginfo('template_directory') . '/js/prototype.js.php',
 			false, '1.5.0');
 
 		// Register our scripts with WordPress, version is Last Changed Revision
