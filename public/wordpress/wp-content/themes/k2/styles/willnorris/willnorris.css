@@ -163,16 +163,3 @@ body.flex #footer {
 #comment-personaldetails dd {
 	margin-left: 2em;
 }
-
-input#openid_url_comment_form {
-   background: url('http://files.willnorris.com/wordpress/images/openid-input-bg.gif') no-repeat;
-   background-color: #fff;
-   background-position: 0 50%;
-   color: #000;
-   padding-left: 18px;
-}
-
-#commentlist .openid .commentauthor {
-   background: url('http://files.willnorris.com/wordpress/images/openid-input-bg.gif') center left no-repeat;
-   padding-left: 18px;
-}
