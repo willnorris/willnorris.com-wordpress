@@ -163,3 +163,6 @@ body.flex #footer {
 #comment-personaldetails dd {
 	margin-left: 2em;
 }
+
+li.byuser { background: transparent; }
+li.bypostauthor { background: #eee; }
