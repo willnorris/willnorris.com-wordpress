@@ -117,6 +117,9 @@ function feedburner_redirect() {
 	
 	// Do nothing if not a feed
 	if (!is_feed()) return;
+
+	// Ignore feeds with category or tags
+	if ($wp->query_vars['category_name'] != null || $wp->query_vars['tag'] != null) return;
 	
 	// Do nothing if not configured
 	$options = get_option('fd_feedburner');
