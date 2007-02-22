@@ -495,7 +495,7 @@ function balanceTags($text, $force = false) {
 				$regex[2] .= '/';
 			} else {	// Push the tag onto the stack
 				// If the top of the stack is the same as the tag we want to push, close previous tag
-				if (($stacksize > 0) && ($tag != 'div') && ($tagstack[$stacksize - 1] == $tag)) {
+				if (($stacksize > 0) && ($tag != 'div') && ($tag != 'blockquote') && ($tagstack[$stacksize - 1] == $tag)) {
 					$tagqueue = '</' . array_pop ($tagstack) . '>';
 					$stacksize--;
 				}
