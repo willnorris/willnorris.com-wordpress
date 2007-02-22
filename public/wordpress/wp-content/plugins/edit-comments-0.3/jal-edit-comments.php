@@ -81,7 +81,7 @@ function jal_do_edit () {
 		// update the comment contents
 		$wpdb->query("UPDATE $wpdb->comments SET comment_content = '{$content}' WHERE comment_ID = ".$comment_post_ID);
 		// remove query arg from referer
-		$location = remove_query_arg('jal_edit_comments', $_SERVER['HTTP_REFERER']);
+		$location = add_query_arg('jal_edit_comments', FALSE, $_SERVER['HTTP_REFERER']);
 		// take out the #commentform bit
 		$location = str_replace('#commentform', '', $location);
 		// direct them to the comment they edited
