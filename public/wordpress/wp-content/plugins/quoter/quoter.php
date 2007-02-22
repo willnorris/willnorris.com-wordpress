@@ -126,7 +126,7 @@ if (defined('WPLANG') && '' != constant('WPLANG')){
 add_action('admin_menu',			'quoter_admin_menu');
 add_action('init', 					'quoter_rewrite');
 add_action('wp_head',				'quoter_head');
-add_filter('comment_text', 			'quoter_addquote', 1);
+add_filter('comment_text', 			'quoter_addquote', 7);
 remove_filter('comment_text',		'balanceTags');
 
 if (isset($_POST['quoter_delete_options'])) {
@@ -522,7 +522,7 @@ function quoter_addquote($text){
 					
 				} // End switch
 				
-				$newtext = str_replace($bquote, $quotehead . "<blockquote cite=\"" . $commentlink . "\">" . $content . "</blockquote>", $newtext);
+				$newtext = str_replace($bquote, "<div class=\"quoter_wrap\">" . $quotehead . "<blockquote cite=\"" . $commentlink . "\">" . $content . "</blockquote></div>", $newtext);
 
 			} elseif ($poststatus == "publish" || $poststatus == "static"){ // Second priority: post
 
