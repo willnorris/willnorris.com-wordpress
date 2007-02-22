@@ -166,3 +166,22 @@ body.flex #footer {
 
 li.byuser { background: transparent; }
 li.bypostauthor { background: #eee; }
+
+.quoter_wrap {
+	margin: 20px 0;
+	padding: 0 20px 0 35px;
+
+	border: 1px solid #d7d7d7;
+	background: #f9f9f9 url('../../images/quote.png') no-repeat 10px 5px;
+	color: #333;
+}
+
+.quoter_wrap .quoter_head, .quoter_wrap blockquote {
+	background: none;
+	margin: 0;
+	padding: 0;
+}
+.quoter_wrap blockquote p {
+	margin-top: 0;
+	padding-top: 0;
+}
