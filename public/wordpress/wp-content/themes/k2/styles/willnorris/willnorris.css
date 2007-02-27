@@ -191,6 +191,10 @@ li.bypostauthor .quoter_wrap blockquote {
 	padding-top: 0;
 }
 
+ul.menu li.wpopenid_login_item {
+	display: none;
+}
+
 pre {
 	font-size: 1.2em;
 	line-height: 1.5em;
