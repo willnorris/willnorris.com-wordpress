@@ -139,14 +139,14 @@ function fix_attachment_links( $post_ID ) {
 
 	$post = & get_post( $post_ID, ARRAY_A );
 
-	$search = "#<a[^>]+rel=('|\" )[^'\"]*attachment[^>]*>#ie";
+	$search = "#<a[^>]+rel=('|\")[^'\"]*attachment[^>]*>#ie";
 
 	// See if we have any rel="attachment" links
 	if ( 0 == preg_match_all( $search, $post['post_content'], $anchor_matches, PREG_PATTERN_ORDER ) )
 		return;
 
 	$i = 0;
-	$search = "#[\s]+rel=(\"|' )(.*? )wp-att-(\d+ )\\1#i";
+	$search = "#[\s]+rel=(\"|')(.*?)wp-att-(\d+)\\1#i";
 	foreach ( $anchor_matches[0] as $anchor ) {
 		if ( 0 == preg_match( $search, $anchor, $id_matches ) )
 			continue;
@@ -830,7 +830,7 @@ function page_rows( $parent = 0, $level = 0, $pages = 0, $hierarchy = true ) {
       <?php echo $pad; ?><?php the_title() ?>
     </td> 
     <td><?php the_author() ?></td>
-    <td><?php if ( '0000-00-00 00:00:00' ==$post->post_modified ) _e('Unpublished'); else echo mysql2date( 'Y-m-d g:i a', $post->post_modified ); ?></td> 
+    <td><?php if ( '0000-00-00 00:00:00' ==$post->post_modified ) _e('Unpublished'); else echo mysql2date( __('Y-m-d g:i a'), $post->post_modified ); ?></td> 
 	<td><a href="<?php the_permalink(); ?>" rel="permalink" class="edit"><?php _e( 'View' ); ?></a></td>
     <td><?php if ( current_user_can( 'edit_page', $id ) ) { echo "<a href='page.php?action=edit&amp;post=$id' class='edit'>" . __( 'Edit' ) . "</a>"; } ?></td> 
     <td><?php if ( current_user_can( 'delete_page', $id ) ) { echo "<a href='" . wp_nonce_url( "page.php?action=delete&amp;post=$id", 'delete-page_' . $id ) .  "' class='delete' onclick=\"return deleteSomething( 'page', " . $id . ", '" . js_escape(sprintf( __("You are about to delete the '%s' page.\n'OK' to delete, 'Cancel' to stop." ), get_the_title() ) ) . "' );\">" . __( 'Delete' ) . "</a>"; } ?></td> 
@@ -1269,7 +1269,7 @@ function parent_dropdown( $default = 0, $parent = 0, $level = 0 ) {
 
 	if ( $items ) {
 		foreach ( $items as $item ) {
-			// A page cannot be it's own parent.
+			// A page cannot be its own parent.
 			if (!empty ( $post_ID ) ) {
 				if ( $item->ID == $post_ID ) {
 					continue;
@@ -1602,7 +1602,7 @@ function get_file_description( $file ) {
 	}
 	elseif ( file_exists( ABSPATH . $file ) && is_file( ABSPATH . $file ) ) {
 		$template_data = implode( '', file( ABSPATH . $file ) );
-		if ( preg_match( "|Template Name:(.* )|i", $template_data, $name ))
+		if ( preg_match( "|Template Name:(.*)|i", $template_data, $name ))
 			return $name[1];
 	}
 
@@ -2190,7 +2190,7 @@ function wp_create_thumbnail( $file, $max_side, $effect = '' ) {
 
 			$thumbpath = str_replace( basename( $file ), $thumb, $file );
 
-			// move the thumbnail to it's final destination
+			// move the thumbnail to its final destination
 			if ( $type[2] == 1 ) {
 				if (!imagegif( $thumbnail, $thumbpath ) ) {
 					$error = __( "Thumbnail path invalid" );
@@ -2215,8 +2215,7 @@ function wp_create_thumbnail( $file, $max_side, $effect = '' ) {
 	if (!empty ( $error ) ) {
 		return $error;
 	} else {
-		apply_filters( 'wp_create_thumbnail', $thumbpath );
-		return $thumbpath;
+		return apply_filters( 'wp_create_thumbnail', $thumbpath );
 	}
 }
 

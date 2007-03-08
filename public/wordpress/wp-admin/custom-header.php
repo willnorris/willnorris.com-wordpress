@@ -223,12 +223,12 @@ Event.observe( window, 'load', hide_text );
 
 		if ( $width == HEADER_IMAGE_WIDTH && $height == HEADER_IMAGE_HEIGHT ) {
 			set_theme_mod('header_image', $url);
-			$header = apply_filters('wp_create_file_in_uploads', $header); // For replication
+			$header = apply_filters('wp_create_file_in_uploads', $file, $id); // For replication
 			return $this->finished();
 		} elseif ( $width > HEADER_IMAGE_WIDTH ) {
 			$oitar = $width / HEADER_IMAGE_WIDTH;
 			$image = wp_crop_image($file, 0, 0, $width, $height, HEADER_IMAGE_WIDTH, $height / $oitar, false, str_replace(basename($file), 'midsize-'.basename($file), $file));
-			$image = apply_filters('wp_create_file_in_uploads', $image); // For replication
+			$image = apply_filters('wp_create_file_in_uploads', $image, $id); // For replication
 
 			$url = str_replace(basename($url), basename($image), $url);
 			$width = $width / $oitar;
@@ -286,8 +286,7 @@ Event.observe( window, 'load', hide_text );
 		// cleanup
 		$file = get_attached_file( $_POST['attachment_id'] );
 		$medium = str_replace(basename($file), 'midsize-'.basename($file), $file);
-		@unlink( $medium );
-		apply_filters( 'wp_delete_file', $medium );
+		@unlink( apply_filters( 'wp_delete_file', $medium ) );
 		wp_delete_attachment( $_POST['attachment_id'] );
 
 		return $this->finished();

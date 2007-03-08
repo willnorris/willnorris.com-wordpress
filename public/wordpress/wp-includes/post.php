@@ -74,16 +74,16 @@ function &get_children($args = '', $output = OBJECT) {
 // get extended entry info (<!--more-->)
 function get_extended($post) {
 	//Match the new style more links
-	if (preg_match('/<!--more(.+?)?-->/', $post, $matches)) {
-		list($main,$extended) = explode($matches[0],$post,2);
+	if ( preg_match('/<!--more(.*?)-->/', $post, $matches) ) {
+		list($main, $extended) = explode($matches[0], $post, 2);
 	} else {
 		$main = $post;
 		$extended = '';
 	}
 	
 	// Strip leading and trailing whitespace
-	$main = preg_replace('/^[\s]*(.*)[\s]*$/','\\1',$main);
-	$extended = preg_replace('/^[\s]*(.*)[\s]*$/','\\1',$extended);
+	$main = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $main);
+	$extended = preg_replace('/^[\s]*(.*)[\s]*$/', '\\1', $extended);
 
 	return array('main' => $main, 'extended' => $extended);
 }
@@ -1534,7 +1534,7 @@ function wp_check_for_changed_slugs($post_id) {
 	$post = &get_post($post_id);
 
 	// we're only concerned with published posts
-	if ( $post->post_status != 'publish' || $post->post_type != 'post' )
+	if ( $post->post_status != 'publish' || ($post->post_type != 'post' && $post->post_type != 'page'))
 		return $post_id;
 
 	// only bother if the slug has changed

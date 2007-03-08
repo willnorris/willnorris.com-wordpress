@@ -765,9 +765,11 @@ class WP_Query {
 				$searchand = ' AND ';
 			}
 			$term = addslashes_gpc($q['s']); 
-			if (!$q['sentence'] && count($q['search_terms']) > 1 && $q['search_terms'][0] != $q['s'] ) $search .= " OR (post_title LIKE '{$n}{$term}{$n}') OR (post_content LIKE '{$n}{$term}{$n}')";
-			
-			$search = " AND ({$search}) ";
+			if (!$q['sentence'] && count($q['search_terms']) > 1 && $q['search_terms'][0] != $q['s'] )
+				$search .= " OR (post_title LIKE '{$n}{$term}{$n}') OR (post_content LIKE '{$n}{$term}{$n}')";
+
+			if ( !empty($search) )
+				$search = " AND ({$search}) ";
 		}
 
 		// Category stuff
@@ -794,16 +796,16 @@ class WP_Query {
 			$in_cats = substr($in_cats, 0, -2);
 			$out_cats = substr($out_cats, 0, -2);
 			if ( strlen($in_cats) > 0 )
-				$in_cats = " AND category_id IN ($in_cats)";
+				$in_cats = " AND $wpdb->post2cat.category_id IN ($in_cats)";
 			if ( strlen($out_cats) > 0 ) {
-				$ids = $wpdb->get_col("SELECT post_id FROM $wpdb->post2cat WHERE category_id IN ($out_cats)");
+				$ids = $wpdb->get_col("SELECT post_id FROM $wpdb->post2cat WHERE $wpdb->post2cat.category_id IN ($out_cats)");
 				if ( is_array($ids) && count($ids > 0) ) {
 					foreach ( $ids as $id )
 						$out_posts .= "$id, ";
 					$out_posts = substr($out_posts, 0, -2);
 				}
 				if ( strlen($out_posts) > 0 )
-					$out_cats = " AND ID NOT IN ($out_posts)";
+					$out_cats = " AND $wpdb->posts.ID NOT IN ($out_posts)";
 				else
 					$out_cats = '';
 			}

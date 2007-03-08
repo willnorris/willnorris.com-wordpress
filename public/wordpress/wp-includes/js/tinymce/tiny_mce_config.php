@@ -1,5 +1,6 @@
 <?php
 	@ require('../../../wp-config.php');
+	cache_javascript_headers();
 
 	function wp_translate_tinymce_lang($text) {
 		if ( ! function_exists('__') ) {
@@ -43,7 +44,7 @@
 	$mce_popups_css = get_option('siteurl') . '/wp-includes/js/tinymce/plugins/wordpress/popups.css';
 	$mce_css = get_option('siteurl') . '/wp-includes/js/tinymce/plugins/wordpress/wordpress.css';
 	$mce_css = apply_filters('mce_css', $mce_css);
-	if ( $_SERVER['HTTPS'] ) {
+	if ( $_SERVER['HTTPS'] == 'on' ) {
 		$mce_css = str_replace('http://', 'https://', $mce_css);
 		$mce_popups_css = str_replace('http://', 'https://', $mce_popups_css);
 	}
@@ -73,6 +74,7 @@ initArray = {
 	convert_newlines_to_brs : false,
 	remove_linebreaks : false,
 	fix_list_elements : true,
+	gecko_spellcheck : true,
 	entities : "38,amp,60,lt,62,gt",
 	content_css : "<?php echo $mce_css; ?>",
 	valid_elements : "<?php echo $valid_elements; ?>",
