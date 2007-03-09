@@ -369,7 +369,7 @@ foreach ($social_sites as $key => $data) {
 if (AKST_SHOWICON) {
 ?>
 .akst_share_link {
-	background: 1px 0 url(share-icon-16x16.gif) no-repeat;
+	background: 1px 0 url(share-icon-16x16.png) no-repeat;
 	padding: 1px 0 3px 22px;
 }
 <?php
