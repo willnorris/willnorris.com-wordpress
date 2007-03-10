@@ -203,3 +203,7 @@ pre {
 .entry-content p + p {
 	margin-top: 1.2em;
 }
+
+#pinglist li {
+	list-style-image: url('arrow.png');
+}
