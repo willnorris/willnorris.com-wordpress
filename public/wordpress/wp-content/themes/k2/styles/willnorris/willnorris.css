@@ -204,6 +204,13 @@ pre {
 	margin-top: 1.2em;
 }
 
+#commentlist li.openid .commentauthor img {
+	margin-right: 3px;
+	vertical-align: -15%;
+}
+
 #pinglist li {
-	list-style-image: url('arrow.png');
+	margin-left: 17px;
+	padding-left: 23px;
+	background: url('../../images/arrow_refresh.png') left center no-repeat;
 }
