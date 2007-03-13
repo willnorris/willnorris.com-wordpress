@@ -150,6 +150,7 @@ body.flex #footer {
 
 .widget_recent_entries li, .widget_categories li {
 	color: #ccc;
+	line-height: 175%;
 }
 
 #commentlist li .comment-meta, .chronodata {
