@@ -60,7 +60,7 @@ if (isset($plugin_page)) {
 		if (! isset($_GET['noheader']))
 			require_once(ABSPATH . '/wp-admin/admin-header.php');
 
-		include(ABSPATH . PLUGINDIR . "/$plugin_page");
+		include_once(ABSPATH . PLUGINDIR . "/$plugin_page");
 	}
 
 	include(ABSPATH . 'wp-admin/admin-footer.php');
@@ -80,7 +80,7 @@ if (isset($plugin_page)) {
 	if (! file_exists(ABSPATH . "wp-admin/import/$importer.php"))
 		wp_die(__('Cannot load importer.'));
 
-	include(ABSPATH . "wp-admin/import/$importer.php");
+	include_once(ABSPATH . "wp-admin/import/$importer.php");
 
 	$parent_file = 'edit.php';
 	$submenu_file = 'import.php';
