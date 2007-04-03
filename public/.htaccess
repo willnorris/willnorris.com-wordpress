@@ -11,8 +11,9 @@ Options +Multiviews
 
     RewriteRule ^contact /about/ [L,R]
 
-	RewriteCond %{SERVER_PORT} !443
-	RewriteCond %{REQUEST_URI} ^/(webmail.*) [NC]
+	RewriteCond %{HTTPS} off
+	RewriteCond %{REQUEST_URI} ^/(webmail.*) [NC,OR]
+	RewriteCond %{REQUEST_URI} ^/(phpmyadmin.*) [NC]
 	RewriteRule .* https://willnorris.com/%1 [L,R]
 </IfModule>
 
