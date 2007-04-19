@@ -81,6 +81,7 @@ function &get_comment(&$comment, $output = OBJECT) {
 			$comment_cache[$comment->comment_ID] = &$comment;
 		$_comment = & $comment_cache[$comment->comment_ID];
 	} else {
+		$comment = (int) $comment;
 		if ( !isset($comment_cache[$comment]) ) {
 			$_comment = $wpdb->get_row("SELECT * FROM $wpdb->comments WHERE comment_ID = '$comment' LIMIT 1");
 			$comment_cache[$comment->comment_ID] = & $_comment;
@@ -169,7 +170,7 @@ function sanitize_comment_cookies() {
 	if ( isset($_COOKIE['comment_author_url_'.COOKIEHASH]) ) {
 		$comment_author_url = apply_filters('pre_comment_author_url', $_COOKIE['comment_author_url_'.COOKIEHASH]);
 		$comment_author_url = stripslashes($comment_author_url);
-		$comment_author_url = attribute_escape($comment_author_url);
+		$comment_author_url = clean_url($comment_author_url);
 		$_COOKIE['comment_author_url_'.COOKIEHASH] = $comment_author_url;
 	}
 }
@@ -345,7 +346,7 @@ function wp_insert_comment($commentdata) {
 	('$comment_post_ID', '$comment_author', '$comment_author_email', '$comment_author_url', '$comment_author_IP', '$comment_date', '$comment_date_gmt', '$comment_content', '$comment_approved', '$comment_agent', '$comment_type', '$comment_parent', '$user_id')
 	");
 
-	$id = $wpdb->insert_id;
+	$id = (int) $wpdb->insert_id;
 
 	if ( $comment_approved == 1)
 		wp_update_comment_count($comment_post_ID);

@@ -105,6 +105,7 @@ function &get_post(&$post, $output = OBJECT) {
 			$post_cache[$blog_id][$post->ID] = &$post;
 		$_post = & $post_cache[$blog_id][$post->ID];
 	} else {
+		$post = (int) $post;
 		if ( $_post = wp_cache_get($post, 'pages') )
 			return get_page($_post, $output);
 		elseif ( isset($post_cache[$blog_id][$post]) )
@@ -374,7 +375,7 @@ function get_post_custom($post_id = 0) {
 	global $id, $post_meta_cache, $wpdb, $blog_id;
 
 	if ( !$post_id )
-		$post_id = $id;
+		$post_id = (int) $id;
 
 	$post_id = (int) $post_id;
 
@@ -446,6 +447,8 @@ function wp_delete_post($postid = 0) {
 }
 
 function wp_get_post_categories($post_id = 0) {
+	$post_id = (int) $post_id;
+
 	$cats = &get_the_category($post_id);
 	$cat_ids = array();
 	foreach ( $cats as $cat )
@@ -457,6 +460,7 @@ function wp_get_recent_posts($num = 10) {
 	global $wpdb;
 
 	// Set the limit clause, if we got a limit
+	$num = (int) $num;
 	if ($num) {
 		$limit = "LIMIT $num";
 	}
@@ -469,6 +473,8 @@ function wp_get_recent_posts($num = 10) {
 
 function wp_get_single_post($postid = 0, $mode = OBJECT) {
 	global $wpdb;
+
+	$postid = (int) $postid;
 
 	$post = get_post($postid, $mode);
 
@@ -533,7 +539,7 @@ function wp_insert_post($postarr = array()) {
 
 	// Get the post ID.
 	if ( $update )
-		$post_ID = $ID;
+		$post_ID = (int) $ID;
 
 	// Create a valid post name.  Drafts are allowed to have an empty
 	// post name.
@@ -637,7 +643,7 @@ function wp_insert_post($postarr = array()) {
 			(post_author, post_date, post_date_gmt, post_content, post_content_filtered, post_title, post_excerpt,  post_status, post_type, comment_status, ping_status, post_password, post_name, to_ping, pinged, post_modified, post_modified_gmt, post_parent, menu_order, post_mime_type)
 			VALUES
 			('$post_author', '$post_date', '$post_date_gmt', '$post_content', '$post_content_filtered', '$post_title', '$post_excerpt', '$post_status', '$post_type', '$comment_status', '$ping_status', '$post_password', '$post_name', '$to_ping', '$pinged', '$post_date', '$post_date_gmt', '$post_parent', '$menu_order', '$post_mime_type')");
-			$post_ID = $wpdb->insert_id;
+			$post_ID = (int) $wpdb->insert_id;
 	}
 
 	if ( empty($post_name) && 'draft' != $post_status ) {
@@ -763,6 +769,8 @@ function wp_publish_post($post_id) {
 
 function wp_set_post_categories($post_ID = 0, $post_categories = array()) {
 	global $wpdb;
+
+	$post_ID = (int) $post_ID;
 	// If $post_categories isn't already an array, make it one:
 	if (!is_array($post_categories) || 0 == count($post_categories) || empty($post_categories))
 		$post_categories = array(get_option('default_category'));
@@ -773,7 +781,7 @@ function wp_set_post_categories($post_ID = 0, $post_categories = array()) {
 	$old_categories = $wpdb->get_col("
 		SELECT category_id
 		FROM $wpdb->post2cat
-		WHERE post_id = $post_ID");
+		WHERE post_id = '$post_ID'");
 
 	if (!$old_categories) {
 		$old_categories = array();
@@ -788,8 +796,8 @@ function wp_set_post_categories($post_ID = 0, $post_categories = array()) {
 		foreach ($delete_cats as $del) {
 			$wpdb->query("
 				DELETE FROM $wpdb->post2cat
-				WHERE category_id = $del
-					AND post_id = $post_ID
+				WHERE category_id = '$del'
+					AND post_id = '$post_ID'
 				");
 		}
 	}
@@ -799,10 +807,11 @@ function wp_set_post_categories($post_ID = 0, $post_categories = array()) {
 
 	if ($add_cats) {
 		foreach ($add_cats as $new_cat) {
+			$new_cat = (int) $new_cat;
 			if ( !empty($new_cat) )
 				$wpdb->query("
 					INSERT INTO $wpdb->post2cat (post_id, category_id) 
-					VALUES ($post_ID, $new_cat)");
+					VALUES ('$post_ID', '$new_cat')");
 		}
 	}
 
@@ -928,6 +937,7 @@ function &get_page(&$page, $output = OBJECT) {
 		wp_cache_add($page->ID, $page, 'pages');
 		$_page = $page;
 	} else {
+		$page = (int) $page;
 		// first, check the cache
 		if ( ! ( $_page = wp_cache_get($page, 'pages') ) ) {
 			// not in the page cache?
@@ -1244,7 +1254,7 @@ function wp_insert_attachment($object, $file = false, $post_parent = 0) {
 	$update = false;
 	if ( !empty($ID) ) {
 		$update = true;
-		$post_ID = $ID;
+		$post_ID = (int) $ID;
 	}
 
 	// Create a valid post name.
@@ -1339,7 +1349,7 @@ function wp_insert_attachment($object, $file = false, $post_parent = 0) {
 			(post_author, post_date, post_date_gmt, post_content, post_content_filtered, post_title, post_excerpt,  post_status, post_type, comment_status, ping_status, post_password, post_name, to_ping, pinged, post_modified, post_modified_gmt, post_parent, menu_order, post_mime_type, guid)
 			VALUES
 			('$post_author', '$post_date', '$post_date_gmt', '$post_content', '$post_content_filtered', '$post_title', '$post_excerpt', '$post_status', '$post_type', '$comment_status', '$ping_status', '$post_password', '$post_name', '$to_ping', '$pinged', '$post_date', '$post_date_gmt', '$post_parent', '$menu_order', '$post_mime_type', '$guid')");
-			$post_ID = $wpdb->insert_id;
+			$post_ID = (int) $wpdb->insert_id;
 	}
 
 	if ( empty($post_name) ) {
@@ -1494,7 +1504,7 @@ function wp_mime_type_icon( $mime = 0 ) {
 		$mime = (int) $mime;
 		if ( !$post =& get_post( $mime ) )
 			return false;
-		$post_id = $post->ID;
+		$post_id = (int) $post->ID;
 		$mime = $post->post_mime_type;
 	}
 

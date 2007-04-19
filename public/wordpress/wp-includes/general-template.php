@@ -147,8 +147,7 @@ function get_bloginfo($show='') {
 
 
 function wp_title($sep = '&raquo;', $display = true) {
-	global $wpdb;
-	global $m, $year, $monthnum, $day, $category_name, $wp_locale, $posts;
+	global $wpdb, $wp_locale, $wp_query;
 
 	$cat = get_query_var('cat');
 	$p = get_query_var('p');
@@ -156,6 +155,10 @@ function wp_title($sep = '&raquo;', $display = true) {
 	$category_name = get_query_var('category_name');
 	$author = get_query_var('author');
 	$author_name = get_query_var('author_name');
+	$m = (int) get_query_var('m');
+	$year = (int) get_query_var('year');
+	$monthnum = (int)get_query_var('monthnum');
+	$day = (int) get_query_var('day');
 	$title = '';
 
 	// If there's a category
@@ -196,14 +199,15 @@ function wp_title($sep = '&raquo;', $display = true) {
 	if ( !empty($year) ) {
 		$title = $year;
 		if ( !empty($monthnum) )
-			$title .= " $sep ".$wp_locale->get_month($monthnum);
+			$title .= " $sep " . $wp_locale->get_month($monthnum);
 		if ( !empty($day) )
-			$title .= " $sep ".zeroise($day, 2);
+			$title .= " $sep " . zeroise($day, 2);
 	}
 
 	// If there is a post
 	if ( is_single() || is_page() ) {
-		$title = strip_tags($posts[0]->post_title);
+		$queried = $wp_query->get_queried_object();
+		$title = strip_tags($queried->post_title);
 		$title = apply_filters('single_post_title', $title);
 	}
 
@@ -256,7 +260,12 @@ function single_cat_title($prefix = '', $display = true ) {
 
 
 function single_month_title($prefix = '', $display = true ) {
-	global $m, $monthnum, $wp_locale, $year;
+	global $wp_locale;
+
+	$m = (int) get_query_var('m');
+	$year = (int) get_query_var('year');
+	$monthnum = (int) get_query_var('monthnum');
+
 	if ( !empty($monthnum) && !empty($year) ) {
 		$my_year = $year;
 		$my_month = $wp_locale->get_month($monthnum);
@@ -280,6 +289,7 @@ function single_month_title($prefix = '', $display = true ) {
 function get_archives_link($url, $text, $format = 'html', $before = '', $after = '') {
 	$text = wptexturize($text);
 	$title_text = attribute_escape($text);
+	$url = clean_url($url);
 
 	if ('link' == $format)
 		return "\t<link rel='archives' title='$title_text' href='$url' />\n";
@@ -962,7 +972,7 @@ function paginate_links( $arg = '' ) {
 		$link = str_replace('%#%', $current - 1, $link);
 		if ( $add_args )
 			$link = add_query_arg( $add_args, $link );
-		$page_links[] = "<a class='prev page-numbers' href='" . attribute_escape($link) . "'>$prev_text</a>";
+		$page_links[] = "<a class='prev page-numbers' href='" . clean_url($link) . "'>$prev_text</a>";
 	endif;
 	for ( $n = 1; $n <= $total; $n++ ) :
 		if ( $n == $current ) :
@@ -974,7 +984,7 @@ function paginate_links( $arg = '' ) {
 				$link = str_replace('%#%', $n, $link);
 				if ( $add_args )
 					$link = add_query_arg( $add_args, $link );
-				$page_links[] = "<a class='page-numbers' href='" . attribute_escape($link) . "'>$n</a>";
+				$page_links[] = "<a class='page-numbers' href='" . clean_url($link) . "'>$n</a>";
 				$dots = true;
 			elseif ( $dots && !$show_all ) :
 				$page_links[] = "<span class='page-numbers dots'>...</span>";
@@ -987,7 +997,7 @@ function paginate_links( $arg = '' ) {
 		$link = str_replace('%#%', $current + 1, $link);
 		if ( $add_args )
 			$link = add_query_arg( $add_args, $link );
-		$page_links[] = "<a class='next page-numbers' href='" . attribute_escape($link) . "'>$next_text</a>";
+		$page_links[] = "<a class='next page-numbers' href='" . clean_url($link) . "'>$next_text</a>";
 	endif;
 	switch ( $type ) :
 		case 'array' :

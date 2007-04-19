@@ -9,6 +9,7 @@ function get_profile($field, $user = false) {
 
 function get_usernumposts($userid) {
 	global $wpdb;
+	$userid = (int) $userid;
 	return $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_author = '$userid' AND post_type = 'post' AND post_status = 'publish'");
 }
 
@@ -160,8 +161,8 @@ function setup_userdata($user_id = '') {
 
 	$userdata = $user->data;
 	$user_login	= $user->user_login;
-	$user_level	= $user->user_level;
-	$user_ID	= $user->ID;
+	$user_level	= (int) $user->user_level;
+	$user_ID	= (int) $user->ID;
 	$user_email	= $user->user_email;
 	$user_url	= $user->user_url;
 	$user_pass_md5	= md5($user->user_pass);

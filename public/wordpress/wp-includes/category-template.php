@@ -62,8 +62,9 @@ function get_category_parents($id, $link = FALSE, $separator = '/', $nicename = 
 function get_the_category($id = false) {
 global $post, $category_cache, $blog_id;
 
+	$id = (int) $id;
 	if ( !$id )
-		$id = $post->ID;
+		$id = (int) $post->ID;
 
 	if ( !isset($category_cache[$blog_id][$id]) )
 		update_post_category_cache($id);

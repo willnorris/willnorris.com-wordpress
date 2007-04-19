@@ -150,7 +150,7 @@ function get_comments_number( $post_id = 0 ) {
 	$post_id = (int) $post_id;
 
 	if ( !$post_id )
-		$post_id = $id;
+		$post_id = (int) $id;
 
 	$post = get_post($post_id);
 	if ( ! isset($post->comment_count) )
@@ -269,6 +269,12 @@ function pings_open() {
 		return true;
 	else
 		return false;
+}
+
+function wp_comment_form_unfiltered_html_nonce() {
+	global $post;
+	if ( current_user_can('unfiltered_html') )
+		wp_nonce_field('unfiltered-html-comment_' . $post->ID, '_wp_unfiltered_html_comment', false);
 }
 
 function comments_template( $file = '/comments.php' ) {
