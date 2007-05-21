@@ -21,7 +21,12 @@ function wp_install($blog_title, $user_name, $user_email, $public, $meta='') {
 	update_option('admin_email', $user_email);
 	update_option('blog_public', $public);
 	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
-	$guessurl = preg_replace('|/wp-admin/.*|i', '', $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+
+	if ( defined('WP_SITEURL') && '' != WP_SITEURL )
+		$guessurl = WP_SITEURL;
+	else
+		$guessurl = preg_replace('|/wp-admin/.*|i', '', $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+
 	update_option('siteurl', $guessurl);
 
 	// If not a public blog, don't ping.
@@ -170,6 +175,8 @@ function upgrade_all() {
 		upgrade_110();
 		upgrade_130();
 	}
+	
+	maybe_disable_automattic_widgets();
 
 	if ( $wp_current_db_version < 3308 )
 		upgrade_160();
@@ -652,7 +659,15 @@ function get_alloptions_110() {
 // Version of get_option that is private to install/upgrade.
 function __get_option($setting) {
 	global $wpdb;
-
+	
+	if ( $setting == 'home' && defined( 'WP_HOME' ) ) {
+		return preg_replace( '|/+$|', '', constant( 'WP_HOME' ) );
+	}
+	
+	if ( $setting == 'siteurl' && defined( 'WP_SITEURL' ) ) {
+		return preg_replace( '|/+$|', '', constant( 'WP_SITEURL' ) );
+	}
+	
 	$option = $wpdb->get_var("SELECT option_value FROM $wpdb->options WHERE option_name = '$setting'");
 
 	if ( 'home' == $setting && '' == $option )
@@ -922,7 +937,7 @@ function make_site_theme_from_oldschool($theme_name, $template) {
 
 		if ($oldfile == 'index.php') { // Check to make sure it's not a new index
 			$index = implode('', file("$oldpath/$oldfile"));
-			if ( strstr( $index, 'WP_USE_THEMES' ) ) {
+			if (strpos($index, 'WP_USE_THEMES') !== false) {
 				if (! @copy(ABSPATH . 'wp-content/themes/default/index.php', "$site_dir/$newfile"))
 					return false;
 				continue; // Don't copy anything
@@ -994,12 +1009,12 @@ function make_site_theme_from_default($theme_name, $template) {
 		$f = fopen("$site_dir/style.css", 'w');
 
 		foreach ($stylelines as $line) {
-			if (strstr($line, "Theme Name:")) $line = "Theme Name: $theme_name";
-			elseif (strstr($line, "Theme URI:")) $line = "Theme URI: " . __get_option('siteurl');
-			elseif (strstr($line, "Description:")) $line = "Description: Your theme";
-			elseif (strstr($line, "Version:")) $line = "Version: 1";
-			elseif (strstr($line, "Author:")) $line = "Author: You";
-			fwrite($f, "{$line}\n");
+			if (strpos($line, 'Theme Name:') !== false) $line = 'Theme Name: ' . $theme_name;
+			elseif (strpos($line, 'Theme URI:') !== false) $line = 'Theme URI: ' . __get_option('url');
+			elseif (strpos($line, 'Description:') !== false) $line = 'Description: Your theme.';
+			elseif (strpos($line, 'Version:') !== false) $line = 'Version: 1';
+			elseif (strpos($line, 'Author:') !== false) $line = 'Author: You';
+			fwrite($f, $line . "\n");
 		}
 		fclose($f);
 	}
@@ -1092,6 +1107,18 @@ function wp_check_mysql_version() {
 	$mysql_version = preg_replace('|[^0-9\.]|', '', @mysql_get_server_info());
 	if ( version_compare($mysql_version, '4.0.0', '<') )
 		die(sprintf(__('<strong>ERROR</strong>: WordPress %s requires MySQL 4.0.0 or higher'), $wp_version));
+}
+
+function maybe_disable_automattic_widgets() {
+	$plugins = __get_option( 'active_plugins' );
+	
+	foreach ( (array) $plugins as $plugin ) {
+		if ( basename( $plugin ) == 'widgets.php' ) {
+			array_splice( $plugins, array_search( $plugin, $plugins ), 1 );
+			update_option( 'active_plugins', $plugins );
+			break;
+		}
+	}
 }
 
 ?>

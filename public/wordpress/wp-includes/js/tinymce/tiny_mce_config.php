@@ -40,7 +40,7 @@
 
 	$mce_browsers = apply_filters('mce_browsers', array('msie', 'gecko', 'opera', 'safari'));
 	$mce_browsers = implode($mce_browsers, ',');
-	
+
 	$mce_popups_css = get_option('siteurl') . '/wp-includes/js/tinymce/plugins/wordpress/popups.css';
 	$mce_css = get_option('siteurl') . '/wp-includes/js/tinymce/plugins/wordpress/wordpress.css';
 	$mce_css = apply_filters('mce_css', $mce_css);
@@ -48,6 +48,8 @@
 		$mce_css = str_replace('http://', 'https://', $mce_css);
 		$mce_popups_css = str_replace('http://', 'https://', $mce_popups_css);
 	}
+	
+	$mce_locale = ( '' == get_locale() ) ? 'en' : strtolower(get_locale());
 ?>
 
 initArray = {
@@ -58,7 +60,7 @@ initArray = {
 	theme_advanced_buttons1 : "<?php echo $mce_buttons; ?>",
 	theme_advanced_buttons2 : "<?php echo $mce_buttons_2; ?>",
 	theme_advanced_buttons3 : "<?php echo $mce_buttons_3; ?>",
-	language : "<?php echo strtolower(get_locale()); ?>",
+	language : "<?php echo $mce_locale; ?>",
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
 	theme_advanced_path_location : "bottom",
@@ -76,6 +78,7 @@ initArray = {
 	fix_list_elements : true,
 	gecko_spellcheck : true,
 	entities : "38,amp,60,lt,62,gt",
+	button_tile_map : true,
 	content_css : "<?php echo $mce_css; ?>",
 	valid_elements : "<?php echo $valid_elements; ?>",
 	save_callback : 'TinyMCE_wordpressPlugin.saveCallback',

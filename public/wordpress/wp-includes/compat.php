@@ -73,7 +73,7 @@ if (!defined('CASE_UPPER')) {
  * @link        http://php.net/function.array_change_key_case
  * @author      Stephan Schmidt <schst@php.net>
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision: 4495 $
+ * @version     $Revision: 5187 $
  * @since       PHP 4.2.0
  * @require     PHP 4.0.0 (user_error)
  */
@@ -115,6 +115,13 @@ if(!function_exists('http_build_query')) {
 if ( !function_exists('_') ) {
 	function _($string) {
 		return $string;
+	}
+}
+
+// Added in PHP 5.0
+if (!function_exists('stripos')) {
+	function stripos($haystack, $needle, $offset = 0) {
+		return strpos(strtolower($haystack), strtolower($needle), $offset);
 	}
 }
 

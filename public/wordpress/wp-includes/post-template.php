@@ -80,7 +80,7 @@ function get_the_content($more_link_text = '(more...)', $stripteaser = 0, $more_
 		$page = count($pages); // give them the highest numbered page that DOES exist
 
 	$content = $pages[$page-1];
-	if ( preg_match('/<!--more(.+?)?-->/', $content, $matches) ) {
+	if ( preg_match('/<!--more(.*?)?-->/', $content, $matches) ) {
 		$content = explode($matches[0], $content, 2);
 		if ( !empty($matches[1]) && !empty($more_link_text) )
 			$more_link_text = strip_tags(wp_kses_no_null(trim($matches[1])));
@@ -95,13 +95,13 @@ function get_the_content($more_link_text = '(more...)', $stripteaser = 0, $more_
 	$output .= $teaser;
 	if ( count($content) > 1 ) {
 		if ( $more ) {
-			$output .= '<a id="more-'.$id.'"></a>'.$content[1];
+			$output .= '<span id="more-'.$id.'"></span>'.$content[1];
 		} else {
 			$output = balanceTags($output);
 			if ( ! empty($more_link_text) )
 				$output .= ' <a href="'. get_permalink() . "#more-$id\" class=\"more-link\">$more_link_text</a>";
 		}
-			
+
 	}
 	if ( $preview ) // preview fix for javascript bug with foreign languages
 		$output =	preg_replace('/\%u([0-9A-F]{4,4})/e',	"'&#'.base_convert('\\1',16,10).';'", $output);
@@ -131,6 +131,8 @@ function get_the_excerpt($fakeit = true) {
 
 
 function wp_link_pages($args = '') {
+	global $post;
+
 	if ( is_array($args) )
 		$r = &$args;
 	else
@@ -155,10 +157,14 @@ function wp_link_pages($args = '') {
 				$j = str_replace('%',"$i",$pagelink);
 				$output .= ' ';
 				if ( ($i != $page) || ((!$more) && ($page==1)) ) {
-					if ( '' == get_option('permalink_structure') )
-						$output .= '<a href="' . get_permalink() . '&amp;page=' . $i . '">';
-					else
-						$output .= '<a href="' . trailingslashit(get_permalink()) . $i . '/">';
+					if ( 1 == $i ) {
+						$output .= '<a href="' . get_permalink() . '">';
+					} else {
+						if ( '' == get_option('permalink_structure') || 'draft' == $post->post_status )
+							$output .= '<a href="' . get_permalink() . '&amp;page=' . $i . '">';
+						else
+							$output .= '<a href="' . trailingslashit(get_permalink()) . user_trailingslashit($i, 'single_paged') . '">';
+					}
 				}
 				$output .= $j;
 				if ( ($i != $page) || ((!$more) && ($page==1)) )
@@ -170,17 +176,25 @@ function wp_link_pages($args = '') {
 				$output .= $before;
 				$i = $page - 1;
 				if ( $i && $more ) {
-					if ( '' == get_option('permalink_structure') )
-						$output .= '<a href="' . get_permalink() . '&amp;page=' . $i . '">' . $previouspagelink . '</a>';
-					else
-						$output .= '<a href="' . get_permalink() . $i . '/">'.$previouspagelink.'</a>';
+					if ( 1 == $i ) {
+						$output .= '<a href="' . get_permalink() . '">' . $previouspagelink . '</a>';
+					} else {
+						if ( '' == get_option('permalink_structure') || 'draft' == $post->post_status )
+							$output .= '<a href="' . get_permalink() . '&amp;page=' . $i . '">' . $previouspagelink . '</a>';
+						else
+							$output .= '<a href="' . trailingslashit(get_permalink()) . user_trailingslashit($i, 'single_paged') . '">' . $previouspagelink . '</a>';
+					}
 				}
 				$i = $page + 1;
 				if ( $i <= $numpages && $more ) {
-					if ( '' == get_option('permalink_structure') )
-						$output .= '<a href="' . get_permalink() . '&amp;page=' . $i . '">'.$nextpagelink.'</a>';
-					else
-						$output .= '<a href="' . trailingslashit(get_permalink()) . $i . '/">' . $nextpagelink . '</a>';
+					if ( 1 == $i ) {
+						$output .= '<a href="' . get_permalink() . '">' . $nextpagelink . '</a>';
+					} else {
+						if ( '' == get_option('permalink_structure') || 'draft' == $post->post_status )
+							$output .= '<a href="' . get_permalink() . '&amp;page=' . $i . '">' . $nextpagelink . '</a>';
+						else
+							$output .= '<a href="' . trailingslashit(get_permalink()) . user_trailingslashit($i, 'single_paged') . '">' . $nextpagelink . '</a>';
+					}
 				}
 				$output .= $after;
 			}
@@ -221,7 +235,7 @@ function the_meta() {
 				continue;
 			$values = array_map('trim', get_post_custom_values($key));
 			$value = implode($values,', ');
-			echo "<li><span class='post-meta-key'>$key:</span> $value</li>\n";
+			echo apply_filters('the_meta_key', "<li><span class='post-meta-key'>$key:</span> $value</li>\n", $key, $value);
 		}
 		echo "</ul>\n";
 	}
@@ -269,7 +283,7 @@ function wp_list_pages($args = '') {
 		parse_str($args, $r);
 
 	$defaults = array('depth' => 0, 'show_date' => '', 'date_format' => get_option('date_format'),
-		'child_of' => 0, 'exclude' => '', 'title_li' => __('Pages'), 'echo' => 1, 'authors' => '');
+		'child_of' => 0, 'exclude' => '', 'title_li' => __('Pages'), 'echo' => 1, 'authors' => '', 'sort_column' => 'menu_order, post_title');
 	$r = array_merge($defaults, $r);
 
 	$output = '';
@@ -333,7 +347,7 @@ function get_the_attachment_link($id = 0, $fullsize = false, $max_dims = false) 
 	$id = (int) $id;
 	$_post = & get_post($id);
 
-	if ( ('attachment' != $_post->post_type) || !$url = wp_get_attachment_url() )
+	if ( ('attachment' != $_post->post_type) || !$url = wp_get_attachment_url($_post->ID) )
 		return __('Missing Attachment');
 
 	$post_title = attribute_escape($_post->post_title);

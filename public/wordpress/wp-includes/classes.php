@@ -58,7 +58,7 @@ class WP {
 			// front.  For path info requests, this leaves us with the requesting
 			// filename, if any.  For 404 requests, this leaves us with the
 			// requested permalink.
-			$req_uri = str_replace($pathinfo, '', $req_uri);
+			$req_uri = str_replace($pathinfo, '', rawurldecode($req_uri));
 			$req_uri = trim($req_uri, '/');
 			$req_uri = preg_replace("|^$home_path|", '', $req_uri);
 			$req_uri = trim($req_uri, '/');
@@ -120,14 +120,14 @@ class WP {
 			}
 
 			// If req_uri is empty or if it is a request for ourself, unset error.
-			if ( empty($request) || $req_uri == $self || strstr($_SERVER['PHP_SELF'], 'wp-admin/') ) {
+			if (empty($request) || $req_uri == $self || strpos($_SERVER['PHP_SELF'], 'wp-admin/') !== false) {
 				if (isset($_GET['error']))
 					unset($_GET['error']);
 
 				if (isset($error))
 					unset($error);
 
-				if ( isset($perma_query_vars) && strstr($_SERVER['PHP_SELF'], 'wp-admin/') )
+				if (isset($perma_query_vars) && strpos($_SERVER['PHP_SELF'], 'wp-admin/') !== false)
 					unset($perma_query_vars);
 
 				$this->did_permalink = false;
@@ -417,16 +417,16 @@ class Walker {
 					$cb_args = array_merge( array($output, $element, $depth - 1), $args);
 					$output = call_user_func_array(array(&$this, 'start_el'), $cb_args);
 				}
-	
+
 				// End the element.
 				if ( isset($element->$id_field) && $element->$id_field != 0 ) {
 					$cb_args = array_merge( array($output, $element, $depth - 1), $args);
 					$output = call_user_func_array(array(&$this, 'end_el'), $cb_args);
 				}
-	
-				continue;	
+
+				continue;
 			}
-	
+
 			// Walk the tree.
 			if ( !empty($previous_element) && ($element->$parent_field == $previous_element->$id_field) ) {
 				// Previous element is my parent. Descend a level.
@@ -514,20 +514,20 @@ class Walker_Page extends Walker {
 		elseif ( $_current_page && $page->ID == $_current_page->post_parent )
 			$css_class .= ' current_page_parent';
 
-		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_page_link($page->ID) . '" title="' . attribute_escape($page->post_title) . '">' . $page->post_title . '</a>';
-	
+		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_page_link($page->ID) . '" title="' . attribute_escape(apply_filters('the_title', $page->post_title)) . '">' . apply_filters('the_title', $page->post_title) . '</a>';
+
 		if ( !empty($show_date) ) {
 			if ( 'modified' == $show_date )
 				$time = $page->post_modified;
 			else
 				$time = $page->post_date;
-	
+
 			$output .= " " . mysql2date($date_format, $time);
 		}
 
 		return $output;
 	}
-	
+
 	function end_el($output, $page, $depth) {
 		$output .= "</li>\n";
 
@@ -581,13 +581,14 @@ class Walker_Category extends Walker {
 		extract($args);
 
 		$cat_name = attribute_escape( $category->cat_name);
+		$cat_name = apply_filters( 'list_cats', $cat_name, $category );
 		$link = '<a href="' . get_category_link( $category->cat_ID ) . '" ';
 		if ( $use_desc_for_title == 0 || empty($category->category_description) )
 			$link .= 'title="' . sprintf(__( 'View all posts filed under %s' ), $cat_name) . '"';
 		else
 			$link .= 'title="' . attribute_escape( apply_filters( 'category_description', $category->category_description, $category )) . '"';
 		$link .= '>';
-		$link .= apply_filters( 'list_cats', $category->cat_name, $category ).'</a>';
+		$link .= $cat_name . '</a>';
 
 		if ( (! empty($feed_image)) || (! empty($feed)) ) {
 			$link .= ' ';
@@ -616,10 +617,10 @@ class Walker_Category extends Walker {
 			if ( empty($feed_image) )
 				$link .= ')';
 		}
-	
+
 		if ( isset($show_count) && $show_count )
 			$link .= ' (' . intval($category->category_count) . ')';
-	
+
 		if ( isset($show_date) && $show_date ) {
 			$link .= ' ' . gmdate('Y-m-d', $category->last_update_timestamp);
 		}

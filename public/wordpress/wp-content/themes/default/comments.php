@@ -6,7 +6,7 @@
 		if ($_COOKIE['wp-postpass_' . COOKIEHASH] != $post->post_password) {  // and it doesn't match the cookie
 			?>
 
-			<p class="nocomments">This post is password protected. Enter the password to view comments.<p>
+			<p class="nocomments">This post is password protected. Enter the password to view comments.</p>
 
 			<?php
 			return;
@@ -14,7 +14,7 @@
 	}
 
 	/* This variable is for alternating comment background */
-	$oddcomment = 'alt';
+	$oddcomment = 'class="alt" ';
 ?>
 
 <!-- You can start editing here. -->
@@ -26,22 +26,22 @@
 
 	<?php foreach ($comments as $comment) : ?>
 
-		<li class="<?php echo $oddcomment; ?>" id="comment-<?php comment_ID() ?>">
+		<li <?php echo $oddcomment; ?>id="comment-<?php comment_ID() ?>">
 			<cite><?php comment_author_link() ?></cite> Says:
 			<?php if ($comment->comment_approved == '0') : ?>
 			<em>Your comment is awaiting moderation.</em>
 			<?php endif; ?>
 			<br />
 
-			<small class="commentmetadata"><a href="#comment-<?php comment_ID() ?>" title=""><?php comment_date('F jS, Y') ?> at <?php comment_time() ?></a> <?php edit_comment_link('e','',''); ?></small>
+			<small class="commentmetadata"><a href="#comment-<?php comment_ID() ?>" title=""><?php comment_date('F jS, Y') ?> at <?php comment_time() ?></a> <?php edit_comment_link('edit','&nbsp;&nbsp;',''); ?></small>
 
 			<?php comment_text() ?>
 
 		</li>
 
-	<?php /* Changes every other comment to a different class */
-		if ('alt' == $oddcomment) $oddcomment = '';
-		else $oddcomment = 'alt';
+	<?php
+		/* Changes every other comment to a different class */
+		$oddcomment = ( empty( $oddcomment ) ) ? 'class="alt" ' : '';
 	?>
 
 	<?php endforeach; /* end for each comment */ ?>
@@ -88,7 +88,7 @@
 
 <?php endif; ?>
 
-<!--<p><small><strong>XHTML:</strong> You can use these tags: <?php echo allowed_tags(); ?></small></p>-->
+<!--<p><small><strong>XHTML:</strong> You can use these tags: <code><?php echo allowed_tags(); ?></code></small></p>-->
 
 <p><textarea name="comment" id="comment" cols="100%" rows="10" tabindex="4"></textarea></p>
 

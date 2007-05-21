@@ -1,7 +1,24 @@
-<?php @require_once('../../wp-config.php'); cache_javascript_headers(); ?>
-addLoadEvent(function(){theList=new listMan();});
-function deleteSomething(what,id,message,obj){if(!obj)obj=theList;if(!message)message="<?php printf(js_escape(__('Are you sure you want to delete this %s?')),"'+what+'"); ?>";if(confirm(message))return obj.ajaxDelete(what,id);else return false;}
-function dimSomething(what,id,dimClass,obj){if(!obj)obj=theList;return obj.ajaxDimmer(what,id,dimClass);}
+addLoadEvent( function() {
+	if ( 'undefined' != typeof listManL10n )
+		Object.extend(listMan.prototype, listManL10n);
+	theList = new listMan();
+} );
+
+function deleteSomething( what, id, message, obj ) {
+	if ( !obj )
+		obj=theList;
+	if ( !message )
+		message = obj.delText.replace(/%thing%/g, what);
+	if( confirm(message) )
+		return obj.ajaxDelete( what, id );
+	else return false;
+}
+
+function dimSomething( what, id, dimClass, obj ) {
+	if ( !obj )
+		obj = theList;
+	return obj.ajaxDimmer(what,id,dimClass);
+}
 
 var listMan = Class.create();
 Object.extend(listMan.prototype, {
@@ -19,6 +36,9 @@ Object.extend(listMan.prototype, {
 	dataStore: null,
 	formStore: null,
 
+	jumpText: '', // We get these from listManL10n
+	delText: '',
+
 	initialize: function(theListId) {
 		this.theList = $(theListId ? theListId : 'the-list');
 		if ( !this.theList )
@@ -32,7 +52,9 @@ Object.extend(listMan.prototype, {
 		var ajaxAdd = new WPAjax( this.ajaxHandler, this.ajaxRespEl );
 		if ( ajaxAdd.notInitialized() )
 			return true;
-		ajaxAdd.options.parameters += '&action=' + ( update ? 'update-' : 'add-' ) + what + '&' + this.grabInputs( where, ajaxAdd ) + this.inputData;
+		var action = ( update ? 'update-' : 'add-' ) + what;
+		ajaxAdd.options.parameters = $H(ajaxAdd.options.parameters).merge({action: action}).merge(this.inputData.toQueryParams()).merge(this.grabInputs( where, ajaxAdd ).toQueryParams());
+
 		var tempObj=this;
 		ajaxAdd.addOnComplete( function(transport) {
 			var newItems = $A(transport.responseXML.getElementsByTagName(what));
@@ -51,7 +73,7 @@ Object.extend(listMan.prototype, {
 					if ( m )
 						showLinkMessage += m;
 					else
-						showLinkMessage += "<a href='#" + what + '-' + id + "'><?php echo js_escape(__('Jump to new item')); ?>";
+						showLinkMessage += "<a href='#" + what + '-' + id + "'>" + tempObj.jumpText + "</a>";
 				});
 				if ( tempObj.showLink && showLinkMessage )
 					Element.update(ajaxAdd.myResponseElement,"<div id='jumplink' class='updated fade'><p>" + showLinkMessage + "</p></div>");
@@ -79,18 +101,19 @@ Object.extend(listMan.prototype, {
 		if( ajaxDel.notInitialized() )
 			return true;
 		var tempObj = this;
-		var action = 'delete-' + what + '&id=' + id;
+		var action = 'delete-' + what;
+		var actionId = action + '&id=' + id;
 		var idName = what.replace('-as-spam','') + '-' + id;
 		ajaxDel.addOnComplete( function(transport) {
 			Element.update(ajaxDel.myResponseElement,'');
-			tempObj.destore(action);
+			tempObj.destore(actionId);
 			if( tempObj.delComplete && typeof tempObj.delComplete == 'function' )
 				tempObj.delComplete( what, id, transport );
 		});
-		ajaxDel.addOnWPError( function(transport) { tempObj.restore(action, true); });
-		ajaxDel.options.parameters += '&action=' + action + this.inputData;
+		ajaxDel.addOnWPError( function(transport) { tempObj.restore(actionId, true); });
+		ajaxDel.options.parameters = $H(ajaxDel.options.parameters).merge({action: action, id: id}).merge(this.inputData.toQueryParams());
 		ajaxDel.request(ajaxDel.url);
-		this.store(action, idName);
+		this.store(actionId, idName);
 		tempObj.removeListItem( idName );
 		return false;
 	},
@@ -102,18 +125,19 @@ Object.extend(listMan.prototype, {
 		if ( ajaxDim.notInitialized() )
 			return true;
 		var tempObj = this;
-		var action = 'dim-' + what + '&id=' + id;
+		var action = 'dim-' + what;
+		var actionId = action + '&id=' + id;
 		var idName = what + '-' + id;
 		ajaxDim.addOnComplete( function(transport) {
 			Element.update(ajaxDim.myResponseElement,'');
-			tempObj.destore(action);
+			tempObj.destore(actionId);
 			if ( tempObj.dimComplete && typeof tempObj.dimComplete == 'function' )
 				tempObj.dimComplete( what, id, dimClass, transport );
 		});
-		ajaxDim.addOnWPError( function(transport) { tempObj.restore(action, true); });
-		ajaxDim.options.parameters += '&action=' + action + this.inputData;
+		ajaxDim.addOnWPError( function(transport) { tempObj.restore(actionId, true); });
+		ajaxDim.options.parameters = $H(ajaxDim.options.parameters).merge({action: action, id: id}).merge(this.inputData.toQueryParams());
 		ajaxDim.request(ajaxDim.url);
-		this.store(action, idName);
+		this.store(actionId, idName);
 		this.dimItem( idName, dimClass );
 		return false;
 	},
@@ -123,7 +147,7 @@ Object.extend(listMan.prototype, {
 		Element.cleanWhitespace(this.theList);
 		var id = this.topAdder ? this.theList.firstChild.id : this.theList.lastChild.id;
 		if ( this.alt )
-			if ( this.theList.childNodes.length % 2 )
+			if ( ( this.theList.childNodes.length + this.altOffset ) % 2 )
 				Element.addClassName($(id),this.alt);
 		Fat.fade_element(id);
 	},

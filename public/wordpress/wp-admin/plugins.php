@@ -11,13 +11,16 @@ if ( isset($_GET['action']) ) {
 		if ( ! file_exists(ABSPATH . PLUGINDIR . '/' . $plugin) )
 			wp_die(__('Plugin file does not exist.'));
 		if (!in_array($plugin, $current)) {
+			wp_redirect('plugins.php?error=true'); // we'll override this later if the plugin can be included without fatal error
+			ob_start();
+			@include(ABSPATH . PLUGINDIR . '/' . $plugin);
 			$current[] = $plugin;
 			sort($current);
 			update_option('active_plugins', $current);
-			include(ABSPATH . PLUGINDIR . '/' . $plugin);
 			do_action('activate_' . $plugin);
+			ob_end_clean();
 		}
-		wp_redirect('plugins.php?activate=true');
+		wp_redirect('plugins.php?activate=true'); // overrides the ?error=true one above
 	} else if ('deactivate' == $_GET['action']) {
 		check_admin_referer('deactivate-plugin_' . $_GET['plugin']);
 		$current = get_option('active_plugins');
@@ -25,6 +28,17 @@ if ( isset($_GET['action']) ) {
 		update_option('active_plugins', $current);
 		do_action('deactivate_' . trim( $_GET['plugin'] ));
 		wp_redirect('plugins.php?deactivate=true');
+	} elseif ($_GET['action'] == 'deactivate-all') {
+		check_admin_referer('deactivate-all');
+		$current = get_option('active_plugins');
+		
+		foreach ($current as $plugin) {
+			array_splice($current, array_search($plugin, $current), 1);
+			do_action('deactivate_' . $plugin);
+		}
+		
+		update_option('active_plugins', array());
+		wp_redirect('plugins.php?deactivate-all=true');
 	}
 	exit;
 }
@@ -58,13 +72,14 @@ foreach ($check_plugins as $check_plugin) {
 }
 ?>
 
-<?php if (isset($_GET['activate'])) : ?>
-<div id="message" class="updated fade"><p><?php _e('Plugin <strong>activated</strong>.') ?></p>
-</div>
-<?php endif; ?>
-<?php if (isset($_GET['deactivate'])) : ?>
-<div id="message" class="updated fade"><p><?php _e('Plugin <strong>deactivated</strong>.') ?></p>
-</div>
+<?php if ( isset($_GET['error']) ) : ?>
+	<div id="message" class="updated fade"><p><?php _e('Plugin could not be activated because it triggered a <strong>fatal error</strong>.') ?></p></div>
+<?php elseif ( isset($_GET['activate']) ) : ?>
+	<div id="message" class="updated fade"><p><?php _e('Plugin <strong>activated</strong>.') ?></p></div>
+<?php elseif ( isset($_GET['deactivate']) ) : ?>
+	<div id="message" class="updated fade"><p><?php _e('Plugin <strong>deactivated</strong>.') ?></p></div>
+<?php elseif (isset($_GET['deactivate-all'])) : ?>
+	<div id="message" class="updated fade"><p><?php _e('All plugins <strong>deactivated</strong>.'); ?></p></div>
 <?php endif; ?>
 
 <div class="wrap">
@@ -116,7 +131,7 @@ if (empty($plugins)) {
 
 		if ( $style != '' )
 			$style = 'class="' . $style . '"';
-		if ( is_writable(ABSPATH . 'wp-content/plugins/' . $plugin_file) )
+		if ( is_writable(ABSPATH . PLUGINDIR . '/' . $plugin_file) )
 			$edit = "<a href='plugin-editor.php?file=$plugin_file' title='".__('Open this file in the Plugin Editor')."' class='edit'>".__('Edit')."</a>";
 		else
 			$edit = '';
@@ -134,6 +149,11 @@ if (empty($plugins)) {
 	</tr>";
 	}
 ?>
+
+<tr>
+	<td colspan="3">&nbsp;</td>
+	<td colspan="2" style="width:12em;"><a href="<?php echo wp_nonce_url('plugins.php?action=deactivate-all', 'deactivate-all'); ?>" class="delete"><?php _e('Deactivate All Plugins'); ?></a></td>
+</tr>
 
 </table>
 <?php

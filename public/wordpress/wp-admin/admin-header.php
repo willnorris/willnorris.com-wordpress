@@ -13,7 +13,7 @@ get_admin_page_title();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" <?php language_attributes(); ?>>
+<html xmlns="http://www.w3.org/1999/xhtml" <?php do_action('admin_xml_ns'); ?> <?php language_attributes(); ?>>
 <head>
 <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 <title><?php bloginfo('name') ?> &rsaquo; <?php echo wp_specialchars( strip_tags( $title ) ); ?> &#8212; WordPress</title>
@@ -44,7 +44,7 @@ do_action('admin_head');
 </head>
 <body>
 <div id="wphead">
-<h1><?php echo wptexturize(get_option(('blogname'))); ?> <span>(<a href="<?php echo get_option('home') . '/'; ?>"><?php _e('View site &raquo;') ?></a>)</span></h1>
+<h1><?php bloginfo('name'); ?> <span>(<a href="<?php echo get_option('home') . '/'; ?>"><?php _e('View site &raquo;') ?></a>)</span></h1>
 </div>
 <div id="user_info"><p><?php printf(__('Howdy, <strong>%s</strong>.'), $user_identity) ?> [<a href="<?php echo get_option('siteurl'); ?>/wp-login.php?action=logout" title="<?php _e('Log out of this account') ?>"><?php _e('Sign Out'); ?></a>, <a href="profile.php"><?php _e('My Profile'); ?></a>] </p></div>
 

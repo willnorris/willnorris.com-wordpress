@@ -85,8 +85,8 @@ class WP_User_Search {
 			$this->paging_text = paginate_links( array(
 				'total' => ceil($this->total_users_for_query / $this->users_per_page),
 				'current' => $this->page,
-				'prev_text' => '&laquo; Previous Page',
-				'next_text' => 'Next Page &raquo;',
+				'prev_text' => __('&laquo; Previous Page'),
+				'next_text' => __('Next Page &raquo;'),
 				'base' => 'users.php?%_%',
 				'format' => 'userspage=%#%',
 				'add_args' => array( 'usersearch' => urlencode($this->search_term) )
@@ -338,7 +338,7 @@ default:
 	<?php endif; ?>
 
 	<form action="" method="get" name="search" id="search">
-		<p><input type="text" name="usersearch" id="usersearch" value="<?php echo attribute_escape($wp_user_search->search_term); ?>" /> <input type="submit" value="<?php _e('Search 	users &raquo;'); ?>" class="button" /></p>
+		<p><input type="text" name="usersearch" id="usersearch" value="<?php echo attribute_escape($wp_user_search->search_term); ?>" /> <input type="submit" value="<?php _e('Search Users &raquo;'); ?>" class="button" /></p>
 	</form>
 
 	<?php if ( is_wp_error( $wp_user_search->search_errors ) ) : ?>
@@ -450,7 +450,12 @@ foreach ( (array) $roleclass as $user_object ) {
 
 <div class="narrow">
 
-<?php echo '<p>'.sprintf(__('Users can <a href="%1$s">register themselves</a> or you can manually create users here.'), get_option('siteurl').'/wp-register.php').'</p>'; ?>
+<?php 
+	if ( get_option('users_can_register') ) 
+		echo '<p>' . sprintf(__('Users can <a href="%1$s">register themselves</a> or you can manually create users here.'), get_option('siteurl').'/wp-register.php') . '</p>'; 
+	else 
+        echo '<p>' . sprintf(__('Users cannot currently <a href="%1$s">register themselves</a>, but you can manually create users here.'), get_option('siteurl').'/wp-admin/options-general.php#users_can_register') . '</p>'; 
+?>
 <form action="#add-new-user" method="post" name="adduser" id="adduser">
 <?php wp_nonce_field('add-user') ?>
 <table class="editform" width="100%" cellspacing="2" cellpadding="5">

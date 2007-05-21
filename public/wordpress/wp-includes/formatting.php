@@ -21,7 +21,7 @@ function wptexturize($text) {
 	$static_replacements = array_merge(array('&#8212;', ' &#8212; ', '&#8211;', 'xn--', '&#8230;', '&#8220;', '&#8217;s', '&#8221;', ' &#8482;'), $cockneyreplace);
 
 	$dynamic_characters = array('/\'(\d\d(?:&#8217;|\')?s)/', '/(\s|\A|")\'/', '/(\d+)"/', '/(\d+)\'/', '/(\S)\'([^\'\s])/', '/(\s|\A)"(?!\s)/', '/"(\s|\S|\Z)/', '/\'([\s.]|\Z)/', '/(\d+)x(\d+)/');
-	$dynamic_replacements = array('&#8217;$1','$1&#8216;', '$1&#8243;', '$1&#8242;', '$1&#8217;$2', '$1&#8220;$2', '&#8221;$1', '&#8217;$1', '$1&#215;$2');	
+	$dynamic_replacements = array('&#8217;$1','$1&#8216;', '$1&#8243;', '$1&#8242;', '$1&#8217;$2', '$1&#8220;$2', '&#8221;$1', '&#8217;$1', '$1&#215;$2');
 
 	for ( $i = 0; $i < $stop; $i++ ) {
  		$curl = $textarr[$i];
@@ -29,10 +29,9 @@ function wptexturize($text) {
 		if (isset($curl{0}) && '<' != $curl{0} && $next) { // If it's not a tag
 			// static strings
 			$curl = str_replace($static_characters, $static_replacements, $curl);
-
 			// regular expressions
 			$curl = preg_replace($dynamic_characters, $dynamic_replacements, $curl);
-		} elseif ( strstr($curl, '<code') || strstr($curl, '<pre') || strstr($curl, '<kbd') || strstr($curl, '<style') || strstr($curl, '<script') ) { 
+		} elseif (strpos($curl, '<code') !== false || strpos($curl, '<pre') !== false || strpos($curl, '<kbd') !== false || strpos($curl, '<style') !== false || strpos($curl, '<script') !== false) {
 			$next = false;
 		} else {
 			$next = true;
@@ -56,7 +55,7 @@ function wpautop($pee, $br = 1) {
 	$pee = $pee . "\n"; // just to make things a little easier, pad the end
 	$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
 	// Space things out a little
-	$allblocks = '(?:table|thead|tfoot|caption|colgroup|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|select|form|blockquote|address|math|style|script|object|input|param|p|h[1-6])';
+	$allblocks = '(?:table|thead|tfoot|caption|colgroup|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|select|form|map|area|blockquote|address|math|style|input|p|h[1-6]|hr)';
 	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
 	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
 	$pee = str_replace(array("\r\n", "\r"), "\n", $pee); // cross-platform newlines
@@ -78,7 +77,7 @@ function wpautop($pee, $br = 1) {
 	}
 	$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*<br />!', "$1", $pee);
 	$pee = preg_replace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $pee);
-	if ( strstr( $pee, '<pre' ) )
+	if (strpos($pee, '<pre') !== false)
 		$pee = preg_replace('!(<pre.*?>)(.*?)</pre>!ise', " stripslashes('$1') .  stripslashes(clean_pre('$2'))  . '</pre>' ", $pee);
 	$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
 
@@ -564,10 +563,11 @@ function backslashit($string) {
 }
 
 function trailingslashit($string) {
-		if ( '/' != substr($string, -1)) {
-				$string .= '/';
-		}
-		return $string;
+	return untrailingslashit($string) . '/';
+}
+
+function untrailingslashit($string) {
+	return rtrim($string, '/');
 }
 
 function addslashes_gpc($gpc) {
@@ -581,11 +581,18 @@ function addslashes_gpc($gpc) {
 }
 
 
-function stripslashes_deep($value)
-{
+function stripslashes_deep($value) {
 	 $value = is_array($value) ?
-							 array_map('stripslashes_deep', $value) :
-							 stripslashes($value);
+		 array_map('stripslashes_deep', $value) :
+		 stripslashes($value);
+
+	 return $value;
+}
+
+function urlencode_deep($value) {
+	 $value = is_array($value) ?
+		 array_map('urlencode_deep', $value) :
+		 urlencode($value);
 
 	 return $value;
 }
@@ -658,7 +665,7 @@ function convert_smilies($text) {
 
 function is_email($user_email) {
 	$chars = "/^([a-z0-9+_]|\\-|\\.)+@(([a-z0-9_]|\\-)+\\.)+[a-z]{2,6}\$/i";
-	if(strstr($user_email, '@') && strstr($user_email, '.')) {
+	if (strpos($user_email, '@') !== false && strpos($user_email, '.') !== false) {
 		if (preg_match($chars, $user_email)) {
 			return true;
 		} else {
@@ -1074,7 +1081,7 @@ function clean_url( $url, $protocols = null ) {
 	$url = str_replace(';//', '://', $url);
 	// Append http unless a relative link starting with / or a php file.
 	if ( strpos($url, '://') === false &&
-		substr( $url, 0, 1 ) != '/' && !preg_match('/^[a-z0-9]+?\.php/i', $url) )
+		substr( $url, 0, 1 ) != '/' && !preg_match('/^[a-z0-9-]+?\.php/i', $url) )
 		$url = 'http://' . $url;
 	
 	$url = preg_replace('/&([^#])(?![a-z]{2,8};)/', '&#038;$1', $url);

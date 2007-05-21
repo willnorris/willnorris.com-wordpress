@@ -50,7 +50,7 @@ define('EP_AUTHORS',    1024);
 define('EP_PAGES',      2048);
 //pseudo-places
 define('EP_NONE',       0  );
-define('EP_ALL',        255);
+define('EP_ALL',        4095);
 
 //and an endpoint, like /trackback/
 function add_rewrite_endpoint($name, $places) {
@@ -62,6 +62,8 @@ function add_rewrite_endpoint($name, $places) {
 // determine the post ID it represents.
 function url_to_postid($url) {
 	global $wp_rewrite;
+	
+	$url = apply_filters('url_to_postid', $url);
 
 	// First, check to see if there is a 'p=N' or 'page_id=N' to match against
 	preg_match('#[?&](p|page_id)=(\d+)#', $url, $values);
@@ -148,6 +150,7 @@ function url_to_postid($url) {
 
 class WP_Rewrite {
 	var $permalink_structure;
+	var $use_trailing_slashes;
 	var $category_base;
 	var $category_structure;
 	var $author_base = 'author';
@@ -581,6 +584,16 @@ class WP_Rewrite {
 			if ($paged) //...and /page/xx ones
 				$rewrite = array_merge($rewrite, array($pagematch => $pagequery));
 
+			//do endpoints
+			if ($endpoints) {
+				foreach ($ep_query_append as $regex => $ep) {
+					//add the endpoints on if the mask fits
+					if ($ep[0] & $ep_mask || $ep[0] & $ep_mask_specific) {
+						$rewrite[$match . $regex] = $index . '?' . $query . $ep[1] . $this->preg_index($num_toks + 2);
+					}
+				}
+			}
+
 			//if we've got some tags in this dir
 			if ($num_toks) {
 				$post = false;
@@ -590,22 +603,12 @@ class WP_Rewrite {
 				//individual post. Do this by checking it contains at least one of 1) post name,
 				//2) post ID, 3) page name, 4) timestamp (year, month, day, hour, second and
 				//minute all present). Set these flags now as we need them for the endpoints.
-				if (strstr($struct, '%postname%') || strstr($struct, '%post_id%')
-						|| strstr($struct, '%pagename%')
-						|| (strstr($struct, '%year%') &&  strstr($struct, '%monthnum%') && strstr($struct, '%day%') && strstr($struct, '%hour%') && strstr($struct, '%minute') && strstr($struct, '%second%'))) {
+				if (strpos($struct, '%postname%') !== false || strpos($struct, '%post_id%') !== false
+						|| strpos($struct, '%pagename%') !== false
+						|| (strpos($struct, '%year%') !== false && strpos($struct, '%monthnum%') !== false && strpos($struct, '%day%') !== false && strpos($struct, '%hour%') !== false && strpos($struct, '%minute%') !== false && strpos($struct, '%second%') !== false)) {
 					$post = true;
-					if  ( strstr($struct, '%pagename%') )
+					if (strpos($struct, '%pagename%') !== false)
 						$page = true;
-				}
-
-				//do endpoints
-				if ($endpoints) {
-					foreach ($ep_query_append as $regex => $ep) {
-						//add the endpoints on if the mask fits
-						if ($ep[0] & $ep_mask || $ep[0] & $ep_mask_specific) {
-							$rewrite[$match . $regex] = $index . '?' . $query . $ep[1] . $this->preg_index($num_toks + 2);
-						}
-					}
 				}
 
 				//if we're creating rules for a permalink, do all the endpoints like attachments etc
@@ -808,7 +811,7 @@ class WP_Rewrite {
 					//nada.
 				}
 
-				if (strstr($query, $this->index)) {
+				if (strpos($query, $this->index) !== false) {
 					$rules .= 'RewriteRule ^' . $match . ' ' . $home_root . $query . " [QSA,L]\n";
 				} else {
 					$rules .= 'RewriteRule ^' . $match . ' ' . $site_root . $query . " [QSA,L]\n";
@@ -876,6 +879,7 @@ class WP_Rewrite {
 		unset($this->search_structure);
 		unset($this->feed_structure);
 		unset($this->comment_feed_structure);
+		$this->use_trailing_slashes = ( substr($this->permalink_structure, -1, 1) == '/' ) ? true : false;
 	}
 
 	function set_permalink_structure($permalink_structure) {

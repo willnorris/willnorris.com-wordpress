@@ -46,7 +46,7 @@ function login_header($title = 'Login', $message = '') {
 </head>
 <body class="login">
 
-<div id="login"><h1><a href="<?php echo apply_filters('login_headerurl', 'http://wordpress.org/'); ?>" title="<?php echo apply_filters('login_headertitle', __('Powered by WordPress')); ?>"><span class="hide"><?php bloginfo('name'); ?></span></a></h1>
+<div id="login"><h1><a href="<?php echo apply_filters('login_headerurl', 'http://wordpress.org/'); ?>" title="<?php echo apply_filters('login_headertitle', __('Powered by WordPress')); ?>"><?php bloginfo('name'); ?></a></h1>
 <?php
 	if ( !empty( $message ) ) echo apply_filters('login_message', $message) . "\n";
 
@@ -96,7 +96,7 @@ case 'retrievepassword' :
 			$errors['user_email'] = __('<strong>ERROR</strong>: The e-mail field is empty.');
 
 		do_action('lostpassword_post');
-		
+
 		if ( empty( $errors ) ) {
 			$user_data = get_userdatabylogin(trim($_POST['user_login']));
 			// redefining user_login ensures we return the right case in the email
@@ -145,7 +145,7 @@ case 'retrievepassword' :
 		<input type="text" name="user_email" id="user_email" class="input" value="<?php echo attribute_escape(stripslashes($_POST['user_email'])); ?>" size="25" tabindex="20" /></label>
 	</p>
 <?php do_action('lostpassword_form'); ?>
-	<p class="submit"><input type="submit" name="submit" id="submit" value="<?php _e('Get New Password &raquo;'); ?>" tabindex="100" /></p>
+	<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" value="<?php _e('Get New Password &raquo;'); ?>" tabindex="100" /></p>
 </form>
 </div>
 
@@ -153,9 +153,9 @@ case 'retrievepassword' :
 <?php if (get_option('users_can_register')) : ?>
 	<li><a href="<?php bloginfo('wpurl'); ?>/wp-login.php"><?php _e('Login') ?></a></li>
 	<li><a href="<?php bloginfo('wpurl'); ?>/wp-login.php?action=register"><?php _e('Register') ?></a></li>
-	<li><a href="<?php bloginfo('home'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
+	<li><a href="<?php bloginfo('url'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
 <?php else : ?>
-	<li><a href="<?php bloginfo('home'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
+	<li><a href="<?php bloginfo('url'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
 	<li><a href="<?php bloginfo('wpurl'); ?>/wp-login.php"><?php _e('Login') ?></a></li>
 <?php endif; ?>
 </ul>
@@ -194,8 +194,11 @@ case 'rp' :
 		die('<p>' . __('The e-mail could not be sent.') . "<br />\n" . __('Possible reason: your host may have disabled the mail() function...') . '</p>');
 	} else {
 		// send a copy of password change notification to the admin
-		$message = sprintf(__('Password Lost and Changed for user: %s'), $user->user_login) . "\r\n";
-		wp_mail(get_option('admin_email'), sprintf(__('[%s] Password Lost/Changed'), get_option('blogname')), $message);
+		// but check to see if it's the admin whose password we're changing, and skip this
+		if ($user->user_email != get_option('admin_email')) {
+			$message = sprintf(__('Password Lost and Changed for user: %s'), $user->user_login) . "\r\n";
+			wp_mail(get_option('admin_email'), sprintf(__('[%s] Password Lost/Changed'), get_option('blogname')), $message);
+		}
 
 		wp_redirect('wp-login.php?checkemail=newpass');
 		exit();
@@ -265,14 +268,14 @@ case 'register' :
 	</p>
 <?php do_action('register_form'); ?>
 	<p id="reg_passmail"><?php _e('A password will be e-mailed to you.') ?></p>
-	<p class="submit"><input type="submit" name="submit" id="submit" value="<?php _e('Register &raquo;'); ?>" tabindex="100" /></p>
+	<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" value="<?php _e('Register &raquo;'); ?>" tabindex="100" /></p>
 </form>
 </div>
 
 <ul>
 	<li><a href="<?php bloginfo('wpurl'); ?>/wp-login.php"><?php _e('Login') ?></a></li>
 	<li><a href="<?php bloginfo('wpurl'); ?>/wp-login.php?action=lostpassword" title="<?php _e('Password Lost and Found') ?>"><?php _e('Lost your password?') ?></a></li>
-	<li><a href="<?php bloginfo('home'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
+	<li><a href="<?php bloginfo('url'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
 </ul>
 
 </body>
@@ -325,7 +328,7 @@ default:
 				$errors['expiredsession'] = __('Your session has expired.');
 		}
 	}
-	
+
 	if ( $_POST && empty( $user_login ) )
 		$errors['user_login'] = __('<strong>ERROR</strong>: The username field is empty.');
 	if ( $_POST && empty( $user_pass ) )
@@ -353,7 +356,7 @@ default:
 <?php do_action('login_form'); ?>
 	<p><label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="90" /> <?php _e('Remember me'); ?></label></p>
 	<p class="submit">
-		<input type="submit" name="submit" id="submit" value="<?php _e('Login'); ?> &raquo;" tabindex="100" />
+		<input type="submit" name="wp-submit" id="wp-submit" value="<?php _e('Login'); ?> &raquo;" tabindex="100" />
 		<input type="hidden" name="redirect_to" value="<?php echo attribute_escape($redirect_to); ?>" />
 	</p>
 </form>
@@ -363,9 +366,9 @@ default:
 <?php if (get_option('users_can_register')) : ?>
 	<li><a href="<?php bloginfo('wpurl'); ?>/wp-login.php?action=register"><?php _e('Register') ?></a></li>
 	<li><a href="<?php bloginfo('wpurl'); ?>/wp-login.php?action=lostpassword" title="<?php _e('Password Lost and Found') ?>"><?php _e('Lost your password?') ?></a></li>
-	<li><a href="<?php bloginfo('home'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
+	<li><a href="<?php bloginfo('url'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
 <?php else : ?>
-	<li><a href="<?php bloginfo('home'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
+	<li><a href="<?php bloginfo('url'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('Back to %s'), get_bloginfo('title')); ?></a></li>
 	<li><a href="<?php bloginfo('wpurl'); ?>/wp-login.php?action=lostpassword" title="<?php _e('Password Lost and Found') ?>"><?php _e('Lost your password?') ?></a></li>
 <?php endif; ?>
 </ul>

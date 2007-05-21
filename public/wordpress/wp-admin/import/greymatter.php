@@ -34,6 +34,7 @@ class GM_Import {
 <form name="stepOne" method="get">
 <input type="hidden" name="import" value="greymatter" />
 <input type="hidden" name="step" value="1" />
+<?php wp_nonce_field('import-greymatter'); ?>
 <h3><?php _e('Second step: GreyMatter details:') ?></h3>
 <p><table cellpadding="0">
 <tr>
@@ -87,11 +88,13 @@ class GM_Import {
 		}
 
 		if (!chdir($archivespath))
-			wp_die(sprintf(__("Wrong path, %s\ndoesn't exist\non the server"), $archivespath));
+			wp_die(__("Wrong path, the path to the GM entries does not exist on the server"));
 
 		if (!chdir($gmpath))
-			wp_die(sprintf(__("Wrong path, %s\ndoesn't exist\non the server"), $gmpath));
-			
+			wp_die(__("Wrong path, the path to the GM files does not exist on the server"));
+
+		$lastentry = (int) $lastentry;
+
 		$this->header();
 ?>
 <p><?php _e('The importer is running...') ?></p>
@@ -128,7 +131,7 @@ class GM_Import {
 		$user_info = array("user_login"=>"$user_login", "user_pass"=>"$pass1", "user_nickname"=>"$user_nickname", "user_email"=>"$user_email", "user_url"=>"$user_url", "user_ip"=>"$user_ip", "user_domain"=>"$user_domain", "user_browser"=>"$user_browser", "dateYMDhour"=>"$user_joindate", "user_level"=>"1", "user_idmode"=>"nickname");
 		$user_id = wp_insert_user($user_info);
 		$this->gmnames[$userdata[0]] = $user_id;
-		
+
 		printf('<li>'.__('user %s...').' <strong>'.__('Done').'</strong></li>', "<em>$user_login</em>");
 	}
 
@@ -213,21 +216,21 @@ class GM_Import {
 					$user_email=$wpdb->escape("user@deleted.com");
 					$user_url=$wpdb->escape("");
 					$user_joindate=$wpdb->escape($user_joindate);
-					
+
 					$user_info = array("user_login"=>$user_login, "user_pass"=>$pass1, "user_nickname"=>$user_nickname, "user_email"=>$user_email, "user_url"=>$user_url, "user_ip"=>$user_ip, "user_domain"=>$user_domain, "user_browser"=>$user_browser, "dateYMDhour"=>$user_joindate, "user_level"=>0, "user_idmode"=>"nickname");
 					$user_id = wp_insert_user($user_info);
 					$this->gmnames[$postinfo[1]] = $user_id;
-					
+
 					echo ': ';
 					printf(__('registered deleted user %s at level 0 '), "<em>$user_login</em>");
 				}
-			
+
 				if (array_key_exists($postinfo[1], $this->gmnames)) {
 					$post_author = $this->gmnames[$postinfo[1]];
 				} else {
 					$post_author = $user_id;
 				}
-			
+
 				$postdata = compact('post_author', 'post_date', 'post_date_gmt', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'comment_status', 'ping_status', 'post_modified', 'post_modified_gmt');
 				$post_ID = wp_insert_post($postdata);
 			}
@@ -297,6 +300,7 @@ class GM_Import {
 				$this->greet();
 				break;
 			case 1:
+				check_admin_referer('import-greymatter');
 				$this->import();
 				break;
 		}

@@ -1,4 +1,10 @@
 <?php
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    header('Allow: POST');
+	header("HTTP/1.1 405 Method Not Allowed");
+	header("Content-type: text/plain");
+    exit;
+}
 require( dirname(__FILE__) . '/wp-config.php' );
 
 nocache_headers();
@@ -18,7 +24,7 @@ if ( empty($status->comment_status) ) {
 	exit;
 }
 
-$comment_author       = trim($_POST['author']);
+$comment_author       = trim(strip_tags($_POST['author']));
 $comment_author_email = trim($_POST['email']);
 $comment_author_url   = trim($_POST['url']);
 $comment_content      = trim($_POST['comment']);

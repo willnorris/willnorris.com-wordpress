@@ -21,6 +21,7 @@ function get_footer() {
 
 
 function get_sidebar() {
+	do_action( 'get_sidebar' );
 	if ( file_exists( TEMPLATEPATH . '/sidebar.php') )
 		load_template( TEMPLATEPATH . '/sidebar.php');
 	else
@@ -60,9 +61,11 @@ function wp_meta() {
 
 function bloginfo($show='') {
 	$info = get_bloginfo($show);
-	if (!strstr($show, 'url') && //don't filter URLs
-		!strstr($show, 'directory') &&
-		!strstr($show, 'home')) {
+	
+	// Don't filter URL's.
+	if (strpos($show, 'url') === false || 
+		strpos($show, 'directory') === false || 
+		strpos($show, 'home') === false) {
 		$info = apply_filters('bloginfo', $info, $show);
 		$info = convert_chars($info);
 	} else {
@@ -72,13 +75,18 @@ function bloginfo($show='') {
 	echo $info;
 }
 
-
+/**
+ * Note: some of these values are DEPRECATED. Meaning they could be 
+ * taken out at any time and shouldn't be relied upon. Options 
+ * without "// DEPRECATED" are the preferred and recommended ways 
+ * to get the information.
+ */
 function get_bloginfo($show='') {
 
 	switch($show) {
 		case 'url' :
-		case 'home' :
-		case 'siteurl' :
+		case 'home' : // DEPRECATED
+		case 'siteurl' : // DEPRECATED
 			$output = get_option('home');
 			break;
 		case 'wpurl' :
@@ -99,6 +107,8 @@ function get_bloginfo($show='') {
 		case 'atom_url':
 			$output = get_feed_link('atom');
 			break;
+		case 'comments_atom_url':
+			$output = get_feed_link('comments_atom');
 		case 'comments_rss2_url':
 			$output = get_feed_link('comments_rss2');
 			break;
@@ -155,10 +165,10 @@ function wp_title($sep = '&raquo;', $display = true) {
 	$category_name = get_query_var('category_name');
 	$author = get_query_var('author');
 	$author_name = get_query_var('author_name');
-	$m = (int) get_query_var('m');
-	$year = (int) get_query_var('year');
-	$monthnum = (int)get_query_var('monthnum');
-	$day = (int) get_query_var('day');
+	$m = get_query_var('m');
+	$year = get_query_var('year');
+	$monthnum = get_query_var('monthnum');
+	$day = get_query_var('day');
 	$title = '';
 
 	// If there's a category
@@ -166,8 +176,7 @@ function wp_title($sep = '&raquo;', $display = true) {
 			// category exclusion
 			if ( !stristr($cat,'-') )
 				$title = apply_filters('single_cat_title', get_the_category_by_ID($cat));
-	}
-	if ( !empty($category_name) ) {
+	} elseif ( !empty($category_name) ) {
 		if ( stristr($category_name,'/') ) {
 				$category_name = explode('/',$category_name);
 				if ( $category_name[count($category_name)-1] )
@@ -192,8 +201,9 @@ function wp_title($sep = '&raquo;', $display = true) {
 	// If there's a month
 	if ( !empty($m) ) {
 		$my_year = substr($m, 0, 4);
-		$my_month = $wp_locale->get_month($m);
-		$title = "$my_year $sep $my_month";
+		$my_month = $wp_locale->get_month(substr($m, 4, 2));
+		$my_day = intval(substr($m, 6, 2));
+		$title = "$my_year" . ($my_month ? "$sep $my_month" : "") . ($my_day ? "$sep $my_day" : "");
 	}
 
 	if ( !empty($year) ) {
@@ -206,9 +216,9 @@ function wp_title($sep = '&raquo;', $display = true) {
 
 	// If there is a post
 	if ( is_single() || is_page() ) {
-		$queried = $wp_query->get_queried_object();
-		$title = strip_tags($queried->post_title);
+		$post = $wp_query->get_queried_object();
 		$title = apply_filters('single_post_title', $title);
+		$title = strip_tags($post->post_title);
 	}
 
 	$prefix = '';
@@ -262,9 +272,9 @@ function single_cat_title($prefix = '', $display = true ) {
 function single_month_title($prefix = '', $display = true ) {
 	global $wp_locale;
 
-	$m = (int) get_query_var('m');
-	$year = (int) get_query_var('year');
-	$monthnum = (int) get_query_var('monthnum');
+	$m = get_query_var('m');
+	$year = get_query_var('year');
+	$monthnum = get_query_var('monthnum');
 
 	if ( !empty($monthnum) && !empty($year) ) {
 		$my_year = $year;
@@ -344,8 +354,12 @@ function wp_get_archives($args = '') {
 	$add_hours = intval(get_option('gmt_offset'));
 	$add_minutes = intval(60 * (get_option('gmt_offset') - $add_hours));
 
+	//filters
+	$where = apply_filters('getarchives_where', "WHERE post_type = 'post' AND post_status = 'publish'", $r );
+	$join = apply_filters('getarchives_join', "", $r);
+
 	if ( 'monthly' == $type ) {
-		$arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date DESC" . $limit);
+		$arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date DESC" . $limit);
 		if ( $arcresults ) {
 			$afterafter = $after;
 			foreach ( $arcresults as $arcresult ) {
@@ -357,19 +371,19 @@ function wp_get_archives($args = '') {
 			}
 		}
 	} elseif ('yearly' == $type) {
-         $arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts WHERE post_type ='post' AND post_status = 'publish' GROUP BY YEAR(post_date) ORDER BY post_date DESC" . $limit);
+         $arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date DESC" . $limit);
 		if ($arcresults) {
-            $afterafter = $after;
-            foreach ($arcresults as $arcresult) {
-			    $url = get_year_link($arcresult->year);
-                $text = sprintf('%d', $arcresult->year);
+			$afterafter = $after;
+			foreach ($arcresults as $arcresult) {
+				$url = get_year_link($arcresult->year);
+				$text = sprintf('%d', $arcresult->year);
 				if ($show_post_count)
-                    $after = '&nbsp;('.$arcresult->posts.')' . $afterafter;
-                echo get_archives_link($url, $text, $format, $before, $after);
-            }
-		}		  	
+					$after = '&nbsp;('.$arcresult->posts.')' . $afterafter;
+				echo get_archives_link($url, $text, $format, $before, $after);
+			}
+		}
 	} elseif ( 'daily' == $type ) {
-		$arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, DAYOFMONTH(post_date) AS `dayofmonth`, count(ID) as posts FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' GROUP BY YEAR(post_date), MONTH(post_date), DAYOFMONTH(post_date) ORDER BY post_date DESC" . $limit);
+		$arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, DAYOFMONTH(post_date) AS `dayofmonth`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date), DAYOFMONTH(post_date) ORDER BY post_date DESC" . $limit);
 		if ( $arcresults ) {
 			$afterafter = $after;
 			foreach ( $arcresults as $arcresult ) {
@@ -383,7 +397,7 @@ function wp_get_archives($args = '') {
 		}
 	} elseif ( 'weekly' == $type ) {
 		$start_of_week = get_option('start_of_week');
-		$arcresults = $wpdb->get_results("SELECT DISTINCT WEEK(post_date, $start_of_week) AS `week`, YEAR(post_date) AS yr, DATE_FORMAT(post_date, '%Y-%m-%d') AS yyyymmdd, count(ID) as posts FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' GROUP BY WEEK(post_date, $start_of_week), YEAR(post_date) ORDER BY post_date DESC" . $limit);
+		$arcresults = $wpdb->get_results("SELECT DISTINCT WEEK(post_date, $start_of_week) AS `week`, YEAR(post_date) AS yr, DATE_FORMAT(post_date, '%Y-%m-%d') AS yyyymmdd, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY WEEK(post_date, $start_of_week), YEAR(post_date) ORDER BY post_date DESC" . $limit);
 		$arc_w_last = '';
 		$afterafter = $after;
 		if ( $arcresults ) {
@@ -404,14 +418,14 @@ function wp_get_archives($args = '') {
 		}
 	} elseif ( ( 'postbypost' == $type ) || ('alpha' == $type) ) {
 		('alpha' == $type) ? $orderby = "post_title ASC " : $orderby = "post_date DESC ";
-		$arcresults = $wpdb->get_results("SELECT * FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' ORDER BY $orderby $limit");
+		$arcresults = $wpdb->get_results("SELECT * FROM $wpdb->posts $join $where ORDER BY $orderby $limit");
 		if ( $arcresults ) {
 			foreach ( $arcresults as $arcresult ) {
 				if ( $arcresult->post_date != '0000-00-00 00:00:00' ) {
 					$url  = get_permalink($arcresult);
 					$arc_title = $arcresult->post_title;
 					if ( $arc_title )
-						$text = strip_tags($arc_title);
+						$text = strip_tags(apply_filters('the_title', $arc_title));
 					else
 						$text = $arcresult->ID;
 					echo get_archives_link($url, $text, $format, $before, $after);
@@ -494,7 +508,7 @@ function get_calendar($initial = true) {
 			ORDER	BY post_date ASC
 			LIMIT 1");
 
-	echo '<table id="wp-calendar">
+	echo '<table id="wp-calendar" summary="' . __('Calendar') . '">
 	<caption>' . $wp_locale->get_month($thismonth) . ' ' . date('Y', $unixmonth) . '</caption>
 	<thead>
 	<tr>';
@@ -556,9 +570,7 @@ function get_calendar($initial = true) {
 		$daywithpost = array();
 	}
 
-
-
-	if ( strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE') || strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'camino') || strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'safari') )
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false || strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'camino') !== false || strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'safari') !== false)
 		$ak_title_separator = "\n";
 	else
 		$ak_title_separator = ', ';
@@ -573,12 +585,16 @@ function get_calendar($initial = true) {
 	);
 	if ( $ak_post_titles ) {
 		foreach ( $ak_post_titles as $ak_post_title ) {
+			
+				$post_title = apply_filters( "the_title", $ak_post_title->post_title );
+				$post_title = str_replace('"', '&quot;', wptexturize( $post_title ));
+								
 				if ( empty($ak_titles_for_day['day_'.$ak_post_title->dom]) )
 					$ak_titles_for_day['day_'.$ak_post_title->dom] = '';
 				if ( empty($ak_titles_for_day["$ak_post_title->dom"]) ) // first one
-					$ak_titles_for_day["$ak_post_title->dom"] = str_replace('"', '&quot;', wptexturize($ak_post_title->post_title));
+					$ak_titles_for_day["$ak_post_title->dom"] = $post_title;
 				else
-					$ak_titles_for_day["$ak_post_title->dom"] .= $ak_title_separator . str_replace('"', '&quot;', wptexturize($ak_post_title->post_title));
+					$ak_titles_for_day["$ak_post_title->dom"] .= $ak_title_separator . $post_title;
 		}
 	}
 
@@ -619,7 +635,7 @@ function get_calendar($initial = true) {
 	ob_end_clean();
 	echo $output;
 	$cache[ $key ] = $output;
-	wp_cache_set( 'get_calendar', $cache, 'calendar' );
+	wp_cache_add( 'get_calendar', $cache, 'calendar' );
 }
 
 function delete_get_calendar_cache() {
@@ -793,9 +809,16 @@ function rich_edit_exists() {
 
 function user_can_richedit() {
 	global $wp_rich_edit, $pagenow;
-
-	if ( !isset($wp_rich_edit) )
-		$wp_rich_edit = ( 'true' == get_user_option('rich_editing') && !preg_match('!opera[ /][2-8]|konqueror|safari!i', $_SERVER['HTTP_USER_AGENT']) && 'comment.php' != $pagenow && rich_edit_exists() ) ? true : false;
+	
+	if ( !isset( $wp_rich_edit) ) {
+		if ( get_user_option( 'rich_editing' ) == 'true' && 
+			( ( preg_match( '!AppleWebKit/(\d+)!', $_SERVER['HTTP_USER_AGENT'], $match ) && intval($match[1]) >= 420 ) || 
+				!preg_match( '!opera[ /][2-8]|konqueror|safari!i', $_SERVER['HTTP_USER_AGENT'] ) ) ) {
+			$wp_rich_edit = true;
+		} else {
+			$wp_rich_edit = false;
+		}
+	}
 
 	return apply_filters('user_can_richedit', $wp_rich_edit);
 }

@@ -3,6 +3,8 @@
 class WP_Import {
 
 	var $posts = array ();
+	var $posts_processed = array ();
+    // Array of arrays. [[0] => XML fragment, [1] => New post ID]
 	var $file;
 	var $id;
 	var $mtnames = array ();
@@ -33,8 +35,9 @@ class WP_Import {
 	}
 
 	function get_tag( $string, $tag ) {
+		global $wpdb;
 		preg_match("|<$tag.*?>(.*?)</$tag>|is", $string, $return);
-		$return = addslashes( trim( $return[1] ) );
+		$return = $wpdb->escape( trim( $return[1] ) );
 		return $return;
 	}
 
@@ -62,7 +65,7 @@ class WP_Import {
 			$this->mtnames[$this->j] = $author; //add that new mt author name to an array
 			$user_id = username_exists($this->newauthornames[$this->j]); //check if the new author name defined by the user is a pre-existing wp user
 			if (!$user_id) { //banging my head against the desk now.
-				if ($newauthornames[$this->j] == 'left_blank') { //check if the user does not want to change the authorname
+				if ($this->newauthornames[$this->j] == 'left_blank') { //check if the user does not want to change the authorname
 					$user_id = wp_create_user($author, $pass);
 					$this->newauthornames[$this->j] = $author; //now we have a name, in the place of left_blank.
 				} else {
@@ -81,13 +84,40 @@ class WP_Import {
 
 	function get_entries() {
 		set_magic_quotes_runtime(0);
-		$importdata = file($this->file); // Read the file into an array
-		$importdata = implode('', $importdata); // squish it
-		$importdata = preg_replace("/(\r\n|\n|\r)/", "\n", $importdata);
-		preg_match_all('|<item>(.*?)</item>|is', $importdata, $this->posts);
-		$this->posts = $this->posts[1];
-		preg_match_all('|<wp:category>(.*?)</wp:category>|is', $importdata, $this->categories);
-		$this->categories = $this->categories[1];
+		$importdata = array_map('rtrim', file($this->file)); // Read the file into an array
+
+		$this->posts = array();
+		$this->categories = array();
+		$num = 0;
+		$doing_entry = false;
+		foreach ($importdata as $importline) {
+			if ( false !== strpos($importline, '<wp:category>') ) {
+				preg_match('|<wp:category>(.*?)</wp:category>|is', $importline, $category);
+				$this->categories[] = $category[1];
+				continue;
+			}
+			if ( false !== strpos($importline, '<item>') ) {
+				$this->posts[$num] = '';
+				$doing_entry = true;
+				continue;	
+			}
+			if ( false !== strpos($importline, '</item>') ) {
+				$num++;
+				$doing_entry = false;
+				continue;	
+			}
+			if ( $doing_entry ) {
+				$this->posts[$num] .= $importline . "\n";
+			}
+		}
+
+		foreach ($this->posts as $post) {
+			$post_ID = (int) $this->get_tag( $post, 'wp:post_id' );
+			if ($post_ID) {
+				$this->posts_processed[$post_ID][0] = &$post;
+				$this->posts_processed[$post_ID][1] = 0;
+			}
+		}
 	}
 
 	function get_wp_authors() {
@@ -150,6 +180,7 @@ class WP_Import {
 		$authors = $this->get_wp_authors();
 		echo '<ol id="authors">';
 		echo '<form action="?import=wordpress&amp;step=2&amp;id=' . $this->id . '" method="post">';
+		wp_nonce_field('import-wordpress');
 		$j = -1;
 		foreach ($authors as $author) {
 			++ $j;
@@ -167,10 +198,8 @@ class WP_Import {
 	function select_authors() {
 		$file = wp_import_handle_upload();
 		if ( isset($file['error']) ) {
-			$this->header();
 			echo '<p>'.__('Sorry, there has been an error.').'</p>';
 			echo '<p><strong>' . $file['error'] . '</strong></p>';
-			$this->footer();
 			return;
 		}
 		$this->file = $file['file'];
@@ -210,97 +239,128 @@ class WP_Import {
 	}
 
 	function process_posts() {
-		global $wpdb;
 		$i = -1;
 		echo '<ol>';
-		foreach ($this->posts as $post) {
 
-			// There are only ever one of these
-			$post_title     = $this->get_tag( $post, 'title' );
-			$post_date      = $this->get_tag( $post, 'wp:post_date' );
-			$post_date_gmt  = $this->get_tag( $post, 'wp:post_date_gmt' );
-			$comment_status = $this->get_tag( $post, 'wp:comment_status' );
-			$ping_status    = $this->get_tag( $post, 'wp:ping_status' );
-			$post_status    = $this->get_tag( $post, 'wp:status' );
-			$post_parent    = $this->get_tag( $post, 'wp:post_parent' );
-			$post_type      = $this->get_tag( $post, 'wp:post_type' );
-			$guid           = $this->get_tag( $post, 'guid' );
-			$post_author    = $this->get_tag( $post, 'dc:creator' );
-
-			$post_content = $this->get_tag( $post, 'content:encoded' );
-			$post_content = str_replace(array ('<![CDATA[', ']]>'), '', $post_content);
-			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $post_content);
-			$post_content = str_replace('<br>', '<br />', $post_content);
-			$post_content = str_replace('<hr>', '<hr />', $post_content);
-
-			preg_match_all('|<category>(.*?)</category>|is', $post, $categories);
-			$categories = $categories[1];
-
-			$cat_index = 0;
-			foreach ($categories as $category) {
-				$categories[$cat_index] = $wpdb->escape($this->unhtmlentities(str_replace(array ('<![CDATA[', ']]>'), '', $category)));
-				$cat_index++;
-			}
-
-			if ($post_id = post_exists($post_title, '', $post_date)) {
-				echo '<li>';
-				printf(__('Post <i>%s</i> already exists.'), stripslashes($post_title));
-			} else {
-				echo '<li>';
-				printf(__('Importing post <i>%s</i>...'), stripslashes($post_title));
-
-				$post_author = $this->checkauthor($post_author); //just so that if a post already exists, new users are not created by checkauthor
-
-				$postdata = compact('post_author', 'post_date', 'post_date_gmt', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'comment_status', 'ping_status', 'post_modified', 'post_modified_gmt', 'guid', 'post_parent', 'post_type');
-				$comment_post_ID = $post_id = wp_insert_post($postdata);
-				// Add categories.
-				if (0 != count($categories)) {
-					wp_create_categories($categories, $post_id);
-				}
-			}
-
-				// Now for comments
-				preg_match_all('|<wp:comment>(.*?)</wp:comment>|is', $post, $comments);
-				$comments = $comments[1];
-				$num_comments = 0;
-				if ( $comments) { foreach ($comments as $comment) {
-					$comment_author       = $this->get_tag( $comment, 'wp:comment_author');
-					$comment_author_email = $this->get_tag( $comment, 'wp:comment_author_email');
-					$comment_author_IP    = $this->get_tag( $comment, 'wp:comment_author_IP');
-					$comment_author_url   = $this->get_tag( $comment, 'wp:comment_author_url');
-					$comment_date         = $this->get_tag( $comment, 'wp:comment_date');
-					$comment_date_gmt     = $this->get_tag( $comment, 'wp:comment_date_gmt');
-					$comment_content      = $this->get_tag( $comment, 'wp:comment_content');
-					$comment_approved     = $this->get_tag( $comment, 'wp:comment_approved');
-					$comment_type         = $this->get_tag( $comment, 'wp:comment_type');
-					$comment_parent       = $this->get_tag( $comment, 'wp:comment_parent');
-
-					if ( !comment_exists($comment_author, $comment_date) ) {
-						$commentdata = compact('comment_post_ID', 'comment_author', 'comment_author_url', 'comment_author_email', 'comment_author_IP', 'comment_date', 'comment_date_gmt', 'comment_content', 'comment_approved', 'comment_type', 'comment_parent');
-						wp_insert_comment($commentdata);
-						$num_comments++;
-					}
-				} }
-				if ( $num_comments )
-					printf(' '.__('(%s comments)'), $num_comments);
-
-				// Now for post meta
-				preg_match_all('|<wp:postmeta>(.*?)</wp:postmeta>|is', $post, $postmeta);
-				$postmeta = $postmeta[1];
-				if ( $postmeta) { foreach ($postmeta as $p) {
-					$key   = $this->get_tag( $p, 'wp:meta_key' );
-					$value = $this->get_tag( $p, 'wp:meta_value' );
-					add_post_meta( $post_id, $key, $value );
-				} }
-
-			$index++;
-		}
+		foreach ($this->posts as $post)
+			$this->process_post($post);
 
 		echo '</ol>';
 
 		wp_import_cleanup($this->id);
 
 		echo '<h3>'.sprintf(__('All done.').' <a href="%s">'.__('Have fun!').'</a>', get_option('home')).'</h3>';
+	}
+  
+	function process_post($post) {
+		global $wpdb;
+
+		$post_ID = (int) $this->get_tag( $post, 'wp:post_id' );
+  		if ( $post_ID && !empty($this->posts_processed[$post_ID][1]) ) // Processed already
+			return 0;
+      
+		// There are only ever one of these
+		$post_title     = $this->get_tag( $post, 'title' );
+		$post_date      = $this->get_tag( $post, 'wp:post_date' );
+		$post_date_gmt  = $this->get_tag( $post, 'wp:post_date_gmt' );
+		$comment_status = $this->get_tag( $post, 'wp:comment_status' );
+		$ping_status    = $this->get_tag( $post, 'wp:ping_status' );
+		$post_status    = $this->get_tag( $post, 'wp:status' );
+		$post_name      = $this->get_tag( $post, 'wp:post_name' );
+		$post_parent    = $this->get_tag( $post, 'wp:post_parent' );
+		$menu_order     = $this->get_tag( $post, 'wp:menu_order' );
+		$post_type      = $this->get_tag( $post, 'wp:post_type' );
+		$guid           = $this->get_tag( $post, 'guid' );
+		$post_author    = $this->get_tag( $post, 'dc:creator' );
+
+		$post_content = $this->get_tag( $post, 'content:encoded' );
+		$post_content = str_replace(array ('<![CDATA[', ']]>'), '', $post_content);
+		$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $post_content);
+		$post_content = str_replace('<br>', '<br />', $post_content);
+		$post_content = str_replace('<hr>', '<hr />', $post_content);
+
+		preg_match_all('|<category>(.*?)</category>|is', $post, $categories);
+		$categories = $categories[1];
+
+		$cat_index = 0;
+		foreach ($categories as $category) {
+			$categories[$cat_index] = $wpdb->escape($this->unhtmlentities(str_replace(array ('<![CDATA[', ']]>'), '', $category)));
+			$cat_index++;
+		}
+
+		if ($post_id = post_exists($post_title, '', $post_date)) {
+			echo '<li>';
+			printf(__('Post <i>%s</i> already exists.'), stripslashes($post_title));
+		} else {
+
+			// If it has parent, process parent first.
+			$post_parent = (int) $post_parent;
+			if ($parent = $this->posts_processed[$post_parent]) {
+				if (!$parent[1]) $this->process_post($parent[0]); // If not yet, process the parent first.
+				$post_parent = $parent[1]; // New ID of the parent;
+			}
+
+			echo '<li>';
+			printf(__('Importing post <i>%s</i>...'), stripslashes($post_title));
+
+			$post_author = $this->checkauthor($post_author); //just so that if a post already exists, new users are not created by checkauthor
+
+			$postdata = compact('post_author', 'post_date', 'post_date_gmt', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'comment_status', 'ping_status', 'post_modified', 'post_modified_gmt', 'guid', 'post_parent', 'menu_order', 'post_type');
+			$comment_post_ID = $post_id = wp_insert_post($postdata);
+
+			// Memorize old and new ID.
+			if ( $post_id && $post_ID && $this->posts_processed[$post_ID] )
+				$this->posts_processed[$post_ID][1] = $post_id; // New ID.
+			
+			// Add categories.
+			if (count($categories) > 0) {
+				$post_cats = array();
+				foreach ($categories as $category) {
+					$cat_ID = (int) $wpdb->get_var("SELECT cat_ID FROM $wpdb->categories WHERE cat_name = '$category'");
+					if ($cat_ID == 0) {
+						$cat_ID = wp_insert_category(array('cat_name' => $category));
+					}
+					$post_cats[] = $cat_ID;
+				}
+				wp_set_post_categories($post_id, $post_cats);
+			}	
+		}
+
+		// Now for comments
+		preg_match_all('|<wp:comment>(.*?)</wp:comment>|is', $post, $comments);
+		$comments = $comments[1];
+		$num_comments = 0;
+		if ( $comments) { foreach ($comments as $comment) {
+			$comment_author       = $this->get_tag( $comment, 'wp:comment_author');
+			$comment_author_email = $this->get_tag( $comment, 'wp:comment_author_email');
+			$comment_author_IP    = $this->get_tag( $comment, 'wp:comment_author_IP');
+			$comment_author_url   = $this->get_tag( $comment, 'wp:comment_author_url');
+			$comment_date         = $this->get_tag( $comment, 'wp:comment_date');
+			$comment_date_gmt     = $this->get_tag( $comment, 'wp:comment_date_gmt');
+			$comment_content      = $this->get_tag( $comment, 'wp:comment_content');
+			$comment_approved     = $this->get_tag( $comment, 'wp:comment_approved');
+			$comment_type         = $this->get_tag( $comment, 'wp:comment_type');
+			$comment_parent       = $this->get_tag( $comment, 'wp:comment_parent');
+
+			if ( !comment_exists($comment_author, $comment_date) ) {
+				$commentdata = compact('comment_post_ID', 'comment_author', 'comment_author_url', 'comment_author_email', 'comment_author_IP', 'comment_date', 'comment_date_gmt', 'comment_content', 'comment_approved', 'comment_type', 'comment_parent');
+				wp_insert_comment($commentdata);
+				$num_comments++;
+			}
+		} }
+
+		if ( $num_comments )
+			printf(' '.__('(%s comments)'), $num_comments);
+
+		// Now for post meta
+		preg_match_all('|<wp:postmeta>(.*?)</wp:postmeta>|is', $post, $postmeta);
+		$postmeta = $postmeta[1];
+		if ( $postmeta) { foreach ($postmeta as $p) {
+			$key   = $this->get_tag( $p, 'wp:meta_key' );
+			$value = $this->get_tag( $p, 'wp:meta_value' );
+			$value = stripslashes($value); // add_post_meta() will escape.
+			add_post_meta( $post_id, $key, $value );
+		} }
 	}
 
 	function import() {
@@ -325,9 +385,11 @@ class WP_Import {
 				$this->greet();
 				break;
 			case 1 :
+				check_admin_referer('import-upload');
 				$this->select_authors();
 				break;
 			case 2:
+				check_admin_referer('import-wordpress');
 				$this->import();
 				break;
 		}

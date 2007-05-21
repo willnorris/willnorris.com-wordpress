@@ -148,6 +148,11 @@ function wp_insert_category($catarr) {
 
 	clean_category_cache($cat_ID);
 
+	if ($update)
+		do_action('edited_category', $cat_ID);
+	else
+		do_action('created_category', $cat_ID);
+	
 	return $cat_ID;
 }
 
@@ -415,6 +420,8 @@ function wp_delete_link($link_id) {
 
 	$wpdb->query("DELETE FROM $wpdb->link2cat WHERE link_id = '$link_id'");
 	return $wpdb->query("DELETE FROM $wpdb->links WHERE link_id = '$link_id'");
+	
+	do_action('deleted_link', $link_id);
 }
 
 function wp_get_link_cats($link_ID = 0) {

@@ -40,7 +40,7 @@ if ( isset($_SERVER['SCRIPT_FILENAME']) && ( strpos($_SERVER['SCRIPT_FILENAME'],
 	$_SERVER['SCRIPT_FILENAME'] = $_SERVER['PATH_TRANSLATED'];
 
 // Fix for Dreamhost and other PHP as CGI hosts
-if ( strstr( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) )
+if (strpos($_SERVER['SCRIPT_NAME'], 'php.cgi') !== false)
 	unset($_SERVER['PATH_INFO']);
 
 // Fix empty PHP_SELF
@@ -122,9 +122,6 @@ if ( defined('CUSTOM_USER_TABLE') )
 if ( defined('CUSTOM_USER_META_TABLE') )
 	$wpdb->usermeta = CUSTOM_USER_META_TABLE;
 
-// To be removed in 2.2
-$tableposts = $tableusers = $tablecategories = $tablepost2cat = $tablecomments = $tablelink2cat = $tablelinks = $tablelinkcategories = $tableoptions = $tablepostmeta = '';
-
 if ( file_exists(ABSPATH . 'wp-content/object-cache.php') )
 	require (ABSPATH . 'wp-content/object-cache.php');
 else
@@ -133,14 +130,15 @@ else
 wp_cache_init();
 
 require (ABSPATH . WPINC . '/functions.php');
+require (ABSPATH . WPINC . '/classes.php');
 require (ABSPATH . WPINC . '/plugin.php');
 require (ABSPATH . WPINC . '/default-filters.php');
 include_once(ABSPATH . WPINC . '/streams.php');
 include_once(ABSPATH . WPINC . '/gettext.php');
 require_once (ABSPATH . WPINC . '/l10n.php');
 
-if ( !is_blog_installed() && (!strstr($_SERVER['PHP_SELF'], 'install.php') && !defined('WP_INSTALLING')) ) {
-	if ( strstr($_SERVER['PHP_SELF'], 'wp-admin') )
+if ( !is_blog_installed() && (strpos($_SERVER['PHP_SELF'], 'install.php') === false && !defined('WP_INSTALLING')) ) {
+	if (strpos($_SERVER['PHP_SELF'], 'wp-admin') !== false)
 		$link = 'install.php';
 	else
 		$link = 'wp-admin/install.php';
@@ -149,7 +147,6 @@ if ( !is_blog_installed() && (!strstr($_SERVER['PHP_SELF'], 'install.php') && !d
 
 require (ABSPATH . WPINC . '/formatting.php');
 require (ABSPATH . WPINC . '/capabilities.php');
-require (ABSPATH . WPINC . '/classes.php');
 require (ABSPATH . WPINC . '/query.php');
 require (ABSPATH . WPINC . '/theme.php');
 require (ABSPATH . WPINC . '/user.php');
@@ -172,11 +169,11 @@ require (ABSPATH . WPINC . '/version.php');
 require (ABSPATH . WPINC . '/deprecated.php');
 require (ABSPATH . WPINC . '/script-loader.php');
 
-if (!strstr($_SERVER['PHP_SELF'], 'install.php')) :
+if (strpos($_SERVER['PHP_SELF'], 'install.php') === false) {
     // Used to guarantee unique hash cookies
     $cookiehash = md5(get_option('siteurl'));
 	define('COOKIEHASH', $cookiehash); 
-endif;
+}
 
 if ( !defined('USER_COOKIE') )
 	define('USER_COOKIE', 'wordpressuser_'. COOKIEHASH);
@@ -201,8 +198,8 @@ if ( get_option('active_plugins') ) {
 	$current_plugins = get_option('active_plugins');
 	if ( is_array($current_plugins) ) {
 		foreach ($current_plugins as $plugin) {
-			if ('' != $plugin && file_exists(ABSPATH . 'wp-content/plugins/' . $plugin))
-				include_once(ABSPATH . 'wp-content/plugins/' . $plugin);
+			if ('' != $plugin && file_exists(ABSPATH . PLUGINDIR . '/' . $plugin))
+				include_once(ABSPATH . PLUGINDIR . '/' . $plugin);
 		}
 	}
 }

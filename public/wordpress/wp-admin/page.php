@@ -52,6 +52,7 @@ case 'edit':
 
 	if($post->post_status == 'draft') {
 		wp_enqueue_script('prototype');
+		wp_enqueue_script('interface');
 		wp_enqueue_script('autosave');
 	}
 	require_once('admin-header.php');
@@ -60,12 +61,6 @@ case 'edit':
 		die ( __('You are not allowed to edit this page.') );
 
 	include('edit-page-form.php');
-	?>
-	<div id='preview' class='wrap'>
-	<h2 id="preview-post"><?php _e('Page Preview (updated when page is saved)'); ?></h2>
-		<iframe src="<?php echo clean_url(apply_filters('preview_page_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" width="100%" height="600" ></iframe>
-	</div>
-	<?php
 	break;
 
 case 'editattachment':
@@ -106,7 +101,7 @@ case 'editpost':
 		}
 
 		if ( isset($_POST['save']) )
-			$location = "page.php?action=edit&post=$page_ID";		
+			$location = "page.php?action=edit&post=$page_ID";
 	} else {
 		if ($_POST['save']) {
 			$location = "page.php?action=edit&post=$page_ID";
@@ -147,8 +142,8 @@ case 'delete':
 	}
 
 	$sendback = wp_get_referer();
-	if (strstr($sendback, 'page.php')) $sendback = get_option('siteurl') .'/wp-admin/page.php';
-	elseif (strstr($sendback, 'attachments.php')) $sendback = get_option('siteurl') .'/wp-admin/attachments.php';
+	if (strpos($sendback, 'page.php') !== false) $sendback = get_option('siteurl') .'/wp-admin/page.php';
+	elseif (strpos($sendback, 'attachments.php') !== false) $sendback = get_option('siteurl') .'/wp-admin/attachments.php';
 	$sendback = preg_replace('|[^a-z0-9-~+_.?#=&;,/:]|i', '', $sendback);
 	wp_redirect($sendback);
 	exit();

@@ -161,7 +161,7 @@ function get_comments_number( $post_id = 0 ) {
 	return apply_filters('get_comments_number', $count);
 }
 
-function comments_number( $zero = false, $one = false, $more = false, $number = '' ) {
+function comments_number( $zero = false, $one = false, $more = false, $deprecated = '' ) {
 	global $id;
 	$number = get_comments_number($id);
 
@@ -226,9 +226,9 @@ function get_trackback_url() {
 	$tb_url = get_option('siteurl') . '/wp-trackback.php?p=' . $id;
 
 	if ( '' != get_option('permalink_structure') )
-		$tb_url = trailingslashit(get_permalink()) . 'trackback/';
+		$tb_url = trailingslashit(get_permalink()) . user_trailingslashit('trackback', 'single_trackback');
 
-	return $tb_url;
+	return apply_filters('trackback_url', $tb_url);
 }
 function trackback_url( $display = true ) {
 	if ( $display)
@@ -239,19 +239,19 @@ function trackback_url( $display = true ) {
 
 function trackback_rdf($timezone = 0) {
 	global $id;
-	if (!stristr($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator')) {
-	echo '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-			xmlns:dc="http://purl.org/dc/elements/1.1/"
-			xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
-		<rdf:Description rdf:about="';
-	the_permalink();
-	echo '"'."\n";
-	echo '    dc:identifier="';
-	the_permalink();
-	echo '"'."\n";
-	echo '    dc:title="'.str_replace('--', '&#x2d;&#x2d;', wptexturize(strip_tags(get_the_title()))).'"'."\n";
-	echo '    trackback:ping="'.trackback_url(0).'"'." />\n";
-	echo '</rdf:RDF>';
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') !== false) {
+		echo '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				xmlns:dc="http://purl.org/dc/elements/1.1/"
+				xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+			<rdf:Description rdf:about="';
+		the_permalink();
+		echo '"'."\n";
+		echo '    dc:identifier="';
+		the_permalink();
+		echo '"'."\n";
+		echo '    dc:title="'.str_replace('--', '&#x2d;&#x2d;', wptexturize(strip_tags(get_the_title()))).'"'."\n";
+		echo '    trackback:ping="'.trackback_url(0).'"'." />\n";
+		echo '</rdf:RDF>';
 	}
 }
 
@@ -288,7 +288,9 @@ function comments_template( $file = '/comments.php' ) {
 	extract($commenter);
 
 	// TODO: Use API instead of SELECTs.
-	if ( empty($comment_author) ) {
+	if ( $user_ID) {
+		$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_post_ID = '$post->ID' AND (comment_approved = '1' OR ( user_id = '$user_ID' AND comment_approved = '0' ) )  ORDER BY comment_date");
+	} else if ( empty($comment_author) ) { 
 		$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_post_ID = '$post->ID' AND comment_approved = '1' ORDER BY comment_date");
 	} else {
 		$author_db = $wpdb->escape($comment_author);
@@ -296,7 +298,9 @@ function comments_template( $file = '/comments.php' ) {
 		$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_post_ID = '$post->ID' AND ( comment_approved = '1' OR ( comment_author = '$author_db' AND comment_author_email = '$email_db' AND comment_approved = '0' ) ) ORDER BY comment_date");
 	}
 
-	$comments = apply_filters( 'comments_array', $comments, $post->ID );
+	// keep $comments for legacy's sake (remember $table*? ;) )
+	$comments = $wp_query->comments = apply_filters( 'comments_array', $comments, $post->ID );
+	$wp_query->comment_count = count($wp_query->comments);
 
 	define('COMMENTS_TEMPLATE', true);
 	$include = apply_filters('comments_template', TEMPLATEPATH . $file );
@@ -329,7 +333,7 @@ function comments_popup_link($zero='No Comments', $one='1 Comment', $more='% Com
 	$number = get_comments_number($id);
 
 	if ( 0 == $number && 'closed' == $post->comment_status && 'closed' == $post->ping_status ) {
-		echo $none;
+		echo '<span' . ((!empty($CSSclass)) ? ' class="' . $CSSclass . '"' : '') . '>' . $none . '</span>';
 		return;
 	}
 

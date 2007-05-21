@@ -73,7 +73,7 @@ function get_bookmarks($args = '') {
 	}
 	if (!empty($exclusions))
 		$exclusions .= ')';
-		
+
 	if ( ! empty($category_name) ) {
 		if ( $cat_id = $wpdb->get_var("SELECT cat_ID FROM $wpdb->categories WHERE cat_name='$category_name' LIMIT 1") )
 			$category = $cat_id;
@@ -136,7 +136,7 @@ function get_bookmarks($args = '') {
 	$results = $wpdb->get_results($query);
 
 	$cache[ $key ] = $results;
-	wp_cache_set( 'get_bookmarks', $cache, 'bookmark' );
+	wp_cache_add( 'get_bookmarks', $cache, 'bookmark' );
 
 	return apply_filters('get_bookmarks', $results, $r);
 }

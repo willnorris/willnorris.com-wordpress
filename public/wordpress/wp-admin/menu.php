@@ -6,15 +6,15 @@
 // The URL of the item's file
 $menu[0] = array(__('Dashboard'), 'read', 'index.php');
 
-if ( strstr($_SERVER['REQUEST_URI'], 'edit-pages.php') )
+if (strpos($_SERVER['REQUEST_URI'], 'edit-pages.php') !== false)
 	$menu[5] = array(__('Write'), 'edit_pages', 'page-new.php');
 else
 	$menu[5] = array(__('Write'), 'edit_posts', 'post-new.php');
-if ( strstr($_SERVER['REQUEST_URI'], 'page-new.php') )
+if (strpos($_SERVER['REQUEST_URI'], 'page-new.php') !== false)
 	$menu[10] = array(__('Manage'), 'edit_pages', 'edit-pages.php');
 else
 	$menu[10] = array(__('Manage'), 'edit_posts', 'edit.php');
-	
+
 $menu[15] = array(__('Comments'), 'edit_posts', 'edit-comments.php');
 $menu[20] = array(__('Blogroll'), 'manage_links', 'link-manager.php');
 $menu[25] = array(__('Presentation'), 'switch_themes', 'themes.php');
@@ -69,6 +69,8 @@ $submenu['plugins.php'][10] = array(__('Plugin Editor'), 'edit_plugins', 'plugin
 $submenu['themes.php'][5] = array(__('Themes'), 'switch_themes', 'themes.php');
 $submenu['themes.php'][10] = array(__('Theme Editor'), 'edit_themes', 'theme-editor.php');
 
+do_action('_admin_menu');
+
 // Create list of page plugin hook names.
 foreach ($menu as $menu_page) {
 	$admin_page_hooks[$menu_page[2]] = sanitize_title($menu_page[0]);
@@ -104,7 +106,7 @@ foreach ( $menu as $id => $data ) {
 	if ( $new_parent != $old_parent ) {
 		$_wp_real_parent_file[$old_parent] = $new_parent;
 		$menu[$id][2] = $new_parent;
-		
+
 		foreach ($submenu[$old_parent] as $index => $data) {
 			$submenu[$new_parent][$index] = $submenu[$old_parent][$index];
 			unset($submenu[$old_parent][$index]);

@@ -10,7 +10,7 @@ function get_profile($field, $user = false) {
 function get_usernumposts($userid) {
 	global $wpdb;
 	$userid = (int) $userid;
-	return $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_author = '$userid' AND post_type = 'post' AND post_status = 'publish'");
+	return $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_author = '$userid' AND post_type = 'post' AND " . get_private_posts_cap_sql('post'));
 }
 
 // TODO: xmlrpc only.  Maybe move to xmlrpc.php.
@@ -49,6 +49,16 @@ function update_user_option( $user_id, $option_name, $newvalue, $global = false 
 	if ( !$global )
 		$option_name = $wpdb->prefix . $option_name;
 	return update_usermeta( $user_id, $option_name, $newvalue );
+}
+
+// Get users with capabilities for the current blog.
+// For setups that use the multi-blog feature.
+function get_users_of_blog( $id = '' ) {
+	global $wpdb, $blog_id;
+	if ( empty($id) )
+		$id = (int) $blog_id;
+	$users = $wpdb->get_results( "SELECT user_id, user_login, display_name, user_email, meta_value FROM $wpdb->users, $wpdb->usermeta WHERE " . $wpdb->users . ".ID = " . $wpdb->usermeta . ".user_id AND meta_key = '" . $wpdb->prefix . "capabilities' ORDER BY {$wpdb->usermeta}.user_id" );
+	return $users;
 }
 
 //

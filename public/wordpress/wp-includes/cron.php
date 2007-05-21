@@ -54,7 +54,7 @@ function wp_unschedule_event( $timestamp, $hook, $args = array() ) {
 
 function wp_clear_scheduled_hook( $hook ) {
 	$args = array_slice( func_get_args(), 1 );
-	
+
 	while ( $timestamp = wp_next_scheduled( $hook, $args ) )
 		wp_unschedule_event( $timestamp, $hook, $args );
 }
@@ -73,21 +73,31 @@ function wp_next_scheduled( $hook, $args = array() ) {
 
 function spawn_cron() {
 	$crons = _get_cron_array();
-	
+
 	if ( !is_array($crons) )
 		return;
-	
+
 	$keys = array_keys( $crons );
 	if ( array_shift( $keys ) > time() )
 		return;
 
 	$cron_url = get_option( 'siteurl' ) . '/wp-cron.php';
 	$parts = parse_url( $cron_url );
-
-	$argyle = @ fsockopen( $parts['host'], $_SERVER['SERVER_PORT'], $errno, $errstr, 0.01 );
+	
+	if ($parts['scheme'] == 'https') {
+		// support for SSL was added in 4.3.0
+		if (version_compare(phpversion(), '4.3.0', '>=') && function_exists('openssl_open')) {
+			$argyle = @fsockopen('ssl://' . $parts['host'], $_SERVER['SERVER_PORT'], $errno, $errstr, 0.01);
+		} else {
+			return false;
+		}
+	} else {
+		$argyle = @ fsockopen( $parts['host'], $_SERVER['SERVER_PORT'], $errno, $errstr, 0.01 );
+	}
+	
 	if ( $argyle )
 		fputs( $argyle,
-			  "GET {$parts['path']}?check=" . md5(DB_PASS . '187425') . " HTTP/1.0\r\n"
+			  "GET {$parts['path']}?check=" . wp_hash('187425') . " HTTP/1.0\r\n"
 			. "Host: {$_SERVER['HTTP_HOST']}\r\n\r\n"
 		);
 }
@@ -98,7 +108,7 @@ function wp_cron() {
 		return;
 
 	$crons = _get_cron_array();
-	
+
 	if ( !is_array($crons) )
 		return;
 

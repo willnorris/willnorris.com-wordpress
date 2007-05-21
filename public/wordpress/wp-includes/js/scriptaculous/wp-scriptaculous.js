@@ -12,7 +12,7 @@
 // included in all copies or substantial portions of the Software.
 
 var Scriptaculous = {
-  Version: '1.6.1',
+  Version: '1.7.0',
   require: function(libraryName) {
     // inserting via DOM fails in Safari 2.0, so brute force approach
     document.write('<script type="text/javascript" src="'+libraryName+'"></script>');

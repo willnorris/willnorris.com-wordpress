@@ -25,11 +25,11 @@ include('./admin-header.php');
 </tr> 
 <tr valign="top"> 
 <th scope="row"><?php _e('WordPress address (URL):') ?></th> 
-<td><input name="siteurl" type="text" id="siteurl" value="<?php form_option('siteurl'); ?>" size="40" class="code" /></td> 
+<td><input name="siteurl" type="text" id="siteurl" value="<?php form_option('siteurl'); ?>" size="40" class="code<?php if ( defined( 'WP_SITEURL' ) ) : ?> disabled" disabled="disabled"<?php else: ?>"<?php endif; ?> /></td> 
 </tr> 
 <tr valign="top">
 <th scope="row"><?php _e('Blog address (URL):') ?></th>
-<td><input name="home" type="text" id="home" value="<?php form_option('home'); ?>" size="40" class="code" /><br /><?php _e('If you want your blog homepage <a href="http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory">to be different than the directory</a> you installed WordPress in, enter that address here.'); ?></td>
+<td><input name="home" type="text" id="home" value="<?php form_option('home'); ?>" size="40" class="code<?php if ( defined( 'WP_HOME' ) ) : ?> disabled" disabled="disabled"<?php else: ?>"<?php endif; ?> /><br /><?php _e('Enter the address here if you want your blog homepage <a href="http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory">to be different from the directory</a> you installed WordPress.'); ?></td>
 </tr>
 <tr valign="top"> 
 <th scope="row"><?php _e('E-mail address:') ?> </th> 
@@ -97,7 +97,7 @@ endfor;
 
 <p class="submit"><input type="submit" name="Submit" value="<?php _e('Update Options &raquo;') ?>" />
 <input type="hidden" name="action" value="update" /> 
-<input type="hidden" name="page_options" value="blogname,blogdescription,siteurl,admin_email,users_can_register,gmt_offset,date_format,time_format,home,start_of_week,comment_registration,default_role" /> 
+<input type="hidden" name="page_options" value="<?php if ( ! defined( 'WP_SITEURL' ) ) echo 'siteurl,'; if ( ! defined( 'WP_HOME' ) ) echo 'home,'; ?>blogname,blogdescription,admin_email,users_can_register,gmt_offset,date_format,time_format,start_of_week,comment_registration,default_role" /> 
 </p>
 </form>
 
