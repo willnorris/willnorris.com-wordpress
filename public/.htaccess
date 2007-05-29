@@ -11,6 +11,8 @@ Options +Multiviews
 
     RewriteRule ^contact /about/ [L,R]
 
+	RewriteRule ^wordpress/?$ / [L,R]
+
 	RewriteCond %{HTTPS} off
 	RewriteCond %{REQUEST_URI} ^/(webmail.*) [NC,OR]
 	RewriteCond %{REQUEST_URI} ^/(phpmyadmin.*) [NC]
