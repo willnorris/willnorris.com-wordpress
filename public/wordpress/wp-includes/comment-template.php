@@ -239,7 +239,7 @@ function trackback_url( $display = true ) {
 
 function trackback_rdf($timezone = 0) {
 	global $id;
-	if (strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') !== false) {
+	if (stripos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === false) {
 		echo '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 				xmlns:dc="http://purl.org/dc/elements/1.1/"
 				xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
@@ -285,7 +285,7 @@ function comments_template( $file = '/comments.php' ) {
 
 	$req = get_option('require_name_email');
 	$commenter = wp_get_current_commenter();
-	extract($commenter);
+	extract($commenter, EXTR_SKIP);
 
 	// TODO: Use API instead of SELECTs.
 	if ( $user_ID) {

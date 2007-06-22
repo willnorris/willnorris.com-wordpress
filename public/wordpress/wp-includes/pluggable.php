@@ -156,7 +156,7 @@ function get_userdatabylogin($user_login) {
 }
 endif;
 
-if ( !function_exists('wp_mail') ) :
+if ( !function_exists( 'wp_mail' ) ) :
 function wp_mail($to, $subject, $message, $headers = '') {
 	global $phpmailer;
 
@@ -168,7 +168,7 @@ function wp_mail($to, $subject, $message, $headers = '') {
 
 	$mail = compact('to', 'subject', 'message', 'headers');
 	$mail = apply_filters('wp_mail', $mail);
-	extract($mail);
+	extract($mail, EXTR_SKIP);
 
 	if ( $headers == '' ) {
 		$headers = "MIME-Version: 1.0\n" .
@@ -223,6 +223,8 @@ endif;
 if ( !function_exists('wp_login') ) :
 function wp_login($username, $password, $already_md5 = false) {
 	global $wpdb, $error;
+
+	$username = sanitize_user($username);
 
 	if ( '' == $username )
 		return false;

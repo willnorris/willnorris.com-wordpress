@@ -83,6 +83,15 @@ function _get_the_category_usort($a, $b) {
 	return strcmp($a->category_name, $b->category_name);
 }
 
+function _get_the_category_usort_by_ID($a, $b) {
+	if ( $a->cat_ID > $b->cat_ID )
+		return 1;
+	elseif ( $a->cat_ID < $b->cat_ID )
+		return -1;
+	else
+		return 0;
+}
+
 function get_the_category_by_ID($cat_ID) {
 	$cat_ID = (int) $cat_ID;
 	$category = &get_category($cat_ID);
@@ -182,7 +191,7 @@ function wp_dropdown_categories($args = '') {
 	$defaults['selected'] = ( is_category() ) ? get_query_var('cat') : 0;
 	$r = array_merge($defaults, $r);
 	$r['include_last_update_time'] = $r['show_last_update'];
-	extract($r);
+	extract($r, EXTR_SKIP);
 
 	$categories = get_categories($r);
 
@@ -233,7 +242,7 @@ function wp_list_categories($args = '') {
 		$r['pad_counts'] = true;
 	if ( isset($r['show_date']) )
 		$r['include_last_update_time'] = $r['show_date'];
-	extract($r);
+	extract($r, EXTR_SKIP);
 
 	$categories = get_categories($r);
 

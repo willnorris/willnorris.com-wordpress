@@ -347,6 +347,8 @@ function get_post_to_edit( $id ) {
 	$post->post_title = apply_filters( 'title_edit_pre', $post->post_title );
 
 	$post->post_password = format_to_edit( $post->post_password );
+	
+	$post->menu_order = (int) $post->menu_order;
 
 	if ( $post->post_type == 'page' )
 		$post->page_template = get_post_meta( $id, '_wp_page_template', true );
@@ -396,12 +398,16 @@ function get_default_post_to_edit() {
 
 function get_comment_to_edit( $id ) {
 	$comment = get_comment( $id );
+	
+	$comment->comment_ID = (int) $comment->comment_ID;
+	$comment->comment_post_ID = (int) $comment->comment_post_ID;
 
-	$comment->comment_content = format_to_edit( $comment->comment_content, user_can_richedit() );
+	$comment->comment_content = format_to_edit( $comment->comment_content );
 	$comment->comment_content = apply_filters( 'comment_edit_pre', $comment->comment_content);
 
 	$comment->comment_author = format_to_edit( $comment->comment_author );
 	$comment->comment_author_email = format_to_edit( $comment->comment_author_email );
+	$comment->comment_author_url = clean_url($comment->comment_author_url);
 	$comment->comment_author_url = format_to_edit( $comment->comment_author_url );
 
 	return $comment;
@@ -409,6 +415,9 @@ function get_comment_to_edit( $id ) {
 
 function get_category_to_edit( $id ) {
 	$category = get_category( $id );
+	
+	$category->term_id = (int) $category->term_id;
+	$category->parent = (int) $category->parent;
 
 	return $category;
 }
@@ -935,7 +944,7 @@ function _wp_comment_list_item( $id, $alt = 0 ) {
 <?php
 if ( current_user_can('edit_post', $comment->comment_post_ID) ) {
 	echo " <a href='comment.php?action=editcomment&amp;c=".$comment->comment_ID."'>" .  __('Edit') . '</a>';
-	echo ' | <a href="' . wp_nonce_url('ocomment.php?action=deletecomment&amp;p=' . $comment->comment_post_ID . '&amp;c=' . $comment->comment_ID, 'delete-comment_' . $comment->comment_ID) . '" onclick="return deleteSomething( \'comment\', ' . $comment->comment_ID . ', \'' . js_escape(sprintf(__("You are about to delete this comment by '%s'.\n'Cancel' to stop, 'OK' to delete."), $comment->comment_author)) . "', theCommentList );\">" . __('Delete') . '</a> ';
+	echo ' | <a href="' . wp_nonce_url('comment.php?action=deletecomment&amp;p=' . $comment->comment_post_ID . '&amp;c=' . $comment->comment_ID, 'delete-comment_' . $comment->comment_ID) . '" onclick="return deleteSomething( \'comment\', ' . $comment->comment_ID . ', \'' . js_escape(sprintf(__("You are about to delete this comment by '%s'.\n'Cancel' to stop, 'OK' to delete."), $comment->comment_author)) . "', theCommentList );\">" . __('Delete') . '</a> ';
 	if ( ('none' != $comment_status) && ( current_user_can('moderate_comments') ) ) {
 		echo '<span class="unapprove"> | <a href="' . wp_nonce_url('comment.php?action=unapprovecomment&amp;p=' . $comment->comment_post_ID . '&amp;c=' . $comment->comment_ID, 'unapprove-comment_' . $comment->comment_ID) . '" onclick="return dimSomething( \'comment\', ' . $comment->comment_ID . ', \'unapproved\', theCommentList );">' . __('Unapprove') . '</a> </span>';
 		echo '<span class="approve"> | <a href="' . wp_nonce_url('comment.php?action=approvecomment&amp;p=' . $comment->comment_post_ID . '&amp;c=' . $comment->comment_ID, 'approve-comment_' . $comment->comment_ID) . '" onclick="return dimSomething( \'comment\', ' . $comment->comment_ID . ', \'unapproved\', theCommentList );">' . __('Approve') . '</a> </span>';
@@ -1026,6 +1035,7 @@ function list_meta( $meta ) {
 		$key_js = js_escape( $entry['meta_key'] );
 		$entry['meta_key']   = attribute_escape($entry['meta_key']);
 		$entry['meta_value'] = attribute_escape($entry['meta_value']);
+		$entry['meta_id'] = (int) $entry['meta_id'];
 		$r .= "\n\t<tr id='meta-{$entry['meta_id']}' class='$style'>";
 		$r .= "\n\t\t<td valign='top'><input name='meta[{$entry['meta_id']}][key]' tabindex='6' type='text' size='20' value='{$entry['meta_key']}' /></td>";
 		$r .= "\n\t\t<td><textarea name='meta[{$entry['meta_id']}][value]' tabindex='6' rows='2' cols='30'>{$entry['meta_value']}</textarea></td>";
@@ -1078,7 +1088,7 @@ function meta_form() {
 <?php
 
 	foreach ( $keys as $key ) {
-		$key = attribute_escape( $key);
+		$key = attribute_escape( $key );
 		echo "\n\t<option value='$key'>$key</option>";
 	}
 ?>
@@ -1099,6 +1109,8 @@ function add_meta( $post_ID ) {
 	global $wpdb;
 	$post_ID = (int) $post_ID;
 
+	$protected = array( '_wp_attached_file', '_wp_attachment_metadata', '_wp_old_slug', '_wp_page_template' );
+
 	$metakeyselect = $wpdb->escape( stripslashes( trim( $_POST['metakeyselect'] ) ) );
 	$metakeyinput = $wpdb->escape( stripslashes( trim( $_POST['metakeyinput'] ) ) );
 	$metavalue = maybe_serialize( stripslashes( (trim( $_POST['metavalue'] ) ) ));
@@ -1113,6 +1125,9 @@ function add_meta( $post_ID ) {
 
 		if ( $metakeyinput)
 			$metakey = $metakeyinput; // default
+
+		if ( in_array($metakey, $protected) )
+			return false;
 
 		$result = $wpdb->query( "
 						INSERT INTO $wpdb->postmeta 
@@ -1133,6 +1148,12 @@ function delete_meta( $mid ) {
 
 function update_meta( $mid, $mkey, $mvalue ) {
 	global $wpdb;
+
+	$protected = array( '_wp_attached_file', '_wp_attachment_metadata', '_wp_old_slug', '_wp_page_template' );
+
+	if ( in_array($mkey, $protected) )
+		return false;
+
 	$mvalue = maybe_serialize( stripslashes( $mvalue ));
 	$mvalue = $wpdb->escape( $mvalue );
 	$mid = (int) $mid;
