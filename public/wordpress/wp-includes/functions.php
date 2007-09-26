@@ -1,16 +1,14 @@
 <?php
 
-require_once(dirname(__FILE__).'/compat.php');
-
 function mysql2date($dateformatstring, $mysqlstring, $translate = true) {
 	global $wp_locale;
 	$m = $mysqlstring;
 	if ( empty($m) ) {
 		return false;
 	}
-	$i = mktime( 
-		(int) substr( $m, 11, 2 ), (int) substr( $m, 14, 2 ), (int) substr( $m, 17, 2 ), 
-		(int) substr( $m, 5, 2 ), (int) substr( $m, 8, 2 ), (int) substr( $m, 0, 4 ) 
+	$i = mktime(
+		(int) substr( $m, 11, 2 ), (int) substr( $m, 14, 2 ), (int) substr( $m, 17, 2 ),
+		(int) substr( $m, 5, 2 ), (int) substr( $m, 8, 2 ), (int) substr( $m, 0, 4 )
 	);
 
 	if( 'U' == $dateformatstring )
@@ -83,6 +81,30 @@ function date_i18n($dateformatstring, $unixtimestamp) {
 	return $j;
 }
 
+function number_format_i18n($number, $decimals = null) {
+	global $wp_locale;
+	// let the user override the precision only
+	$decimals = is_null($decimals)? $wp_locale->number_format['decimals'] : intval($decimals);
+
+	return number_format($number, $decimals, $wp_locale->number_format['decimal_point'], $wp_locale->number_format['thousands_sep']);
+}
+
+function size_format($bytes, $decimals = null) {
+	// technically the correct unit names for powers of 1024 are KiB, MiB etc
+	// see http://en.wikipedia.org/wiki/Byte
+	$quant = array(
+		'TB' => pow(1024, 4),
+		'GB' => pow(1024, 3),
+		'MB' => pow(1024, 2),
+		'kB' => pow(1024, 1),
+		'B'  => pow(1024, 0),
+	);
+
+	foreach ($quant as $unit => $mag)
+		if ( intval($bytes) >= $mag )
+			return number_format_i18n($bytes / $mag, $decimals) . ' ' . $unit;
+}
+
 function get_weekstartend($mysqlstring, $start_of_week) {
 	$my = substr($mysqlstring,0,4);
 	$mm = substr($mysqlstring,8,2);
@@ -106,56 +128,6 @@ function get_weekstartend($mysqlstring, $start_of_week) {
 	// $week['end'] = $day - $i + 691199;
 	$week['end'] = $week['start'] + 604799;
 	return $week;
-}
-
-function get_lastpostdate($timezone = 'server') {
-	global $cache_lastpostdate, $pagenow, $wpdb, $blog_id;
-	$add_seconds_blog = get_option('gmt_offset') * 3600;
-	$add_seconds_server = date('Z');
-	if ( !isset($cache_lastpostdate[$blog_id][$timezone]) ) {
-		switch(strtolower($timezone)) {
-			case 'gmt':
-				$lastpostdate = $wpdb->get_var("SELECT post_date_gmt FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_date_gmt DESC LIMIT 1");
-				break;
-			case 'blog':
-				$lastpostdate = $wpdb->get_var("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_date_gmt DESC LIMIT 1");
-				break;
-			case 'server':
-				$lastpostdate = $wpdb->get_var("SELECT DATE_ADD(post_date_gmt, INTERVAL '$add_seconds_server' SECOND) FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_date_gmt DESC LIMIT 1");
-				break;
-		}
-		$cache_lastpostdate[$blog_id][$timezone] = $lastpostdate;
-	} else {
-		$lastpostdate = $cache_lastpostdate[$blog_id][$timezone];
-	}
-	return $lastpostdate;
-}
-
-function get_lastpostmodified($timezone = 'server') {
-	global $cache_lastpostmodified, $pagenow, $wpdb, $blog_id;
-	$add_seconds_blog = get_option('gmt_offset') * 3600;
-	$add_seconds_server = date('Z');
-	if ( !isset($cache_lastpostmodified[$blog_id][$timezone]) ) {
-		switch(strtolower($timezone)) {
-			case 'gmt':
-				$lastpostmodified = $wpdb->get_var("SELECT post_modified_gmt FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_modified_gmt DESC LIMIT 1");
-				break;
-			case 'blog':
-				$lastpostmodified = $wpdb->get_var("SELECT post_modified FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_modified_gmt DESC LIMIT 1");
-				break;
-			case 'server':
-				$lastpostmodified = $wpdb->get_var("SELECT DATE_ADD(post_modified_gmt, INTERVAL '$add_seconds_server' SECOND) FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_modified_gmt DESC LIMIT 1");
-				break;
-		}
-		$lastpostdate = get_lastpostdate($timezone);
-		if ( $lastpostdate > $lastpostmodified ) {
-			$lastpostmodified = $lastpostdate;
-		}
-		$cache_lastpostmodified[$blog_id][$timezone] = $lastpostmodified;
-	} else {
-		$lastpostmodified = $cache_lastpostmodified[$blog_id][$timezone];
-	}
-	return $lastpostmodified;
 }
 
 function maybe_unserialize($original) {
@@ -208,9 +180,9 @@ function get_option($setting) {
 	global $wpdb;
 
 	// Allow plugins to short-circuit options.
-	$pre = apply_filters( 'pre_option_' . $setting, false ); 
-	if ( $pre ) 
-		return $pre; 
+	$pre = apply_filters( 'pre_option_' . $setting, false );
+	if ( false !== $pre )
+		return $pre;
 
 	// prevent non-existent options from triggering multiple queries
 	$notoptions = wp_cache_get('notoptions', 'options');
@@ -246,8 +218,8 @@ function get_option($setting) {
 	if ( 'home' == $setting && '' == $value )
 		return get_option('siteurl');
 
-	if ( 'siteurl' == $setting || 'home' == $setting || 'category_base' == $setting )
-		$value = preg_replace('|/+$|', '', $value);
+	if ( in_array($setting, array('siteurl', 'home', 'category_base', 'tag_base')) )
+		$value = untrailingslashit($value);
 
 	return apply_filters( 'option_' . $setting, maybe_unserialize($value) );
 }
@@ -310,6 +282,7 @@ function update_option($option_name, $newvalue) {
 	wp_protect_special_option($option_name);
 
 	$safe_option_name = $wpdb->escape($option_name);
+	$newvalue = sanitize_option($option_name, $newvalue);
 
 	if ( is_string($newvalue) )
 		$newvalue = trim($newvalue);
@@ -354,7 +327,7 @@ function update_option($option_name, $newvalue) {
 
 // thx Alex Stapleton, http://alex.vort-x.net/blog/
 // expects $name to NOT be SQL-escaped
-function add_option($name, $value = '', $description = '', $autoload = 'yes') {
+function add_option($name, $value = '', $deprecated = '', $autoload = 'yes') {
 	global $wpdb;
 
 	wp_protect_special_option($name);
@@ -386,8 +359,7 @@ function add_option($name, $value = '', $description = '', $autoload = 'yes') {
 
 	$name = $wpdb->escape($name);
 	$value = $wpdb->escape($value);
-	$description = $wpdb->escape($description);
-	$wpdb->query("INSERT INTO $wpdb->options (option_name, option_value, option_description, autoload) VALUES ('$name', '$value', '$description', '$autoload')");
+	$wpdb->query("INSERT INTO $wpdb->options (option_name, option_value, autoload) VALUES ('$name', '$value', '$autoload')");
 
 	return;
 }
@@ -424,10 +396,16 @@ function maybe_serialize($data) {
 }
 
 function gzip_compression() {
-	if ( !get_option('gzipcompression') ) return false;
+	if ( !get_option( 'gzipcompression' ) ) {
+		return false;
+	}
 
-	if ( extension_loaded('zlib') ) {
-		ob_start('ob_gzhandler');
+	if ( ( ini_get( 'zlib.output_compression' ) == 'On' || ini_get( 'zlib.output_compression_level' ) > 0 ) || ini_get( 'output_handler' ) == 'ob_gzhandler' ) {
+		return false;
+	}
+
+	if ( extension_loaded( 'zlib' ) ) {
+		ob_start( 'ob_gzhandler' );
 	}
 }
 
@@ -509,7 +487,7 @@ function do_enclose( $content, $post_ID ) {
 	global $wp_version, $wpdb;
 	include_once (ABSPATH . WPINC . '/class-IXR.php');
 
-	$log = debug_fopen(ABSPATH . '/enclosures.log', 'a');
+	$log = debug_fopen(ABSPATH . 'enclosures.log', 'a');
 	$post_links = array();
 	debug_fwrite($log, 'BEGIN '.date('YmdHis', time())."\n");
 
@@ -601,162 +579,8 @@ function is_new_day() {
 	}
 }
 
-function update_post_cache(&$posts) {
-	global $post_cache, $blog_id;
-
-	if ( !$posts )
-		return;
-
-	for ($i = 0; $i < count($posts); $i++) {
-		$post_cache[$blog_id][$posts[$i]->ID] = &$posts[$i];
-	}
-}
-
-function clean_post_cache($id) {
-	global $post_cache, $post_meta_cache, $category_cache, $blog_id;
-
-	if ( isset( $post_cache[$blog_id][$id] ) )
-		unset( $post_cache[$blog_id][$id] );
-
-	if ( isset ($post_meta_cache[$blog_id][$id] ) )
-		unset( $post_meta_cache[$blog_id][$id] );
-
-	if ( isset( $category_cache[$blog_id][$id]) )
-		unset ( $category_cache[$blog_id][$id] );
-}
-
-function update_page_cache(&$pages) {
-	global $page_cache, $blog_id;
-
-	if ( !$pages )
-		return;
-
-	for ($i = 0; $i < count($pages); $i++) {
-		$page_cache[$blog_id][$pages[$i]->ID] = &$pages[$i];
-		wp_cache_add($pages[$i]->ID, $pages[$i], 'pages');
-	}
-}
-
-function clean_page_cache($id) {
-	global $page_cache, $blog_id;
-
-	if ( isset( $page_cache[$blog_id][$id] ) )
-		unset( $page_cache[$blog_id][$id] );
-
-	wp_cache_delete($id, 'pages');
-	wp_cache_delete( 'all_page_ids', 'pages' );
-	wp_cache_delete( 'get_pages', 'page' );
-}
-
-function update_post_category_cache($post_ids) {
-	global $wpdb, $category_cache, $blog_id;
-
-	if ( empty($post_ids) )
-		return;
-
-	if ( is_array($post_ids) )
-		$post_id_list = implode(',', $post_ids);
-
-	$post_id_array = (array) explode(',', $post_ids);
-	$count = count( $post_id_array);
-	for ( $i = 0; $i < $count; $i++ ) {
-		$post_id = (int) $post_id_array[ $i ];
-		if ( isset( $category_cache[$blog_id][$post_id] ) ) {
-			unset( $post_id_array[ $i ] );
-			continue;
-		}
-	}
-	if ( count( $post_id_array ) == 0 )
-		return;
-	$post_id_list = join( ',', $post_id_array ); // with already cached stuff removed
-
-	$dogs = $wpdb->get_results("SELECT post_id, category_id FROM $wpdb->post2cat WHERE post_id IN ($post_id_list)");
-
-	if ( empty($dogs) )
-		return;
-
-	foreach ($dogs as $catt)
-		$category_cache[$blog_id][$catt->post_id][$catt->category_id] = &get_category($catt->category_id);
-}
-
-function update_post_caches(&$posts) {
-	global $post_cache, $category_cache, $post_meta_cache;
-	global $wpdb, $blog_id;
-
-	// No point in doing all this work if we didn't match any posts.
-	if ( !$posts )
-		return;
-
-	// Get the categories for all the posts
-	for ($i = 0; $i < count($posts); $i++) {
-		$post_id_array[] = $posts[$i]->ID;
-		$post_cache[$blog_id][$posts[$i]->ID] = &$posts[$i];
-	}
-
-	$post_id_list = implode(',', $post_id_array);
-
-	update_post_category_cache($post_id_list);
-
-	update_postmeta_cache($post_id_list);
-}
-
-function update_postmeta_cache($post_id_list = '') {
-	global $wpdb, $post_meta_cache, $blog_id;
-
-	// We should validate this comma-separated list for the upcoming SQL query
-	$post_id_list = preg_replace('|[^0-9,]|', '', $post_id_list);
-
-	if ( empty( $post_id_list ) )
-		return false;
-
-	// we're marking each post as having its meta cached (with no keys... empty array), to prevent posts with no meta keys from being queried again
-	// any posts that DO have keys will have this empty array overwritten with a proper array, down below
-	$post_id_array = (array) explode(',', $post_id_list);
-	$count = count( $post_id_array);
-	for ( $i = 0; $i < $count; $i++ ) {
-		$post_id = (int) $post_id_array[ $i ];
-		if ( isset( $post_meta_cache[$blog_id][$post_id] ) ) { // If the meta is already cached
-			unset( $post_id_array[ $i ] );
-			continue;
-		}
-		$post_meta_cache[$blog_id][$post_id] = array();
-	}
-	if ( count( $post_id_array ) == 0 )
-		return;
-	$post_id_list = join( ',', $post_id_array ); // with already cached stuff removeds
-
-	// Get post-meta info
-	if ( $meta_list = $wpdb->get_results("SELECT post_id, meta_key, meta_value FROM $wpdb->postmeta WHERE post_id IN($post_id_list) ORDER BY post_id, meta_key", ARRAY_A) ) {
-		// Change from flat structure to hierarchical:
-		if ( !isset($post_meta_cache) )
-			$post_meta_cache[$blog_id] = array();
-
-		foreach ($meta_list as $metarow) {
-			$mpid = (int) $metarow['post_id'];
-			$mkey = $metarow['meta_key'];
-			$mval = $metarow['meta_value'];
-
-			// Force subkeys to be array type:
-			if ( !isset($post_meta_cache[$blog_id][$mpid]) || !is_array($post_meta_cache[$blog_id][$mpid]) )
-				$post_meta_cache[$blog_id][$mpid] = array();
-			if ( !isset($post_meta_cache[$blog_id][$mpid]["$mkey"]) || !is_array($post_meta_cache[$blog_id][$mpid]["$mkey"]) )
-				$post_meta_cache[$blog_id][$mpid]["$mkey"] = array();
-
-			// Add a value to the current pid/key:
-			$post_meta_cache[$blog_id][$mpid][$mkey][] = $mval;
-		}
-	}
-}
-
-function update_category_cache() {
-	return true;
-}
-
-function clean_category_cache($id) {
-	wp_cache_delete($id, 'category');
-	wp_cache_delete('all_category_ids', 'category');
-	wp_cache_delete('get_categories', 'category');
-	delete_option('category_children');
+function build_query($data) {
+	return _http_build_query($data, NULL, '&', '', false);
 }
 
 /*
@@ -804,7 +628,7 @@ function add_query_arg() {
 			$base = $parts[0] . '?';
 			$query = $parts[1];
 		}
-	} elseif (!empty($protocol) || strpos($uri, '/') !== false) {
+	} elseif (!empty($protocol) || strpos($uri, '=') === false ) {
 		$base = $uri . '?';
 		$query = '';
 	} else {
@@ -813,7 +637,7 @@ function add_query_arg() {
 	}
 
 	wp_parse_str($query, $qs);
-	$qs = urlencode_deep($qs);
+	$qs = urlencode_deep($qs); // this re-URL-encodes things that were already in the query string
 	if ( is_array(func_get_arg(0)) ) {
 		$kayvees = func_get_arg(0);
 		$qs = array_merge($qs, $kayvees);
@@ -821,17 +645,14 @@ function add_query_arg() {
 		$qs[func_get_arg(0)] = func_get_arg(1);
 	}
 
-	foreach($qs as $k => $v) {
-		if ( $v !== FALSE ) {
-			if ( $ret != '' )
-				$ret .= '&';
-			if ( empty($v) && !preg_match('|[?&]' . preg_quote($k, '|') . '=|', $query) )
-				$ret .= $k;
-			else
-				$ret .= "$k=$v";
-		}
+	foreach ( $qs as $k => $v ) {
+		if ( $v === false )
+			unset($qs[$k]);
 	}
+
+	$ret = build_query($qs);
 	$ret = trim($ret, '?');
+	$ret = preg_replace('#=(&|$)#', '$1', $ret);
 	$ret = $protocol . $base . $ret . $frag;
 	$ret = rtrim($ret, '?');
 	return $ret;
@@ -910,25 +731,78 @@ function wp($query_vars = '') {
 	$wp->main($query_vars);
 }
 
+function get_status_header_desc( $code ) {
+	global $wp_header_to_desc;
+
+	$code = (int) $code;
+
+	if ( !isset($wp_header_to_desc) ) {
+		$wp_header_to_desc = array(
+			100 => 'Continue',
+			101 => 'Switching Protocols',
+
+			200 => 'OK',
+			201 => 'Created',
+			202 => 'Accepted',
+			203 => 'Non-Authoritative Information',
+			204 => 'No Content',
+			205 => 'Reset Content',
+			206 => 'Partial Content',
+
+			300 => 'Multiple Choices',
+			301 => 'Moved Permanently',
+			302 => 'Found',
+			303 => 'See Other',
+			304 => 'Not Modified',
+			305 => 'Use Proxy',
+			307 => 'Temporary Redirect',
+
+			400 => 'Bad Request',
+			401 => 'Unauthorized',
+			403 => 'Forbidden',
+			404 => 'Not Found',
+			405 => 'Method Not Allowed',
+			406 => 'Not Acceptable',
+			407 => 'Proxy Authentication Required',
+			408 => 'Request Timeout',
+			409 => 'Conflict',
+			410 => 'Gone',
+			411 => 'Length Required',
+			412 => 'Precondition Failed',
+			413 => 'Request Entity Too Large',
+			414 => 'Request-URI Too Long',
+			415 => 'Unsupported Media Type',
+			416 => 'Requested Range Not Satisfiable',
+			417 => 'Expectation Failed',
+
+			500 => 'Internal Server Error',
+			501 => 'Not Implemented',
+			502 => 'Bad Gateway',
+			503 => 'Service Unavailable',
+			504 => 'Gateway Timeout',
+			505 => 'HTTP Version Not Supported'
+		);
+	}
+
+	if ( isset( $wp_header_to_desc[$code] ) ) {
+		return $wp_header_to_desc[$code];
+	} else {
+		return '';
+	}
+}
+
 function status_header( $header ) {
-	if ( 200 == $header )
-		$text = 'OK';
-	elseif ( 301 == $header )
-		$text = 'Moved Permanently';
-	elseif ( 302 == $header )
-		$text = 'Moved Temporarily';
-	elseif ( 304 == $header )
-		$text = 'Not Modified';
-	elseif ( 404 == $header )
-		$text = 'Not Found';
-	elseif ( 410 == $header )
-		$text = 'Gone';
+	$text = get_status_header_desc( $header );
+
+	if ( empty( $text ) )
+		return false;
 
 	$protocol = $_SERVER["SERVER_PROTOCOL"];
 	if ( ('HTTP/1.1' != $protocol) && ('HTTP/1.0' != $protocol) )
 		$protocol = 'HTTP/1.0';
 	$status_header = "$protocol $header $text";
-	$status_header = apply_filters('status_header', $status_header, $header, $text, $protocol);
+	if ( function_exists('apply_filters') )
+		$status_header = apply_filters('status_header', $status_header, $header, $text, $protocol);
 
 	if ( version_compare( phpversion(), '4.3.0', '>=' ) ) {
 		return @header( $status_header, true, $header );
@@ -946,7 +820,7 @@ function nocache_headers() {
 
 function cache_javascript_headers() {
 	$expiresOffset = 864000; // 10 days
-	header("Content-type: text/javascript; charset=" . get_bloginfo('charset'));
+	header("Content-Type: text/javascript; charset=" . get_bloginfo('charset'));
 	header("Vary: Accept-Encoding"); // Handle proxies
 	header("Expires: " . gmdate("D, d M Y H:i:s", time() + $expiresOffset) . " GMT");
 }
@@ -956,9 +830,8 @@ function get_num_queries() {
 	return $wpdb->num_queries;
 }
 
-function bool_from_yn($yn) {
-		if ($yn == 'Y') return 1;
-		return 0;
+function bool_from_yn( $yn ) {
+	return ( strtolower( $yn ) == 'y' );
 }
 
 function do_feed() {
@@ -1001,7 +874,7 @@ function do_feed_atom($for_comments) {
 }
 
 function do_robots() {
-	header('Content-type: text/plain; charset=utf-8');
+	header('Content-Type: text/plain; charset=utf-8');
 
 	do_action('do_robotstxt');
 
@@ -1025,6 +898,7 @@ function is_blog_installed() {
 }
 
 function wp_nonce_url($actionurl, $action = -1) {
+	$actionurl = str_replace('&amp;', '&', $actionurl);
 	return wp_specialchars(add_query_arg('_wpnonce', wp_create_nonce($action), $actionurl));
 }
 
@@ -1213,7 +1087,16 @@ function wp_check_filetype($filename, $mimes = null) {
 		'tar' => 'application/x-tar',
 		'zip' => 'application/zip',
 		'gz|gzip' => 'application/x-gzip',
-		'exe' => 'application/x-msdownload'
+		'exe' => 'application/x-msdownload',
+		// openoffice formats
+		'odt' => 'application/vnd.oasis.opendocument.text',
+		'odp' => 'application/vnd.oasis.opendocument.presentation',
+		'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+		'odg' => 'application/vnd.oasis.opendocument.graphics',
+		'odc' => 'application/vnd.oasis.opendocument.chart',
+		'odb' => 'application/vnd.oasis.opendocument.database',
+		'odf' => 'application/vnd.oasis.opendocument.formula',
+
 	));
 
 	$type = false;
@@ -1348,18 +1231,28 @@ function wp_die( $message, $title = '' ) {
 		$message = "<p>$message</p>";
 	}
 
-	if (strpos($_SERVER['PHP_SELF'], 'wp-admin') !== false)
+	if ( defined('WP_SITEURL') && '' != WP_SITEURL ) 
+		$admin_dir = WP_SITEURL.'/wp-admin/'; 
+	elseif (function_exists('get_bloginfo') && '' != get_bloginfo('wpurl'))
+		$admin_dir = get_bloginfo('wpurl').'/wp-admin/'; 
+	elseif (strpos($_SERVER['PHP_SELF'], 'wp-admin') !== false)
 		$admin_dir = '';
 	else
 		$admin_dir = 'wp-admin/';
 
-	if ( !did_action('admin_head') ) :
-	header('Content-Type: text/html; charset=utf-8');
+	if ( !function_exists('did_action') || !did_action('admin_head') ) :
+	if( !headers_sent() ){
+		status_header(500);
+		nocache_headers();
+		header('Content-Type: text/html; charset=utf-8');
+	}
 
-	if ( empty($title) )
-		$title = __('WordPress &rsaquo; Error');
-
-
+	if ( empty($title) ){
+		if( function_exists('__') )
+			$title = __('WordPress &rsaquo; Error');
+		else
+			$title = 'WordPress &rsaquo; Error';
+	}
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -1367,10 +1260,10 @@ function wp_die( $message, $title = '' ) {
 <head>
 	<title><?php echo $title ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="stylesheet" href="<?php echo $admin_dir; ?>install.css" type="text/css" />
-<?php 
+	<link rel="stylesheet" href="<?php echo $admin_dir; ?>css/install.css" type="text/css" />
+<?php
 if ( ( $wp_locale ) && ('rtl' == $wp_locale->text_direction) ) : ?>
-	<link rel="stylesheet" href="<?php echo $admin_dir; ?>install-rtl.css" type="text/css" />
+	<link rel="stylesheet" href="<?php echo $admin_dir; ?>css/install-rtl.css" type="text/css" />
 <?php endif; ?>
 </head>
 <body>
@@ -1385,13 +1278,13 @@ if ( ( $wp_locale ) && ('rtl' == $wp_locale->text_direction) ) : ?>
 }
 
 function _config_wp_home($url = '') {
-	if ( defined( 'WP_HOME' ) ) 
+	if ( defined( 'WP_HOME' ) )
 		return WP_HOME;
 	else return $url;
 }
 
 function _config_wp_siteurl($url = '') {
-	if ( defined( 'WP_SITEURL' ) ) 
+	if ( defined( 'WP_SITEURL' ) )
 		return WP_SITEURL;
 	else return $url;
 }
@@ -1490,7 +1383,9 @@ function smilies_init() {
 }
 
 function wp_parse_args( $args, $defaults = '' ) {
-	if ( is_array( $args ) )
+	if ( is_object($args) )
+		$r = get_object_vars($args);
+	else if ( is_array( $args ) )
 		$r =& $args;
 	else
 		wp_parse_str( $args, $r );

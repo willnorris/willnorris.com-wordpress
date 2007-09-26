@@ -3,13 +3,13 @@
 <div class="content">
 
 	<div id="primary">
-		<div id="current-content">
-			<div id="primarycontent" class="hfeed">
+		<div id="notices"></div>
 
-				<?php include (TEMPLATEPATH . '/theloop.php'); ?>
-				<?php comments_template(); ?>
+		<div id="current-content" class="hfeed">
 
-			</div> <!-- #primarycontent .hfeed -->
+			<?php include (TEMPLATEPATH . '/theloop.php'); ?>
+  			<?php if (!defined('K2_NOT_FOUND')) { comments_template(); } ?>  
+
 		</div> <!-- #current-content -->
 
 		<div id="dynamic-content"></div>

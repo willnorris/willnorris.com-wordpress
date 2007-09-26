@@ -20,19 +20,18 @@ addLoadEvent(focusit);
 
 <div id="poststuff">
     <fieldset id="titlediv">
-      <legend><a href="http://wordpress.org/docs/reference/post/#title" title="<?php _e('Help on titles') ?>"><?php _e('Title') ?></a></legend> 
+      <legend><a href="http://wordpress.org/docs/reference/post/#title" title="<?php _e('Help on titles') ?>"><?php _e('Title') ?></a></legend>
 	  <div><input type="text" name="post_title" size="30" tabindex="1" value="<?php echo attribute_escape( $post->post_title ); ?>" id="title" /></div>
     </fieldset>
 
     <fieldset id="categorydiv">
-      <legend><a href="http://wordpress.org/docs/reference/post/#category" title="<?php _e('Help on categories') ?>"><?php _e('Categories') ?></a></legend> 
+      <legend><a href="http://wordpress.org/docs/reference/post/#category" title="<?php _e('Help on categories') ?>"><?php _e('Categories') ?></a></legend>
 	  <div><?php dropdown_categories($post->post_category); ?></div>
     </fieldset>
 
 <br />
 <fieldset id="postdiv">
     <legend><a href="http://wordpress.org/docs/reference/post/#post" title="<?php _e('Help with post field') ?>"><?php _e('Post') ?></a></legend>
-<?php the_quicktags(); ?>
 <?php
  $rows = get_option('default_post_edit_rows');
  if (($rows < 3) || ($rows > 100)) {

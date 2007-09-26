@@ -1,10 +1,12 @@
+/* @override http://localhost/wp-content/themes/kaytwo/style.css */
+
 /*
-Theme Name: K2
+Theme Name: K2.0
 Theme URI: http://getk2.com
-Description: Configure from the <a href="themes.php?page=k2-options">K2 Options Panel</a>. Visit the <a href="http://getk2.com/forum">support forums</a>, <a href="http://k2.stikipad.com/docs/show/">the wiki</a> or <a href="http://code.google.com/p/kaytwo/issues/list">the bug tracker</a>.</p><p><small>Developed by <a href="http://binarybonsai.com">Michael</a>, <a href="http://chrisjdavis.org">Chris</a>, <a href="http://zeo.unic.net.my">Zeo</a>, <a href="http://stevelam.org">Steve</a> and <a href="http://nybblelabs.org.uk">Ben</a>. Protected by <a href="http://www.opensource.org/licenses/gpl-license.php">GPL</a>.</small>
-Version: Beta Two
+Description: <strong><a href="themes.php?page=k2-options">Configure K2</a></strong> or visit the <a href="http://getk2.com/forum/">support forums</a>, <a href="http://k2.stikipad.com/">the wiki</a> or <a href="http://code.google.com/p/kaytwo/issues/list">the bug tracker</a>. K2 was developed by <a href="http://binarybonsai.com/">Michael</a>, <a href="http://chrisjdavis.org/">Chris</a>, <a href="http://zeo.unic.net.my/">Zeo</a>, <a href="http://stevelam.org/">Steve</a> and <a href="http://bensherratt.com/">Ben</a>, and is licenced under the <a href="http://www.opensource.org/licenses/gpl-license.php">GPL</a>.
+Version: Release Candidate 1
 Author: Various Artists
-Author URI: http://binarybonsai.com
+Author URI: http://getk2.com/
 
 CSS Documentation: http://k2.stikipad.com/docs/show/CSS+Overview
 */
@@ -35,7 +37,18 @@ body {
 	color: #444;
 	background: #EDEDED;
 	text-align: center;
-	margin: 0 0 30px;
+	}
+
+body.lang-ar,
+body.lang-fa,
+body.lang-he,
+body.lang-hi,
+body.lang-km,
+body.lang-ko,
+body.lang-ja,
+body.lang-th,
+body.lang-zh {
+	font-size: 75%; /* Resets 1em to 12px */
 	}
 
 #page {
@@ -44,12 +57,22 @@ body {
 	margin: 0 auto;
 	padding: 20px 0 10px;
 	position: relative;
-	width: 780px;
 	border: 1px solid #ddd;
 	border-top: none;
+	clear: both;
 	}
 
-* html #page { width: 770px } /* IE hack */
+.columns-one #page {
+	width: 560px;
+	}
+
+.columns-two #page {
+	width: 780px;
+	}
+
+.columns-three #page {
+	width: 950px;
+	}
 
 #header {
 	padding: 0;
@@ -59,20 +82,58 @@ body {
 	background: #3371A3;
 	}
 
+.content {
+	padding: 0 20px;
+	}
+
 #primary {
-	width: 500px;
+	position: relative;
 	float: left;
-	padding: 20px 0 10px;
-	margin: 0 10px 0 30px;
+	width: 500px;
+	padding: 10px;
+	}
+
+* html #primary {
 	display: inline;
 	}
 
+.columns-three #primary {
+	margin-left: 170px;
+	padding: 10px;
+	}
+
+.columns-one #sidebar-main,
+.columns-one #sidebar-alt {
+	width: 240px;
+	padding: 0 10px;
+	}
+
+.columns-one .secondary {
+	border-top: 1px solid #eee;
+	}
+
+.columns-two #sidebar-main,
+.columns-three #sidebar-main {
+	width: 200px;
+	padding: 10px 10px 0;
+	}
+
+.columns-two #sidebar-alt {
+	width: 200px;
+	padding: 0 10px;
+	}
+
+.columns-three #sidebar-alt {
+	width: 150px;
+	padding: 10px;
+	left: -740px;
+	margin-left: -170px;
+	}
+
 .secondary {
+	float: left;
 	font-size: 1em;
 	line-height: 1.5em;
-	padding: 10px 0;
-	margin: 0 0 20px 71%;
-	width: 26%;
 	color: #666;
 	position: relative;
 	}
@@ -123,15 +184,6 @@ ul.menu li.current_page_item a:hover {
 	text-decoration: none;
 	}
 
-.admintab {
-	position: absolute;
-	right: 0px;
-	}
-
-* html .admintab { padding: 5px 15px 6px }	/* IE hack */
-	
-a img,:link img,:visited img { border:none }
-
 /*- Sidebar Subpages Menu */
 
 .sb-pagemenu ul {
@@ -181,12 +233,30 @@ h1 a:hover {
 
 h2 { /* H2 is what kind of page you are on. Eg. 'Monthly Archive'. */
 	text-align: center;
-	font-size: 2.4em;
+	font-size: 2.5em;
 	font-weight: bold;
 	letter-spacing: -1px;
 	}
 
-.secondary h2 { /* Secondary H2 is sidebar headlines */
+#rollingarchives.emptypage {
+	display: none;
+	}
+
+.page-head {
+	margin: 20px 0;
+	}
+
+.archivepages {
+	color: #999;
+	display: block;
+	font-size: .45em;
+	font-weight: normal;
+	letter-spacing: 0;
+	text-transform: lowercase;
+	margin-top: 2px;
+	}
+
+.secondary h4 { /* Secondary H4 is sidebar headlines */
 	font-size: 1.5em !important;
 	font-weight: normal !important;
 	padding: 0 !important;
@@ -316,7 +386,6 @@ body.page .entry-edit {
 	border: none;
 	padding: 2px;
 	padding-left: 23px;
-	margin-left: 10px;
 	background: url('images/pencil.png') left center no-repeat;
 	height: 16px;
 	}
@@ -344,14 +413,15 @@ h4, h4 a, h4 a:hover, h4 a:visited {
 
 .entry-meta { /* Time and category for blog entries */
 	font-size: 1em;
+	line-height: 1.6em;
 	display: block;
 	margin-top: 1px;
 	color: #bbb;
 	}
 
-.entry-meta address {
-	display: inline;
-	font-style: normal;
+.entry-category {
+	text-transform: lowercase;
+	margin-right: 10px;
 	}
 
 .entry-meta a, .comment-meta a {
@@ -366,7 +436,7 @@ h4, h4 a, h4 a:hover, h4 a:visited {
 .commentslink {
 	padding: 2px 0 2px 20px;
 	background: url('images/comment.png') left center no-repeat;
-	margin-left: 10px;
+	margin-right: 10px;
 	}
 
 .quoter_comment {
@@ -379,6 +449,10 @@ h4, h4 a, h4 a:hover, h4 a:visited {
 	display: block;
 	padding: 2px 0 2px 20px;
 	background: url('images/tag_blue.png') left center no-repeat;
+	}
+
+.entry-tags a {
+	text-transform: lowercase;
 	}
 
 /*- Primary Contents */
@@ -410,6 +484,11 @@ h4, h4 a, h4 a:hover, h4 a:visited {
 .k2-asides .entry-content div,
 .k2-asides .entry-content blockquote {
 	margin: 5px 0;
+	}
+
+// Google Maps Support
+.entry-content .map div {
+	margin: 0;
 	}
 
 .single .k2-asides .entry-content p,
@@ -549,7 +628,7 @@ li.bypostauthor blockquote {
 	border: none;
 	}
 	
-#leavecomment, .comments #loading {
+#leavecomment, .comments #loading, #comments-closed-msg {
 	text-align: center;
 	margin: 30px 0 20px !important;
 	color: #ddd;
@@ -561,7 +640,12 @@ li.bypostauthor blockquote {
 	margin-top: 20px !important;
 	}
 
-.comments #error {
+#comments-closed-msg {
+	margin-bottom: 40px !important;
+	}
+
+.comments #commenterror {
+	display: none;
 	line-height: 2.0;
 	padding: 5px;
 	color: #FF0000;
@@ -569,9 +653,13 @@ li.bypostauthor blockquote {
 }
 
 .comments #commentload {
+	display: none;
 	padding-top: 3px;
 	float: right;
 	vertical-align: middle;
+	height: 18px;
+	width: 18px;
+	background: url('images/spinner.gif') center center no-repeat;
 }
 
 .comments form {
@@ -598,7 +686,6 @@ input[type=text]:focus, textarea:focus {
 	}
 
 .comments textarea {
-	height: 250px;
 	width: 100%;
 	margin: 10px 0;
 	}
@@ -609,8 +696,15 @@ input[type=text]:focus, textarea:focus {
 	}
 
 #footer {
-	margin-top: 20px;
+	clear: both;
+	margin: 0 auto;
+	padding: 20px 0 40px;
 	text-align: center;
+	color: #777;
+	}
+
+#footer p {
+	line-height: 1.6em;
 	}
 
 #footer a {
@@ -622,7 +716,7 @@ input[type=text]:focus, textarea:focus {
 #footer a:hover {
 	border: none;
 	text-decoration: none;
-	color: black;
+	color: #000;
 	}
 
 /*- Links */
@@ -653,17 +747,6 @@ a {
 	padding: 0;
 	}
 
-#primary .entry-content img {
-	margin: 0 5px;
-	padding: 4px;
-	border: 1px solid #ccc;
-	max-width: 100%;
-	}
-
-#primary table img {
-	max-width: none;
-	}
-
 .center {
 	text-align: center;
 	}
@@ -683,8 +766,8 @@ img.center, img[align="center"] {
 	}
 	
 img.alignright, img[align="right"] {
-	padding: 4px !important;
-	margin: 0 0 2px 7px !important;
+	padding: 4px;
+	margin: 0 0 2px 7px;
 	display: inline;
 	}
 
@@ -808,6 +891,14 @@ img.wp-smiley {
 	padding-left: 0;
 	}
 
+.secondary ul ul, .secondary ol ol {
+	margin: 0;
+	}
+       
+.secondary ul ul ul, .secondary ol ol ol {
+	margin: 0 0 0 10px;
+	}
+
 .secondary ol {
 	margin-left: 15px;
 	}
@@ -837,12 +928,11 @@ ol li {
 /*- Search Form and Livesearch */
 
 #searchform {
-	margin-top: 20px;
 	display: block;
 	position: relative;
 	}
 
-#search h2 {
+#search h4 {
 	display: none;
 	}
 
@@ -854,15 +944,16 @@ input[type=text], textarea {
 
 #s {
 	width: 79%;
+	font-size: 1.1em;
 	}
 
 #s.livesearch {
-	width: 89%;
+	width: 88%;
 	}
 
 #searchreset {
 	position: absolute;
-	right: 3px;
+	right: 0px;
 	top: 3px;
 	height: 13px;
 	width: 13px;
@@ -885,7 +976,7 @@ input[type=text], textarea {
 #searchcontrols {
 	text-align: center;
 	padding: 1px;
-	background: #ddd url('images/livesearchbgdark.jpg') center repeat-y;
+	background: #ddd;
 	}
 
 #searchcontrols small {
@@ -894,29 +985,50 @@ input[type=text], textarea {
 	}
 
 /*- Attachment */
+.entry-content .attachment { 
+	text-align: center; 
+	}
 
-.attachment {
-	text-align: center;
+/* CSS Beyond this point is for various supported plugins and not the 'core' K2 template */
+
+
+/*-
+	Links Module
+*/
+
+.sb-links h4 {
+	display: none;
+	}
+
+.linkcat h4 {
+	display: inline;
+	}
+
+.linkcat ul {
+	margin-top: 7px !important;
 	}
 
 
-/* CSS Beyond this point is for various supported plugins and not the 'core' K2 template */
 
 
 /*-
 	Brian's Latest Comments
 	http://meidell.dk/archives/2004/09/12/brians-latest-comments/
 */
+
+#brians-latest-comments ul li span a, #brians-latest-comments ul li small a,
 .sb-comments-blc ul li span a, .sb-comments-blc ul li small a {
 	color: #999;
 	font-weight: normal;
 	word-spacing: -1px;
 	}
 
+#brians-latest-comments ul li,
 .sb-comments-blc ul li {
 	margin-bottom: 6px;
 }
 
+#brians-latest-comments ul li > a[title="Go to the comments of this entry"],
 .sb-comments-blc ul li > a[title="Go to the comments of this entry"] {
 	position: absolute;
 	right:0;
@@ -939,39 +1051,45 @@ div#latest-comments small {
 	FlickrRSS
 */
 
+.sb-flickr div {
+	margin-top: 10px !important;
+	margin-left: ;
+	}
+
 .sb-flickr div img {
-	border: 0px;
 	padding: 5px;
 }
 
-.sb-flickr div a img {
-	border: 1px solid #ccc;
-	padding: 3px;
-	margin: 5px 3px 0;
-}
-
-.sb-flickr div a:hover img {
-	border: 1px solid #999;
-}
-
-/*-
-	WordPress: Touched
-	http://twilightuniverse.com/2005/03/wordpress-touched/
+.sb-flickr div a {
+	}
 	
-	No support for Touched 0.6 in the rest of K2.
-	Seems a bit flaky just now. Waiting for new version.
+.sb-flickr div a img {
+	margin: 0px 5px;
+}
+
+/*
+	Calendar Module
 */
 
-#poststuff fieldset {
-	border: none;
+#wp-calendar {
+	width: 100%;
 	}
 
-#poststuff #title, #poststuff #excerpt, #poststuff #tags {
-	width: 470px;
+#wp-calendar td {
+	text-align: center;
 	}
-	
-#poststuff #title {
-	font-size: 2em;
+
+#wp-calendar caption {
+	font-size: 1.2em;
+	padding: 5px;
+	}
+
+#wp-calendar #prev {
+	text-align: left;
+	}
+
+#wp-calendar #next {
+	text-align: right;
 	}
 
 /*
@@ -1016,6 +1134,7 @@ div#latest-comments small {
 	}
 
 /* Noteworthy */
+
 .category-noteworthy h3.entry-title {
 	background: url('images/heart.png') no-repeat right center;
 	padding-right: 25px;
@@ -1024,5 +1143,22 @@ div#latest-comments small {
 
 .noteworthyLink { margin-left: 5px }
 
-/* Peace and forgiveness */
+
+/* Tag Cloud Module */
+
+.sb-wptagcloud ul {
+	line-height: 2em;
+	text-align: justify;
+	}
+
+.sb-wptagcloud li {
+	display: inline;
+	}
+
+.sb-wptagcloud a {
+	padding: 0 2px;
+	white-space: nowrap;
+	text-transform: lowercase;
+	}
+
 /* Learn more about the other K2: http://en.wikipedia.org/wiki/K2 */

@@ -1,81 +1,52 @@
 <?php
 
-// The registered sidebars
-$k2sbm_registered_sidebars = array();
+if(K2_USING_SBM) {
+	define('SBM_VERSION', '1.0.0');
 
-// The active modules
-$k2sbm_active_modules = array();
+	// The registered sidebars
+	$k2sbm_registered_sidebars = array();
 
-// The disabled modules
-$k2sbm_disabled_modules = array();
+	// The active modules
+	$k2sbm_active_modules = array();
 
-// The registered sidebar modules
-$k2sbm_registered_modules = array();
+	// The disabled modules
+	$k2sbm_disabled_modules = array();
 
-// The module currently being manipulated
-$k2sbm_current_module = false;
+	// The registered sidebar modules
+	$k2sbm_registered_modules = array();
 
-// Error text for XML
-$k2sbm_error_text = '';
+	// The module currently being manipulated
+	$k2sbm_current_module = false;
 
+	// Error text for XML
+	$k2sbm_error_text = '';
+
+	// Counter for semantic classes
+	$k2sbm_module_index = 0;
+}
 
 class K2SBM {
 	function install() {
-		$sbm_stub_path = '../themes/'.get_option('template').'/app/includes/sbm-stub.php';
-
 		add_option('k2sbm_modules_active', array(), 'The active sidebar modules.');
 		add_option('k2sbm_modules_disabled', array(), 'The disabled sidebar modules.');
 		add_option('k2sbm_modules_next_id', 1, 'The ID for the next sidebar module.');
-		add_option('k2sbm_stub_path', $sbm_stub_path, 'The location of sbm-stub.php');
-
-		// Activate sbm-stub
-		K2SBM::process_stub($sbm_stub_path);
 	}
 
-	function init() {
-		// Check to see if sbm-stub needs to be activated
-		$sbm_stub_path = '../themes/'.get_option('template').'/app/includes/sbm-stub.php';
-
-		if (get_option('k2sbm_stub_path') != $sbm_stub_path) {
-			K2SBM::process_stub($sbm_stub_path);
-		}
-	}
-
-	function process_stub($sbm_stub_path = false) {
-		$plugins = (array) get_option('active_plugins');
-
+	function uninstall() {
 		// Remove all existing sbm-stub paths
+		$plugins = (array) get_option('active_plugins');
 		for ($i = 0; $i < count($plugins); $i++) {
 			if (strpos($plugins[$i], 'sbm-stub.php') !== false) {
 				unset($plugins[$i]);
 			}
 		}
-
-		// Insert the new sbm-stub path
-		if (!empty($sbm_stub_path)) {
-			if (count($plugins) == 0) {
-				$plugins = array($sbm_stub_path);
-			} else {
-				$plugins[] = $sbm_stub_path;
-			}
-			update_option('k2sbm_stub_path', $sbm_stub_path);
-		}
-
 		update_option('active_plugins', $plugins);
 	}
 
-	function uninstall() {
-		delete_option('k2sbm_modules_active');
-		delete_option('k2sbm_modules_disabled');
-		delete_option('k2sbm_modules_next_id');
-		delete_option('k2sbm_stub_path');
-
-		// Remove sbm-stub
-		K2SBM::process_stub();
-	}
-
-	function wp_bootstrap() {
+	function init() {
 		global $k2sbm_active_modules;
+
+		add_action('admin_menu', array('K2SBM', 'add_menus'));
 
 		K2SBM::pre_bootstrap();
 
@@ -89,75 +60,46 @@ class K2SBM {
 	}
 
 	function direct_bootstrap() {
-		global $k2sbm_registered_modules, $k2sbm_registered_sidebars, $k2sbm_disabled_modules, $k2sbm_error_text;
+		global $k2sbm_registered_modules, $k2sbm_registered_sidebars, $k2sbm_active_modules, $k2sbm_disabled_modules, $k2sbm_error_text;
 
 		// You MUST be an admin to access this stuff
 		auth_redirect();
 
 		K2SBM::pre_bootstrap();
-		//K2SBM::post_bootstrap();
 
 		// Check for specific actions that return a HTML response
-		if($_GET['action'] == 'control-show') {
+		if($_POST['action'] == 'control-show') {
 			if(isset($_POST['module_id'])) {
 				$all_modules = K2SBM::get_all_modules();
 				$all_modules[$_POST['module_id']]->displayControl();
 			} else {
 				echo(false);
 			}
-		} elseif($_GET['action'] == 'control-post-list-show') {
+		} elseif($_POST['action'] == 'control-post-list-show') {
 			if(isset($_POST['module_id'])) {
 				$all_modules = K2SBM::get_all_modules();
 				$all_modules[$_POST['module_id']]->displayPostList();
 			} else {
 				echo(false);
 			}
-		} elseif($_GET['action'] == 'control-page-list-show') {
+		} elseif($_POST['action'] == 'control-page-list-show') {
 			if(isset($_POST['module_id'])) {
 				$all_modules = K2SBM::get_all_modules();
 				$all_modules[$_POST['module_id']]->displayPageList();
 			} else {
 				echo(false);
 			}
+		} elseif($_POST['action'] == 'backup') {
+			header('Content-Description: File Transfer');
+			header('Content-Disposition: attachment; filename=sbm-' . date('Y-m-d') . '.dat');
+			header('Content-Type: text/plain; charset=' . get_option('blog_charset'), true);
+			echo(serialize(array('sbm_version' => SBM_VERSION, 'active_modules' => $k2sbm_active_modules, 'disabled_modules' => $k2sbm_disabled_modules, 'id' => get_option('k2sbm_modules_next_id'))));
 		} else {
 			// Set the output type
-			header('Content-type: text/xml');
-
-			// XML prelude
-			echo('<?xml version="1.0" encoding="UTF-8"?>');
-
-			// Begin the response
-			echo('<response>');
+			header('Content-type: text/plain; charset: UTF-8');
 
 			// Check what the action is
-			switch($_GET['action']) {
-				// List of the modules in the sidebar
-				case 'list':
-					foreach($k2sbm_registered_sidebars as $sidebar) {
-						$tmp_modules[] = $sidebar->modules;
-					}
-
-					$tmp_modules[] = $k2sbm_disabled_modules;
-
-					if($tmp_modules) {
-						// Output the modules
-						foreach($tmp_modules as $modules) {
-							echo('<modules>');
-
-							if($modules) {
-								foreach($modules as $module) {
-									// With a little help from PHP.net - Woo!
-									echo('<module id="' . $module->id . '">' . preg_replace('/([^\x09\x0A\x0D\x20-\x7F]|[\x21-\x2F]|[\x3A-\x40]|[\x5B-\x60])/e', '"&#".ord("$0").";"', utf8_decode($module->name)) . '</module>'); 
-
-								}
-							}
-
-							echo('</modules>');
-						}
-					}
-
-					break;
-
+			switch($_POST['action']) {
 				// Add a module to the sidebar
 				case 'add':
 					// Check the title was correct
@@ -205,15 +147,17 @@ class K2SBM {
 					break;
 			}
 
+			// Begin the JSON response
+			echo('{result: ');
+
 			if($k2sbm_error_text != null) {
-				echo('<error>' . $k2sbm_error_text . '</error>');
-				echo(false);
+				echo('false, error: "' . $k2sbm_error_text . '"');
 			} else {
-				echo(true);
+				echo('true');
 			}
 
 			// End the response
-			echo('</response>');
+			echo('}');
 
 			// Safeguard
 			wp_cache_flush();
@@ -235,48 +179,131 @@ class K2SBM {
 		do_action('widgets_init');
 	}
 
-	function k2_init() {
-		// Add menus
-		add_action('admin_menu', array('K2SBM', 'add_menus'));
-
-		// Check if this page is the one being shown, if so then add stuff to the header
-		if($_GET['page'] == 'k2-sbm-modules') {
-			wp_enqueue_script('k2sbm');
-			add_action('admin_head', array('K2SBM', 'module_admin_head'));
-		}
-	}
-
 	function add_menus() {
 		// Add the submenus
-		add_submenu_page('themes.php', __('K2 Sidebar Modules', 'k2_domain'), __('K2 Sidebar Modules', 'k2_domain'), 5, 'k2-sbm-modules', array('K2SBM', 'module_admin'));
+		$page = add_theme_page(__('K2 Sidebar Manager','k2_domain'), __('K2 Sidebar Manager','k2_domain'), 'edit_themes', 'k2-sbm-manager', array('K2SBM', 'module_admin'));
+
+		add_action("admin_head-$page", array('K2SBM', 'module_admin_head'));
+
+		if(!isset($_GET['subpage'])) {
+			add_action("admin_print_scripts-$page", array('K2SBM', 'module_admin_scripts'));
+		}
 	}
 
 	function module_admin() {
-		global $k2sbm_registered_sidebars, $k2sbm_registered_modules;
+		global $k2sbm_registered_sidebars, $k2sbm_registered_modules, $k2sbm_active_modules, $k2sbm_disabled_modules;
 
-		if(count($k2sbm_registered_sidebars) == 0) {
-		?>
-			<div class="wrap">You have no registered sidebars.</div>
-		<?php
-		} elseif(count($k2sbm_registered_modules) == 0) {
-		?>
-			<div class="wrap">You have no modules or Widgets installed &amp; activated.</div>
-		<?php
-		} else {
-			include(TEMPLATEPATH . '/app/display/modules.php');
+		switch($_GET['subpage']) {
+		case 'backup':
+			$restored = false;
+			$error = false;
+
+			if($_POST['action'] == 'restore' && $_FILES['backup']['error'] == 0) {
+				$data = (array)unserialize(file_get_contents($_FILES['backup']['tmp_name']));
+
+				if(isset($data['sbm_version']) && version_compare($data['sbm_version'], SBM_VERSION) <= 0) {
+					$k2sbm_active_modules = $data['active_modules'];
+					$k2sbm_disabled_modules = $data['disabled_modules'];
+					update_option('k2sbm_modules_next_id', $data['id']);
+
+					K2SBM::save_modules();
+					$restored = true;
+				} else {
+					$error = true;
+				}
+			}
+
+			extract(array('restored' => $restored, 'error' => $error));
+			include(TEMPLATEPATH . '/app/display/sbm/backup.php');
+
+			break;
+
+		default:
+			if(count($k2sbm_registered_sidebars) == 0) {
+			?>
+				<div class="wrap">You have no registered sidebars.</div>
+			<?php
+			} elseif(count($k2sbm_registered_modules) == 0) {
+			?>
+				<div class="wrap">You have no modules or Widgets installed &amp; activated.</div>
+			<?php
+			} else {
+				include(TEMPLATEPATH . '/app/display/sbm/modules.php');
+			}
+
+			break;
 		}
 	}
 
-	function module_admin_head() {
-	?>
-		<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_directory'); ?>/css/sbm.css" />
+	function module_admin_scripts() {
+		// Load updated versions of bundled scripts
+		K2::load_updated_scripts();
 
-		<script type="text/javascript">
-			//<![CDATA[
-				var sbm_baseUrl = <?php k2info('js_url'); ?> + '/app/includes/sbm-ajax.php';
-			//]]>
-		</script>
-	<?php
+		// Add our script to the queue
+		wp_enqueue_script('k2sbm');
+	}
+
+	function module_admin_head() {
+		?>
+		<style type="text/css">
+			#submenu .current {
+				background: #000000;
+				border-right: none;
+				border-top: none;
+				color: #ffffff;
+			}
+
+			#subsubmenu {
+				background: #000000;
+				border-bottom: none;
+				margin: 0;
+				padding: 3px 2em 0 4em;
+			}
+
+			#subsubmenu li {
+				display: inline;
+				line-height: 200%;
+				list-style: none;
+				text-align: center;
+			}
+
+			#subsubmenu .current {
+				background: #ffffff;
+				color: #000000;
+				font-weight: bold;
+				text-decoration: none;
+			}
+
+			#subsubmenu a {
+				border: none;
+				color: #ffffff;
+				font-size: 10px;
+				padding: .3em .4em .4em;
+			}
+
+			#subsubmenu a:hover {
+				background: #ddeaf4;
+				color: #393939;
+			}
+
+			#subsubmenu li {
+				line-height: 170%;
+				height: 25px;
+			}
+		</style>
+		<?php
+
+		if(!isset($_GET['subpage'])) {
+		?>
+			<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/css/sbm.css" />
+
+			<script type="text/javascript">
+				//<![CDATA[
+					jQuery(document).ready(function(){ sbm_load(<?php echo(get_option('k2sbm_modules_next_id')); ?>, "<?php output_javascript_url('app/includes/sbm-direct.php'); ?>"); });
+				//]]>
+			</script>
+		<?php
+		}
 	}
 
 	function set_error_text($text) {
@@ -324,6 +351,12 @@ class K2SBM {
 		return $k2sbm_registered_sidebars;
 	}
 
+	function get_disabled() {
+		global $k2sbm_disabled_modules;
+
+		return $k2sbm_disabled_modules;
+	}
+
 	function register_sidebars($count = 1, $args = array()) {
 		// Apparently, WPW lets you pass arguments as a string
 		if(is_string($args)) {
@@ -368,13 +401,15 @@ class K2SBM {
 		return $return;
 	}
 
-
 	function load_modules() {
 		global $k2sbm_active_modules, $k2sbm_disabled_modules;
 
 		if(empty($k2sbm_active_modules) and empty($k2sbm_disabled_modules)) {
 			$k2sbm_active_modules = get_option('k2sbm_modules_active');
 			$k2sbm_disabled_modules = get_option('k2sbm_modules_disabled');
+
+			if ( empty($k2sbm_active_modules) ) $k2sbm_active_modules = array();
+			if ( empty($k2sbm_disabled_modules) ) $k2sbm_disabled_modules = array();
 		}
 	}
 
@@ -508,6 +543,14 @@ class K2SBM {
 		$dir->close();
 	}
 
+	function get_active_modules($sidebar) {
+		foreach($k2sbm_registered_sidebars as $sidebar) {
+			$tmp_modules[] = $sidebar->modules;
+		}
+
+		return $active_modules;
+	}
+
 	function get_all_modules() {
 		global $k2sbm_active_modules, $k2sbm_disabled_modules;
 
@@ -543,8 +586,12 @@ class K2SBM {
 			// Create the ID for the module
 			// Quick & cheap
 			$next_id = get_option('k2sbm_modules_next_id');
+
+			// Make sure it's at least 1
+			if ( $next_id < 1 ) $next_id = 1;
+
 			$module_id = 'module-' . $next_id;
-			update_option('k2sbm_modules_next_id', ++$next_id);
+			update_option('k2sbm_modules_next_id', (++$next_id));
 
 			// Create the new module
 			$new_module = new k2sbmModule($module_id, $name, $type, $base_module['options']);
@@ -661,203 +708,208 @@ class K2SBM {
 	}
 }
 
-class k2sbmSidebar {
-	var $id;
-	var $name;
-	var $before_module;
-	var $after_module;
-	var $before_title;
-	var $after_title;
+if(K2_USING_SBM) {
+	class k2sbmSidebar {
+		var $id;
+		var $name;
+		var $before_module;
+		var $after_module;
+		var $before_title;
+		var $after_title;
 
-	var $modules;
+		var $modules;
 
-	function k2sbmSidebar($name, $before_module, $after_module, $before_title, $after_title) {
-		global $k2sbm_active_modules;
+		function k2sbmSidebar($name, $before_module, $after_module, $before_title, $after_title) {
+			global $k2sbm_active_modules;
 
-		// Set the generic data from the parameters
-		$this->id = K2SBM::name_to_id($name);
-		$this->name = $name;
-		$this->before_module = $before_module;
-		$this->after_module = $after_module;
-		$this->before_title = $before_title;
-		$this->after_title = $after_title;
+			// Set the generic data from the parameters
+			$this->id = K2SBM::name_to_id($name);
+			$this->name = $name;
+			$this->before_module = $before_module;
+			$this->after_module = $after_module;
+			$this->before_title = $before_title;
+			$this->after_title = $after_title;
 
-		$this->modules = array();
+			$this->modules = array();
 
-		// Load the modules
-		if($k2sbm_active_modules[$this->id]) {
-			foreach($k2sbm_active_modules[$this->id] as $module_id => $module) {
-				$this->modules[$module_id] = $module;
+			// Load the modules
+			if($k2sbm_active_modules[$this->id]) {
+				foreach($k2sbm_active_modules[$this->id] as $module_id => $module) {
+					$this->modules[$module_id] = $module;
+				}
+			}
+		}
+
+		function display() {
+			global $k2sbm_module_index;
+
+			// Reset the counter
+			$k2sbm_module_index = 1;
+
+			// Check there are some modules present
+			if(count($this->modules) > 0) {
+				$return = false;
+
+				// Output the modules
+				foreach($this->modules as $module) {
+					$return |= $module->display($this);
+				}
+
+				return $return;
+			} else {
+				return false;
 			}
 		}
 	}
 
-	function display() {
-		// Check there are some modules present
-		if(count($this->modules) > 0) {
-			$return = false;
+	class k2sbmModule {
+		var $id;
+		var $name;
+		var $type;
 
-			// Output the modules
-			foreach($this->modules as $module) {
-				$return |= $module->display($this);
+		var $display;
+		var $output;
+		var $options;
+
+		function k2sbmModule($id, $name, $type, $options) {
+			// Set the generic data from the parameters
+			$this->id = $id;
+			$this->name = $name;
+			$this->type = $type;
+
+			$this->display = array(
+				'home' => true,
+				'archives' => true,
+				'post' => true,
+				'post_id' => array('show' => 'show', 'ids' => false),
+				'search' => true,
+				'pages' => true,
+				'page_id' => array('show' => 'show', 'ids' => false),
+				'error' => true
+			);
+			$this->output = array('show_title' => true, 'css_file' => false);
+			$this->options = $options;
+		}
+
+		function display($sidebar) {
+			global $k2sbm_registered_modules, $k2sbm_current_module, $k2sbm_module_index;
+			static $k2sbm_count_id;
+
+			// Get the base module details
+			$base_module = $k2sbm_registered_modules[$this->type];
+
+			// Check that the function exists & that this module is to be displayed
+			if(function_exists($base_module['callback'])) {
+				if($this->canDisplay()) {
+					$k2sbm_current_module = $this;
+					$id = K2SBM::name_to_id($this->name);
+
+					$k2sbm_count_id[$id]++;
+
+					$id = $id . ($k2sbm_count_id[$id] > 1 ? '-' . $k2sbm_count_id[$id] : '');
+
+					if(strstr($id, '%') !== false) {
+						$id = str_replace('%', '-', $id);
+					}
+
+					if(preg_match('/[0-9\-]/', ($first_char = $id[0]))) {
+						$id = 'module' . ($first_char != '-' ? '-' : '') . $id;
+					}
+
+					// Call the display callback
+					$params[0] = array(
+						'before_module' => sprintf($sidebar->before_module, $id, $this->css_class($k2sbm_module_index++, $base_module['css_class'])),
+						'after_module' => $sidebar->after_module
+					);
+
+					// Allow the user to hide the title, simplest method is to unset the title elements
+					if($this->output['show_title']) {
+						$params[0]['before_title'] = $sidebar->before_title;
+						$params[0]['title'] = $this->name;
+						$params[0]['after_title'] = $sidebar->after_title;
+					} else {
+						$params[0]['before_title'] = '';
+						$params[0]['title'] = '';
+						$params[0]['after_title'] = '';
+					}
+
+					$params[0]['before_widget'] = $params[0]['before_module'];
+					$params[0]['after_widget'] = $params[0]['after_module'];
+					call_user_func_array($base_module['callback'], $params);
+
+					// Update options in any PHP < 5
+					if(version_compare(PHP_VERSION, '5.0') < 0) {
+						foreach($k2sbm_current_module->options as $key => $value) {
+							$this->update_option($key, $value);
+						}
+					}
+
+					$k2sbm_current_module = false;
+
+					return true;
+				}
+			} else {
+				// Remove this module - it dosn't exist properly
+				K2SBM::remove_module($sidebar->id, $this->id);
 			}
 
-			return $return;
-		} else {
 			return false;
 		}
-	}
-}
 
-class k2sbmModule {
-	var $id;
-	var $name;
-	var $type;
+		function displayControl() {
+			global $k2sbm_registered_modules, $k2sbm_current_module;
 
-	var $display;
-	var $output;
-	var $options;
+			// Handle the module name form
+			if(isset($_POST['module_name']) and trim((string)$_POST['module_name']) != '') {
+				$this->name = stripslashes((string)$_POST['module_name']);
+			} else {
+				K2SBM::set_error_text(__('You must specify a valid module name', 'k2_domain'));
+			}
 
-	function k2sbmModule($id, $name, $type, $options) {
-		// Set the generic data from the parameters
-		$this->id = $id;
-		$this->name = $name;
-		$this->type = $type;
-
-		$this->display = array(
-			'home' => true,
-			'archives' => true,
-			'post' => true,
-			'post_id' => array('show' => 'show', 'ids' => false),
-			'search' => true,
-			'pages' => true,
-			'page_id' => array('show' => 'show', 'ids' => false),
-			'error' => true
-		);
-		$this->output = array('show_title' => true, 'css_file' => false);
-		$this->options = $options;
-	}
-
-	function display($sidebar) {
-		global $k2sbm_registered_modules, $k2sbm_current_module, $post;
-		static $k2sbm_count_id;
-
-		// Get the base module details
-		$base_module = $k2sbm_registered_modules[$this->type];
-
-		// Check that the function exists & that this module is to be displayed
-		if(function_exists($base_module['callback'])) {
-			if($this->canDisplay()) {
-				$k2sbm_current_module = $this;
-				$id = K2SBM::name_to_id($this->name);
-
-				$k2sbm_count_id[$id]++;
-
-				$id = $id . ($k2sbm_count_id[$id] > 1 ? '-' . $k2sbm_count_id[$id] : '');
-
-				// Call the display callback
-				$params[0] = array(
-					'before_module' => sprintf($sidebar->before_module, $id, $base_module['css_class']),
-					'after_module' => $sidebar->after_module
-				);
-
-				// Allow the user to hide the title, simplest method is to unset the title elements
-				if($this->output['show_title']) {
-					$params[0]['before_title'] = $sidebar->before_title;
-					$params[0]['title'] = $this->name;
-					$params[0]['after_title'] = $sidebar->after_title;
-				} else {
-					$params[0]['before_title'] = '';
-					$params[0]['title'] = '';
-					$params[0]['after_title'] = '';
+			// Handle the advanced output options form
+			if(isset($_POST['output'])) {
+				// Don't set anything...
+				foreach($this->output as $key => $value) {
+					$this->output[$key] = false;
 				}
 
-				$params[0]['before_widget'] = $params[0]['before_module'];
-				$params[0]['after_widget'] = $params[0]['after_module'];
-				call_user_func_array($base_module['callback'], $params);
+				// ...unless given
+				foreach($_POST['output'] as $key => $value) {
+					$this->output[$key] = $value;
+				}
+			}
 
-				// Update options in any PHP < 5
-				if(version_compare(PHP_VERSION, '5.0') < 0) {
-					foreach($k2sbm_current_module->options as $key => $value) {
-						$this->update_option($key, $value);
-					}
+			// Handle the module display form
+			if(isset($_POST['display'])) {
+				// Store the page and post IDs, AJAX mess
+				$old_post_id = $this->display['post_id'];
+				$old_page_id = $this->display['page_id'];
+
+				// Don't display anything...
+				foreach($this->display as $page => $display) {
+					$this->display[$page] = false;
 				}
 
-				$k2sbm_current_module = false;
+				// ...unless specified
+				foreach($_POST['display'] as $page => $display) {
+					$this->display[$page] = $display;
+				}
 
-				return true;
-			}
-		} else {
-			// Remove this module - it dosn't exist properly
-			K2SBM::remove_module($sidebar->id, $this->id);
-		}
+				// Add the exceptional circumstances, if required
+				if(!isset($_POST['display']['post_id'])) {
+					$this->display['post_id'] = $old_post_id;
+				}
 
-		return false;
-	}
-
-	function displayControl() {
-		global $k2sbm_registered_modules, $k2sbm_current_module;
-
-		// Handle default control stuff
-
-		// Handle the module name form
-		if(isset($_POST['module_name']) and trim((string)$_POST['module_name']) != '') {
-			$this->name = stripslashes((string)$_POST['module_name']);
-		} else {
-			K2SBM::set_error_text(__('You must specify a valid module name', 'k2_domain'));
-		}
-
-		// Handle the advanced output options form
-		if(isset($_POST['output'])) {
-			// Don't set anything...
-			foreach($this->output as $key => $value) {
-				$this->output[$key] = false;
+				if(!isset($_POST['display']['page_id'])) {
+					$this->display['page_id'] = $old_page_id;
+				}
 			}
 
-			// ...unless given
-			foreach($_POST['output'] as $key => $value) {
-				$this->output[$key] = $value;
-			}
-		}
-
-		// Handle the module display form
-		if(isset($_POST['display'])) {
-			// Store the page and post IDs, AJAX mess
-			$old_post_id = $this->display['post_id'];
-			$old_page_id = $this->display['page_id'];
-
-			// Don't display anything...
-			foreach($this->display as $page => $display) {
-				$this->display[$page] = false;
-			}
-
-			// ...unless specified
-			foreach($_POST['display'] as $page => $display) {
-				$this->display[$page] = $display;
-			}
-
-			// Add the exceptional circumstances, if required
-			if(!isset($_POST['display']['post_id'])) {
-				$this->display['post_id'] = $old_post_id;
-			}
-
-			if(!isset($_POST['display']['page_id'])) {
-				$this->display['page_id'] = $old_page_id;
-			}
-		}
-
-		// Display the generic edit form
-		extract(array('module' => $this));
-		include(TEMPLATEPATH . '/app/display/sbm-ajax/edit-module-form.php');
-
-		// Get the base module details
-		$base_module = $k2sbm_registered_modules[$this->type];
-
-		if(function_exists($base_module['control_callback'])) {
 			$k2sbm_current_module = $this;
 
-			// Call the control callback
-			call_user_func($base_module['control_callback']);
+			// Display the generic edit form
+			extract(array('module' => $this));
+			include(TEMPLATEPATH . '/app/display/sbm/edit-module-form.php');
 
 			// Update options in any PHP < 5
 			if(version_compare(PHP_VERSION, '5.0') < 0) {
@@ -868,65 +920,82 @@ class k2sbmModule {
 
 			$k2sbm_current_module = false;
 
-			return true;
-		} else {
-			return false;
+			// Get the base module details
+			$base_module = $k2sbm_registered_modules[$this->type];
+
+			if(function_exists($base_module['control_callback'])) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		function displayPostList() {
+			// Display the generic post list
+			extract(array('module' => $this));
+			include(TEMPLATEPATH . '/app/display/sbm/edit-module-posts-form.php');
+		}
+
+		function displayPageList() {
+			// Display the generic post list
+			extract(array('module' => $this));
+			include(TEMPLATEPATH . '/app/display/sbm/edit-module-pages-form.php');
+		}
+
+		function canDisplay() {
+			global $post;
+
+			return ($this->display['home'] and is_home())
+				or ($this->display['archives'] and (is_archive() or (function_exists('is_tag') and is_tag())))
+				or ($this->display['post'] and is_single() and (
+					   !$this->display['post_id']['ids']
+					or ($this->display['post_id']['show'] == 'show' and $this->display['post_id']['ids'][$post->ID])
+					or ($this->display['post_id']['show'] == 'hide' and !$this->display['post_id']['ids'][$post->ID]))
+				)
+				or ($this->display['search'] and is_search())
+				or ($this->display['pages'] and is_page() and (
+					   !$this->display['page_id']['ids']
+					or ($this->display['page_id']['show'] == 'show' and $this->display['page_id']['ids'][$post->ID])
+					or ($this->display['page_id']['show'] == 'hide' and !$this->display['page_id']['ids'][$post->ID]))
+				)
+				or ($this->display['error'] and (is_404() or !($post or have_posts()))
+			);
+		}
+
+		function get_options() {
+			return $this->options;
+		}
+
+		function get_option($name) {
+			return $this->options[$name];
+		}
+
+		function add_option($name, $value = '') {
+			$this->options[$name] = $value;
+		}
+
+		function update_option($name, $newvalue) {
+			$this->options[$name] = $newvalue;
+		}
+
+		function delete_option($name) {
+			unset($this->options[$name]);
+		}
+
+		function css_class($module_count, $module_class) {
+			$c = array('module', "module$module_count", $module_class);
+
+			if ( $module_count & 1 == 1 ) {
+				$c[] = 'alt';
+			}
+
+			return join(' ', apply_filters('module_class', $c));
 		}
 	}
 
-	function displayPostList() {
-		// Display the generic post list
-		extract(array('module' => $this));
-		include(TEMPLATEPATH . '/app/display/sbm-ajax/edit-module-posts-form.php');
-	?>
-		
-	<?php
-	}
-
-	function displayPageList() {
-		// Display the generic post list
-		extract(array('module' => $this));
-		include(TEMPLATEPATH . '/app/display/sbm-ajax/edit-module-pages-form.php');
-	}
-
-	function canDisplay() {
-		global $post;
-
-		return ($this->display['home'] and is_home())
-			or ($this->display['archives'] and (is_archive() or (function_exists('is_tag') and is_tag())))
-			or ($this->display['post'] and is_single() and (
-				   !$this->display['post_id']['ids']
-				or ($this->display['post_id']['show'] == 'show' and $this->display['post_id']['ids'][$post->ID])
-				or ($this->display['post_id']['show'] == 'hide' and !$this->display['post_id']['ids'][$post->ID]))
-			)
-			or ($this->display['search'] and is_search())
-			or ($this->display['pages'] and is_page() and (
-				   !$this->display['page_id']['ids']
-				or ($this->display['page_id']['show'] == 'show' and $this->display['page_id']['ids'][$post->ID])
-				or ($this->display['page_id']['show'] == 'hide' and !$this->display['page_id']['ids'][$post->ID]))
-			)
-			or ($this->display['error'] and (is_404() or !($post or have_posts()))
-		);
-	}
-
-	function get_option($name) {
-		return $this->options[$name];
-	}
-
-	function add_option($name, $value = '') {
-		$this->options[$name] = $value;
-	}
-
-	function update_option($name, $newvalue) {
-		$this->options[$name] = $newvalue;
-	}
-
-	function delete_option($name) {
-		unset($this->options[$name]);
-	}
+	add_action('k2_init', array('K2SBM', 'init'));
 }
 
-add_action('k2_init', array('K2SBM', 'init'));
 add_action('k2_install', array('K2SBM', 'install'));
 add_action('k2_uninstall', array('K2SBM', 'uninstall'));
 

@@ -2,11 +2,22 @@
 
 class K2 {
 	function init() {
+		global $wp_version;
+
 		// Load the localisation text
 		load_theme_textdomain('k2_domain');
 
+		$exclude = array('sbm-direct.php');
+
+		// Exclude SBM if there's already a sidebar manager
+		if(K2_USING_SBM) {
+			$exclude[] = 'widgets.php';
+		} else {
+			$exclude[] = 'sbm.php';
+		}
+
 		// Scan for includes and classes
-		K2::include_all(TEMPLATEPATH . '/app/includes/', array('sbm-ajax.php', 'sbm-stub.php', 'sbm.php'));
+		K2::include_all(TEMPLATEPATH . '/app/includes/', $exclude);
 		K2::include_all(TEMPLATEPATH . '/app/classes/');
 
 		// Get the last modified time of the classes folder
@@ -18,52 +29,26 @@ class K2 {
 			K2::install($last_modified);
 		}
 
-		// Register our prototype, WP 2.1 is using 1.5.0RC1
-		wp_deregister_script('prototype');
-		wp_register_script('prototype',
-			get_settings('siteurl') . '/wp-includes/js/prototype.js',
-			#get_bloginfo('template_directory') . '/js/prototype.js.php',
-			false, '1.5.0');
-
-		// Register our scripts with WordPress, version is Last Changed Revision
-		wp_register_script('k2rollingarchives',
-			get_bloginfo('template_directory') . '/js/rollingarchives.js.php',
-			array('scriptaculous-slider', 'k2trimmer'), '224');
-		wp_register_script('k2livesearch',
-			get_bloginfo('template_directory') . '/js/livesearch.js.php',
-			array('scriptaculous-effects'), '262');
-		wp_register_script('k2comments',
-			get_bloginfo('template_directory') . '/js/comments.js.php',
-			array('scriptaculous-effects'), '216');
-		wp_register_script('k2trimmer',
-			get_bloginfo('template_directory') . '/js/trimmer.js.php',
-			array('scriptaculous-slider'), '247');
-		wp_register_script('k2functions',
-			get_bloginfo('template_directory') . '/js/k2functions.js.php',
-			array('scriptaculous-effects'), '223');
-		wp_register_script('k2sbm',
-			get_bloginfo('template_directory') . '/js/sbm.js.php',
-			array('scriptaculous-effects', 'scriptaculous-dragdrop'), '248');
-
-
 		// There may be some things we need to do before K2 is initialised
 		// Let's do them now
 		do_action('k2_init');
 
-		// Register our sidebar with SBM or Widgets
-		if (function_exists('register_sidebar')) {
-			register_sidebar(array('before_widget' => '<div id="%1$s" class="widget %2$s">','after_widget' => '</div>'));
+		K2::register_scripts();
+
+		// Register our sidebar with SBM/Widgets
+		if ( function_exists('register_sidebars') ) {
+			register_sidebars(2, array('before_widget' => '<div id="%1$s" class="widget %2$s">','after_widget' => '</div>', 'before_title' => '<h4>', 'after_title' => '</h4>'));
 		}
 	}
 
 	function install($last_modified) {
-		global $current;
+		global $wp_version;
 
 		// Add / update the version number
 		if(get_option('k2version') === false) {
-			add_option('k2version', $current, 'This option stores K2\'s version number');
+			add_option('k2version', K2_CURRENT, 'This option stores K2\'s version number');
 		} else {
-			update_option('k2version', $current);
+			update_option('k2version', K2_CURRENT);
 		}
 
 		// Add / update the last modified timestamp
@@ -73,17 +58,31 @@ class K2 {
 			update_option('k2lastmodified', $last_modified);
 		}
 
+		// Create support folders for WordPressMU
+		if(K2_MU) {
+			if(!is_dir(ABSPATH . UPLOADS . 'k2support/')) {
+				wp_mkdir_p(ABSPATH . UPLOADS . 'k2support/');
+			}
+			if(!is_dir(K2_STYLES_PATH)) {
+				wp_mkdir_p(K2_STYLES_PATH);
+			}
+			if(!is_dir(K2_HEADERS_PATH)) {
+				wp_mkdir_p(K2_HEADERS_PATH);
+			}
+		}
+
 		// Call the install handlers
 		do_action('k2_install');
 	}
 
 	function uninstall() {
+		global $wpdb;
+
+		// Remove the K2 options from the database
+		$cleanup = $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'k2%'");
+
 		// Call the uninstall handlers
 		do_action('k2_uninstall');
-
-		// Delete version & last modified
-		delete_option('k2version');
-		delete_option('k2lastmodified');
 
 		// Flush the dang cache
 		wp_cache_flush();
@@ -96,6 +95,58 @@ class K2 {
 		// Go back to the themes page
 		header('Location: themes.php');
 		exit;
+	}
+
+	function register_scripts() {
+		// Register our scripts with WordPress, version is Last Changed Revision
+		wp_register_script('k2functions',
+			get_bloginfo('template_directory') . '/js/k2.functions.js.php',
+			array('jquery'), '223');
+
+		wp_register_script('k2rollingarchives',
+			get_bloginfo('template_directory') . '/js/k2.rollingarchives.js.php',
+			array('jquery', 'k2slider', 'k2trimmer'), '224');
+
+		wp_register_script('k2livesearch',
+			get_bloginfo('template_directory') . '/js/k2.livesearch.js.php',
+			array('jquery'), '262');
+
+		wp_register_script('k2slider',
+			get_bloginfo('template_directory') . '/js/k2.slider.js.php',
+			array('jquery'), '262');
+
+		wp_register_script('k2comments',
+			get_bloginfo('template_directory') . '/js/k2.comments.js.php',
+			array('jquery'), '216');
+
+		wp_register_script('k2trimmer',
+			get_bloginfo('template_directory') . '/js/k2.trimmer.js.php',
+			array('jquery', 'k2slider'), '247');
+
+		wp_register_script('k2sbm',
+	       get_bloginfo('template_directory') . '/js/k2.sbm.js.php',
+	       array('jquery', 'interface'), '');
+
+		wp_register_script('jquery-dimensions',
+	       get_bloginfo('template_directory') . '/js/jquery.dimensions.js.php',
+	       array('jquery', 'interface'), '');
+	}
+
+	// Load updated versions of those scripts bundled with WordPress
+	function load_updated_scripts() {
+		// Register jQuery
+		wp_deregister_script('jquery');
+		wp_register_script('jquery',
+			get_bloginfo('template_directory').'/js/jquery.js.php',
+			false, '1.2.1');
+
+		wp_register_script('interface',
+			get_bloginfo('template_directory').'/js/jquery.interface.js.php',
+			array('jquery'), '1.2');
+	}
+
+	function get_styles() {
+		return K2::files_scan(K2_STYLES_PATH, 'css', 2);
 	}
 
 	function include_all($dir_path, $ignore = false) {
@@ -199,7 +250,7 @@ class K2 {
 	function get_unique_path($source) {
 		$source = pathinfo($source);
 		
-		$path = $source['dirname'];
+		$path = trailingslashit($source['dirname']);
 		$filename = $source['filename'];
 		$ext = $source['extension'];
 
@@ -209,5 +260,4 @@ class K2 {
 		return $path . sanitize_title_with_dashes($filename . $number) . $ext;
 	}
 }
-
 ?>

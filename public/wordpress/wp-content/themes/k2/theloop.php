@@ -3,8 +3,22 @@
 	// It is a very delicate piece of machinery. Be gentle!
 
 	// Get core WP functions when loaded dynamically
-	if (isset($_GET['rolling'])) {
-		require (dirname(__FILE__).'/../../../wp-blog-header.php'); ?>
+	if (isset($_GET['k2dynamic'])) {
+		require_once(dirname(__FILE__).'/../../../wp-config.php');
+
+		if ($_GET['k2dynamic'] != 'init') {
+			$query = k2_parse_query($_GET);
+			query_posts($query);
+		}
+
+		// Debugging
+		if ( isset($_GET['k2debug']) ) {
+			echo '<div class="alert">';
+			echo '<b>Query:</b><br />'; var_dump($wp_query->query); echo '<br />';
+			echo '<b>Request:</b><br />'; var_dump($wp_query->request); echo '<br />';
+			echo '</div>';
+		}
+	?>
 
 <div id="dynamictype" class="<?php k2_body_class(); ?>">
 
@@ -19,7 +33,7 @@
 ?>
 
 	<?php /* Headlines for archives */ if ((!is_single() and !is_home()) or is_paged()) { ?>
-		<h2>
+		<div class="page-head"><h2>
 		<?php // Figure out what kind of page is being shown
 			if (is_category()) {
 				if (get_query_var('cat') != $k2asidescategory) {
@@ -41,18 +55,23 @@
 				printf(__('Search Results for \'%s\'','k2_domain'), attribute_escape(stripslashes(get_query_var('s'))));
 
 			} elseif (function_exists('is_tag') and is_tag()) {
-				printf(__('Tag Archive for \'%s\'','k2_domain'), get_query_var('tag') );
+				printf(__('Tag Archive for \'%s\'','k2_domain'), single_tag_title('',$display=false));
 
 			} elseif (is_author()) {
 				printf(__('Author Archive for %s','k2_domain'), get_author_name(get_query_var('author')));
 
 			} elseif (is_paged() and (get_query_var('paged') > 1)) { 
-				 printf(__('Archive Page %s','k2_domain'), get_query_var('paged'));
-			} ?>
-		</h2>
+				 _e('Archive','k2_domain');
+			}
+			if ( (get_query_var('paged') > 1) and (get_option('k2rollingarchives') == 0) ) {
+				printf(__(' <span class="archivepages">Page %1$s of %2$s</span>','k2_domain'), get_query_var('paged'), $wp_query->max_num_pages);
+			}
+			?>
+
+		</h2></div>
 	<?php } ?>
 
-	<?php if ((get_option('k2rollingarchives') == 0) and !is_single() and !is_home() and is_paged()) include (TEMPLATEPATH . '/navigation.php'); ?> 
+	<?php if ((get_option('k2rollingarchives') == 0) and !is_single() and is_paged()) include (TEMPLATEPATH . '/navigation.php'); ?> 
 
 <?php
 	/* Check if there are posts */
@@ -76,17 +95,16 @@
 		<div id="post-<?php the_ID(); ?>" class="<?php k2_post_class($post_index++, in_category($k2asidescategory)); ?>">
 			<div class="entry-head">
 				<h3 class="entry-title"><a href="<?php the_permalink(); ?>" rel="bookmark" title='<?php printf( __('Permanent Link to "%s"','k2_domain'), wp_specialchars(strip_tags(the_title('', '', false)),1) ); ?>'><?php the_title(); ?></a></h3>
-				<?php /* Support for Noteworthy plugin */ if (function_exists('nw_noteworthyLink')) { nw_noteworthyLink(get_the_ID()); } ?>
 
 				<div class="entry-meta">
 					<span class="chronodata">
 						<?php /* Date & Author */
 							printf(	__('Published %1$s %2$s','k2_domain'),
-								( $multiple_users ? sprintf(__('by %s','k2_domain'), '<address class="vcard author"><a href="' . get_author_posts_url(get_the_author_ID()) .'" class="url fn" title="'. sprintf(__('View all posts by %s','k2_domain'), attribute_escape(get_the_author())) .'">' . get_the_author() . '</a></address>') : ('') ), 
+								( $multiple_users ? sprintf(__('by %s','k2_domain'), '<span class="vcard author"><a href="' . get_author_posts_url(get_the_author_ID()) .'" class="url fn" title="'. sprintf(__('View all posts by %s','k2_domain'), attribute_escape(get_the_author())) .'">' . get_the_author() . '</a></span>') : ('') ), 
 								'<abbr class="published" title="'. get_the_time('Y-m-d\TH:i:sO') . '">' .
- 								( function_exists('time_since') ? sprintf(__('%s ago','k2_domain'), time_since(abs(strtotime($post->post_date_gmt . " GMT")), time())) : get_the_time($dateformat) ) 
- 								. '</abbr>'
- 								); 
+								( function_exists('time_since') ? sprintf(__('%s ago','k2_domain'), time_since(abs(strtotime($post->post_date_gmt . " GMT")), time())) : ' ' . sprintf(__('on %s','k2-domain'), get_the_time($dateformat)) ) 								
+								. '</abbr>'
+							); 
  						?>
 					</span>
 
@@ -94,12 +112,14 @@
 						<?php /* Categories */ printf(__('in %s.','k2_domain'), k2_nice_category(', ', __(' and ','k2_domain')) ); ?>
 					</span>
 
-					<?php /* Comments */ comments_popup_link('0&nbsp;<span>'.__('Comments','k2_domain').'</span>', '1&nbsp;<span>'.__('Comment','k2_domain').'</span>', '%&nbsp;<span>'.__('Comments','k2_domain').'</span>', 'commentslink', '<span class="commentslink">'.__('Closed','k2_domain').'</span>'); ?>
+					<?php /* Comments */ comments_popup_link('0&nbsp;<span>'.__('Comments','k2_domain').'</span>', '1&nbsp;<span>'.__('Comment','k2_domain').'</span>', '%&nbsp;<span>'.__('Comments','k2_domain').'</span>', 'commentslink', '<span>'.__('Closed','k2_domain').'</span>'); ?>
 
 					<?php /* Edit Link */ edit_post_link(__('Edit','k2_domain'), '<span class="entry-edit">','</span>'); ?>
 
 					<?php /* Tags */ if (function_exists('UTW_ShowTagsForCurrentPost')) { ?>
-						<span class="entry-tags"><?php _e('Tags:','k2_domain'); ?> <?php UTW_ShowTagsForCurrentPost("commalist") ?>.</span>
+						<span class="entry-tags"><?php _e('Tags: ','k2_domain'); ?><?php UTW_ShowTagsForCurrentPost("commalist"); ?>.</span>
+					<?php } elseif (is_single() and function_exists('the_tags')) { ?>
+						<span class="entry-tags"><?php the_tags(__('Tags: ','k2_domain')); ?>.</span>
 					<?php } ?>
 				</div> <!-- .entry-meta -->
 			</div> <!-- .entry-head -->
@@ -132,6 +152,6 @@
 
 <?php } /* End Loop Init  */
 
-	if (isset($_GET['rolling'])) { ?> </div> <?php }
+	if (isset($_GET['k2dynamic'])) { ?> </div> <?php }
 
 ?>

@@ -1,62 +1,90 @@
 <?php
-	$prefix = '';
+	// Get core WP functions if needed
+	if (isset($_GET['k2dynamic'])) {
+		require_once(dirname(__FILE__).'/../../../wp-config.php');
 
-	// Get Core WP Functions If Needed
-	if (isset($_GET['rolling'])) {
-		require (dirname(__FILE__)."/../../../wp-blog-header.php");
-		$prefix = 'nested_';
+		$query = k2_parse_query($_GET);
+		query_posts($query);
+
+		$_GET['k2dynamic'] = 'init';
 	}
 
-	// WP 2.1 support
-	if (is_array($wp_query->query)) {
-		$rolling_query = http_build_query($wp_query->query);
-	} else {
-		$rolling_query = $wp_query->query;
-	}
-?>
-<?php
 	// Load Rolling Archives?
-	if ( (get_option('k2rollingarchives') == 1) ) { 
-		$k2pagecount = k2countpages($wp_query);
+	if ( get_option('k2rollingarchives') == 1 ) { 
 
-		if ($k2pagecount > 1) {
+		// Parse the query
+		//if ( is_array($wp_query->query) ) {
+			//$rolling_query = http_build_query($wp_query->query);
+		//} else {
+			$rolling_query = $wp_query->query;
+		//}
+
+		// Get list of page dates
+		if ( !is_page() and !is_single() ) {
+			$page_dates = get_rolling_page_dates($wp_query);
+		}
+
+		// Get the current page
+		$rolling_page = get_query_var('paged');
+		if ( empty($rolling_page) ) {
+			$rolling_page = 1;
+		}
 ?>
-	<div id="<?php echo $prefix; ?>rollingarchives">
-		<div id="<?php echo $prefix; ?>rollnavigation">
-			<a href="#" id="<?php echo $prefix; ?>rollprevious"><span>&laquo;</span> <?php _e('Older','k2_domain'); ?></a>
-			<a href="#" id="<?php echo $prefix; ?>rollhome"><img src="<?php bloginfo('template_directory'); ?>/images/house.png" alt="Home" /></a>
 
-			<div id="<?php echo $prefix; ?>pagetrackwrap"><div id="<?php echo $prefix; ?>pagetrack"><div id="<?php echo $prefix; ?>pagehandle"></div></div></div>
+<div id="rollingarchives" style="display:none;">
+	<div id="texttrimmer">
+		<div id="trimmertrackwrap"><div id="trimmertrack"><div id="trimmerhandle"></div></div></div>
+		
+		<div id="trimmerless"><span><?php _e('Less','k2_domain'); ?></span></div>
+		<div id="trimmermore"><span><?php _e('More','k2_domain'); ?></span></div>
+	</div> <!-- #texttrimmer -->
 
-			<span id="<?php echo $prefix; ?>rollload"><?php _e('Loading','k2_domain'); ?></span>
-			<span id="<?php echo $prefix; ?>rollpages"></span>
+	<div id="rollnavigation">
+		<div id="pagetrackwrap"><div id="pagetrack"><div id="pagehandle"><div id="rollhover"><div id="rolldates"></div></div></div></div></div>
 
-			<a href="#" id="<?php echo $prefix; ?>rollnext"><?php _e('Newer','k2_domain'); ?> <span>&raquo;</span></a>
-
-			<div id="<?php echo $prefix; ?>trimmerContainer">
-
-				<a href="#" id="<?php echo $prefix; ?>trimmerMore"><?php _e("More","k2_domain"); ?></a>
-				<div id="<?php echo $prefix; ?>trimmer"></div>
-				<a href="#" id="<?php echo $prefix; ?>trimmerLess"><?php _e("Less","k2_domain"); ?></a>
-
-				<div id="<?php echo $prefix; ?>trimmerShortcuts">
-					<a href="#" id="<?php echo $prefix; ?>trimmerExcerpts"><?php _e("Excerpts","k2_domain"); ?></a>
-					<a href="#" id="<?php echo $prefix; ?>trimmerHeadlines"><?php _e("Headlines","k2_domain"); ?></a>
-					<a href="#" id="<?php echo $prefix; ?>trimmerFulllength"><?php _e("Full Length","k2_domain"); ?></a>
-				</div>
-			</div>
+		<div id="rollpages"></div>
+		
+		<a id="rollprevious" title="<?php _e('Older','k2_domain'); ?>" href="#">
+			<span>&laquo;</span> <?php _e('Older','k2_domain'); ?>
+		</a>
+		<div id="rollhome" title="<?php _e('Home','k2_domain'); ?>">
+			<span><?php _e('Home','k2_domain'); ?></span>
 		</div>
+		<div id="rollload" title="<?php _e('Loading','k2_domain'); ?>">
+			<span><?php _e('Loading','k2_domain'); ?></span>
+		</div>
+		<a id="rollnext" title="<?php _e('Newer','k2_domain'); ?>" href="#">
+			<?php _e('Newer','k2_domain'); ?> <span>&raquo;</span>
+		</a>
 
-		<div id="<?php echo $prefix; ?>rollnotices"></div>
+	</div> <!-- #rollnavigation -->
+</div> <!-- #rollingarchives -->
 
-	</div>
-	<script type="text/javascript">
-	// <![CDATA[
-		var <?php echo $prefix; ?>rolling = new RollingArchives("primarycontent", <?php k2info('js_url'); ?> + '/theloop.php', "<?php echo $rolling_query; ?>", <?php echo $k2pagecount; ?>, "<?php echo $prefix; ?>", "<?php _e('Page %1$d of %2$d',k2_domain); ?>");
-	// ]]>
-	</script>
+<?php if(!isset($_GET['k2dynamic'])) { ?>
+<noscript>
+	<?php include('navigation.php'); ?>
+</noscript>
+<?php } ?>
 
+<?php if ( !isset($_GET['k2dynamic']) or ($_GET['k2dynamic'] == 'init') ) { ?>
+<script type="text/javascript">
+// <![CDATA[
+	jQuery(document).ready(function() {
+		k2Rolling.setup(
+			"<?php output_javascript_url('theloop.php'); ?>",
+			"<?php echo attribute_escape(__('Page %1$d of %2$d',k2_domain)); ?>",
+			<?php echo $rolling_page; ?>,
+			<?php echo $wp_query->max_num_pages; ?>,
+			<?php output_javascript_hash($rolling_query); ?>,
+			<?php output_javascript_array($page_dates); ?>
+		);
+
+		k2Trimmer.setup(100);
+	});
+// ]]>
+</script>
 <?php } } ?>
-<div id="<?php echo $prefix; ?>primarycontent" class="hfeed">
+
+<div id="rollingcontent" class="hfeed">
 	<?php include (TEMPLATEPATH . '/theloop.php'); ?>
-</div><!-- #<?php echo $prefix; ?>primarycontent .hfeed -->
+</div><!-- #rollingcontent .hfeed -->

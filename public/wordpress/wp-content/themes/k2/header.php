@@ -2,6 +2,9 @@
 	// Load localizatons
 	load_theme_textdomain('k2_domain');
 
+	// Load updated versions of bundled scripts
+	K2::load_updated_scripts();
+
 	// Load our scripts
 	wp_enqueue_script('k2functions');
 
@@ -18,22 +21,52 @@
 	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" <?php language_attributes(); ?>>
 
 <head profile="http://gmpg.org/xfn/11">
-	<title><?php wp_title(''); if (function_exists('is_tag') and is_tag()) { ?>Tag Archive for <?php echo $tag; } if (is_archive()) { ?> archive<?php } elseif (is_search()) { ?> Search for <?php echo $s; } if ( !(is_404()) and (is_search()) or (is_single()) or (is_page()) or (function_exists('is_tag') and is_tag()) or (is_archive()) ) { ?> at <?php } ?> <?php bloginfo('name'); ?></title>
+	<title><?php
+	
+	// Page or Single Post
+	if ( is_page() or is_single() ) {
+		the_title();
+
+	// Category Archive
+	} elseif ( is_category() ) {
+		printf( __('Catergory Archive for &lsquo;%s&rsquo;','k2_domain'), single_cat_title('', false) );
+
+	// Tag Archive
+	} elseif ( function_exists('is_tag') and is_tag() ) {
+		printf( __('Tag Archive for &lsquo;%s&rsquo;','k2_domain'), single_tag_title('', false) );
+
+	// General Archive
+	} elseif ( is_archive() ) {
+		printf( __('%s Archive','k2_domain'), wp_title('', false) );
+
+	// Search Results
+	} elseif ( is_search() ) {
+		printf( __('Search Results for &lsquo;%s&rsquo;','k2_domain'), get_query_var('s') );
+	}
+
+	// Insert separator for the titles above
+	if ( !is_home() and !is_404() ) {
+		_e(' at ','k2_domain');
+	}
+	
+	// Finally the blog name
+	bloginfo('name');
+
+	?></title>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>" />
 	<meta name="generator" content="WordPress <?php bloginfo('version'); ?>" />
-	<meta name="template" content="K2 <?php if (function_exists('k2info')) { k2info('version'); } ?>" />
+	<meta name="template" content="K2 <?php k2info('version'); ?>" />
  	<meta name="description" content="<?php bloginfo('description'); ?>" />
   
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php bloginfo('stylesheet_url'); ?>" />
-	<link rel="stylesheet" type="text/css" media="print" href="<?php bloginfo('template_url'); ?>/css/print.css" />
 	<?php /* Rolling Archives */ if (get_option('k2rollingarchives') == 1) { ?>
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php bloginfo('template_directory'); ?>/css/rollingarchives.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="<?php bloginfo('template_url'); ?>/css/rollingarchives.css" />
 	<?php } ?>
 	<?php /* Custom Style */ if (get_option('k2scheme') != '') { ?>
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php k2info('scheme'); ?>" />
+	<link rel="stylesheet" type="text/css" media="screen" href="<?php k2info('style'); ?>" />
 	<?php } ?>
 
 	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?php bloginfo('rss2_url'); ?>" />
@@ -44,25 +77,33 @@
 	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 	<?php } ?>
 
-	<?php wp_head(); ?>	
+	<?php wp_head(); ?>
 
-	<?php /* LiveSearch */ if (get_option('k2livesearch') == 1) { ?>
 	<script type="text/javascript">
 	//<![CDATA[
-		Event.observe(window, "load", function() {
-			new Livesearch("searchform", "s", "dynamic-content", "current-content", <?php k2info('js_url'); ?> + "/rollingarchive.php", "&s=", "searchload", "<?php _e('Type and Wait to Search','k2_domain'); ?>", "searchreset", "searchsubmit", "<?php _e('go','k2_domain'); ?>");
-		});
+		<?php /* Debugging */ if ( isset($_GET['k2debug']) ) { ?>
+			K2.debug = true;
+		<?php } ?>
+
+		<?php /* LiveSearch */ if (get_option('k2livesearch') == 1) { ?>
+			jQuery(document).ready(function(){
+				k2Search.setup(
+					"<?php if (get_option('k2rollingarchives') == 1) { output_javascript_url('rollingarchive.php'); } else { output_javascript_url('theloop.php'); } ?>",
+					"<?php echo attribute_escape(__('Type and Wait to Search','k2_domain')); ?>"
+				);
+			});
+		<?php } ?>
+
+		<?php /* Hide Author Elements */ if (!is_user_logged_in() and (is_page() or is_single()) and ($comment_author = $_COOKIE['comment_author_'.COOKIEHASH]) and ('open' == $post-> comment_status) or ('comment' == $post-> comment_type) ) { ?>
+			jQuery(document).ready(function(){ OnLoadUtils(); });
+		<?php } ?>
+
+		<?php if ((get_option('k2livecommenting') == 1) and ((is_page() or is_single()) and (!isset($_GET['jal_edit_comments'])) and ('open' == $post-> comment_status) or ('comment' == $post-> comment_type) )) { ?>
+			K2.ajaxCommentsURL = "<?php output_javascript_url('comments-ajax.php'); ?>";
+		<?php } ?>
+
 	//]]>
 	</script>
-	<?php } ?>
-
-	<?php /* Hide Author Elements */ if (!is_user_logged_in() and (is_page() or is_single()) and ($comment_author = $_COOKIE['comment_author_'.COOKIEHASH]) and ('open' == $post-> comment_status) or ('comment' == $post-> comment_type) ) { ?>
-	<script type="text/javascript">
-	// <![CDATA[
-		FastInit.addOnLoad( OnLoadUtils );
-	// ]]>
-	</script>
-	<?php } ?>
 
 	<?php wp_get_archives('type=monthly&format=link'); ?>
 </head>

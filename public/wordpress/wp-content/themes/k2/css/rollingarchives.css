@@ -1,10 +1,164 @@
 /* @override http://localhost/wp-content/themes/kaytwo/css/rollingarchives.css */
 
-#rollingarchives,
-#nested_rollingarchives {
+#pagetrack #dragHelper {
+	overflow: visible !important;
+}
+
+#rollingarchives {
 	position: relative;
-	padding: 5px 0 0;
-	margin: 0 0 10px;
+	padding: 10px 0 20px;
+	display: block;
+	}
+
+#rollingarchives a:hover {
+	text-decoration: underline;
+	}
+
+#rollnavigation {
+	position: relative;
+	}
+
+#rollnavigation a:active, #rollnavigation a:focus {
+	outline: none;
+	}
+
+#rollprevious,
+#rollnext,
+#rollload,
+#rollhome,
+#rollpages,
+#rolldates {
+	position: absolute;
+	top: 3px;
+	}
+
+#rollprevious:hover,
+#rollnext:hover,
+#rollhome:hover {
+	text-decoration: underline;
+	cursor: pointer;
+	}
+
+#rollhome {
+	display: none;
+	left: 54px;
+	background: url('../images/house.png') no-repeat center center;
+	width: 16px;
+	height: 16px;
+	}
+
+#rollload {
+	top: 1px;
+	right: 150px;
+	background: url('../images/spinner.gif') no-repeat center center;
+	width: 16px;
+	height: 16px;
+	}
+
+#rollload span,
+#rollhome span {
+	display: none;
+	}
+
+#rollnext,
+#rollprevious {
+	color: #666;
+	font-weight: bold;
+	}
+
+#rollpages {
+	top: 3px;
+	left: 55px;
+	color: #aaa;
+	}
+
+#rollhover {
+	position: absolute;
+	top: 7px;
+	left: -47px;
+	z-index: 100;
+	height: 45px;
+	background: url('../images/rollhover.png') no-repeat center top;
+	}
+
+#rollhover,
+#rolldates {
+	width: 100px;
+}
+
+#rolldates {
+	position: absolute;
+	color: #999;
+	text-align: center;
+	font-size: .9em;
+	}
+
+#rolldates {
+	top: 22px;
+	}
+
+#rollprevious {
+	left: 0;
+	text-align: left;
+	}
+
+#rollnext {
+	right: 0;
+	text-align: right;
+	}
+
+.emptypage #rollnavigation {
+	visibility: hidden;
+	}
+
+.firstpage #rollprevious {
+	visibility: visible;
+	}
+
+
+.firstpage #rollnext,
+.firstpage #rollhome {
+	visibility: hidden;
+	}
+
+.nthpage #rollnext,
+.nthpage #rollprevious,
+.nthpage #rollhome {
+	visibility: visible;
+	}
+
+.lastpage #rollnext,
+.lastpage #rollhome {
+	visibility: visible;
+	}
+
+.lastpage #rollprevious {
+	visibility: hidden;
+	}
+
+#pagetrackwrap {
+	position: absolute;
+	top: 6px;
+	left: 135px;
+	width: 230px;
+	padding-right: 4px;
+	background: url('../images/sliderbgright.png') no-repeat right center;
+	}
+
+#pagetrack {
+	height: 7px;
+	background: url('../images/sliderbgleft.png') no-repeat left center;
+	}
+
+#pagehandle {
+	width: 7px;
+	height: 7px;
+	background: url('../images/sliderhandle.png') no-repeat center center;
+	cursor: col-resize;
+	}
+
+#primarycontent {
+	clear: both;
 	}
 
 div.trimmed .hentry {
@@ -14,161 +168,73 @@ div.trimmed .hentry {
 div.trimmed .hentry.alt {
 	background: transparent;
 	}
-	
-#rollingarchives a,
-#nested_rollingarchives a {
-	color: #888;
-	}
 
-#rollingarchives a:hover,
-#nested_rollingarchives a:hover {
-	text-decoration: underline;
-	}
-
-#rollnavigation,
-#nested_rollnavigation {
-	padding: 4px;
-	}
-
-#rollprevious, #rollnext, #rollpages, #rollload,
-#nested_rollprevious, #nested_rollnext, #nested_rollpages, #nested_rollload {
+#texttrimmer {
 	position: absolute;
-	width: 50px;
-	padding: 7px 5px;
-	top: 3px;
-	text-align: center;
-	}
-
-#rollhome,
-#nested_rollhome {
-	display: none;
-	margin-bottom: 5px;
-	}
-
-#rollload,
-#nested_rollload {
-	right: 45px;
-	padding-left: 24px;
-	background: url('../images/spinner.gif') no-repeat left center;
-	z-index: 10;
-	width: 50px;
-	text-align: left;
-	}
-
-#rollpages,
-#nested_rollpages {
-	width: 90px;
-	left: 40px;
-	color: #777;
-	}
-
-#rollprevious,
-#nested_rollprevious {
-	left: 0;
-	text-align: left;
-	}
-
-#rollnext,
-#nested_rollnext {
-	right: 0;
-	text-align: right;
-	}
-
-#rollingarchives a.inactive, #rollingarchives a.inactive:hover,
-#nested_rollingarchives a.inactive, #nested_rollingarchives a.inactive:hover {
-	visibility: hidden;
-	text-decoration: none !important;
-	background-color: transparent !important;
-	color: #bbb;
-	cursor: default;
-	}
-
-#rollnotices,
-#nested_rollnotices {
-	padding: 7px;
-	text-align: center;
-	border-top: 1px solid #f3f3f3;
-	display: none;
-	}
-
-#rollnotices a,
-#nested_rollnotices a {
-	color: #227EE9;
-	}
-
-#rollnotices img,
-#nested_rollnotices img {
-	float: right;
-	cursor: pointer;
-	height: 13px;
-	width: 13px;
-	margin-right: 5px;
-	background: url('../images/reset-fff.gif') no-repeat center center;
-	}
-
-#pagetrackwrap,
-#nested_pagetrackwrap {
-	margin: -1px auto 0;
-	width: 230px;
-	height: 16px;
-	background: url('../images/sliderbgleft.png') no-repeat 5px center;
-	}
-
-#pagetrack,
-#nested_pagetrack {
-	height: 16px;
-	background: url('../images/sliderbgright.png') no-repeat right center;
-	}
-
-#pagehandle,
-#nested_pagehandle,
-#trimmerhandle,
-#nested_trimmerhandle {
-	width: 18px;
-	height: 18px;
-	margin-left: 2px;
-	background: url('../images/sliderhandle.png') no-repeat center center;
-	cursor: col-resize;
-	}
-
-#trimmer,
-#nested_trimmer {
-	position: absolute;
+	width: 55px;
+	height: 15px;
 	top: 10px;
-	right: 60px;
-	width: 60px;
-	height: 16px;
+	right: 55px;
 	}
 
-#trimmertrackwrap,
-#nested_trimmertrackwrap {
-	margin: -2px auto 0;
-	background: url('../images/sliderbgleft.png') no-repeat 5px center;
+.firstpage #texttrimmer,
+.firstpage #pagetrackwrap {
+	visibility: hidden;
 	}
 
-#trimmertrack,
-#nested_trimmertrack {
-	height: 16px;
+.nthpage #texttrimmer,
+.nthpage #pagetrackwrap,
+.lastpage #texttrimmer,
+.lastpage #pagetrackwrap {
+	visibility: visible;
+	}
+
+#trimmertrackwrap {
 	background: url('../images/sliderbgright.png') no-repeat right center;
+	height: 7px;
+	width: 50px;
+	top: 6px;
+	padding-right: 4px;
+	position: absolute;
 	}
 
-#trimmerhandle,
-#nested_trimmerhandle {
-	width: 18px;
-	height: 18px;
-	margin-left: 2px;
+#trimmertrack {
+	background: url('../images/sliderbgleft.png') no-repeat left center;
+	height: 7px;
+	}
+
+#trimmerhandle {
+	width: 7px;
+	height: 7px;
 	background: url('../images/sliderhandle.png') no-repeat center center;
 	cursor: col-resize;
 	}
-	
-#trimmerMore,
-#nested_trimmerMore,
-#trimmerLess,
-#nested_trimmerLess {
+
+#trimmermore,
+#trimmerless {
+	display: none;
+	position: absolute;
+	top: 0;
+	height: 16px;
+	width: 16px;
+	}
+
+#trimmermore span,
+#trimmerless span {
 	display: none;
 	}
-	
-#trimmerShortcuts,
-#nested_trimmerShortcuts {
-	display: none;
+
+#trimmermore:hover,
+#trimmerless:hover {
+	cursor: pointer;
+	}
+
+#trimmermore {
+	right: 0;
+	background: url('../images/trim_more.png');
+	}
+
+#trimmerless {
+	left: 0;
+	background: url('../images/trim_less.png');
 	}

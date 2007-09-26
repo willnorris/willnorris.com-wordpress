@@ -108,7 +108,7 @@ for ($i=1; $i <= $count; $i++) :
 		}
 	endforeach;
 
-	$subject = trim(str_replace(get_option('subjectprefix'), '', $subject));
+	$subject = trim($subject);
 
 	if ($content_type == 'multipart/alternative') {
 		$content = explode('--'.$boundary, $content);
@@ -117,7 +117,7 @@ for ($i=1; $i <= $count; $i++) :
 		$content = strip_tags($content[1], '<img><p><br><i><b><u><em><strong><strike><font><span><div>');
 	}
 	$content = trim($content);
-	
+
 	if (stripos($content_transfer_encoding, "quoted-printable") !== false) {
 		$content = quoted_printable_decode($content);
 	}
@@ -148,6 +148,8 @@ for ($i=1; $i <= $count; $i++) :
 	$post_data = add_magic_quotes($post_data);
 
 	$post_ID = wp_insert_post($post_data);
+	if ( is_wp_error( $post_ID ) ) 
+		echo "\n" . $post_ID->get_error_message();
 
 	if (!$post_ID) {
 		// we couldn't post, for whatever reason. better move forward to the next email
