@@ -2,6 +2,7 @@
 if( !@include(ABSPATH . 'wp-content/wp-cache-config.php') ) {
 	return;
 }
+include(ABSPATH . 'wp-content/plugins/wp-cache/wp-cache-base.php');
 
 $mutex_filename = 'wp_cache_mutex.lock';
 $new_cache = false;

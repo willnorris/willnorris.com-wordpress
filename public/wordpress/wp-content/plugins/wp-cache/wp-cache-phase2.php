@@ -227,8 +227,8 @@ function wp_cache_shutdown_callback() {
 		/* @header('Last-Modified: ' . $value); */
 		array_push($wp_cache_meta_object->headers, "Last-Modified: $value");
 	}
-	if (!$response{'Content-Type'}) {
-		$value =  "text/html; charset=\"" . get_settings('blog_charset')  . "\"";
+	if (!$response{'Content-Type'} && !$response{'Content-type'}) {
+		$value =  "text/html; charset=" . get_settings('blog_charset'); 
 		@header("Content-Type: $value");
 		array_push($wp_cache_meta_object->headers, "Content-Type: $value");
 	}
