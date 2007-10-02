@@ -43,7 +43,7 @@ function widget_claimid_chicklet_init() {
 		?>
 
 		<?php echo $before_widget; ?>
-		<?php echo $before_title . "<a href='http://claimid.com/{$options['username']}'><img src=\"$siteurl/wp-content/plugins/claimid/claimid.gif\"</a>" . $after_title; ?>
+		<?php echo $before_title . '<a href="http://claimid.com/'.$options['username'].'" rel="me"><img src="'.$siteurl.'/wp-content/plugins/claimid/claimid.gif" /></a>'.$after_title; ?>
 		<?php echo $after_widget; ?>
 <?php
 	}

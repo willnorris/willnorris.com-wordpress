@@ -317,9 +317,11 @@ function quoter_comment_server(){
 			// Remove leading zeros
 			$quote = preg_replace("/^0*([0-9]+)/i","\\1", $quote);
 						
-			// Is there a comment for that id?
-			$comments = "";
-			$comments = get_comment($quote);
+			if ($quote != '') {
+				// Is there a comment for that id?
+				$comments = "";
+				$comments = get_comment($quote);
+			}
 		
 			if (!$comments){ 
 		
