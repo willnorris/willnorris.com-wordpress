@@ -1,8 +1,9 @@
 body {
-	background: url('http://files.willnorris.com/wordpress/themes/k2/images/bg.png') fixed;
+/*	background: url('http://files.willnorris.com/wordpress/themes/k2/images/bg.png') fixed; */
+	background: url('bg.png') fixed;
 }
 
-#page {
+.columns-two #page {
 	width: 800px;
 	margin: 0 auto;
 	padding: 0;
@@ -21,6 +22,7 @@ body.flex #page {
 #header {
 	border-top: 4px solid #AE0B35;
 	height: auto;
+	width: 800px;
 }
 
 #header {
@@ -214,4 +216,14 @@ pre {
 	margin-left: 17px;
 	padding-left: 23px;
 	background: url('../../images/arrow_refresh.png') left center no-repeat;
+}
+
+.secondary {
+	margin-left: 20px;
+}
+
+#primary .entry-content img {
+	border: 1px solid #CCCCCC;
+	margin: 0 5px;
+	padding: 4px;
 }
