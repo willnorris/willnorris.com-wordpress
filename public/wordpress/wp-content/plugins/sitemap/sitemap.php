@@ -1,13 +1,13 @@
 <?php 
 /*
  
- $Id: sitemap.php 7501 2007-01-23 10:12:39Z arnee $
+ $Id: sitemap.php 19712 2007-09-24 11:32:47Z arnee $
 
  XML Sitemap Generator for WordPress
  ==============================================================================
  
  This generator will create a sitemaps.org compliant sitemap of your WordPress blog.
- Currently homepage, posts, static pages, categories and archives are supported.
+ Currently homepage, posts, static pages, categories, archives and author pages are supported.
  
  The priority of a post depends on its comments. You can choose the way the priority
  is calculated in the options screen.
@@ -17,8 +17,7 @@
  
  Have fun! 
    Arne
-   
-   
+ 
  Installation:
  ==============================================================================
  1. Upload the full directory into your wp-content/plugins directory
@@ -30,10 +29,10 @@
  
  Info for WordPress:
  ==============================================================================
- Plugin Name: Google (XML) Sitemaps 
+ Plugin Name: Google XML Sitemaps 
  Plugin URI: http://www.arnebrachhold.de/redir/sitemap-home/
- Description: This generator will create a sitemaps.org compliant sitemap of your WordPress blog which is supported By Google, MSN Search and YAHOO. <a href="options-general.php?page=sitemap.php">Configuration Page</a>
- Version: 3.0b6
+ Description: This plugin will generate a sitemaps.org compatible sitemap of your WordPress blog which is supported by Ask.com, Google, MSN Search and YAHOO. <a href="options-general.php?page=sitemap.php">Configuration Page</a>
+ Version: 3.0
  Author: Arne Brachhold
  Author URI: http://www.arnebrachhold.de/
  
@@ -48,10 +47,17 @@
  Trad.Chinese  File     Kirin Lin           http://kirin-lin.idv.tw/
  Simpl.Chinese File     june6               http://www.june6.cn/
  Swedish Lang. File     Tobias Bergius      http://tobiasbergius.se/
+ Czech Lang. File       Peter Kahoun        http://kahi.cz
  Ping Code Template 1   James               http://www.adlards.com/
  Ping Code Template 2   John                http://www.jonasblog.com/
  Bug Report             Brad                http://h3h.net/
  Bug Report             Christian Aust      http://publicvoidblog.de/
+ Bug Report             Joseph Abboud
+ Bug Report             Mike                http://baptiste.us/
+ Bug Report             Peter               http://fastagent.de/
+ Bug Report             Glenn               http://publicityship.com.au/
+ Bug Report             froosh
+ File Handling          VJTD3               http://www.vjtd3.com/
  
  Code, Documentation, Hosting and all other Stuff:
                         Arne Brachhold      http://www.arnebrachhold.de/
@@ -126,10 +132,39 @@
                         Improved file handling, thanks to VJTD3 (http://www.VJTD3.com)
                         WP 2.1 improvements
  2007-01-23     3.0b6   Use memory_get_peak_usage instead of memory_get_usage if available
-                        Removed the usage of REQUEST_URI since it not correct in all environment
-                        Fixed that sitemap.xml.gz was not compressed (Thanks Ralph Davidovits!)
+                        Removed the usage of REQUEST_URI since it not correct in all environments
+                        Fixed that sitemap.xml.gz was not compressed
                         Added compat function "stripos" for PHP4 (Thanks to Joseph Abboud!)
                         Streamlined some code
+ 2007-05-17     3.0b7   Added option to include the author pages like /author/john
+                        Small enhancements, removed stripos dependency and the added compat function
+                        Added check to not build the sitemap if importing posts
+                        Fixed missing domain parameter for translator name
+                        Fixed WP 2.1 / Pre 2.1 post / pages database changes
+                        Fixed wrong XSLT location (Thanks froosh)
+                        Added Ask.com notification
+                        Removed unused javascript
+ 2007-07-22     3.0b8   Changed category SQL to prevent unused cats from beeing included
+                        Plugin will be loaded on "init" instead of direclty after the file has been loaded.
+                        Added support for robots.txt modification
+                        Switched YAHOO ping API from YAHOO Web Services to the "normal" ping service which doesn't require an app id
+                        Search engines will only be pinged if the sitemap file has changed
+ 2007-09-02     3.0b9   Added tag support for WordPress 2.3
+                        Now using post_date_gmt instead of post_date everywhere
+                        Fixed archive bug with static pages (Thanks to Peter Claus Lamprecht)
+                        Fixed some missing translation domains, thanks to Kirin Lin!
+                        Added Czech translation files for 2.7.1, thanks to Peter Kahoun (http://kahi.cz)
+ 2007-09-04     3.0b10  Added category support for WordPress 2.3
+                        Fixed bug with empty URLs in sitemap
+                        Repaired GET building
+                        Added more info on debug mode
+ 2007-09-23     3.0b11  Changed mysql queries to unbuffered queries
+                        Uses MUCH less memory
+                        Fixed really stupid bug with search engine pings
+                        Option to set how many posts will be included
+ 2007-09-24     3.0     Yeah, 3.0 Final after one and a half year ;)
+                        Removed useless functions
+
 
  Maybe Todo:
  ==============================================================================
@@ -138,7 +173,7 @@
  
  License:
  ==============================================================================
- Copyright 2005,2006,2007 ARNE BRACHHOLD  (email : himself - arnebrachhold - de)
+ Copyright 2005, 2006, 2007 ARNE BRACHHOLD  (email : himself - arnebrachhold - de)
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -205,8 +240,6 @@
   }
   
   Note that you have to return the modified list!  
-   
-
 */
 
 //Enable for dev! Good code doesn't generate any notices...
@@ -335,60 +368,11 @@ if(!function_exists('file_put_contents')) {
 	}
 	
 }
-
-if (!function_exists('stripos')) {
-	/**
-	 * Replace stripos()
-	 *
-	 * @category    PHP
-	 * @package     PHP_Compat
-	 * @link        http://php.net/function.stripos
-	 * @author      Aidan Lister <aidan@php.net>
-	 * @version     $Revision: 1.1 $
-	 * @since       PHP 5
-	 * @require     PHP 4.0.1 (trigger_error)
-	 */
-	function stripos($haystack, $needle, $offset = null) {
-		if (!is_scalar($haystack)) {
-			trigger_error('stripos() expects parameter 1 to be string, ' . gettype($haystack) . ' given', E_USER_WARNING);
-			return false;
-		}
-		
-		if (!is_scalar($needle)) {
-			trigger_error('stripos() needle is not a string or an integer.', E_USER_WARNING);
-			return false;
-		}
-		
-		if (!is_int($offset) && !is_bool($offset) && !is_null($offset)) {
-			trigger_error('stripos() expects parameter 3 to be long, ' . gettype($offset) . ' given', E_USER_WARNING);
-			return false;
-		}
-		
-		// Manipulate the string if there is an offset
-		$fix = 0;
-		if (!is_null($offset)) {
-			if ($offset > 0) {
-				$haystack = substr($haystack, $offset, strlen($haystack) - $offset);
-				$fix = $offset;
-			}
-		}
-		
-		$segments = explode(strtolower($needle), strtolower($haystack), 2);
-		
-		// Check there was a match
-		if (count($segments) == 1) {
-			return false;
-		}
-		
-		$position = strlen($segments[0]) + $fix;
-		return $position;
-	}
-}
 #endregion
 
 /**
  * Represents the status (success and failures) of a building process
- * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+ * @author Arne Brachhold
  * @package sitemap
  * @since 3.0b5
  */
@@ -427,6 +411,12 @@ class GoogleSitemapGeneratorStatus {
 	var $_endTime = 0;
 	
 	/**
+	 * @var bool $$_hasChanged Indicates if the sitemap content has changed
+	 * @access private
+	 */
+	var $_hasChanged = true;
+	
+	/**
 	 * @var int $_memoryUsage The amount of memory used in bytes
 	 * @access private
 	 */
@@ -444,10 +434,12 @@ class GoogleSitemapGeneratorStatus {
 	 */
 	var $_lastTime = 0;
 	
-	function End() {
+	function End($hasChanged = true) {
 		$this->_endTime = $this->GetMicrotimeFloat();
 		
 		$this->SetMemoryUsage();
+		
+		$this->_hasChanged = $hasChanged;
 		
 		$this->Save();
 	}
@@ -569,6 +561,29 @@ class GoogleSitemapGeneratorStatus {
 		return round($this->_yahooEndTime - $this->_yahooStartTime,2);	
 	}
 	
+	var $_usedAsk = false;
+	var $_askSuccess = false;
+	var $_askStartTime = 0;
+	var $_askEndTime = 0;
+	
+	function StartAskPing() {
+		$this->_usedAsk = true;
+		$this->_askStartTime = $this->GetMicrotimeFloat();
+		
+		$this->Save();	
+	}
+	
+	function EndAskPing($success) {
+		$this->_askEndTime = $this->GetMicrotimeFloat();
+		$this->_askSuccess = $success;	
+		
+		$this->Save();	
+	}
+	
+	function GetAskTime() {
+		return round($this->_askEndTime - $this->_askStartTime,2);	
+	}
+	
 	function GetMicrotimeFloat() {
 		list($usec, $sec) = explode(" ", microtime());
 		return ((float)$usec + (float)$sec);
@@ -577,7 +592,7 @@ class GoogleSitemapGeneratorStatus {
 
 /**
  * Represents an item in the page list
- * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+ * @author Arne Brachhold
  * @package sitemap
  * @since 3.0
  */
@@ -612,7 +627,7 @@ class GoogleSitemapGeneratorPage {
 	 * 
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param bool $enabled Should this page be included in thesitemap
 	 * @param string $url The URL or path of the file
 	 * @param float $priority The Priority of the page 0.0 to 1.0
@@ -700,12 +715,14 @@ class GoogleSitemapGeneratorPage {
 	
 	function Render() {
 		
+		if($this->_url == "/" || empty($this->_url)) return '';
+		
 		$r="";
 		$r.= "\t<url>\n";
 		$r.= "\t\t<loc>" . $this->EscapeXML($this->_url) . "</loc>\n";
 		if($this->_lastMod>0) $r.= "\t\t<lastmod>" . date('Y-m-d\TH:i:s+00:00',$this->_lastMod) . "</lastmod>\n";
 		if(!empty($this->_changeFreq)) $r.= "\t\t<changefreq>" . $this->_changeFreq . "</changefreq>\n";	
-		if($this->_priority!==false && $this->_priority!=="") $r.= "\t\t<priority>" . $this->_priority . "</priority>\n";
+		if($this->_priority!==false && $this->_priority!=="") $r.= "\t\t<priority>" . number_format($this->_priority,1) . "</priority>\n";
 		$r.= "\t</url>\n";	
 		return $r;
 	}	
@@ -737,7 +754,7 @@ class GoogleSitemapGeneratorDebugEntry extends GoogleSitemapGeneratorXmlEntry {
 
 /**
  * Base class for all priority providers
- * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+ * @author Arne Brachhold
  * @package sitemap
  * @since 3.0
  */		
@@ -760,7 +777,7 @@ class GoogleSitemapGeneratorPrioProviderBase {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The translated name
 	*/
 	function GetName() {
@@ -772,7 +789,7 @@ class GoogleSitemapGeneratorPrioProviderBase {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The translated description
 	*/
 	function GetDescription() {
@@ -786,7 +803,7 @@ class GoogleSitemapGeneratorPrioProviderBase {
 	 * @param $totalPosts int The total number of posts 
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function GoogleSitemapGeneratorPrioProviderBase($totalComments,$totalPosts) {
 		$this->_totalComments=$totalComments;
@@ -801,7 +818,7 @@ class GoogleSitemapGeneratorPrioProviderBase {
 	 * @param $commentCount int The number of comments for this post
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return int The calculated priority
 	*/
 	function GetPostPriority($postID,$commentCount) {
@@ -811,7 +828,7 @@ class GoogleSitemapGeneratorPrioProviderBase {
 
 /**
  * Priority Provider which calculates the priority based on the number of comments
- * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+ * @author Arne Brachhold
  * @package sitemap
  * @since 3.0
  */		
@@ -822,7 +839,7 @@ class GoogleSitemapGeneratorPrioByCountProvider extends GoogleSitemapGeneratorPr
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The translated name
 	*/
 	function GetName() {
@@ -834,7 +851,7 @@ class GoogleSitemapGeneratorPrioByCountProvider extends GoogleSitemapGeneratorPr
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The translated description
 	*/
 	function GetDescription() {
@@ -848,7 +865,7 @@ class GoogleSitemapGeneratorPrioByCountProvider extends GoogleSitemapGeneratorPr
 	 * @param $totalPosts int The total number of posts 
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function GoogleSitemapGeneratorPrioByCountProvider($totalComments,$totalPosts) {
 		parent::GoogleSitemapGeneratorPrioProviderBase($totalComments,$totalPosts);	
@@ -861,7 +878,7 @@ class GoogleSitemapGeneratorPrioByCountProvider extends GoogleSitemapGeneratorPr
 	 * @param $commentCount int The number of comments for this post
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return int The calculated priority
 	*/
 	function GetPostPriority($postID,$commentCount) {
@@ -877,7 +894,7 @@ class GoogleSitemapGeneratorPrioByCountProvider extends GoogleSitemapGeneratorPr
 
 /**
  * Priority Provider which calculates the priority based on the average number of comments
- * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+ * @author Arne Brachhold
  * @package sitemap
  * @since 3.0
  */	
@@ -894,7 +911,7 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The translated name
 	*/
 	function GetName() {
@@ -906,7 +923,7 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The translated description
 	*/
 	function GetDescription() {
@@ -920,7 +937,7 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 	 * @param $totalPosts int The total number of posts 
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function GoogleSitemapGeneratorPrioByAverageProvider($totalComments,$totalPosts) {
 		parent::GoogleSitemapGeneratorPrioProviderBase($totalComments,$totalPosts);
@@ -937,7 +954,7 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 	 * @param $commentCount int The number of comments for this post
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return int The calculated priority
 	*/
 	function GetPostPriority($postID,$commentCount) {
@@ -958,7 +975,7 @@ class GoogleSitemapGeneratorPrioByAverageProvider extends GoogleSitemapGenerator
 
 /**
  * Priority Provider which calculates the priority based on the popularity by the PopularityContest Plugin
- * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+ * @author Arne Brachhold
  * @package sitemap
  * @since 3.0
  */	
@@ -969,7 +986,7 @@ class GoogleSitemapGeneratorPrioByPopularityContestProvider extends GoogleSitema
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The translated name
 	*/
 	function GetName() {
@@ -981,7 +998,7 @@ class GoogleSitemapGeneratorPrioByPopularityContestProvider extends GoogleSitema
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The translated description
 	*/
 	function GetDescription() {
@@ -995,7 +1012,7 @@ class GoogleSitemapGeneratorPrioByPopularityContestProvider extends GoogleSitema
 	 * @param $totalPosts int The total number of posts 
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function GoogleSitemapGeneratorPrioByPopularityContestProvider($totalComments,$totalPosts) {
 		parent::GoogleSitemapGeneratorPrioProviderBase($totalComments,$totalPosts);
@@ -1008,7 +1025,7 @@ class GoogleSitemapGeneratorPrioByPopularityContestProvider extends GoogleSitema
 	 * @param $commentCount int The number of comments for this post
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return int The calculated priority
 	*/
 	function GetPostPriority($postID,$commentCount) {
@@ -1043,14 +1060,19 @@ class GoogleSitemapGeneratorPrioByPopularityContestProvider extends GoogleSitema
  * Class to generate a sitemaps.org Sitemaps compliant sitemap of a WordPress blog.
  * 
  * @package sitemap
- * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+ * @author Arne Brachhold
  * @since 3.0
 */
 class GoogleSitemapGenerator {	
 	/**
 	 * @var Version of the generator
 	*/
-	var $_version = "3.0b6";
+	var $_version = "3.0";
+	
+	/**
+	 * @var Version of the generator in SVN
+	*/
+	var $_svnVersion = '$Id: sitemap.php 19712 2007-09-24 11:32:47Z arnee $';
 	
 	/**
 	 * @var string The full path to the blog directory
@@ -1101,13 +1123,23 @@ class GoogleSitemapGenerator {
 	 * @var bool Defines if the sitemap building process is active at the moment
 	 */		
 	var $_isActive = false;
+
+	/**
+	 * @var object The file handle which is used to write the sitemap file
+	 */	
+	var $_fileHandle = null;
+	
+	/**
+	 * @var object The file handle which is used to write the zipped sitemap file
+	 */	
+	var $_fileZipHandle = null;
 	
 	/**
 	 * Returns the path to the blog directory
 	 * 
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The full path to the blog directory
 	*/
 	function GetHomePath() {
@@ -1140,7 +1172,7 @@ class GoogleSitemapGenerator {
 	 * Returns the path to the directory where the plugin file is located
 	 * @since 3.0b5
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The path to the plugin directory
 	 */
 	function GetPluginPath() {
@@ -1152,13 +1184,13 @@ class GoogleSitemapGenerator {
 	 * Returns the URL to the directory where the plugin file is located
 	 * @since 3.0b5
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The URL to the plugin directory
 	 */
 	function GetPluginUrl() {
 		$path = dirname(__FILE__);
 		$path = str_replace("\\","/",$path);
-		$path = trailingslashit(get_bloginfo('home')) . trailingslashit(substr($path,strpos($path,"wp-content/")));
+		$path = trailingslashit(get_bloginfo('wpurl')) . trailingslashit(substr($path,strpos($path,"wp-content/")));
 		return $path;
 	}	
 	
@@ -1166,15 +1198,39 @@ class GoogleSitemapGenerator {
 	 * Returns the URL to default XSLT style if it exists
 	 * @since 3.0b5
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return string The URL to the default stylesheet, empry string if not available.
 	 */
 	function GetDefaultStyle() {
 		$p = $this->GetPluginPath();
 		if(file_exists($p . "sitemap.xsl")) {
-			return $this->GetPluginUrl() . "sitemap.xsl";	
+			return $this->GetPluginUrl() . 'sitemap.xsl';	
 		}
-		return "";
+		return '';
+	}
+	
+	/**
+	 * Returns the path to the robots.txt file in the blog root
+	 * 
+	 * @since 3.0b8
+	 * @access private
+	 * @author Arne Brachhold
+	 * @return The full path to the robots.txt file
+	 */
+	function GetRobotsFilePath() {
+		return trailingslashit($this->GetHomePath()) . 'robots.txt';	
+	}
+	
+	/**
+	 * Returns the URL to the robots.txt file in the blog root
+	 * 
+	 * @since 3.0b8
+	 * @access private
+	 * @author Arne Brachhold
+	 * @return The full URL to the robots.txt file
+	 */
+	function GetRobotsFileUrl() {
+		return trailingslashit(get_bloginfo('siteurl')) . 'robots.txt';	
 	}
 	
 	/**
@@ -1182,19 +1238,19 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function InitOptions() {
 		
 		$this->_options=array();
 		$this->_options["sm_b_prio_provider"]="GoogleSitemapGeneratorPrioByCountProvider";			//Provider for automatic priority calculation
 		$this->_options["sm_b_filename"]="sitemap.xml";		//Name of the Sitemap file
-		$this->_options["sm_b_debug"]=false;				//Write debug messages in the xml file
+		$this->_options["sm_b_debug"]=true;					//Write debug messages in the xml file
 		$this->_options["sm_b_xml"]=true;					//Create a .xml file
 		$this->_options["sm_b_gzip"]=true;					//Create a gzipped .xml file(.gz) file
 		$this->_options["sm_b_ping"]=true;					//Auto ping Google
 		$this->_options["sm_b_pingyahoo"]=false;			//Auto ping YAHOO
-		$this->_options["sm_b_yahookey"]='';				//YAHOO Application KEy
+		$this->_options["sm_b_pingask"]=true;				//Auto ping YAHOO
 		$this->_options["sm_b_manual_enabled"]=false;		//Allow manual creation of the sitemap via GET request
 		$this->_options["sm_b_auto_enabled"]=true;			//Rebuild sitemap when content is changed
 		$this->_options["sm_b_manual_key"]=md5(microtime());//The secret key to build the sitemap via GET request
@@ -1203,7 +1259,9 @@ class GoogleSitemapGenerator {
 		$this->_options["sm_b_hide_donated"]=false;			//And hide the thank you..
 		$this->_options["sm_b_memory"] = '';				//Set Memory Limit (e.g. 16M)
 		$this->_options["sm_b_time"] = -1;					//Set time limit in seconds, 0 for unlimited, -1 for disabled
+		$this->_options["sm_b_max_posts"] = -1;				//Maximum number of posts, <= 0 for all
 		$this->_options["sm_b_style"] = $this->GetDefaultStyle(); //Include a stylesheet in the XML
+		$this->_options["sm_b_robots"] = false;				//Modify or create robots.txt file in blog root which contains the sitemap location
 		
 
 		$this->_options["sm_b_location_mode"]="auto";		//Mode of location, auto or manual
@@ -1213,15 +1271,19 @@ class GoogleSitemapGenerator {
 		$this->_options["sm_in_home"]=true;					//Include homepage
 		$this->_options["sm_in_posts"]=true;				//Include posts
 		$this->_options["sm_in_pages"]=true;				//Include static pages
-		$this->_options["sm_in_cats"]=true;					//Include categories
-		$this->_options["sm_in_arch"]=true;					//Include archives
+		$this->_options["sm_in_cats"]=false;				//Include categories
+		$this->_options["sm_in_arch"]=false;				//Include archives
+		$this->_options["sm_in_auth"]=false;				//Include author pages
+		$this->_options["sm_in_tags"]=false;				//Include tag pages
 
 		$this->_options["sm_cf_home"]="daily";				//Change frequency of the homepage
 		$this->_options["sm_cf_posts"]="monthly";			//Change frequency of posts
 		$this->_options["sm_cf_pages"]="weekly";			//Change frequency of static pages
 		$this->_options["sm_cf_cats"]="weekly";				//Change frequency of categories
+		$this->_options["sm_cf_auth"]="weekly";				//Change frequency of author pages
 		$this->_options["sm_cf_arch_curr"]="daily";			//Change frequency of the current archive (this month)
 		$this->_options["sm_cf_arch_old"]="yearly";			//Change frequency of older archives
+		$this->_options["sm_cf_tags"]="weekly";				//Change frequency of tags
 
 		$this->_options["sm_pr_home"]=1.0;					//Priority of the homepage
 		$this->_options["sm_pr_posts"]=0.6;					//Priority of posts (if auto prio is disabled)
@@ -1229,6 +1291,8 @@ class GoogleSitemapGenerator {
 		$this->_options["sm_pr_pages"]=0.6;					//Priority of static pages
 		$this->_options["sm_pr_cats"]=0.3;					//Priority of categories
 		$this->_options["sm_pr_arch"]=0.3;					//Priority of archives	
+		$this->_options["sm_pr_auth"]=0.3;					//Priority of author pages
+		$this->_options["sm_pr_tags"]=0.3;					//Priority of tags	
 	}
 	
 	/**
@@ -1236,7 +1300,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function LoadOptions() {
 		
@@ -1257,7 +1321,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function GoogleSitemapGenerator() {
 		
@@ -1271,7 +1335,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return int The version
 	*/
 	function GetVersion() {
@@ -1285,7 +1349,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return array An array which contains the names of the parent classes
 	*/
 	function GetParentClasses($classname) {
@@ -1306,7 +1370,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return bool true if the given class is a subclass of the other one
 	*/
 	function IsSubclassOf($className, $parentName) {
@@ -1328,7 +1392,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function Initate() {
 		if(!$this->_initiated) {
@@ -1364,7 +1428,7 @@ class GoogleSitemapGenerator {
 	 * @since 3.0
 	 * @access public
 	 * @return GoogleSitemapGenerator The instance or null if not available. 
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function &GetInstance() {
 		if(isset($GLOBALS["sm_instance"])) {
@@ -1378,7 +1442,7 @@ class GoogleSitemapGenerator {
 	 * @since 3.0
 	 * @access public
 	 * @return bool true if active
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function IsActive() {
 		$inst = &GoogleSitemapGenerator::GetInstance();
@@ -1386,11 +1450,35 @@ class GoogleSitemapGenerator {
 	}
 	
 	/**
+	 * Returns if the compressed sitemap was activated
+	 * 
+	 * @since 3.0b8
+	 * @access private
+	 * @author Arne Brachhold
+	 * @return true if compressed
+	 */
+	function IsGzipEnabled() {
+		return ($this->GetOption("b_gzip")===true && function_exists("gzwrite"));
+	}
+
+	/**
+	 * Returns if this version of WordPress supports the new taxonomy system
+	 * 
+	 * @since 3.0b8
+	 * @access private
+	 * @author Arne Brachhold
+	 * @return true if supported
+	 */
+	function IsTaxonomySupported() {
+		return (function_exists("get_taxonomy") && function_exists("get_terms"));
+	}
+	
+	/**
 	 * Enables the Google Sitemap Generator and registers the WordPress hooks
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function Enable() {
 		
@@ -1400,23 +1488,23 @@ class GoogleSitemapGenerator {
 
 			//Register the sitemap creator to wordpress...
 			add_action('admin_menu', array(&$GLOBALS["sm_instance"], 'RegisterAdminPage'));
-			
-			//Manual Hook via GET
-			add_action('init', array(&$GLOBALS["sm_instance"], 'CheckForManualBuild'));
 
 			//Register to various events... @WordPress Dev Team: I wish me a 'public_content_changed' action :)
 			
 			//If a new post gets saved
-			add_action('save_post', array(&$GLOBALS["sm_instance"], 'CheckForAutoBuild'),99,1);
+			add_action('save_post', array(&$GLOBALS["sm_instance"], 'CheckForAutoBuild'),9999,1);
 
 			//Existing post gets edited
-			add_action('edit_post', array(&$GLOBALS["sm_instance"], 'CheckForAutoBuild'),99,1); 
+			add_action('edit_post', array(&$GLOBALS["sm_instance"], 'CheckForAutoBuild'),9999,1); 
 
 			//Existing posts gets deleted
-			add_action('delete_post', array(&$GLOBALS["sm_instance"], 'CheckForAutoBuild'),99,1);
+			add_action('delete_post', array(&$GLOBALS["sm_instance"], 'CheckForAutoBuild'),9999,1);
 			
 			//Existing post gets published
-			add_action('publish_post', array(&$GLOBALS["sm_instance"], 'CheckForAutoBuild'),99,1); 
+			add_action('publish_post', array(&$GLOBALS["sm_instance"], 'CheckForAutoBuild'),9999,1); 
+			
+			//Manual Hook via GET
+			$GLOBALS["sm_instance"]->CheckForManualBuild();
 		}
 	}
 	
@@ -1426,11 +1514,11 @@ class GoogleSitemapGenerator {
 	 * @param int $postID The ID of the post to handle. Used to avoid double rebuilding if more than one hook was fired.
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function CheckForAutoBuild($postID) {
 		$this->Initate();
-		if($this->GetOption("b_auto_enabled")===true && $this->_lastPostID != $postID) {
+		if($this->GetOption("b_auto_enabled")===true && $this->_lastPostID != $postID && (!defined('WP_IMPORTING') || WP_IMPORTING != true)) {
 			$this->_lastPostID = $postID;
 			$this->BuildSitemap();	
 		}
@@ -1441,7 +1529,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function CheckForManualBuild() {
 		if(!empty($_GET["sm_command"]) && !empty($_GET["sm_key"])) {
@@ -1452,13 +1540,13 @@ class GoogleSitemapGenerator {
 			}	
 		}
 	}
-	
+
 	/**
 	 * Validates all given Priority Providers by checking them for required methods and existence
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function ValidatePrioProviders() {
 		$validProviders=array();
@@ -1484,7 +1572,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function AddDefaultPrioProviders($providers) {
 		array_push($providers,"GoogleSitemapGeneratorPrioByCountProvider");
@@ -1500,7 +1588,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	*/
 	function LoadPages() {
 		global $wpdb;
@@ -1520,13 +1608,9 @@ class GoogleSitemapGenerator {
 			$this->_pages=$storedpages;
 		} else {
 			$this->_pages=array();
-			//Add the option, Note the autoload=false because when the autoload happens, our class GoogleSitemapGeneratorPage doesn't exist
-			add_option("sm_cpages",$this->_pages,"Storage for custom pages of the sitemap plugin",'no');	
 		}	
 		
-		if($needsUpdate) {
-			$this->SavePages();
-		}
+		if($needsUpdate) $this->SavePages();
 	}
 	
 	/**
@@ -1534,14 +1618,19 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return true on success
 	*/
 	function SavePages() {
 		$oldvalue = get_option("sm_cpages");
 		if($oldvalue == $this->_pages) {
 			return true;
-		} else 	return update_option("sm_cpages",$this->_pages);
+		} else {
+			delete_option("sm_cpages");
+			//Add the option, Note the autoload=false because when the autoload happens, our class GoogleSitemapGeneratorPage doesn't exist
+			add_option("sm_cpages",$this->_pages,"Storage for custom pages of the sitemap plugin","no");
+			return true;
+		}
 	}
 	
 	
@@ -1550,7 +1639,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param bool $forceAuto Force the return value to the autodetected value.
 	 * @return The URL to the Sitemap file
 	*/
@@ -1568,7 +1657,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param bool $forceAuto Force the return value to the autodetected value.
 	 * @return The URL to the gzipped Sitemap file
 	*/
@@ -1581,7 +1670,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param bool $forceAuto Force the return value to the autodetected value.
 	 * @return The file system path;
 	*/
@@ -1598,7 +1687,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param bool $forceAuto Force the return value to the autodetected value.
 	 * @return The file system path;
 	*/
@@ -1612,7 +1701,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $key string The Configuration Key
 	 * @return mixed The value
 	*/
@@ -1625,7 +1714,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $key string The Configuration Key
 	 * @return mixed The value
 	 */
@@ -1641,7 +1730,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $key string The configuration key
 	 * @param $value mixed The new object
 	 */
@@ -1656,7 +1745,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return bool true on success
 	 */
 	function SaveOptions() {
@@ -1672,7 +1761,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return array An array with postIDs and their comment count
 	 */
 	function GetComments() {
@@ -1694,7 +1783,7 @@ class GoogleSitemapGenerator {
 	 * 
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>	
+	 * @author Arne Brachhold	
 	 * @param $comments array The Array with posts and c0mment count
 	 * @see sm_getComments
 	 * @return The full number of comments
@@ -1705,41 +1794,14 @@ class GoogleSitemapGenerator {
 			$commentCount+=$v;	
 		}	
 		return $commentCount;
-	}	
-	
-	/**
-	 * Removes an element of an array and reorders the indexes
-	 * 
-	 * @since 3.0
-	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
-	 * @param array $array The array with the values
-	 * @param object $indice The key which vallue should be removed
-	 * @return array The modified array
-	 */
-	function ArrayRemove ($array, $indice) {
-		if (array_key_exists($indice, $array)) {
-			$temp = $array[0];
-			$array[0] = $array[$indice];
-			$array[$indice] = $temp;
-			array_shift($array);
-
-			for ($i = 0 ; $i < $indice ; $i++)
-			{
-				$dummy = $array[$i];
-				$array[$i] = $temp;
-				$temp = $dummy;
-			}
-		}
-		return $array;
-	} 
+	}
 	
 	/**
 	 * Adds a url to the sitemap. You can use this method or call AddElement directly.
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>  
+	 * @author Arne Brachhold  
 	 * @param $loc string The location (url) of the page
 	 * @param $lastMod int The last Modification time as a UNIX timestamp
 	 * @param $changeFreq string The change frequenty of the page, Valid values are "always", "hourly", "daily", "weekly", "monthly", "yearly" and "never".
@@ -1758,13 +1820,21 @@ class GoogleSitemapGenerator {
 	 * 
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $page The element
 	 */
 	function AddElement(&$page) {
 		if(empty($page)) return;
 		
-		$this->_content[] = $page;
+		$s = $page->Render();
+		
+		if($this->_fileZipHandle && $this->IsGzipEnabled()) {
+			gzwrite($this->_fileZipHandle,$s);
+		}
+		
+		if($this->_fileHandle && $this->GetOption("b_xml")) {
+			fwrite($this->_fileHandle,$s);
+		}
 	}
 	
 	/**
@@ -1786,19 +1856,44 @@ class GoogleSitemapGenerator {
 					//it's not writeable too.
 					if(!@chmod($pathtoffilename, 0666)) {
 						//darn couldn't fix up parrent directory this hosting is foobar.
-						//be a good programmer and cleanup your mess.
-						unset($pathtofilename);
 						//Lets error because of the permissions problems.
 						return false;
-					} else {
-						//Delete the file so the script can create it
-						if(!@unlink($filename)) return false;
-					}
+					} 
 				}
 			}
 		}
 		//we can write, return 1/true/happy dance.
 		return true;
+	}
+	
+	/**
+	 * Creates or opens the robots.txt in blog root and inserts the sitemap location
+	 * 
+	 * @since 3.0b8
+	 * @access private
+	 * @author Arne Brachhold
+	 * @return true on success
+	 */
+	function WriteRobotsFile() {
+		$file = $this->GetRobotsFilePath();
+		
+		$marker = 'XML-SITEMAP-PLUGIN';
+		
+		$current = extract_from_markers($file,$marker);
+		if(is_array($current)) $current = $current[0];
+		
+		$smUrl = $this->GetXmlUrl();
+		if($this->IsGzipEnabled()) {
+			$smUrl = $this->GetZipUrl();	
+		}
+		
+		$new = "Sitemap: " . $smUrl;
+		
+		if($current != $new) {
+			if($this->IsFileWritable($file)) return insert_with_markers($file,$marker,array($new));
+			else return false;
+		}
+		return true;						
 	}
 	
 	/**
@@ -1810,7 +1905,6 @@ class GoogleSitemapGenerator {
 	 * @return array An array with messages such as failed writes etc.
 	 */
 	function BuildSitemap() {
-		
 		global $wpdb, $posts, $wp_version;	
 		$this->Initate();
 		
@@ -1830,11 +1924,40 @@ class GoogleSitemapGenerator {
 		
 		//$this->AddElement(new GoogleSitemapGeneratorXmlEntry());
 		
-		//Return messages to the user in frontend
-		$messages=array();
-		
 		//Debug mode?
 		$debug=$this->GetOption("b_debug");
+		
+		
+		if($this->GetOption("b_xml")) {
+			$fileName = $this->GetXmlPath();
+			$status->StartXml($this->GetXmlPath(),$this->GetXmlUrl());
+			
+			if($this->IsFileWritable($fileName)) {
+				
+				$this->_fileHandle = fopen($fileName,"w");
+				if(!$this->_fileHandle) $status->EndXml(false,"Not openable");
+				
+			} else $status->EndXml(false,"not writable");
+		}
+		
+		//Write gzipped sitemap file
+		if($this->IsGzipEnabled()) {
+			$fileName = $this->GetZipPath();
+			$status->StartZip($this->GetZipPath(),$this->GetZipUrl());
+			
+			if($this->IsFileWritable($fileName)) {
+				
+				$this->_fileZipHandle = gzopen($fileName,"w1");
+				if(!$this->_fileZipHandle) $status->EndZip(false,"Not openable");
+				
+			} else $status->EndZip(false,"not writable");	
+		}	
+		
+		if(!$this->_fileHandle && !$this->_fileZipHandle) {
+			$status->End();
+			return;
+		}	
+		
 		
 		//Content of the XML file
 		$this->AddElement(new GoogleSitemapGeneratorXmlEntry('<?xml version="1.0" encoding="UTF-8"' . '?' . '>'));
@@ -1843,7 +1966,6 @@ class GoogleSitemapGenerator {
 			$this->AddElement(new GoogleSitemapGeneratorXmlEntry('<' . '?xml-stylesheet type="text/xsl" href="' . $this->GetOption("b_style") . '"?' . '>'));	
 		}
 		
-		//WordPress powered... and me! :D
 		$this->AddElement(new GoogleSitemapGeneratorDebugEntry("generator=\"wordpress/" . get_bloginfo('version') . "\""));
 		$this->AddElement(new GoogleSitemapGeneratorDebugEntry("sitemap-generator-url=\"http://www.arnebrachhold.de\" sitemap-generator-version=\"" . $this->GetVersion() . "\""));
 		$this->AddElement(new GoogleSitemapGeneratorDebugEntry("generated-on=\"" . date(get_option("date_format") . " " . get_option("time_format")) . "\""));
@@ -1861,9 +1983,11 @@ class GoogleSitemapGenerator {
 		//Go XML!
 		$this->AddElement(new GoogleSitemapGeneratorXmlEntry('<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/09/sitemap.xsd"	xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'));
 		
+		$home = get_bloginfo('url');
+		
 		//Add the home page (WITH a slash!)
 		if($this->GetOption("in_home")) {
-			$this->AddUrl(trailingslashit(get_bloginfo('url')),$this->GetTimestampFromMySql(get_lastpostmodified('GMT')),$this->GetOption("cf_home"),$this->GetOption("pr_home"));
+			$this->AddUrl(trailingslashit($home),$this->GetTimestampFromMySql(get_lastpostmodified('GMT')),$this->GetOption("cf_home"),$this->GetOption("pr_home"));
 		}
 		
 		//Add the posts
@@ -1874,31 +1998,51 @@ class GoogleSitemapGenerator {
 			//Pre 2.1 compatibility. 2.1 introduced 'future' as post_status so we don't need to check post_date
 			$wpCompat = (floatval($wp_version) < 2.1);
 			
-			$sql="SELECT `ID`, `post_author`, `post_date`, `post_status`, `post_name`, `post_modified`, `post_parent`, `post_type` FROM `" . $wpdb->posts . "` WHERE (";
+			$sql="SELECT `ID`, `post_author`, `post_date`, `post_date_gmt`, `post_status`, `post_name`, `post_modified`, `post_modified_gmt`, `post_parent`, `post_type` FROM `" . $wpdb->posts . "` WHERE ";
+			
+			$where = '(';
 			
 			if($this->GetOption('in_posts')) {
-				if($wpCompat) $sql.="(post_status = 'publish' AND post_date_gmt <= '" . gmdate('Y-m-d H:i:59') . "')";
-				else $sql.=" post_status = 'publish' ";
+				//WP < 2.1: posts are post_status = publish 
+				//WP >= 2.1: post_type must be 'post', no date check required because future posts are post_status='future'
+				if($wpCompat) $where.="(post_status = 'publish' AND post_date_gmt <= '" . gmdate('Y-m-d H:i:59') . "')";
+				else $where.=" (post_status = 'publish' AND (post_type = 'post' OR post_type = '')) ";
 			}
 			
 			if($this->GetOption('in_pages')) {
 				if($this->GetOption('in_posts')) {
-					$sql.=" OR ";	
+					$where.=" OR ";	
 				}
-				$sql.=" post_status='static' ";
+				if($wpCompat) {
+					//WP < 2.1: posts have post_status = published, pages have post_status = static
+					$where.=" post_status='static' ";
+				} else {
+					//WP >= 2.1: posts have post_type = 'post' and pages have post_type = 'page'. Both must be published. 
+					$where.=" (post_status = 'publish' AND post_type = 'page') ";
+				}
 			}
 			
-			$sql.=") ";
+			$where.=") ";
 			
-			$sql.=" AND post_password='' ORDER BY post_modified DESC";
+			$where.=" AND post_password='' ORDER BY post_modified DESC";
+			
+			$sql .= $where;
+			
+			if($this->GetOption("sm_b_max_posts")>0) {
+				$sql.=" LIMIT 0," . $this->GetOption("sm_b_max_posts"); 		
+			}	 
+			
+			$postCount = intval($wpdb->get_var("SELECT COUNT(*) AS cnt FROM `" . $wpdb->posts . "` WHERE ". $where,0,0));
+										
 			
 			//Retrieve all posts and static pages (if enabled)
-			$postRes=$wpdb->get_results($sql);
+			
+			$con = mysql_connect(DB_HOST,DB_USER,DB_PASSWORD,true);
+			mysql_select_db(DB_NAME,$con);
+			
+			$postRes = mysql_unbuffered_query($sql,$con);
 			
 			if($postRes) {
-				
-				//Count of all posts
-				$postCount=count($postRes);
 				
 				//#type $prioProvider GoogleSitemapGeneratorPrioProviderBase
 				$prioProvider=NULL;
@@ -1909,9 +2053,9 @@ class GoogleSitemapGenerator {
 				}
 				
 				//$posts is used by Alex King's Popularity Contest plugin
-				if($posts == null || !is_array($posts)) {
-					$posts = &$postRes;	
-				}
+				//if($posts == null || !is_array($posts)) {
+				//	$posts = &$postRes;	
+				//}
 				
 				$z = 1;
 				$zz = 1;
@@ -1926,42 +2070,55 @@ class GoogleSitemapGenerator {
 				
 				$minPrio=$this->GetOption('pr_posts_min');
 				
-				//Fill the cache with our DB result. Since it's incomplete (no text-content for example), we will clean it later.
-				update_post_cache($postRes);
 
 				//Cycle through all posts and add them
-				foreach($postRes as $post) {
+				while($post = mysql_fetch_object($postRes)) {
 				
-					//Set the current working post
-					$GLOBALS['post'] = &$post;
+					//Fill the cache with our DB result. Since it's incomplete (no text-content for example), we will clean it later.
+					$cache = array(&$post);
+					update_post_cache($cache);
 				
-					//Default Priority if auto calc is disabled
-					$prio = 0;
+					$permalink = get_permalink($post->ID);
+					if($permalink != $home) {
+								
+						$isPage = false;
+						if($wpCompat) {
+							$isPage = ($post->post_status == 'static');
+						} else {
+							$isPage = ($post->post_type == 'page');	
+						}
+						
+						//Set the current working post
+						$GLOBALS['post'] = &$post;
 					
-					if($post->post_status=='static') {
-						//Priority for static pages
-						$prio = $default_prio_pages;
-					} else {
-						//Priority for normal posts
-						$prio = $default_prio_posts;
-					}
-					
-					//If priority calc. is enabled, calculate (but only for posts, not pages)!
-					if($prioProvider !== null && $post->post_status != 'static') {
+						//Default Priority if auto calc is disabled
+						$prio = 0;
+							
+						if($isPage) {
+							//Priority for static pages
+							$prio = $default_prio_pages;
+						} else {
+							//Priority for normal posts
+							$prio = $default_prio_posts;
+						}
+						
+						//If priority calc. is enabled, calculate (but only for posts, not pages)!
+						if($prioProvider !== null && !$isPage) {
 
-						//Comment count for this post
-						$cmtcnt = (isset($comments[$post->ID])?$comments[$post->ID]:0);
-						$prio = $prioProvider->GetPostPriority($post->ID,$cmtcnt);
+							//Comment count for this post
+							$cmtcnt = (isset($comments[$post->ID])?$comments[$post->ID]:0);
+							$prio = $prioProvider->GetPostPriority($post->ID,$cmtcnt);
 
-						if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry('Debug: Priority report of postID ' . $post->ID . ': Comments: ' . $cmtcnt . ' of ' . $commentCount . ' = ' . $prio . ' points'));
-					}	
-					
-					if($post->post_status != 'static' && $minPrio>0 && $prio<$minPrio) {
-						$prio = $minPrio;
+							if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry('Debug: Priority report of postID ' . $post->ID . ': Comments: ' . $cmtcnt . ' of ' . $commentCount . ' = ' . $prio . ' points'));
+						}	
+						
+						if(!$isPage && $minPrio>0 && $prio<$minPrio) {
+							$prio = $minPrio;
+						}
+						
+						//Add it
+						$this->AddUrl($permalink,$this->GetTimestampFromMySql(($post->post_modified_gmt && $post->post_modified_gmt!='0000-00-00 00:00:00'?$post->post_modified_gmt:$post->post_date_gmt)),($isPage?$cf_pages:$cf_posts),$prio);
 					}
-					
-					//Add it
-					$this->AddUrl(get_permalink($post->ID),$this->GetTimestampFromMySql(($post->post_modified && $post->post_modified!='0000-00-00 00:00:00'?$post->post_modified:$post->post_date)),($post->post_status=='static'?$cf_pages:$cf_posts),$prio);
 					
 					//Update the status every 100 posts and at the end. 
 					//If the script breaks because of memory or time limit, 
@@ -1979,6 +2136,7 @@ class GoogleSitemapGenerator {
 				unset($postRes);
 				unset($prioProvider);
 				
+				mysql_close($con);
 			}
 			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: End Postings"));
 		}
@@ -1987,13 +2145,38 @@ class GoogleSitemapGenerator {
 		if($this->GetOption("in_cats")) {
 			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: Start Cats"));
 			
-			$catsRes=$wpdb->get_results("SELECT cat_ID AS ID, MAX(post_modified) AS last_mod FROM `" . $wpdb->posts . "` p LEFT JOIN `" . $wpdb->post2cat . "` pc ON p.ID = pc.post_id LEFT JOIN `" . $wpdb->categories . "` c ON pc.category_id = c.cat_ID WHERE post_status = 'publish' GROUP BY cat_ID");
-			if($catsRes) {
-				foreach($catsRes as $cat) {
-					if($cat && $cat->ID && $cat->ID>0) {
-						if($debug) if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Cat-ID:" . $cat->ID)); 	
-						$this->AddUrl(get_category_link($cat->ID),$this->GetTimestampFromMySql($cat->last_mod),$this->GetOption("cf_cats"),$this->GetOption("pr_cats"));
-					}
+			if(!$this->IsTaxonomySupported()) {
+			
+				$catsRes=$wpdb->get_results("
+							SELECT 
+								c.cat_ID AS ID, 
+								MAX(p.post_modified_gmt) AS last_mod 
+							FROM 
+								`" . $wpdb->categories . "` c,
+								`" . $wpdb->post2cat . "` pc,
+								`" . $wpdb->posts . "` p
+							WHERE
+								pc.category_id = c.cat_ID
+								AND p.ID = pc.post_id
+								AND p.post_status = 'publish'
+								AND p.post_type='post'
+							GROUP
+								BY c.cat_id
+							");						
+				if($catsRes) {
+					foreach($catsRes as $cat) {
+						if($cat && $cat->ID && $cat->ID>0) {
+							if($debug) if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Cat-ID:" . $cat->ID)); 	
+							$this->AddUrl(get_category_link($cat->ID),$this->GetTimestampFromMySql($cat->last_mod),$this->GetOption("cf_cats"),$this->GetOption("pr_cats"));
+						}
+					}	
+				}
+			} else {
+				$cats = get_terms("category",array("hide_empty"=>true,"hierarchical"=>false));
+				if($cats && is_array($cats) && count($cats)>0) {
+					foreach($cats AS $cat) {
+						$this->AddUrl(get_category_link($cat->term_id),0,$this->GetOption("cf_cats"),$this->GetOption("pr_cats"));	
+					}	
 				}	
 			}
 			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: End Cats"));	
@@ -2004,7 +2187,25 @@ class GoogleSitemapGenerator {
 			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: Start Archive"));
 			$now = current_time('mysql');
 
-			$arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, MAX(post_date) as last_mod, count(ID) as posts FROM $wpdb->posts WHERE post_date < '$now' AND post_status = 'publish' GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date DESC");
+			//WP2.1 introduced post_status='future', for earlier WP versions we need to check the post_date_gmt
+			$arcresults = $wpdb->get_results("
+						SELECT DISTINCT 
+							YEAR(post_date_gmt) AS `year`, 
+							MONTH(post_date_gmt) AS `month`, 
+							MAX(post_date_gmt) as last_mod, 
+							count(ID) as posts 
+						FROM 
+							$wpdb->posts 
+						WHERE 
+							post_date < '$now' 
+							AND post_status = 'publish' 
+							AND post_type = 'post'
+							" . (floatval($wp_version) < 2.1?"AND {$wpdb->posts}.post_date_gmt <= '" . gmdate('Y-m-d H:i:59') . "'":"") . "
+						GROUP BY 
+							YEAR(post_date_gmt), 
+							MONTH(post_date_gmt) 
+						ORDER BY 
+							post_date_gmt DESC");
 			if ($arcresults) {
 				foreach ($arcresults as $arcresult) {
 					
@@ -2022,6 +2223,69 @@ class GoogleSitemapGenerator {
 				}
 			}
 			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: End Archive")); 	
+		}
+		
+		//Add the author pages
+		if($this->GetOption("in_auth")) {
+			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: Start Author pages"));
+			
+			$linkFunc = null;
+			
+			//get_author_link is deprecated in WP 2.1, try to use get_author_posts_url first. 
+			if(function_exists('get_author_posts_url')) {
+				$linkFunc = 'get_author_posts_url'; 		
+			} else if(function_exists('get_author_link')) {
+				$linkFunc = 'get_author_link'; 	
+			} 
+			
+			//Who knows what happens in later WP versions, so check again if it worked
+			if($linkFunc !== null) {
+			    //Unfortunately there is no API function to get all authors, so we have to do it the dirty way...
+				//We retrieve only users with published and not password protected posts (and not pages)
+				//WP2.1 introduced post_status='future', for earlier WP versions we need to check the post_date_gmt
+				$sql = "SELECT DISTINCT 
+							{$wpdb->users}.ID, 
+							{$wpdb->users}.user_nicename, 
+							MAX({$wpdb->posts}.post_modified_gmt) AS last_post 
+						FROM 
+							{$wpdb->users}, 
+							{$wpdb->posts} 
+						WHERE 
+							{$wpdb->posts}.post_author = {$wpdb->posts}.ID 
+							AND {$wpdb->posts}.post_status = 'publish'
+							AND {$wpdb->posts}.post_type = 'post' 
+							AND {$wpdb->posts}.post_password = '' 
+							" . (floatval($wp_version) < 2.1?"AND {$wpdb->posts}.post_date_gmt <= '" . gmdate('Y-m-d H:i:59') . "'":"") . "
+						GROUP BY 
+							{$wpdb->posts}.ID, 
+							{$wpdb->users}.user_nicename";
+				$authors = $wpdb->get_results($sql);
+				
+				if($authors && is_array($authors)) {
+					foreach($authors as $author) {
+						if($debug) if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Author-ID:" . $author->ID)); 	
+						$url = ($linkFunc=='get_author_posts_url'?get_author_posts_url($author->ID,$author->user_nicename):get_author_link(false,$author->ID,$author->user_nicename));
+						$this->AddUrl($url,$this->GetTimestampFromMySql($author->last_post),$this->GetOption("cf_auth"),$this->GetOption("pr_auth"));
+					}
+				}
+			} else {
+				//Too bad, no author pages for you :(
+				if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: No valid author link function found"));	
+			}
+	
+			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: End Author pages"));	
+		}
+		
+		//Add tag pages
+		if($this->GetOption("in_tags") && $this->IsTaxonomySupported()) {
+			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: Start Tags"));
+			$tags = get_terms("post_tag",array("hide_empty"=>true,"hierarchical"=>false));
+			if($tags && is_array($tags) && count($tags)>0) {
+				foreach($tags AS $tag) {
+					$this->AddUrl(get_tag_link($tag->term_id),0,$this->GetOption("cf_tags"),$this->GetOption("pr_tags"));	
+				}	
+			}	
+			if($debug) $this->AddElement(new GoogleSitemapGeneratorDebugEntry("Debug: End Tags"));	
 		}
 		
 		//Add the custom pages
@@ -2043,77 +2307,71 @@ class GoogleSitemapGenerator {
 		
 		$this->AddElement(new GoogleSitemapGeneratorXmlEntry("</urlset>"));
 		
-		$s='';
-		$c = count($this->_content);
-		for($i =0; $i<$c; $i++) {
-			$s.=$this->_content[$i]->Render() . "\n";	
-		}
-		
+
 		$pingUrl='';
 		
-		$oldHandler = set_error_handler(array(&$this,"TrackError"));
-		
-		//Write normal sitemap file
 		if($this->GetOption("b_xml")) {
-			$fileName = $this->GetXmlPath();
-			$status->StartXml($this->GetXmlPath(),$this->GetXmlUrl());
-			if($this->IsFileWritable($fileName)) {
-				if(file_put_contents($fileName,$s)) {
-					$pingUrl=$this->GetXmlUrl();
-					$status->EndXml(true);
-				}  else {
-					$status->EndXml(false,$this->_lastError);	
-				}			
-			} else $status->EndXml(false,"nt writable");
+			if($this->_fileHandle && fclose($this->_fileHandle)) {
+				$this->_fileHandle = null;
+				$status->EndXml(true);
+				$pingUrl=$this->GetXmlUrl();
+			} else $status->EndXml(false,"Could not close the sitemap file.");
 		}
 		
-		//Write gzipped sitemap file
-		if($this->GetOption("b_gzip")===true && function_exists("gzencode")) {
-			$fileName = $this->GetZipPath();
-			$status->StartZip($this->GetZipPath(),$this->GetZipUrl());
-			if($this->IsFileWritable($fileName)) {
-				if(file_put_contents($fileName,gzencode($s))) {
-					$pingUrl=$this->GetZipUrl();
-					$status->EndZip(true);
-				}  else {
-					$status->EndZip(false,$this->_lastError);	
-				}			
-			} else $status->EndZip(false,"nt writable");	
+		if($this->IsGzipEnabled()) {
+			if($this->_fileZipHandle && fclose($this->_fileZipHandle)) {
+				$this->_fileZipHandle = null;
+				$status->EndZip(true);
+				$pingUrl=$this->GetZipUrl();
+			} else $status->EndZip(false,"Could not close the zipped sitemap file");
 		}
 		
 		//Ping Google
 		if($this->GetOption("b_ping") && !empty($pingUrl)) {
 			$status->StartGooglePing();
-			$pingUrl="http://www.google.com/webmasters/sitemaps/ping?sitemap=" . urlencode($pingUrl);
-			$pingres=@wp_remote_fopen($pingUrl);
+			$sPingUrl="http://www.google.com/webmasters/sitemaps/ping?sitemap=" . urlencode($pingUrl);
+			$pingres=wp_remote_fopen($sPingUrl);
 									  
 			if($pingres==NULL || $pingres===false) {
 				$status->EndGooglePing(false,$this->_lastError);
 			} else {
 				$status->EndGooglePing(true);
 			}
+		} 
+				
+		//Ping Ask.com
+		if($this->GetOption("b_pingask") && !empty($pingUrl)) {
+			$status->StartAskPing();
+			$sPingUrl="http://submissions.ask.com/ping?sitemap=" . urlencode($pingUrl);
+			$pingres=wp_remote_fopen($sPingUrl);
+									  
+			if($pingres==NULL || $pingres===false || strpos($pingres,"successfully received and added")===false) { //Ask.com returns 200 OK even if there was an error, so we need to check the content.
+				$status->EndAskPing(false,$this->_lastError);
+			} else {
+				$status->EndAskPing(true);
+			}
 		}
 		
 		//Ping YAHOO
-		if($this->GetOption("sm_b_pingyahoo")===true && $this->GetOption("sm_b_yahookey")!="" && !empty($pingUrl)) {
+		if($this->GetOption("sm_b_pingyahoo")===true && !empty($pingUrl)) {
 			$status->StartYahooPing();
-			$pingUrl="http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=" . $this->GetOption("sm_b_yahookey") . "&url=" . urlencode($pingUrl);
-			$pingres=@wp_remote_fopen($pingUrl);
+			$sPingUrl="http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=" . urlencode($pingUrl);
+			$pingres=wp_remote_fopen($sPingUrl);
 
-			if($pingres==NULL || $pingres===false || stripos($pingres,"success")===false) {
+			if($pingres==NULL || $pingres===false || strpos(strtolower($pingres),"success")===false) {
 				$status->EndYahooPing(false,$this->_lastError);
 			} else {
 				$status->EndYahooPing(true);
 			}	
-		}
-		
-		if($oldHandler!==null) restore_error_handler();	
-		
+		}	
+	
 		$status->End();	
-		$this->_isActive = false;	
 
+		
+		$this->_isActive = false;	
+	
 		//done...
-		return $messages;
+		return $status;
 	}
 	
 	/**
@@ -2121,7 +2379,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 */
 	function TrackError($log_level, $log_text, $error_file, $error_line) {
 		$this->_lastError = $log_text;		
@@ -2132,11 +2390,11 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 */
 	function RegisterAdminPage() {
 		if (function_exists('add_options_page')) {
-			add_options_page(__('Sitemap Generator','sitemap'), __('Sitemap','sitemap'), 8, basename(__FILE__), array(&$this,'HtmlShowOptionsPage'));	
+			add_options_page(__('XML-Sitemap Generator','sitemap'), __('XML-Sitemap','sitemap'), 'administrator', basename(__FILE__), array(&$this,'HtmlShowOptionsPage'));	
 		}
 	}
 	
@@ -2145,7 +2403,7 @@ class GoogleSitemapGenerator {
 	 * 
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $currentVal The value which should be selected
 	 * @return all valid change frequencies as html option fields 
 	 */
@@ -2162,7 +2420,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $currentVal string The value which should be selected
 	 * @return 0.0 - 1.0 as html option fields 
 	 */
@@ -2180,7 +2438,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $val string The current value
 	 * @param $equals string The value to match
 	 * @return The checked attribute if the given values match, an empty string if not
@@ -2195,7 +2453,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $val string The current value
 	 * @param $equals string The value to match
 	 * @return The selected attribute if the given values match, an empty string if not
@@ -2210,7 +2468,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @param $attr string The attribute name
 	 * @param $value string The attribute value
 	 * @return The formatted attribute
@@ -2226,7 +2484,7 @@ class GoogleSitemapGenerator {
 	 * @since 3.0
 	 * @see GoogleSitemapGeneratorPage
 	 * @access private
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 * @return array An array with GoogleSitemapGeneratorPage objects
 	 */
 	function HtmlApplyPages() {
@@ -2295,7 +2553,7 @@ class GoogleSitemapGenerator {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @author Arne Brachhold <himself [at] arnebrachhold [dot] de>
+	 * @author Arne Brachhold
 	 */
 	function HtmlShowOptionsPage() {
 		
@@ -2327,9 +2585,83 @@ class GoogleSitemapGenerator {
 		}
 		
 		if(!empty($_REQUEST["sm_rebuild"])) { //Pressed Button: Rebuild Sitemap
-			$msg = $this->BuildSitemap();
-			header("location: " . $this->GetBackLink());
-			exit;
+			if(isset($_GET["sm_do_debug"]) && $_GET["sm_do_debug"]=="true") {
+				
+				//Check again, just for the case that something went wrong before
+				if(!current_user_can("administrator")) {
+					echo '<p>Please log in as admin</p>';	
+					return;
+				}
+				
+				$oldErr = error_reporting(E_ALL);
+				$oldIni = ini_set("display_errors",1);
+
+				echo '<div class="wrap">';
+				echo '<h2>' .  __('XML Sitemap Generator for WordPress', 'sitemap') .  " " . $this->GetVersion(). '</h2>';
+				echo '<p>This is the debug mode of the XML Sitemap Generator. It will show all PHP notices and warnings as well as the internal logs, messages and configuration.</p>';
+				echo '<p style="font-weight:bold; color:red; padding:5px; border:1px red solid; text-align:center;">DO NOT POST THIS INFORMATION ON PUBLIC PAGES LIKE SUPPORT FORUMS AS IT MAY CONTAIN PASSWORDS OR SECRET SERVER INFORMATION!</p>';
+				echo "<h3>WordPress and PHP Information</h3>";
+				echo '<p>WordPress ' . $GLOBALS['wp_version'] . ' with ' . ' DB ' . $GLOBALS['wp_db_version'] . ' on PHP ' . phpversion() . '</p>';
+				echo '<p>Plugin version: ' . $this->_version . ' (' . $this->_svnVersion . ')';
+				echo '<h4>Environment</h4>';
+				echo "<pre>";
+				$sc = $_SERVER;
+				unset($sc["HTTP_COOKIE"]);
+				print_r($sc);
+				echo "</pre>";
+				echo "<h4>WordPress Config</h4>";
+				echo "<pre>";
+				$opts = wp_load_alloptions();
+				$popts = array();
+				foreach($opts as $k=>$v) {
+					//Try to filter out passwords etc...
+					if(preg_match("/(pass|login|pw|secret|user|usr)/si",$v)) continue;
+					$popts[$k] = htmlspecialchars($v);
+				}
+				print_r($popts);
+				echo "</pre>";
+				echo '<h4>Sitemap Config</h4>';
+				echo "<pre>";
+				print_r($this->_options);
+				echo "</pre>";
+				echo '<h3>Errors, Warnings, Notices</h3>';				
+				echo '<div>';
+				$status = $this->BuildSitemap();
+				echo '</div>';
+				echo '<h3>MySQL Queries</h3>';
+				if(defined('SAVEQUERIES') && SAVEQUERIES) {
+					echo '<pre>';
+					var_dump($GLOBALS['wpdb']->queries);
+					echo '</pre>';
+					
+					$total = 0;
+					foreach($GLOBALS['wpdb']->queries as $q) {
+						$total+=$q[1];	
+					}
+					echo '<h4>Total Query Time</h4>';
+					echo '<pre>' . count($GLOBALS['wpdb']->queries) . ' queries in ' . round($total,2) . ' seconds.</pre>';
+				} else {
+					echo '<p>Please edit wp-db.inc.php in wp-includes and set SAVEQUERIES to true if you want to see the queries.</p>';	
+				}
+				echo "<h3>Build Process Results</h3>";
+				echo "<pre>";
+				print_r($status);
+				echo "</pre>";
+				echo '<p>Done. <a href="' . $this->GetBackLink() . '&sm_rebuild=true&sm_do_debug=true">Rebuild</a> or <a href="' . $this->GetBackLink() . '">Return</a></p>';
+				echo '<p style="font-weight:bold; color:red; padding:5px; border:1px red solid; text-align:center;">DO NOT POST THIS INFORMATION ON PUBLIC PAGES LIKE SUPPORT FORUMS AS IT MAY CONTAIN PASSWORDS OR SECRET SERVER INFORMATION!</p>';
+				echo '</div>';
+				@error_reporting($oldErr);
+				@ini_set("display_errors",$oldIni);
+				return;
+			} else {
+				$this->BuildSitemap();
+				//Redirect so the sm_rebuild GET parameter no longer exists.
+				@header("location: " . $this->GetBackLink());
+				//If there was already any other output, the header redirect will fail
+				echo '<script type="text/javascript">location.replace("' . $this->GetBackLink() . '");</script>';
+				echo '<noscript><a href="' . $this->GetBackLink() . '">Click here to continue</a></noscript>';
+				exit;
+			}
 		} else if (!empty($_POST['sm_update'])) { //Pressed Button: Update Config	
 		
 			foreach($this->_options as $k=>$v) {
@@ -2337,7 +2669,7 @@ class GoogleSitemapGenerator {
 				if(!isset($_POST[$k])) $_POST[$k]=""; // Empty string will get false on 2bool and 0 on 2float
 				//Options of the category "Basic Settings" are boolean, except the filename and the autoprio provider
 				if(substr($k,0,5)=="sm_b_") {					
-					if($k=="sm_b_filename" || $k=="sm_b_fileurl_manual" || $k=="sm_b_filename_manual" || $k=="sm_b_prio_provider" || $k=="sm_b_manual_key" || $k == "sm_b_yahookey" || $k == "sm_b_style" || $k == "sm_b_memory") {
+					if($k=="sm_b_filename" || $k=="sm_b_fileurl_manual" || $k=="sm_b_filename_manual" || $k=="sm_b_prio_provider" || $k=="sm_b_manual_key" || $k == "sm_b_style" || $k == "sm_b_memory") {
 						if($k=="sm_b_filename_manual" && strpos($_POST[$k],"\\")!==false){
 							$_POST[$k]=stripslashes($_POST[$k]);
 						}
@@ -2347,7 +2679,7 @@ class GoogleSitemapGenerator {
 						$tmp=strtolower($tmp);
 						if($tmp=="auto" || $tmp="manual") $this->_options[$k]=$tmp;
 						else $this->_options[$k]="auto";								
-					} else if($k == "sm_b_time") {
+					} else if($k == "sm_b_time" || $k=="sm_b_max_posts") {
 						if($_POST[$k]=='') $_POST[$k] = -1;
 						$this->_options[$k] = intval($_POST[$k]);			
 					} else {
@@ -2373,6 +2705,14 @@ class GoogleSitemapGenerator {
 			
 			if($this->SavePages()) $message.=__("Pages saved",'sitemap') . "<br />";
 			else $message.=__('Error while saving pages', 'sitemap'). "<br />";
+			
+			if($this->GetOption('sm_b_robots')===true) {
+				if($this->WriteRobotsFile()) {
+					$message.=str_replace("%s",$this->GetRobotsFileUrl(),__("<a href=\"%s\">Robots.txt</a> file saved",'sitemap')) . "<br />";	
+				} else {
+					$message.=__("Error while saving Robots.txt file",'sitemap') . "<br />";	
+				}				
+			}
 			
 		} else if(!empty($_POST["sm_reset_config"])) { //Pressed Button: Reset Config
 			$this->InitOptions();
@@ -2423,8 +2763,6 @@ class GoogleSitemapGenerator {
 			border-bottom-width:1px;
 		}
 
-		
-
 		a.sm_donatePayPal {
 			background-image:url(<?php echo $this->GetResourceLink("{8C0BAD8C-77FA-4842-956E-CDEF7635F2C7}"); ?>);
 		}
@@ -2452,15 +2790,12 @@ class GoogleSitemapGenerator {
 		a.sm_resYahoo {
 			background-image:url(<?php echo $this->GetResourceLink("{BC853F21-410E-47ff-BB6D-2B89C9D7E76B}"); ?>);	
 		}
-
+		
 		</style>
 		
 		<div class="wrap" id="sm_div">
 			<form method="post" action="<?php echo $this->GetBackLink() ?>">
 				<h2><?php _e('XML Sitemap Generator for WordPress', 'sitemap'); echo " " . $this->GetVersion() ?> </h2>
-				
-				<script type="text/javascript" src="../wp-includes/js/tw-sack.js"></script>
-				<script type="text/javascript" src="list-manipulation.js"></script>
 				<script type="text/javascript" src="../wp-includes/js/dbx.js"></script>
 				<script type="text/javascript">
 				//<![CDATA[
@@ -2511,12 +2846,12 @@ class GoogleSitemapGenerator {
 							<fieldset id="sm_pnres" class="dbx-box">
 								<h3 class="dbx-handle"><?php _e('About this Plugin:','sitemap'); ?></h3>
 								<div class="dbx-content">
-									<a class="sm_button sm_pluginHome"    href="<?php echo $this->GetRedirectLink('sitemap-home'); ?>">Plugin Homepage</a>
-									<a class="sm_button sm_pluginList"    href="<?php echo $this->GetRedirectLink('sitemap-list'); ?>">Notify List</a>
-									<a class="sm_button sm_pluginSupport" href="<?php echo $this->GetRedirectLink('sitemap-support'); ?>">Support Forum</a>
-									<a class="sm_button sm_donatePayPal"  href="<?php echo $this->GetRedirectLink('sitemap-paypal'); ?>">Donate with PayPal</a>
-									<a class="sm_button sm_donateAmazon"  href="<?php echo $this->GetRedirectLink('sitemap-amazon'); ?>">My Amazon Wish List</a>
-									<?php if(__('translator_name','sitemap')!='translator_name') {?><a class="sm_button sm_pluginSupport" href="<?php _e('translator_url'); ?>"><?php _e('translator_name'); ?></a><?php } ?>
+									<a class="sm_button sm_pluginHome"    href="<?php echo $this->GetRedirectLink('sitemap-home'); ?>"><?php _e('Plugin Homepage','sitemap'); ?></a>
+									<a class="sm_button sm_pluginList"    href="<?php echo $this->GetRedirectLink('sitemap-list'); ?>"><?php _e('Notify List','sitemap'); ?></a>
+									<a class="sm_button sm_pluginSupport" href="<?php echo $this->GetRedirectLink('sitemap-support'); ?>"><?php _e('Support Forum','sitemap'); ?></a>
+									<a class="sm_button sm_donatePayPal"  href="<?php echo $this->GetRedirectLink('sitemap-paypal'); ?>"><?php _e('Donate with PayPal','sitemap'); ?></a>
+									<a class="sm_button sm_donateAmazon"  href="<?php echo $this->GetRedirectLink('sitemap-amazon'); ?>"><?php _e('My Amazon Wish List','sitemap'); ?></a>
+									<?php if(__('translator_name','sitemap')!='translator_name') {?><a class="sm_button sm_pluginSupport" href="<?php _e('translator_url','sitemap'); ?>"><?php _e('translator_name','sitemap'); ?></a><?php } ?>
 								</div>
 							</fieldset>
 							<fieldset id="sm_smres" class="dbx-box">
@@ -2539,12 +2874,12 @@ class GoogleSitemapGenerator {
 								<div class="dbx-content">
 									<?php if($this->GetOption('b_hide_donors')!==true) { ?>
 										<iframe border="0" frameborder="0" scrolling="no" allowtransparency="yes" style="width:100%; height:60px;" src="<?php echo $this->GetRedirectLink('sitemap-donorlist'); ?>">
-										List of the donors
+										<?php _e('List of the donors','sitemap'); ?>
 										</iframe><br />
 										<a href="<?php echo $this->GetBackLink() . "&amp;sm_hidedonors=true"; ?>"><small><?php _e('Hide this list','sitemap'); ?></small></a><br /><br />
 									<?php } ?>
 									<a style="float:left; margin-right:5px; border:none;" href="javascript:document.getElementById('sm_donate_form').submit();"><img style="vertical-align:middle; border:none; margin-top:2px;" src="<?php echo $this->GetResourceLink("{6E89EFD4-A853-4321-B5CF-3E36C60B268D}"); ?>" border="0" alt="PayPal" title="Help me to continue support of this plugin :)" /></a>
-									<span><small>Thanks for your support!</small></span>
+									<span><small><?php _e('Thanks for your support!','sitemap'); ?></small></span>
 								</div>
 							</fieldset>
 						</div>
@@ -2563,86 +2898,104 @@ class GoogleSitemapGenerator {
 										<ul>
 											<?php
 					
-				//#type $status GoogleSitemapGeneratorStatus							
-				$status = GoogleSitemapGeneratorStatus::Load();
-				if($status == null) {
-					echo "<li>" . str_replace("%s",$this->GetBackLink() . "&sm_rebuild=true",__('The sitemap wasn\'t built yet. <a href="%s">Click here</a> to build it the first time.','sitemap')) . "</li>";	
-				}  else {
-					if($status->_endTime !== 0) {
-						if($status->_usedXml) {
-							if($status->_xmlSuccess) {
-								$ft = filemtime($status->_xmlPath);
-								echo "<li>" . str_replace("%url%",$status->_xmlUrl,str_replace("%date%",date(get_option('date_format'),$ft) . " " . date(get_option('time_format'),$ft),__("Your <a href=\"%url%\">sitemap</a> was last built on <b>%date%</b>.",'sitemap'))) . "</li>"; 		
-							} else {
-								echo "<li class=\"sm_error\">" . str_replace("%url%",$this->GetRedirectLink('sitemap-help-files'),__("There was a problem writing your sitemap file. Make sure the file exists and is writable. <a href=\"%url%\">Learn more</a",'sitemap')) . "</li>";	
-							}	
-						}
-						
-						if($status->_usedZip) {
-							if($status->_zipSuccess) {
-									$ft = filemtime($status->_zipPath);
-									echo "<li>" . str_replace("%url%",$status->_zipUrl,str_replace("%date%",date(get_option('date_format'),$ft) . " " . date(get_option('time_format'),$ft),__("Your sitemap (<a href=\"%url%\">zipped</a>) was last built on <b>%date%</b>.",'sitemap'))) . "</li>"; 		
-							} else {
-								echo "<li class=\"sm_error\">" . str_replace("%url%",$this->GetRedirectLink('sitemap-help-files'),__("There was a problem writing your zipped sitemap file. Make sure the file exists and is writable. <a href=\"%url%\">Learn more</a",'sitemap')) . "</li>";	
-							}	
-						}
-						
-						if($status->_usedGoogle) {
-							if($status->_gooogleSuccess) {
-								echo "<li>" .__("Google was <b>successfully notified</b> about changes.",'sitemap'). "</li>";
-								$gt = $status->GetGoogleTime();
-								if($gt>4) {
-									echo "<li class=\sm_optimize\">" . str_replace("%time%",$gt,__("It took %time% seconds to notify Google, maybe you want to disable this feature to reduce the building time.",'sitemap')) . "</li>";		
-								}						
-							} else {
-								echo "<li class=\"sm_error\">" . __("There was a problem while notifying Google.",'sitemap') . "</li>";	
-							}	
-						} 
-						
-						if($status->_usedYahoo) {
-							if($status->_yahooSuccess) {
-								echo "<li>" .__("YAHOO was <b>successfully notified</b> about changes.",'sitemap'). "</li>";
-								$yt = $status->GetYahooTime();
-								if($yt>4) {
-									echo "<li class=\sm_optimize\">" . str_replace("%time%",$yt,__("It took %time% seconds to notify YAHOO, maybe you want to disable this feature to reduce the building time.",'sitemap')) . "</li>";		
-								}	
-							} else {
-								echo "<li class=\"sm_error\">" . __("There was a problem while notifying YAHOO",'sitemap') . "</li>";	
-							}	
-						} 
-						
-						$et = $status->GetTime();
-						$mem = $status->GetMemoryUsage();
-						
-						if($mem > 0) {
-							echo "<li>" .str_replace(array("%time%","%memory%"),array($et,$mem),__("The building process took about <b>%time% seconds</b> to complete and used %memory% MB of memory.",'sitemap')). "</li>";	
-						} else {
-							echo "<li>" .str_replace("%time%",$et,__("The building process took about <b>%time% seconds</b> to complete.",'sitemap')). "</li>";		
-						} 				
-					} else {
-						echo '<li class="sm_error">'. str_replace("%url%",$this->GetRedirectLink('sitemap-help-memtime'),__("The last run didn't finish! Maybe you can raise the memory or time limit for PHP scripts. <a href=\"%url%\">Learn more</a>",'sitemap')) . '</li>';	
-						if($status->_memoryUsage > 0) {
-							echo '<li class="sm_error">'. str_replace(array("%memused%","%memlimit%"),array($status->GetMemoryUsage(),ini_get('memory_limit')),__("The last known memory usage of the script was %memused%MB, the limit of your server is %memlimit%.",'sitemap')) . '</li>';		
-						}	
-						
-						if($status->_lastTime > 0) {
-							echo '<li class="sm_error">'. str_replace(array("%timeused%","%timelimit%"),array($status->GetLastTime(),ini_get('max_execution_time')),__("The last known execution time of the script was %timeused% seconds, the limit of your server is %timelimit% seconds.",'sitemap')) . '</li>';		
-						}	
-						
-						if($status->GetLastPost() > 0) {
-							echo '<li class="sm_optimize">'. str_replace("%lastpost%",$status->GetLastPost(),__("The script stopped around post number %lastpost% (+/- 100)",'sitemap')) . '</li>';		
-						}	
-					}
-					echo "<li>" . str_replace("%s",$this->GetBackLink() . "&amp;sm_rebuild=true",__('If you changed something on your server or blog, you should <a href="%s">rebuild the sitemap</a> manually.','sitemap')) . "</li>";
-				}
-				?>
+											//#type $status GoogleSitemapGeneratorStatus							
+											$status = GoogleSitemapGeneratorStatus::Load();
+											if($status == null) {
+												echo "<li>" . str_replace("%s",$this->GetBackLink() . "&sm_rebuild=true",__('The sitemap wasn\'t built yet. <a href="%s">Click here</a> to build it the first time.','sitemap')) . "</li>";	
+											}  else {
+												if($status->_endTime !== 0) {
+													if($status->_usedXml) {
+														if($status->_xmlSuccess) {
+															$ft = filemtime($status->_xmlPath);
+															echo "<li>" . str_replace("%url%",$status->_xmlUrl,str_replace("%date%",date(get_option('date_format'),$ft) . " " . date(get_option('time_format'),$ft),__("Your <a href=\"%url%\">sitemap</a> was last built on <b>%date%</b>.",'sitemap'))) . "</li>"; 		
+														} else {
+															echo "<li class=\"sm_error\">" . str_replace("%url%",$this->GetRedirectLink('sitemap-help-files'),__("There was a problem writing your sitemap file. Make sure the file exists and is writable. <a href=\"%url%\">Learn more</a",'sitemap')) . "</li>";	
+														}	
+													}
+													
+													if($status->_usedZip) {
+														if($status->_zipSuccess) {
+																$ft = filemtime($status->_zipPath);
+																echo "<li>" . str_replace("%url%",$status->_zipUrl,str_replace("%date%",date(get_option('date_format'),$ft) . " " . date(get_option('time_format'),$ft),__("Your sitemap (<a href=\"%url%\">zipped</a>) was last built on <b>%date%</b>.",'sitemap'))) . "</li>"; 		
+														} else {
+															echo "<li class=\"sm_error\">" . str_replace("%url%",$this->GetRedirectLink('sitemap-help-files'),__("There was a problem writing your zipped sitemap file. Make sure the file exists and is writable. <a href=\"%url%\">Learn more</a",'sitemap')) . "</li>";	
+														}	
+													}
+													
+													if($status->_usedGoogle) {
+														if($status->_gooogleSuccess) {
+															echo "<li>" .__("Google was <b>successfully notified</b> about changes.",'sitemap'). "</li>";
+															$gt = $status->GetGoogleTime();
+															if($gt>4) {
+																echo "<li class=\sm_optimize\">" . str_replace("%time%",$gt,__("It took %time% seconds to notify Google, maybe you want to disable this feature to reduce the building time.",'sitemap')) . "</li>";		
+															}						
+														} else {
+															echo "<li class=\"sm_error\">" . __("There was a problem while notifying Google.",'sitemap') . "</li>";	
+														}	
+													} 
+													
+													if($status->_usedYahoo) {
+														if($status->_yahooSuccess) {
+															echo "<li>" .__("YAHOO was <b>successfully notified</b> about changes.",'sitemap'). "</li>";
+															$yt = $status->GetYahooTime();
+															if($yt>4) {
+																echo "<li class=\sm_optimize\">" . str_replace("%time%",$yt,__("It took %time% seconds to notify YAHOO, maybe you want to disable this feature to reduce the building time.",'sitemap')) . "</li>";		
+															}	
+														} else {
+															echo "<li class=\"sm_error\">" . __("There was a problem while notifying YAHOO",'sitemap') . "</li>";	
+														}	
+													} 
+													
+													if($status->_usedAsk) {
+														if($status->_askSuccess) {
+															echo "<li>" .__("Ask.com was <b>successfully notified</b> about changes.",'sitemap'). "</li>";
+															$at = $status->GetAskTime();
+															if($at>4) {
+																echo "<li class=\sm_optimize\">" . str_replace("%time%",$at,__("It took %time% seconds to notify Ask.com, maybe you want to disable this feature to reduce the building time.",'sitemap')) . "</li>";		
+															}	
+														} else {
+															echo "<li class=\"sm_error\">" . __("There was a problem while notifying Ask.com",'sitemap') . "</li>";	
+														}	
+													} 
+													
+													$et = $status->GetTime();
+													$mem = $status->GetMemoryUsage();
+													
+													if($mem > 0) {
+														echo "<li>" .str_replace(array("%time%","%memory%"),array($et,$mem),__("The building process took about <b>%time% seconds</b> to complete and used %memory% MB of memory.",'sitemap')). "</li>";	
+													} else {
+														echo "<li>" .str_replace("%time%",$et,__("The building process took about <b>%time% seconds</b> to complete.",'sitemap')). "</li>";		
+													} 
+													
+													if(!$status->_hasChanged) {
+														echo "<li>" . __("The content of your sitemap <strong>didn't change</strong> since the last time so the files were not written and no search engine was pinged.",'sitemap'). "</li>";																
+													}
+																	
+												} else {
+													echo '<li class="sm_error">'. str_replace("%url%",$this->GetRedirectLink('sitemap-help-memtime'),__("The last run didn't finish! Maybe you can raise the memory or time limit for PHP scripts. <a href=\"%url%\">Learn more</a>",'sitemap')) . '</li>';	
+													if($status->_memoryUsage > 0) {
+														echo '<li class="sm_error">'. str_replace(array("%memused%","%memlimit%"),array($status->GetMemoryUsage(),ini_get('memory_limit')),__("The last known memory usage of the script was %memused%MB, the limit of your server is %memlimit%.",'sitemap')) . '</li>';		
+													}	
+													
+													if($status->_lastTime > 0) {
+														echo '<li class="sm_error">'. str_replace(array("%timeused%","%timelimit%"),array($status->GetLastTime(),ini_get('max_execution_time')),__("The last known execution time of the script was %timeused% seconds, the limit of your server is %timelimit% seconds.",'sitemap')) . '</li>';		
+													}	
+													
+													if($status->GetLastPost() > 0) {
+														echo '<li class="sm_optimize">'. str_replace("%lastpost%",$status->GetLastPost(),__("The script stopped around post number %lastpost% (+/- 100)",'sitemap')) . '</li>';		
+													}	
+												}
+												echo "<li>" . str_replace("%s",$this->GetBackLink() . "&amp;sm_rebuild=true",__('If you changed something on your server or blog, you should <a href="%s">rebuild the sitemap</a> manually.','sitemap')) . "</li>";
+											}
+											echo "<li>" . str_replace("%d",$this->GetBackLink() . "&amp;sm_rebuild=true&sm_do_debug=true",__('If you encounter any problems with the build process you can use the <a href="%d">debug function</a> to get more information.','sitemap')) . "</li>";
+											?>
 			
 										</ul>
 									</div>
 								</div>
 							</fieldset>
 						</div>
-													
+						
 						<!-- Basic Options -->
 						<div class="dbx-b-ox-wrapper">
 							<fieldset id="sm_basic_options" class="dbx-box">
@@ -2662,16 +3015,16 @@ class GoogleSitemapGenerator {
 											<li>
 												<label for="sm_b_gzip">
 													<input type="checkbox" id="sm_b_gzip" name="sm_b_gzip" <?php if(function_exists("gzencode")) { echo ($this->GetOption("b_gzip")==true?"checked=\"checked\"":""); } else echo "disabled=\"disabled\"";  ?> />
-													<?php _e('Write a gzipped file (your filename + .gz)', 'sitemap') ?>
+											<?php _e('Write a gzipped file (your filename + .gz)', 'sitemap') ?>
 												</label>
-											</li>
+											</li>									
 										</ul>
 										<b><?php _e('Building mode:','sitemap'); ?></b> <a href="<?php echo $this->GetRedirectLink('sitemap-help-options-process'); ?>"><?php _e('Learn more','sitemap'); ?></a>
 										<ul>
-											<li>
+											<li>	
 												<label for="sm_b_auto_enabled">
 													<input type="checkbox" id="sm_b_auto_enabled" name="sm_b_auto_enabled" <?php echo ($this->GetOption("sm_b_auto_enabled")==true?"checked=\"checked\"":""); ?> />
-													<?php _e('Rebuild sitemap if you change the content of your blog', 'sitemap') ?>
+											<?php _e('Rebuild sitemap if you change the content of your blog', 'sitemap') ?>
 												</label>
 											</li>
 											<li>
@@ -2686,22 +3039,53 @@ class GoogleSitemapGenerator {
 												</span>
 											</li>
 										</ul>
-										<b><?php _e('Update Notification:','sitemap'); ?></b> <a href="<?php echo $this->GetRedirectLink('sitemap-help-options-ping'); ?>"><?php _e('Learn more','sitemap'); ?></a>
+										<b><?php _e('Update notification:','sitemap'); ?></b> <a href="<?php echo $this->GetRedirectLink('sitemap-help-options-ping'); ?>"><?php _e('Learn more','sitemap'); ?></a>
 										<ul>
 											<li>
-													<input style="float:left; margin-bottom:10px; margin-right:3px;" type="checkbox" id="sm_b_ping" name="sm_b_ping" <?php echo ($this->GetOption("b_ping")==true?"checked=\"checked\"":"") ?> />
-													<label for="sm_b_ping"><?php _e('Notify Google about Updates of your Blog', 'sitemap') ?></label><br />
-													<small>No registration required, but you can join the <a href="<?php echo $this->GetRedirectLink('sitemap-gwt'); ?>">Google Webmaster Tools</a> to check crawling statistics.</small>
+												<input type="checkbox" id="sm_b_ping" name="sm_b_ping" <?php echo ($this->GetOption("b_ping")==true?"checked=\"checked\"":"") ?> />
+												<label for="sm_b_ping"><?php _e('Notify Google about updates of your Blog', 'sitemap') ?></label><br />
+												<small><?php echo str_replace("%s",$this->GetRedirectLink('sitemap-gwt'),__('No registration required, but you can join the <a href="%s">Google Webmaster Tools</a> to check crawling statistics.','sitemap')); ?></small>
 											</li>
-											<li style="clear:left;">
-													<input style="float:left; margin-bottom:30px; margin-right:3px;" type="checkbox" id="sm_b_pingyahoo" name="sm_b_pingyahoo" <?php echo ($this->GetOption("sm_b_pingyahoo")==true?"checked=\"checked\"":"") ?> />
-													<label for="sm_b_pingyahoo"><?php _e('Notify YAHOO about Updates of your Blog', 'sitemap') ?></label><br />
-													<label for="sm_b_yahookey"><?php _e('Your Application ID:', 'sitemap') ?> <input type="text" name="sm_b_yahookey" id="sm_b_yahookey" value="<?php echo $this->GetOption("sm_b_yahookey"); ?>" /></label><br />
-													<small>Don't have such a key? <a href="<?php echo $this->GetRedirectLink('sitemap-ykr'); ?>">Request it here</a>! (<a href="http://developer.yahoo.net/about/">Web Services by Yahoo!</a>)</small>
+											<li>
+												<input type="checkbox" id="sm_b_pingask" name="sm_b_pingask" <?php echo ($this->GetOption("b_pingask")==true?"checked=\"checked\"":"") ?> />
+												<label for="sm_b_pingask"><?php _e('Notify Ask.com about updates of your Blog', 'sitemap') ?></label><br />
+												<small><?php _e('No registration required.','sitemap'); ?></small>
 											</li>
+											<li>
+												<input type="checkbox" id="sm_b_pingyahoo" name="sm_b_pingyahoo" <?php echo ($this->GetOption("sm_b_pingyahoo")==true?"checked=\"checked\"":"") ?> />
+												<label for="sm_b_pingyahoo"><?php _e('Notify YAHOO about updates of your Blog', 'sitemap') ?></label><br />
+												<small><?php echo str_replace('%s',$this->GetRedirectLink('sitemap-yse'),__('No registration required, but you can sign up for the <a href="%s">YAHOO Site Explorer</a> to view the crawling progress.','sitemap')); ?></small>
+											</li>
+											<li>
+												
+												<input type="checkbox" id="sm_b_robots" name="sm_b_robots" <?php echo ($this->GetOption("sm_b_robots")==true?"checked=\"checked\"":"") ?> />
+												<?php echo str_replace('%s',(file_exists($this->GetRobotsFilePath())?'<a href="' . $this->GetRobotsFileUrl()  . '">robots.txt</a>':'robots.txt'),__("Modify or create %s file in blog root which contains the sitemap location.",'sitemap')); ?> 
+
+												<br />
+												<?php _e("File permissions: ",'sitemap'); 
+													$f = $this->GetRobotsFilePath();
+													$link = ' <a href="' . $this->GetRedirectLink("sitemap-help-options-robots",'sitemap') . '">' . __("Learn more",'sitemap') . '</a>';
+													if(file_exists($f)) {
+														if(is_writable($f)) {
+															_e("OK, robots.txt is writable.",'sitemap');	
+														} else {
+															echo __("Error, robots.txt is not writable.",'sitemap') . $link;
+														}
+													} else {
+														if(is_writable(dirname($f))) {
+															_e("OK, robots.txt doesn't exist but the directory is writable.",'sitemap');	
+														} else {
+															echo __("Error, robots.txt doesn't exist and the directory is not writable",'sitemap') . $link;
+														}
+													}													
+												?>												
+											</li>	
 										</ul>
-										<b><?php _e('Advanced Options:','sitemap'); ?></b> <a href="<?php echo $this->GetRedirectLink('sitemap-help-options-adv'); ?>"><?php _e('Learn more','sitemap'); ?></a>
+										<b><?php _e('Advanced options:','sitemap'); ?></b> <a href="<?php echo $this->GetRedirectLink('sitemap-help-options-adv'); ?>"><?php _e('Learn more','sitemap'); ?></a>
 										<ul>
+											<li>
+												<label for="sm_b_max_posts"><?php _e('Limit the number of posts in the sitemap:', 'sitemap') ?> <input type="text" name="sm_b_max_posts" id="sm_b_max_posts" style="width:40px;" value="<?php echo ($this->GetOption("sm_b_max_posts")<=0?"":$this->GetOption("sm_b_max_posts")); ?>" /></label> (<?php echo __('Newer posts will be included first', 'sitemap'); ?>)
+											</li>
 											<li>
 												<label for="sm_b_memory"><?php _e('Try to increase the memory limit to:', 'sitemap') ?> <input type="text" name="sm_b_memory" id="sm_b_memory" style="width:40px;" value="<?php echo $this->GetOption("sm_b_memory"); ?>" /></label> (<?php echo htmlspecialchars(__('e.g. "4M", "16M"', 'sitemap')); ?>)
 											</li>
@@ -2709,8 +3093,8 @@ class GoogleSitemapGenerator {
 												<label for="sm_b_time"><?php _e('Try to increase the execution time limit to:', 'sitemap') ?> <input type="text" name="sm_b_time" id="sm_b_time" style="width:40px;" value="<?php echo ($this->GetOption("sm_b_time")===-1?'':$this->GetOption("sm_b_time")); ?>" /></label> (<?php echo htmlspecialchars(__('in seconds, e.g. "60" or "0" for unlimited', 'sitemap')) ?>)
 											</li>	
 											<li>
-												<label for="sm_b_style"><?php _e('Include a XSLT stylesheet:', 'sitemap') ?> <input type="text" name="sm_b_style" id="sm_b_style"  value="<?php echo $this->GetOption("sm_b_style"); ?>" /></label> <?php if($this->GetDefaultStyle()!='') { echo ' <a href="javascript:void(0);" onclick="document.getElementById(\'sm_b_style\').value=\'' . $this->GetDefaultStyle() . '\';">' . __('Use Default','sitemap') . '</a>'; } ?> (<?php _e('Full or relative URL to your .xsl file', 'sitemap') ?>)
-											</li>									
+												<label for="sm_b_style"><?php _e('Include a XSLT stylesheet:', 'sitemap') ?> <input type="text" name="sm_b_style" id="sm_b_style"  value="<?php echo $this->GetOption("sm_b_style"); ?>" /></label> <?php if($this->GetDefaultStyle()) { echo ' <a href="javascript:void(0);" onclick="document.getElementById(\'sm_b_style\').value=\'' . $this->GetDefaultStyle() . '\';">' . __('Use Default','sitemap') . '</a>'; } ?> (<?php _e('Full or relative URL to your .xsl file', 'sitemap') ?>)
+											</li>								
 										</ul>
 									</div>
 								</div>
@@ -2855,7 +3239,7 @@ class GoogleSitemapGenerator {
 												
 												var firstRow = table.getElementsByTagName('TR')[1];
 												if(firstRow) {
-													var firstCol = firstRow.childNodes[1];
+													var firstCol = (firstRow.childNodes[1]?firstRow.childNodes[1]:firstRow.childNodes[0]);
 													if(firstCol.colSpan>1) {
 														firstRow.parentNode.removeChild(firstRow);
 													}
@@ -2917,7 +3301,7 @@ class GoogleSitemapGenerator {
 									</div>
 								</div>
 							</fieldset>
-						</div>
+						</div>						
 						
 						
 						<!-- Location Options -->
@@ -2929,7 +3313,7 @@ class GoogleSitemapGenerator {
 								<div class="dbx-c-ontent-wrapper">
 									<div class="dbx-content">
 										<div>
-											<b><label for="sm_location_useauto"><input type="radio" id="sm_location_useauto" name="sm_b_location_mode" value="auto" <?php echo ($this->GetOption("b_location_mode")=="auto"?"checked=\"checked\"":"") ?> /> <?php _e('Automatic location','sitemap') ?></label></b>
+											<b><label for="sm_location_useauto"><input type="radio" id="sm_location_useauto" name="sm_b_location_mode" value="auto" <?php echo ($this->GetOption("b_location_mode")=="auto"?"checked=\"checked\"":"") ?> /> <?php _e('Automatic detection','sitemap') ?></label></b>
 											<ul>
 												<li>
 													<label for="sm_b_filename">
@@ -3008,6 +3392,20 @@ class GoogleSitemapGenerator {
 													<?php _e('Include archives', 'sitemap') ?>
 												</label>
 											</li>
+											<?php if($this->IsTaxonomySupported()): ?>
+											<li>
+												<label for="sm_in_tags">
+													<input type="checkbox" id="sm_in_tags" name="sm_in_tags"  <?php echo ($this->GetOption("in_tags")==true?"checked=\"checked\"":"") ?> />
+													<?php _e('Include tag pages', 'sitemap') ?>
+												</label>
+											</li>
+											<?php endif; ?>
+											<li>
+												<label for="sm_in_auth">
+													<input type="checkbox" id="sm_in_auth" name="sm_in_auth"  <?php echo ($this->GetOption("in_auth")==true?"checked=\"checked\"":"") ?> />
+													<?php _e('Include author pages', 'sitemap') ?>
+												</label>
+											</li>
 										</ul>
 									</div>
 								</div>
@@ -3064,6 +3462,20 @@ class GoogleSitemapGenerator {
 													<?php _e('Older archives (Changes only if you edit an old post)', 'sitemap') ?>
 												</label>
 											</li>
+											<?php if($this->IsTaxonomySupported()): ?>
+											<li>
+												<label for="sm_cf_tags">
+													<select id="sm_cf_tags" name="sm_cf_tags"><?php $this->HtmlGetFreqNames($this->GetOption("cf_tags")); ?></select> 
+													<?php _e('Tag pages', 'sitemap') ?>
+												</label>
+											</li>
+											<?php endif; ?>
+											<li>
+												<label for="sm_cf_auth">
+													<select id="sm_cf_auth" name="sm_cf_auth"><?php $this->HtmlGetFreqNames($this->GetOption("cf_auth")); ?></select> 
+													<?php _e('Author pages', 'sitemap') ?>
+												</label>
+											</li>
 										</ul>
 									</div>
 								</div>
@@ -3115,6 +3527,20 @@ class GoogleSitemapGenerator {
 													<select id="sm_pr_arch" name="sm_pr_arch"><?php $this->HtmlGetPriorityValues($this->GetOption("pr_arch")); ?></select> 
 													<?php _e('Archives', 'sitemap') ?>
 												</label>
+											</li> 
+											<?php if($this->IsTaxonomySupported()): ?>
+											<li>
+												<label for="sm_pr_tags">
+													<select id="sm_pr_tags" name="sm_pr_tags"><?php $this->HtmlGetPriorityValues($this->GetOption("pr_tags")); ?></select> 
+													<?php _e('Tag pages', 'sitemap') ?>
+												</label>
+											</li>
+											<?php endif; ?>
+											<li>
+												<label for="sm_pr_auth">
+													<select id="sm_pr_auth" name="sm_pr_auth"><?php $this->HtmlGetPriorityValues($this->GetOption("pr_auth")); ?></select> 
+													<?php _e('Author pages', 'sitemap') ?>
+												</label>
 											</li>
 										</ul>
 									</div>
@@ -3133,7 +3559,7 @@ class GoogleSitemapGenerator {
 			</form>
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="sm_donate_form">
 				<input type="hidden" name="cmd" value="_xclick" />
-				<input type="hidden" name="business" value="donate@arnebrachhold.de" />
+				<input type="hidden" name="business" value="<?php echo "donate" /* N O S P A M */ . "@" . "arnebra" . "chhold.de"; ?>" />
 				<input type="hidden" name="item_name" value="Sitemap Generator for WordPress. Please tell me if if you don't want to be listed on the donator list." />
 				<input type="hidden" name="no_shipping" value="1" />
 				<input type="hidden" name="return" value="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . $this->GetBackLink(); ?>&amp;sm_donated=true" />
@@ -3150,10 +3576,12 @@ class GoogleSitemapGenerator {
 }
 
 
+
+
 //Check if ABSPATH and WPINC is defined, this is done in wp-settings.php
 //If not defined, we can't guarante that all required functions are available.
 if(defined('ABSPATH') && defined('WPINC')) {
-	GoogleSitemapGenerator::Enable();	
+	add_action("init",array("GoogleSitemapGenerator","Enable"),1000,0);
 }
 
 #region Embedded resources
@@ -3255,4 +3683,3 @@ if(isset($_GET["res"]) && !empty($_GET["res"])) {
 	}
 }
 #endregion
-?>
