@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Antispam Collateral Condolences
-Version: 0.1
+Version: 0.2
 Plugin URI: http://txfx.net/code/wordpress/antispam-collateral-condolences/
 Description: Notifies people when their comment is caught as spam.
 Author: Mark Jaquith
@@ -10,13 +10,13 @@ Author URI: http://txfx.net/
 
 function txfx_die_if_spam($original_redirect, $comment) {
 
-	if ( $comment && 'spam' == $comment->comment_approved || '0' == $comment->comment_approved ) {
+	if ( $comment && ( 'spam' == $comment->comment_approved || '0' == $comment->comment_approved)  ) {
 		$original_redirect = preg_replace('|#.*?$|', '', $original_redirect);
 		$caught_as = ( '0' == $comment->comment_approved ) ? 'moderation' : 'spam';
 		return add_query_arg('caught_as', $caught_as, $original_redirect) . '#comment-caught';
 	}
 
-	return $original_redirect;
+	return remove_query_arg('caught_as', $original_redirect);
 }
 
 function txfx_comment_was_caught() {
