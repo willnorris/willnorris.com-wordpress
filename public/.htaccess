@@ -9,7 +9,7 @@ Options +Multiviews
 
 	RewriteRule ^photos/?(.*)? http://www.flickr.com/photos/wnorris/$1 [L,R]
 
-    RewriteRule ^contact /about/ [L,R]
+    RewriteRule ^contact/?$ /about/ [L,R]
 
 	RewriteRule ^wordpress/?$ / [L,R]
 
