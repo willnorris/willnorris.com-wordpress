@@ -1,0 +1,202 @@
+/*
+Theme Name: willnorris
+Theme URI: http://willnorris.com/
+Description: Sandbox-based theme for willnorris.com
+Version: 0.1
+Author: Will Norris
+Author URI: http://willnorris.com/
+Template: sandbox
+*/
+
+@import 'lib/reset.css';
+@import 'lib/typography.css';
+/*
+@import 'lib/index.css';
+@import 'lib/single.css';
+*/
+
+
+body, html > body 						{ color: #444;
+   										  background: url('images/bg.png') fixed; }
+
+a 										{ text-decoration: none; }
+a:link, a:hover, a:visited 				{ color: #2277DD; }
+a:hover 								{ text-decoration: underline; }
+
+#wrapper 								{ width: 800px; margin: 0 auto; background: #FFF; }
+
+#wrapper a:hover 						{ text-decoration: underline; }
+
+h2, h2 a:link, h2 a:hover, h2 a:visited { text-decoration: none; color: #444; }
+
+h1, h2, h3, h4 							{ font-family: 'Trebuchet MS', Verdana, Sans-Serif; }
+
+
+/* Header and Menu */
+#header, #access 						{ border-left: 1px solid #ddd; height: auto; color: #FFF;
+										  background: #000; border-top: 4px solid #AE0B35; }
+
+#header 								{ font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
+										  float: left; }
+
+#access 								{ border-right: 1px solid #ddd; padding: 0.8em 0; }
+
+#blog-title 							{ font-size: 1.7em; font-weight: bold;
+										  margin: 0.3em 0 0 2em; }
+
+#blog-title a, #blog-title a:hover 		{ color: #FFF; text-decoration: none; z-index: 99; }
+
+#blog-description, .skip-link 			{ display: none; }
+
+#menu 									{ margin: 0.4em 0 0.4em 10em; position: relative; left: 3em; }
+#menu ul 								{ display: inline; }
+#menu li 								{ display: inline; margin: 0; }
+#menu ul li ul 							{ display: none; }
+#menu ul li a 							{ padding: 5px 15px 6px; color: #FFF; background: #000; font-size: .9em; 
+										  font-weight: bold; text-decoration: none; }
+
+#menu ul li a:hover 					{ color: #B9AF00 !important; text-decoration: none; }
+#menu ul li.current_page_item a,
+#menu ul li.current_page_item a:hover 	{ color: #999 !important; text-decoration: none; }
+
+
+
+/* Main Container */
+#container 								{ border-left: 1px solid #ddd; border-right: 1px solid #ddd;
+										  clear: both; }
+
+#content 								{ width: 500px; padding: 20px 0 10px; 
+										  margin: 0 10px 0 30px; float: left; }
+
+/* Sidebar */
+.sidebar 								{ margin: 0 0 20px 71%; width: 26%; color: #666; }
+#primary								{ margin-top: 3em; }
+
+.sidebar ul 							{ list-style: none; margin: 0; }
+
+.sidebar h3 							{ clear: none; color: #444; font-size: 1.2em; 
+										  margin-top: 1.0em; }
+
+.widget ul								{ font-size: 0.9em; line-height: 1.8em; }
+
+li#search label 						{ display: none; }
+#s										{ width: 60%; margin-right: 0.5em; }
+
+
+/* Navigation */
+.navigation 							{ margin: 2em 0.5em; padding-bottom: 1em; }
+.navigation a 							{ color: #999; }
+.nav-previous 							{ float: left; }
+.nav-next 								{ float: right; }
+.navigation + * 						{ clear: both; }
+
+#nav-above 								{ display: none; margin-top: 0em; }
+body.single #nav-above 					{ display: block; }
+body.single #nav-below 					{ display: none; }
+
+
+/* Footer */
+#copyright, #footer 					{ color: #999; background: #000; font-size: 0.9em; clear: both;
+										  padding: 1.5em; border: 1px solid #ddd; text-align: center; }
+
+#copyright 								{ padding: 0.7em 0 0.2em 0; border-bottom: 0;
+										  border-top: 4px solid #AE0B35; }
+
+#footer 								{ padding: 0.2em 0 0.7em 0; border-top: 0; }
+#copyright a, #footer a 				{ color: #999; }
+#copyright a:hover, #footer a:hover 	{ color: #CCC; text-decoration: underline; }
+#copyright address 						{ display: inline; }
+
+
+
+/* Pages */
+
+body.page .entry-title,
+.page-title								{ text-align: center; margin-bottom: 1em; }
+
+
+
+/* Posts */
+
+.post + .post 							{ margin-top: 2em; }
+
+body.archive .entry-title, 
+body.search .entry-title				{ line-height: normal; }
+body.single .entry-title				{ font-size: 2.0em; }
+
+.entry-date 							{ font-size: 0.9em; color: #bbb; }
+.entry-date:before 						{ content: "Published "; }
+
+.entry-content p						{ margin-bottom: 0.5em; line-height: 2.0em; }
+.entry-content a:visited				{ color: #b41; }
+
+
+.entry-meta, body.page .edit-link		{ border-top: 1px solid #CCC; border-bottom: 1px solid #CCC;
+										  background: #f0f0f0; padding: 0.3em 0.7em; 
+										  font-size: 0.9em; line-height: 1.7em; clear: both; 
+										  display: block; }
+
+.entry-meta .author,
+.entry-meta .author + .meta-sep			{ display: none; }
+body.single .entry-meta .author			{ display: inline; }
+
+
+
+/* Comments */
+
+#comments 								{ margin: 2em 0 0; }
+#commentform fieldset 					{ margin: 2em 0; }
+#commentform fieldset div				{ margin-left: 2em; }
+#commentform legend						{ font-weight: bold; }
+
+
+.comments li							{ list-style: none; }
+.comments li + li						{ margin-top: 3em; }
+
+.comments li p							{ line-height: 2.0em; text-align: left; margin-left: 5px; }
+img.gravatar							{ float: right; width: 32px; height: 32px; margin: 2px; }
+.comment-author							{ border-top: 1px solid #ccc; padding-top: 1px; }
+.comment-author .fn						{ font-weight: bold; font-size: 1.2em}
+.comment-meta							{ font-size: 0.9em; color: #999; padding-bottom: 0px;
+										  border-bottom: 1px solid #ccc; }
+.comments li.alt img.gravatar			{ float: left; }
+.comments li.alt .comment-author,		
+.comments li.alt .comment-meta			{ text-align: right; }
+
+.quoter_wrap							{ margin: 1em; padding: 0 20px 0 25px;
+										  border: 1px solid #d7d7d7; color: #333;
+										  background: #f9f9f9 url('images/blockquote.gif') 
+										    no-repeat 3px 25px; }
+.quoter_wrap .quoter_head, 
+.quoter_wrap blockquote					{ background: none; margin: 0; padding: 0; }
+.quoter_wrap blockquote p				{ margin-top: 0; padding-top: 0; }
+
+
+/* comments by post author */
+.comments li.bypostauthor .comment-author
+										{ background: #d7d7d7; color: #666; 
+										  border: 1px solid #333; border-bottom: 0; 
+										  padding: 2px; padding-bottom: 0; }
+
+.comments li.bypostauthor .comment-meta
+										{ background: #d7d7d7; color: #666; 
+										  border: 1px solid #333; border-top: 0; 
+										  padding: 2px; padding-top: 0; }
+
+/* Trackbacks */
+#trackbacks-list li .comment-author 	{ background: url('images/arrow_refresh.png') no-repeat 
+										  10px 10px; border-bottom: 1px solid #ccc; padding-left: 30px; }
+#trackbacks-list li + li				{ margin-top: 1em; }
+#trackbacks-list li .comment-author		{ border-bottom: 1px solid #ccc; }
+
+
+
+/* Post Content */
+
+img.flickr								{ border: 1px solid #999; padding: 1px; margin: 0 1em; }
+img.left								{ float: left; }
+img.right								{ float: right; }
+
+
+.akst_link								{ display: none; }
+body.single .akst_link					{ display: block; text-align: right; }
