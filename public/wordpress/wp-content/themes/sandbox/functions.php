@@ -56,7 +56,7 @@ function sandbox_body_class( $print = true ) {
 				$c[] = 's-tag-' . $tag->slug;
 
 		// Adds author class for the post author
-		$c[] = 's-author-' . sanitize_title_with_dashes(strtolower(get_the_author('login')));
+		$c[] = 's-author-' . sanitize_title_with_dashes(strtolower(get_the_author_login()));
 		rewind_posts();
 	}
 
