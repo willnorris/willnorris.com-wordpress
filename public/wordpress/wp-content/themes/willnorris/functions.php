@@ -16,7 +16,6 @@ function willnorris_footer() {
 }
 
 function willnorris_remove_title_prefix($title, $sep) {
-	error_log("$title => $sep");
 	$prefix = " $sep ";
 	if (strpos($title, $prefix) == 0) {
 		$title = substr($title, strlen($prefix));
