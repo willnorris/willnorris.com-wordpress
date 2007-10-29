@@ -157,3 +157,6 @@ p.incr, .incr p {
 	margin-bottom: 1.8em; /* Still 1.5 x normal font size as baseline */
 }
 
+
+sup { line-height: 0; vertical-align: text-top; }
+sub { line-height: 0; vertical-align: text-bottom; }

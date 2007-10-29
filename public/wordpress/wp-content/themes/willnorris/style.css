@@ -201,3 +201,5 @@ img.right								{ float: right; }
 
 .akst_link								{ display: none; }
 body.single .akst_link					{ display: block; text-align: right; }
+
+#project-license						{ font-size: 0.8em; }
