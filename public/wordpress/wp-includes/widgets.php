@@ -786,7 +786,7 @@ function wp_widget_categories_register() {
 	}
 
 	$dims = array( 'width' => 350, 'height' => 170 );
-	$class = array( 'classname' => 'widget_catgories' );
+	$class = array( 'classname' => 'widget_categories' );
 
 	for ( $i = 1; $i <= 9; $i++ ) {
 		$name = sprintf( __( 'Categories %d' ), $i );
@@ -1001,7 +1001,7 @@ function wp_widget_rss_control($number) {
 	$options = $newoptions = get_option('widget_rss');
 	if ( $_POST["rss-submit-$number"] ) {
 		$newoptions[$number]['items'] = (int) $_POST["rss-items-$number"];
-		$url = clean_url(strip_tags(stripslashes($_POST["rss-url-$number"])));
+		$url = sanitize_url(strip_tags(stripslashes($_POST["rss-url-$number"])));
 		$newoptions[$number]['title'] = trim(strip_tags(stripslashes($_POST["rss-title-$number"])));
 		if ( $url !== $options[$number]['url'] ) {
 			require_once(ABSPATH . WPINC . '/rss.php');
