@@ -44,4 +44,3 @@ add_action('get_footer', 'willnorris_footer');
 add_filter('bloginfo', 'willnorris_bloginfo', 5, 2);
 
 ?>
-
