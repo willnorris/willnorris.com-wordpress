@@ -1,0 +1,99 @@
+# Absolute Comments - plugin for WordPress
+# Ozh <ozh@planetozh.com>, 2007
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-10-28 08:27-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Ozh <ozh@planetozh.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr ""
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr ""
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr ""
+
+#: wp_ozh_absolutecomments.php:141 includes/_print_js.php:14
+msgid "Reply"
+msgstr ""
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr ""
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr ""
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr ""
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr ""
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr ""
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr ""
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr ""
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr ""
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr ""
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr ""
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr ""
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr ""
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr ""
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr ""
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr ""
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr ""
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr ""

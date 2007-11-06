@@ -1,0 +1,105 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments\n"
+"PO-Revision-Date: 2007-10-31 10:27+0100\n"
+"Last-Translator: Ozh <ozh at planetozh dot com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"POT-Creation-Date: \n"
+
+# never seen
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "Upps, kein Kommentar mit dieser ID."
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "Zurück"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "Deine Antwort"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "Antworten"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "Angetrieben durch"
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "Kommentar veröffentlichen &raquo;"
+
+# never seen
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "Diskussion antworten &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "Bitte warten ..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "Zeige alle"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "Schnelle Antwort"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "Antworten mit dem erweiterten Editor"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "Zeige alle Kommentare für diesen Beitrag"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "Veröffentliche Kommentar ..."
+
+# never seen
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "Upps! Doppelter Kommentar entdeckt. Aktion abgebrochen."
+
+# never seen
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "Upps! Du veröffentlichst zu schnell. Aktion abgebrochen."
+
+# never seen
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "Fehler (Doppelter Kommentar oder zu schnelle Veröffentlichung?). Aktion abgebrochen."
+
+# never seen
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "derzeit markiert als"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "Deine Antwort auf diesen Kommentar"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "Kommentare auf"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "Von: "
+

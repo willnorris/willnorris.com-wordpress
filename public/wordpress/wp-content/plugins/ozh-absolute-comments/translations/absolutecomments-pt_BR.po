@@ -1,0 +1,98 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-11-01 19:32-0300\n"
+"Last-Translator: Daniel <cadastrodk@gmail.com>\n"
+"Language-Team: dkcell.com.br <www.dkcell.com.br>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: BOUVET ISLAND\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "Ops, nenhum comentário com este ID"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "Voltar"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "Sua Resposta"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "Responder"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr ""
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "Responder comentário"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "Resposta em cadeia &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "Aguarde..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "Visualizar Todos"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "Resposta Rápida"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "Responder com editor avançado"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "Ver todos os comentários para este post"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "Postando comentário..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "Oops! Comentário duplicado. Abortado."
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "Você está postando muito rápido. Processo Abortado"
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "Erro! (Comentário duplicado, ou postando rápido demais ?) Abortado."
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "atualmente marcado como"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "Sua resposta para este comentário"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "Comentários abertos"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "De:"
+

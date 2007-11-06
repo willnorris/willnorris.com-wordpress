@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-10-31 10:40+0100\n"
+"Last-Translator: Ozh <ozh at planetozh dot com>\n"
+"Language-Team: Ozh <ozh at planetozh dot com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "Oops, aucun commentaire avec cette ID."
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "Retour"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "Votre réponse"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "Réponse"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "Motorisé par"
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "Répondre au commentaire &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "Réponse empilée &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "Patientez..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "Annuler"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "Voir Tout"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "Réponse immédiate"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "Réponse avec l'éditeur \"avancé\""
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "Voir tous les commentaires sur ce billet"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "Commentaire en cours de publication..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "Oops! Commentaire en doublon détecté. Opération annulée."
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "Oops! Vous postez trop rapidement. Opération annulée."
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "Erreur (commentaire en doublon, ou bien vous postez trop rapidement ?). Opération annulée."
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "marqué comme"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "Votre réponse à ce commentaire"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "Commentaires sur"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "De: "
+

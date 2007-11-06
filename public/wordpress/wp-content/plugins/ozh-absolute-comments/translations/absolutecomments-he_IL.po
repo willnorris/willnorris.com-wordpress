@@ -1,0 +1,98 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-10-29 21:24+0200\n"
+"Last-Translator: Elad Salomons <elad.salomons@gmail.com>\n"
+"Language-Team: Ozh <ozh at planetozh dot com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "אופס, אין תגובה עם המזהה הזה"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "חזור"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "התגובה שלך"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "השב"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "מופעל על-ידי"
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "השב לתגובה &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "תגובה מקוננת &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "המתן..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "ביטול"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "הצג הכל"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "תגובה מהירה"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "השב עם העורך העשיר"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "הצג את כל התגובות לפוסט הזה"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "שולח תגובה..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "אופס! תגובה כפולה. הפעולה מבוטלת."
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "אופס! אתה מגיב מהר מדי. הפעולה מבוטלת."
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "שגיאה (תגובה כפולה או הגבה מהירה מדי) הפעולה מבוטלת"
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "כרגע מסומן כ"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "התגובה שלך"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "תגובות על"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "מאת:"
+

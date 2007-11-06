@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-10-30 09:27+0100\n"
+"Last-Translator: Ozh <ozh at planetozh dot com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Finnish\n"
+"X-Poedit-Country: FINLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "Hups, ei kommentia tällä ID:llä."
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "Takaisin"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "Vastauksesi"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "Vastaa"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "Powered by"
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "Vastaa kommenttiin &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "Vastaa ketjuun &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "Odota..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "Näytä kaikki"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "Pikavastaus"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "Vastaa edistyneellä editorilla"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "Näytä tämän artikkelin kaikki kommentit"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "Kommenttia tallennetaan..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "Hups! Kaksoiskappale kommentista havaittu. Toiminto keskeytetään."
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "Hups! Postitat liian nopeasti. Toiminto keskeytetään."
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "Virhe (kaksoiskappale kommentista havaittu, tai postitat liian nopeasti ?). Toiminto keskeytetään."
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "Kommentin tila tällä hetkellä"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "Vastauksesi tähän kommenttiin"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "Kommentit artikkelilla"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "Keneltä: "
+

@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-10-29 21:52+0800\n"
+"Last-Translator: Arctic <firefox.lee@gmail.com>\n"
+"Language-Team: Ozh <ozh at planetozh dot com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "抱歉，未找到该 ID 的留言。"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "返回"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "你的回复"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "回复该留言"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "技术支持："
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "回复该留言 &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "嵌套回复该留言 &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "请稍等……"
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "取消"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "查看所有留言"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "快速回复"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "使用高级编辑器回复"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "查看该日志的所有留言"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "正在发布留言……"
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "抱歉，不允许重复留言。已终止。"
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "抱歉，你发布留言的速度过快。已终止。"
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "错误（重复留言，或留言过快？）。已终止。"
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "当前被标记为"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "你对该留言的回复"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "留言于"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "来自："
+

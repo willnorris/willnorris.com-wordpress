@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-10-30 09:27+0100\n"
+"Last-Translator: Ozh <ozh at planetozh dot com>\n"
+"Language-Team: Ozh <ozh at planetozh dot com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "Oops, nici un comentariu cu acest ID."
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "Înapoi"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "Răspunsul Dumneavoastră"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "Răspuns"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "Realizat de"
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "Răspunde la comentariu &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "Răspunde la subiect &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "Aşteaptă..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "Renunţă"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "Vezi tot"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "Răspuns rapid"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "Răspunde cu editor avansat"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "Vezi toate comentariile pentru acest articol"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "Comentariul se adaugă..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "Oops! Comentariu dublu detectat. Operaţie anulată."
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "Oops! Postaţi prea rapid. Operaţie anulată."
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "Eroare (comentariu dublu, sau postaţi prea repede?). Operaţie anulată."
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "marcat ca"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "Răspunsul dumneavoastră la comentariu"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "Comentarii la"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "De la: "
+
