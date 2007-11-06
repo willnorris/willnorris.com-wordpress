@@ -65,7 +65,7 @@ h1, h2, h3, h4 							{ font-family: 'Trebuchet MS', Verdana, Sans-Serif; }
 #container 								{ border-left: 1px solid #ddd; border-right: 1px solid #ddd;
 										  clear: both; }
 
-#content 								{ width: 500px; padding: 20px 0 10px; 
+#content 								{ width: 520px; padding: 20px 0 10px; 
 										  margin: 0 10px 0 30px; float: left; }
 
 /* Sidebar */
@@ -128,6 +128,7 @@ body.single .entry-title				{ font-size: 2.0em; }
 .entry-date:before 						{ content: "Published "; }
 
 .entry-content p, .entry-content li		{ margin-bottom: 0.5em; line-height: 2.0em; }
+.entry-content p						{ margin: 1.2em 0; }
 .entry-content a:visited				{ color: #b41; }
 
 
