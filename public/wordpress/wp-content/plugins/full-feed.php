@@ -2,7 +2,7 @@
 /*
 Plugin Name: Full Feed
 Plugin URI: http://willnorris.com/projects/full-feed
-Description: Display the full post content in syndication feeds, ignoring <!--more--> tags.
+Description: Display the full post content in syndication feeds, ignoring &lt;!--more--&gt; tags.
 Version: 1.0
 Author: Will Norris
 Author URI: http://willnorris.com/
