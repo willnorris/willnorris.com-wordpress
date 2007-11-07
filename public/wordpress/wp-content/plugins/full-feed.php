@@ -2,7 +2,7 @@
 /*
 Plugin Name: Full Feed
 Plugin URI: http://willnorris.com/projects/full-feed
-Description: Full Feed
+Description: Display the full post content in syndication feeds, ignore <!--more--> tags.
 Version: 1.0
 Author: Will Norris
 Author URI: http://willnorris.com/
@@ -53,9 +53,9 @@ if (!class_exists('FullFeed')) {
 if (isset($wp_version)) {
 	$fullfeed = new FullFeed();
 
-    add_action('atom_head', array($fullfeed, 'register_filters'));
-    add_action('rss2_head', array($fullfeed, 'register_filters'));
-    add_action('rdf_header', array($fullfeed, 'register_filters'));
+	add_action('atom_head', array($fullfeed, 'register_filters'));
+	add_action('rss2_head', array($fullfeed, 'register_filters'));
+	add_action('rdf_header', array($fullfeed, 'register_filters'));
 }
 
 ?>
