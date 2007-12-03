@@ -31,11 +31,17 @@ foreach ( $comments as $comment )
 <?php foreach ($comments as $comment) : ?>
 <?php if ( get_comment_type() == "comment" ) : ?>
 						<li id="comment-<?php comment_ID() ?>" class="<?php sandbox_comment_class() ?>">
-							<div class="comment-author vcard"><span class="fn n"><?php comment_author_link() ?></span></div>
+							<div class="comment-author vcard">
+								<?php if (function_exists('gravatar')) { ?> 
+									<img src="<?php gravatar("X", 32, get_bloginfo('stylesheet_url').'/../images/defaultgravatar.jpg'); ?>" class="gravatar photo" title="gravatar" />
+								<?php } ?>
+								<span class="fn n"><?php comment_author_link() ?></span>
+							</div>
 							<div class="comment-meta"><?php printf(__('Posted %1$s at %2$s <span class="meta-sep">|</span> <a href="%3$s" title="Permalink to this comment">Permalink</a>', 'sandbox'),
 										get_comment_date(),
 										get_comment_time(),
 										'#comment-' . get_comment_ID() );
+										if (function_exists('quoter_comment')) { _e(' <span class="meta-sep">|</span> '); quoter_comment(); }
 										edit_comment_link(__('Edit', 'sandbox'), ' <span class="meta-sep">|</span> <span class="edit-link">', '</span>'); ?></div>
 <?php if ($comment->comment_approved == '0') _e("\t\t\t\t\t<span class='unapproved'>Your comment is awaiting moderation.</span>\n", 'sandbox') ?>
 							<?php comment_text() ?>
