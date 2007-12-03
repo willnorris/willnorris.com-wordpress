@@ -13,7 +13,7 @@
 <?php while (have_posts()) : the_post(); ?>
 
 			<div id="post-<?php the_ID(); ?>" class="<?php sandbox_post_class(); ?>">
-				<h3 class="entry-title"><a href="<?php the_permalink() ?>" title="<?php printf(__('Permalink to %s', 'sandbox'), get_the_title()) ?>" rel="bookmark"><?php the_title() ?></a></h3>
+				<h3 class="entry-title"><a href="<?php the_permalink() ?>" title="<?php printf(__('Permalink to %s', 'sandbox'), wp_specialchars(get_the_title(), 1)) ?>" rel="bookmark"><?php the_title() ?></a></h3>
 				<div class="entry-date"><abbr class="published" title="<?php the_time('Y-m-d\TH:i:sO'); ?>"><?php unset($previousday); printf(__('%1$s &#8211; %2$s', 'sandbox'), the_date('', '', '', false), get_the_time()) ?></abbr></div>
 				<div class="entry-content">
 <?php the_excerpt(''.__('Read More <span class="meta-nav">&raquo;</span>', 'sandbox').'') ?>
@@ -24,7 +24,7 @@
 					<span class="meta-sep">|</span>
 					<span class="cat-links"><?php printf(__('Posted in %s', 'sandbox'), get_the_category_list(', ')) ?></span>
 					<span class="meta-sep">|</span>
-<?php if ( $tag_ur_it = sandbox_tag_ur_it(', ') ) : // This would be sweet if it worked. Grmpf. ?>
+<?php if ( $tag_ur_it = sandbox_tag_ur_it(', ') ) : ?>
 					<span class="tag-links"><?php printf(__('Also tagged %s', 'sandbox'), $tag_ur_it) ?></span>
 					<span class="meta-sep">|</span>
 <?php endif ?>

@@ -6,7 +6,7 @@
 <?php the_post() ?>
 
 <?php if ( is_day() ) : ?>
-			<h2 class="page-title"><?php printf(__('Daily Archives: <span>%s</span>', 'sandbox'), get_the_time(get_settings('date_format'))) ?></h2>
+			<h2 class="page-title"><?php printf(__('Daily Archives: <span>%s</span>', 'sandbox'), get_the_time(get_option('date_format'))) ?></h2>
 <?php elseif ( is_month() ) : ?>
 			<h2 class="page-title"><?php printf(__('Monthly Archives: <span>%s</span>', 'sandbox'), get_the_time('F Y')) ?></h2>
 <?php elseif ( is_year() ) : ?>
