@@ -14,7 +14,7 @@ CHANGES
 
 function gravatar($rating = false, $size = false, $default = false, $border = false) {
 	global $comment;
-	$url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($comment->comment_author_email);
+	$url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5(trim($comment->comment_author_email));
 	if($rating && $rating != '')
 		$url .= "&amp;rating=".$rating;
 	if($size && $size != '')
@@ -24,7 +24,8 @@ function gravatar($rating = false, $size = false, $default = false, $border = fa
 	if($border && $border != '')
 		$url .= "&amp;border=".$border;
 
-	if (function_exists('url_cache')) $cached = url_cache($url);
+	echo $url; return;
+	//if (function_exists('url_cache')) $cached = url_cache($url);
 
 	if (ereg(get_option('siteurl'), $cached)) {
 		echo $cached;
