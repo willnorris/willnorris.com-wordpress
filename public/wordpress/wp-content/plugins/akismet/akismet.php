@@ -2,8 +2,8 @@
 /*
 Plugin Name: Akismet
 Plugin URI: http://akismet.com/
-Description: Akismet checks your comments against the Akismet web service to see if they look like spam or not. You need a <a href="http://wordpress.com/api-keys/">WordPress.com API key</a> to use it. You can review the spam it catches under "Comments." To show off your Akismet stats just put <code>&lt;?php akismet_counter(); ?></code> in your template.
-Version: 2.0.2
+Description: Akismet checks your comments against the Akismet web service to see if they look like spam or not. You need a <a href="http://wordpress.com/api-keys/">WordPress.com API key</a> to use it. You can review the spam it catches under "Comments." To show off your Akismet stats just put <code>&lt;?php akismet_counter(); ?></code> in your template. See also: <a href="http://wordpress.org/extend/plugins/stats/">WP Stats plugin</a>.
+Version: 2.1.3
 Author: Matt Mullenweg
 Author URI: http://photomatt.net/
 */
@@ -35,6 +35,7 @@ if ( !function_exists('wp_nonce_field') ) {
 function akismet_config_page() {
 	if ( function_exists('add_submenu_page') )
 		add_submenu_page('plugins.php', __('Akismet Configuration'), __('Akismet Configuration'), 'manage_options', 'akismet-key-config', 'akismet_conf');
+	
 }
 
 function akismet_conf() {
@@ -146,14 +147,10 @@ function akismet_verify_key( $key ) {
 if ( !get_option('wordpress_api_key') && !$wpcom_api_key && !isset($_POST['submit']) ) {
 	function akismet_warning() {
 		echo "
-		<div id='akismet-warning' class='updated fade-ff0000'><p><strong>".__('Akismet is not active.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your WordPress.com API key</a> for it to work.'), "plugins.php?page=akismet-key-config")."</p></div>
-		<style type='text/css'>
-		#adminmenu { margin-bottom: 5em; }
-		#akismet-warning { position: absolute; top: 7em; }
-		</style>
+		<div id='akismet-warning' class='updated fade-ff0000'><p><strong>".__('Akismet is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your WordPress.com API key</a> for it to work.'), "plugins.php?page=akismet-key-config")."</p></div>
 		";
 	}
-	add_action('admin_footer', 'akismet_warning');
+	add_action('admin_notices', 'akismet_warning');
 	return;
 }
 
@@ -203,6 +200,8 @@ function akismet_auto_check_comment( $comment ) {
 	if ( 'true' == $response[1] ) {
 		add_filter('pre_comment_approved', create_function('$a', 'return \'spam\';'));
 		update_option( 'akismet_spam_count', get_option('akismet_spam_count') + 1 );
+
+		do_action( 'akismet_spam_caught' );
 
 		$post = get_post( $comment['comment_post_ID'] );
 		$last_updated = strtotime( $post->post_modified_gmt );
@@ -325,17 +324,60 @@ if ( isset( $GLOBALS['submenu']['edit-comments.php'] ) )
 else
 	$link = 'edit.php';
 ?>
+<style type="text/css">
+.akismet-tabs {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	clear: both;
+	border-bottom: 1px solid #ccc;
+	height: 31px;
+	margin-bottom: 20px;
+	background: #ddd;
+	border-top: 1px solid #bdbdbd;
+}
+.akismet-tabs li {
+	float: left;
+	margin: 5px 0 0 20px;
+}
+.akismet-tabs a {
+	display: block;
+	padding: 4px .5em 3px;
+	border-bottom: none;
+	color: #036;
+}
+.akismet-tabs .active a {
+	background: #fff;
+	border: 1px solid #ccc;
+	border-bottom: none;
+	color: #000;
+	font-weight: bold;
+	padding-bottom: 4px;
+}
+#akismetsearch {
+	float: right;
+	margin-top: -.5em;
+}
+
+#akismetsearch p {
+	margin: 0;
+	padding: 0;
+}
+</style>
 <div class="wrap">
 <h2><?php _e('Caught Spam') ?></h2>
 <?php
-$count = get_option('akismet_spam_count');
+$count = get_option( 'akismet_spam_count' );
 if ( $count ) {
 ?>
 <p><?php printf(__('Akismet has caught <strong>%1$s spam</strong> for you since you first installed it.'), number_format($count) ); ?></p>
 <?php
 }
-$spam_count = akismet_spam_count();
-if (0 == $spam_count) {
+
+$gotspam = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'spam'" );
+
+
+if ( 0 == $gotspam ) {
 	echo '<p>'.__('You have no spam currently in the queue. Must be your lucky day. :)').'</p>';
 	echo '</div>';
 } else {
@@ -345,7 +387,7 @@ if (0 == $spam_count) {
 <form method="post" action="<?php echo attribute_escape( add_query_arg( 'noheader', 'true' ) ); ?>">
 <?php akismet_nonce_field($akismet_nonce) ?>
 <input type="hidden" name="action" value="delete" />
-<?php printf(__('There are currently %1$s comments identified as spam.'), $spam_count); ?>&nbsp; &nbsp; <input type="submit" name="Submit" value="<?php _e('Delete all'); ?>" />
+<?php printf(__('There are currently %1$s comments identified as spam.'), $spam_count); ?>&nbsp; &nbsp; <input type="submit" class="button" name="Submit" value="<?php _e('Delete all'); ?>" />
 <input type="hidden" name="display_time" value="<?php echo current_time('mysql', 1); ?>" />
 </form>
 <?php } ?>
@@ -354,7 +396,6 @@ if (0 == $spam_count) {
 <?php if ( isset( $_POST['s'] ) ) { ?>
 <h2><?php _e('Search'); ?></h2>
 <?php } else { ?>
-<h2><?php _e('Latest Spam'); ?></h2>
 <?php echo '<p>'.__('These are the latest comments identified as spam by Akismet. If you see any mistakes, simply mark the comment as "not spam" and Akismet will learn from the submission. If you wish to recover a comment from spam, simply select the comment, and click Not Spam. After 15 days we clean out the junk for you.').'</p>'; ?>
 <?php } ?>
 <?php
@@ -380,19 +421,47 @@ if ( isset( $_POST['s'] ) ) {
 	$start = ( $page - 1 ) * 50;
 	$end = $start + 50;
 
-	$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_approved = 'spam' ORDER BY comment_date DESC LIMIT $start, $end");
-	$total = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'spam'" );
+	$where = '';
+	if ( isset( $_GET['ctype'] ) ) {
+		$type = preg_replace( '|[^a-z]|', '', $_GET['ctype'] );
+		if ( 'comments' == $type )
+			$type = '';
+		$where = " AND comment_type = '$type' "; 
+	}
+
+	$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_approved = 'spam' $where ORDER BY comment_date DESC LIMIT $start, $end");
+	$total = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'spam' $where" );
+
+	$totals = $wpdb->get_results( "SELECT comment_type, COUNT(*) AS cc FROM $wpdb->comments WHERE comment_approved = 'spam' GROUP BY comment_type" );
+?>
+<ul class="akismet-tabs">
+<li <?php if ( !isset( $_GET['ctype'] ) ) echo ' class="active"'; ?>><a href="edit-comments.php?page=akismet-admin"><?php _e('All'); ?></a></li>
+<?php
+foreach ( $totals as $type ) {
+	if ( '' == $type->comment_type ) $type->comment_type = 'comments';
+	$show = ucwords( $type->comment_type );
+	$type->cc = number_format( $type->cc );
+	$extra = ( $_GET['ctype'] == $type->comment_type ) ? ' class="active"' : '';
+	echo "<li $extra><a href='edit-comments.php?page=akismet-admin&amp;ctype=$type->comment_type'>$show ($type->cc)</a></li>";
+}
+do_action( 'akismet_tabs' ); // so plugins can add more tabs easily
+?>	
+</ul>
+<?php
 }
 
 if ($comments) {
 ?>
-
+<form method="post" action="<?php echo attribute_escape("$link?page=akismet-admin"); ?>" id="akismetsearch">
+<p>  <input type="text" name="s" value="<?php if (isset($_POST['s'])) echo attribute_escape($_POST['s']); ?>" size="17" /> 
+  <input type="submit" class="button" name="submit" value="<?php echo attribute_escape(__('Search Spam &raquo;')) ?>"  />  </p>
+</form>
 <?php if ( $total > 50 ) {
 $total_pages = ceil( $total / 50 );
 $r = '';
 if ( 1 < $page ) {
 	$args['apage'] = ( 1 == $page - 1 ) ? '' : $page - 1;
-	$r .=  '<a class="prev" href="' . clean_url(add_query_arg( $args )) . '">&laquo; '. __('Previous Page') .'</a>' . "\n";
+	$r .=  '<a class="prev" href="' . clean_url(add_query_arg( $args )) . '">'. __('&laquo; Previous Page') .'</a>' . "\n";
 }
 if ( ( $total_pages = ceil( $total / 50 ) ) > 1 ) {
 	for ( $page_num = 1; $page_num <= $total_pages; $page_num++ ) :
@@ -413,17 +482,13 @@ if ( ( $total_pages = ceil( $total / 50 ) ) > 1 ) {
 }
 if ( ( $page ) * 50 < $total || -1 == $total ) {
 	$args['apage'] = $page + 1;
-	$r .=  '<a class="next" href="' . clean_url(add_query_arg($args)) . '">'. __('Next Page') .' &raquo;</a>' . "\n";
+	$r .=  '<a class="next" href="' . clean_url(add_query_arg($args)) . '">'. __('Next Page &raquo;') .'</a>' . "\n";
 }
 echo "<p>$r</p>";
 ?>
 
 <?php } ?>
-<form method="post" action="<?php echo attribute_escape("$link?page=akismet-admin"); ?>" id="akismetsearch">
-<p>  <input type="text" name="s" value="<?php if (isset($_POST['s'])) echo attribute_escape($_POST['s']); ?>" size="17" /> 
-  <input type="submit" name="submit" value="<?php echo attribute_escape(__('Search')) ?>"  />  </p>
-</form>
-<form method="post" action="<?php echo attribute_escape( add_query_arg( 'noheader', 'true' ) ); ?>">
+<form style="clear: both;" method="post" action="<?php echo attribute_escape( add_query_arg( 'noheader', 'true' ) ); ?>">
 <?php akismet_nonce_field($akismet_nonce) ?>
 <input type="hidden" name="action" value="recover" />
 <ul id="spam-list" class="commentlist" style="list-style: none; margin: 0; padding: 0;">
@@ -463,7 +528,7 @@ $total_pages = ceil( $total / 50 );
 $r = '';
 if ( 1 < $page ) {
 	$args['apage'] = ( 1 == $page - 1 ) ? '' : $page - 1;
-	$r .=  '<a class="prev" href="' . clean_url(add_query_arg( $args )) . '">&laquo; '. __('Previous Page') .'</a>' . "\n";
+	$r .=  '<a class="prev" href="' . clean_url(add_query_arg( $args )) . '">'. __('&laquo; Previous Page') .'</a>' . "\n";
 }
 if ( ( $total_pages = ceil( $total / 50 ) ) > 1 ) {
 	for ( $page_num = 1; $page_num <= $total_pages; $page_num++ ) :
@@ -484,7 +549,7 @@ if ( ( $total_pages = ceil( $total / 50 ) ) > 1 ) {
 }
 if ( ( $page ) * 50 < $total || -1 == $total ) {
 	$args['apage'] = $page + 1;
-	$r .=  '<a class="next" href="' . clean_url(add_query_arg($args)) . '">'. __('Next Page') .' &raquo;</a>' . "\n";
+	$r .=  '<a class="next" href="' . clean_url(add_query_arg($args)) . '">'. __('Next Page &raquo;') .'</a>' . "\n";
 }
 echo "<p>$r</p>";
 }
