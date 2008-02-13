@@ -84,9 +84,10 @@ body#about h2 { background: transparent url('../images/title-about.png') no-repe
 body#rsvp h2 { background: transparent url('../images/title-rsvp.png') no-repeat; width: 86px; }
 body#info h2 { background: transparent url('../images/title-info.png') no-repeat; width: 281px; }
 body#contact h2 { background: transparent url('../images/title-contact.png') no-repeat; width: 149px; }
+body#photos h2 { background: transparent url('../images/title-photos.png') no-repeat; width: 90px; }
 
 
-h3 {
+body#info h3 {
 	margin-top: 2em;
 }
 
@@ -175,17 +176,21 @@ img#directions-map {
 	border-top: 1px solid #999;
 }
 #our-story p.elisabeth {
-	background: transparent url('../images/avatar_elisabeth.jpg') 3px left no-repeat;
+	background: transparent url('../images/avatar_elisabeth.jpg') left 3px no-repeat;
 	padding-left: 60px; 
 }
 #our-story p.will {
-	background: transparent url('../images/avatar_will.jpg') 3px right no-repeat;
+	background: transparent url('../images/avatar_will.jpg') right 3px no-repeat;
 	padding-right: 60px; 
 }
 
 
 
+body#contact .adr {
+	margin-top: 0.5em;
+}
 
 
-
+body#photos a {
+}
 
