@@ -193,7 +193,7 @@ body#contact .adr {
 
 body#photos ul#thumbnails {
 	list-style: none;
-	margin: 0;
+	margin: 0 1.5em;
 }
 body#photos ul#thumbnails li {
 	display: block;
@@ -209,3 +209,11 @@ body#photos #thumbnails img {
 	padding: 1px;
 	vertical-align: middle;
 }
+
+body#photos kbd {
+	font-weight: bold;
+	font-family: monospace;
+}
+
+
+
