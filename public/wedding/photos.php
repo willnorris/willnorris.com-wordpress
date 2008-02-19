@@ -30,7 +30,7 @@
 		<li><a href="images/photos/015.jpg"><img src="images/photos/thumbnails/015.jpg" /></a></li>
 	</ul>
 
-	<h3>Wedding Photos</h3>
+	<h3>Wedding</h3>
 
 	<p>While we will have a photographer at the wedding, we'd love for family 
 and friends to take pictures as well.  If you don't mind, please upload any 

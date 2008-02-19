@@ -20,13 +20,13 @@ html > body {
 #header {
 	background: transparent url('../images/header-kiss-bw.jpg') 0 0 no-repeat ;
 	width: 750px;
-	height: 200px;
+	height: 175px;
 	margin: 0 auto;
 }
 #header a {
 	display: block;
 	width: 750px;
-	height: 200px;
+	height: 175px;
 	text-decoration: none;
 }
 h1 {
@@ -35,7 +35,7 @@ h1 {
 	text-indent: -999999px;
 	width: 186px;
 	height: 76px;
-	top: 50px;
+	top: 40px;
 	left: 450px;
 }
 
