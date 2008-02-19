@@ -8,16 +8,23 @@
 
 	<h2>Photos</h2>
 
-	<a href="images/photos/Norris_005.jpg"><img src="images/photos/thumbnails/Norris_005.jpg" /></a>
-	<a href="images/photos/Norris_016.jpg"><img src="images/photos/thumbnails/Norris_016.jpg" /></a>
-	<a href="images/photos/Norris_055.jpg"><img src="images/photos/thumbnails/Norris_055.jpg" /></a>
-	<a href="images/photos/Norris_155.jpg"><img src="images/photos/thumbnails/Norris_155.jpg" /></a>
-	<a href="images/photos/Norris_285.jpg"><img src="images/photos/thumbnails/Norris_285.jpg" /></a>
-	<a href="images/photos/Norris_414.jpg"><img src="images/photos/thumbnails/Norris_414.jpg" /></a>
-	<a href="images/photos/Norris_511.jpg"><img src="images/photos/thumbnails/Norris_511.jpg" /></a>
-	<a href="images/photos/Norris_619.jpg"><img src="images/photos/thumbnails/Norris_619.jpg" /></a>
-	<a href="images/photos/Norris_656.jpg"><img src="images/photos/thumbnails/Norris_656.jpg" /></a>
-
+	<ul id="thumbnails">
+		<li><a href="images/photos/001.jpg"><img src="images/photos/thumbnails/001.jpg" /></a></li>
+		<li><a href="images/photos/002.jpg"><img src="images/photos/thumbnails/002.jpg" /></a></li>
+		<li><a href="images/photos/003.jpg"><img src="images/photos/thumbnails/003.jpg" /></a></li>
+		<li><a href="images/photos/004.jpg"><img src="images/photos/thumbnails/004.jpg" /></a></li>
+		<li><a href="images/photos/005.jpg"><img src="images/photos/thumbnails/005.jpg" /></a></li>
+		<li><a href="images/photos/006.jpg"><img src="images/photos/thumbnails/006.jpg" /></a></li>
+		<li><a href="images/photos/007.jpg"><img src="images/photos/thumbnails/007.jpg" /></a></li>
+		<li><a href="images/photos/008.jpg"><img src="images/photos/thumbnails/008.jpg" /></a></li>
+		<li><a href="images/photos/009.jpg"><img src="images/photos/thumbnails/009.jpg" /></a></li>
+		<li><a href="images/photos/010.jpg"><img src="images/photos/thumbnails/010.jpg" /></a></li>
+		<li><a href="images/photos/011.jpg"><img src="images/photos/thumbnails/011.jpg" /></a></li>
+		<li><a href="images/photos/012.jpg"><img src="images/photos/thumbnails/012.jpg" /></a></li>
+		<li><a href="images/photos/013.jpg"><img src="images/photos/thumbnails/013.jpg" /></a></li>
+		<li><a href="images/photos/014.jpg"><img src="images/photos/thumbnails/014.jpg" /></a></li>
+		<li><a href="images/photos/015.jpg"><img src="images/photos/thumbnails/015.jpg" /></a></li>
+	</ul>
 <?php
 
 	pageFooter();
