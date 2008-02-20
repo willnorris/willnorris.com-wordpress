@@ -178,6 +178,8 @@ img#directions-map {
 #our-story p {
 	min-height: 60px;
 	border-top: 1px solid #999;
+	width: 80%;
+	margin: 2em auto;
 }
 #our-story p.elisabeth {
 	background: transparent url('../images/avatar_elisabeth.jpg') left 3px no-repeat;
