@@ -89,9 +89,11 @@ hr {
 /* Tables
 -------------------------------------------------------------- */
 
+/*
 table   { margin-bottom: 1.4em; border-top:0.1em solid #ddd; border-left:0.1em solid #ddd; }
 th,td   { height: 1em; padding:0.2em 0.4em; border-bottom:0.1em solid #ddd; border-right:0.1em solid #ddd; }
 th      { font-weight:bold; }
+*/
 
 
 /* Forms

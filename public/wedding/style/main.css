@@ -105,21 +105,25 @@ body#info h3 {
 
 
 #rsvpForm {
-	margin-top: 5em;
+	margin: 3em auto;
 	text-align: center;
 }
 
 #rsvpForm label {
-	font-size: 2.5em;
+	font-size: 2.0em;
 }
 #rsvpForm #code {
 	display: block;
 	text-align: center;
 	margin: 0.5em auto;
-	font-size: 2.5em;
+	font-size: 2.0em;
 	width: 6em;
 }
 
+
+body#rsvp table   { margin-bottom: 1.4em; border-top:0.1em solid #ddd; border-left:0.1em solid #ddd; }
+body#rsvp th, body#rsvp td   { height: 1em; padding:0.2em 0.4em; border-bottom:0.1em solid #ddd; border-right:0.1em solid #ddd; }
+body#rsvp th      { font-weight:bold; }
 
 
 hr {
@@ -190,7 +194,6 @@ body#contact .adr {
 	margin-top: 0.5em;
 }
 
-
 body#photos ul#thumbnails {
 	list-style: none;
 	margin: 0 1.5em;
@@ -214,6 +217,5 @@ body#photos kbd {
 	font-weight: bold;
 	font-family: monospace;
 }
-
 
 

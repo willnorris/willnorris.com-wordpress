@@ -76,6 +76,19 @@
 
 		case 'submitted':
 			echo $messages['invite_submitted'];
+			echo '<table id="invitation_guests" style="margin: 1em auto;" cellpadding="0" cellspacing="0">
+				<tr><th>&nbsp;</th><th>Will Attend</th></tr>';
+
+			foreach($invite->guests as $guest) {
+				echo '
+				<tr>
+					<td>'.$guest->name.'</td>
+					<td>'.($guest->attending ? 'Yes' : 'No').'</td>
+				</tr>';
+			}
+	
+			echo '
+				</table>';
 			break;
 
 		case 'list':
@@ -84,11 +97,13 @@
 			}
 
 			echo '
+			<p>For each guest, please indicate whether or not they will be able to attend.  If your invitation includes an unnamed guest, please provide their name in the space provided.</p>
+
 			<form id="guestsForm" action="'.$_SERVER['PHP_SELF'].'" method="post">
 				<input type="hidden" name="action" value="rsvp" />
 				<input type="hidden" name="code" value="'.$_REQUEST['code'].'" />
 				<table id="invitation_guests" cellpadding="0" cellspacing="0">
-				<tr><th>Name</th><th>Will Attend</th><th>Will Not Attend</th></tr>';
+				<tr><th>&nbsp;</th><th>Will Attend</th><th>Will Not Attend</th></tr>';
 
 			foreach($invite->guests as $guest) {
 				echo '
@@ -110,7 +125,7 @@
 			break;
 
 		case 'success':
-			echo 'success';
+			echo '<p>'.$messages['invite_success'].'</p>';
 			break;
 
 		default:
@@ -122,6 +137,7 @@
 			<input type="submit" value="submit" />
 		</form>
 
+		<p>If you have trouble entering your RSVP code or have lost your code, please <a href="contact">contact Will</a>.
 		<script type="text/javascript">
 			document.getElementById('code').focus();
 		</script>

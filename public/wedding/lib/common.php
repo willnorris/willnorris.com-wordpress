@@ -14,5 +14,6 @@ if (PEAR::isError($db)) {
 }
 
 
+$alertEmail = 'wedding@willnorris.com';
 
 ?>

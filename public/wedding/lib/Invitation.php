@@ -64,17 +64,23 @@ class Invitation
 	}
 
 	public function update() {
-		global $db;
+		global $db, $alertEmail;
 
-		$sql = "UPDATE invitation SET received=now()";
+		$subject = sprintf("TEST RSVP received for %s", $this->addressee);
+		$message = sprintf("TEST RSVP received for %s:\n\n", $this->addressee);
+
+		$sql = 'UPDATE invitation SET received=now() WHERE id="'.$this->id.'"';
 		$res = $db->exec($sql);
 		if (PEAR::isError($res)) {
 			die ($res->getMessage());
 		}
 
 		foreach ($this->guests as $guest) {
+			$message .= sprintf("%s - %s\n", $guest->name, ($guest->attending ? "yes" : "no"));
 			$guest->update();
 		}
+
+		mail($alertEmail, $subject, $message, "From: $alertEmail");
 	}
 }
 

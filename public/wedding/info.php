@@ -42,7 +42,7 @@ begin at 6:30pm with reception to immediately <abbr class="dtend" title="2008-05
 			</div>
 		</div>
 		
-		<p id="google-maps">Find Falkner Winery on <a href="http://xrl.us/FalknerWineryMap">Google Maps</a>.</p>
+		<p id="google-maps">Find Falkner Winery on <a href="http://xrl.us/FalknerWineryMap" target="_blank">Google Maps</a>.</p>
 	
 		<hr />
 

@@ -32,10 +32,11 @@
 
 	<h3>Wedding</h3>
 
-	<p>While we will have a photographer at the wedding, we'd love for family 
-and friends to take pictures as well.  If you don't mind, please upload any 
-photos to our <a href="http://flickr.com/groups/norris-wedding/">Flickr Group</a>.  Alternately, please tag any photos 
-or other media with the tag <kbd>NorrisWedding2008<kbd>.
+	<p>While we will of course have a photographer at the wedding and 
+reception, we'd love for family and friends to take pictures as well.  If you 
+don't mind, please upload any photos to our <a 
+href="http://flickr.com/groups/norris-wedding/">Flickr Group</a>.  Alternately, 
+please tag any photos or other media with the tag <kbd>NorrisWedding2008<kbd>.
 
 <?php
 
