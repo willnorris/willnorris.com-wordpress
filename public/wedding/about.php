@@ -42,7 +42,7 @@ community and I decided to take a road trip to California.  Skillet was playing
 several shows over a couple of days, so we arranged for a dozen or so of us 
 that knew each other online to all meet up at the shows.  There's several folks 
 missing from this picture, but you can see Elisabeth and I kneeling down in 
-front <a href="">here</a>.</p>
+front <a href="images/photos/july2002.jpg">here</a>.</p>
 
 <p class="elisabeth">Will was always a bit intimidating to a lot of people, 
 because he ran the big community and knew the band pretty well and all.  I 
@@ -103,8 +103,9 @@ USC again.</p>
 
 <p class="elisabeth">Our first official date was that New Year's Eve at Knott's 
 Berry Farm to see Skillet.  We commemorated the evening with some <a 
-href="">photobooth pictures</a>.  Before I knew it, he was back on a plane 
-heading home.</p>
+href="http://www.flickr.com/photos/wnorris/90929722/" 
+target="_blaink">photobooth pictures</a>.  Before I knew it, he was back on a 
+plane heading home.</p>
 
 <p class="will">Less than a month later though, I had accepted a full time 
 position at USC and was making plans to move to California.  Elisabeth flew out 
@@ -137,7 +138,8 @@ he had asked so many times before, I had to be sure.</p>
 <p class="will">yeah, but never before did I have a ring!</p>
 
 <p class="elisabeth">Of course I said "yes", and we ended up getting some <a 
-href="">really cool pictures of the proposal</a> to boot.</p>
+href="http://flickr.com/photos/wnorris/758348305/in/set-72157600018009478/" 
+target="_blank">really cool pictures of the proposal</a> to boot.</p>
 
 <?php
 	pageFooter();
