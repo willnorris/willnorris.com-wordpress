@@ -15,7 +15,7 @@ class="category">wedding</span></abbr> will be held on <abbr class="dtstart"
 title="2008-05-02T18:30:00-08:00">Friday, May 2nd, 2008</abbr> at Falkner 
 Winery in Temecula, CA.  The ceremony will begin at 6:30pm with reception to 
 immediately <abbr class="dtend" title="2008-05-02T23:30:00-08:00">follow</abbr> 
-on site.  While not black tie affair, this will be a formal event.</p>
+on site.  While not a black tie affair, this will be a formal event.</p>
 
 		<hr />
 	
