@@ -137,7 +137,7 @@ money in yet.  It was a tight squeeze, but I managed to get down on one knee
 and get the ring out of my bag.  I told her that I loved her and asked her to 
 be my wife.</p>
 
-<p class="elisabeth">"Are you for sure this time?"  That's what I asked him...  
+<p class="elisabeth">"Are you sure this time?"  That's what I asked him...  
 he had asked so many times before, I had to be sure.</p>
 
 <p class="will">yeah, but never before did I have a ring!</p>
