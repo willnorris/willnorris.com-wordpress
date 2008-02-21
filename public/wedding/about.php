@@ -73,7 +73,8 @@ working at the University of Memphis on a project called Shibboleth.  In
 October 2005, I heard that a school in California (USC) was looking for a 
 Shibboleth administrator, so I expressed my interest in the position.  My job 
 at UofM was only a part-time position and I had no real ties to Memphis, so I 
-figured I had nothing to lose.</p>
+figured I had nothing to lose.  About the same time, I was also offered an 
+position at a large university on the east coast.</p>
 
 <p class="will">I got in touch with a couple of friends I had in California 
 just to let them know I was looking at a job out there.  I remembered that 
@@ -95,7 +96,7 @@ classmates brought pictures of models or movie stars.  I brought in a picture
 of Will.  But then I moved on, and thought that was the end of it.</p>
 
 <p class="will">We kept chatting a bit online for a couple of weeks, and then 
-starting calling around Thanksgiving of that year... a good 3-4 hours a night, 
+started calling around Thanksgiving of that year... a good 3-4 hours a night, 
 every night.  The job at USC hadn't been a perfect fit, but given where things 
 were headed with Elisabeth, I decided to fly out to California over New Years.  
 It'd give me a good opportunity to spend time with her and talk to the guys at 
@@ -107,13 +108,17 @@ href="http://www.flickr.com/photos/wnorris/90929722/"
 target="_blaink">photobooth pictures</a>.  Before I knew it, he was back on a 
 plane heading home.</p>
 
-<p class="will">Less than a month later though, I had accepted a full time 
-position at USC and was making plans to move to California.  Elisabeth flew out 
-to Memphis and we spent three days driving back to the west coast.  Let's just 
-say that our new circumstances were certainly not conducive to nurturing a 
-budding romance.  I was working full-time in downtown Los Angeles and she had 
-just started full-time at San Diego State University.  For the next two years 
-(and still to this day) we only ever saw each other on the weekends.</p>
+<p class="will">Within the first couple of days spent with Elisabeth, I knew I 
+had to be in California.  I turned down the east coast job, despite it 
+seemingly being a better career move, and accepted a full time position at USC. 
+Less than a month after I had returned to Memphis, Elisabeth flew out and we 
+spent three days driving back to the west coast.</p>
+
+<p class="will">Let's just say that our new circumstances were certainly not 
+conducive to nurturing a budding romance.  I was working full-time in downtown 
+Los Angeles and she had just started full-time at San Diego State University.  
+For the next two years (and still to this day) we only ever saw each other on 
+the weekends.</p>
 
 <p class="elisabeth">Will was pretty convinced from the beginning that he was 
 going to marry me.  I always knew that could be somewhere in our future, but he 
