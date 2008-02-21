@@ -18,18 +18,23 @@ Skillet fans.</p>
 
 <p class="elisabeth">I was here in Southern California, and had been introduced 
 to Skillet that same year by my best friend.  I was aware of the community Will 
-had setup, but didn't really like a lot of the people there.  So I got involved 
+had setup, but didn't really care for the people there.  So I got involved 
 with, and later managed, a different Skillet community.  Of course Will and I 
 knew who each other were and he helped me on a few technical things, but 
-otherwise we kept to ourselves.  Honestly, he tended to come off as a bit of an 
+otherwise we kept to ourselves.  Actually, he tended to come off as a bit of an 
 elitist snob.</p>
 
-<p class="will">Yeah? Well you seemed to be running a preschool with little 
-kids just running amuck!</p>
+<p class="will">Oh, come on... you can't be serious.</p>
 
-<p class="elisabeth">Anyway, needless to say we didn't exactly get along.  We 
-had two very different communities that attracted very different types of 
-people, and we generally left it at that.</p>
+<p class="elisabeth">You did!  Some of the other people over there were worse, 
+but you always seemed so cold and distant.</p>
+
+<p class="will">Yeah? Well you seemed to be running a preschool with little 
+kids just running around crazy!</p>
+
+<p class="elisabeth">*rolls eyes*  Anyway, needless to say we didn't exactly 
+get along.  We had two very different communities that attracted very different 
+types of people, and we generally left it at that.</p>
 
 <p class="will">Now by the summer of 2002, I had moved back home to Memphis, 
 Tennessee.  I wasn't working that summer so a few friends from the Skillet 
@@ -39,22 +44,21 @@ that knew each other online to all meet up at the shows.  There's several folks
 missing from this picture, but you can see Elisabeth and I kneeling down in 
 front <a href="">here</a>.</p>
 
-<p class="elisabeth">Those concerts that summer changed a lot for me.  Will was 
-always a bit intimidating to a lot of people, because he ran the big community 
-and knew the band pretty well and all.  I didn't really know what to expect 
-when I met him, but I was pretty much ready to not like him much.  What I saw 
-though was this skinny guy with firey red hair and moccasins... and he was 
-actually kinda cute.  Without realizing it, I basically fell in love with my 
-arch-enemy.</p>
+<p class="elisabeth">Will was always a bit intimidating to a lot of people, 
+because he ran the big community and knew the band pretty well and all.  I 
+didn't really know what to expect when I met him, but I was pretty much ready 
+to not like him much.  What I saw though was this skinny guy with firey red 
+hair and moccasins... and I actually couldn't help but like him.  Without 
+realizing it, I was falling head over heels.</p>
 
 <p class="elisabeth">But then of course he went back home to Memphis.  I tried 
-to pursue him a bit, but he wouldn't give me the time of day.</p>
+to get to know him a bit, but he wouldn't give me the time of day.</p>
 
-<p class="will">What?  When did you pursue me?  The fact of the matter is, I 
-thought she was pretty cute.  I mean really, did you see that picture up there?  
-But I was also realistic... we lived almost 2000 miles apart, hardly knew each 
-other, and weren't really in the position to get into a long distance 
-relationship.  She was a beautiful girl, but that was it.</p>
+<p class="will">What?  When did I blow you off?  The fact of the matter is, I 
+thought she was pretty cute.  But I was also realistic... we lived almost 2000 
+miles apart, hardly knew each other, and weren't really in the position to get 
+into a long distance relationship.  She was a beautiful girl, but that was 
+it.</p>
 
 <p class="elisabeth">About a year later in 2003, the two communities that we 
 were managing merged into one.  Will and I worked together a bit to pull that 
@@ -65,19 +69,75 @@ short emails, we didn't really talk much for the next 2 or 3 years... we had
 gone our separate ways.</p>
 
 <p class="will">During those next few years I had been going to school and 
-working at the University of Memphis.  I was working on a pretty cool project 
-called Shibboleth that was used by a lot universities around the world.  In 
-October 2005, I heard that a school in California was looking for a Shibboleth 
-administrator, so I expressed my interest in the position.  My job at UofM was 
-only a part-time position and I had no real ties to Memphis, so I figured I had 
-nothing to lose.</p>
+working at the University of Memphis on a project called Shibboleth.  In 
+October 2005, I heard that a school in California (USC) was looking for a 
+Shibboleth administrator, so I expressed my interest in the position.  My job 
+at UofM was only a part-time position and I had no real ties to Memphis, so I 
+figured I had nothing to lose.</p>
 
 <p class="will">I got in touch with a couple of friends I had in California 
 just to let them know I was looking at a job out there.  I remembered that 
-Elisabeth was in school, so I contact her to find out where and to see what she 
-had been up to the last couple of years.</p>
+Elisabeth was in school, so I contacted her to find out where and to see what 
+she had been up to the last couple of years.</p>
 
-<p>... still writing the rest. :-\</p>
+<p class="elisabeth">I was a little surprised to hear from him but was glad to 
+chat.</p>
+
+<p class="will">The more I read the archives on her website, the more I began 
+to realize that I may have missed out on something years ago.  Hoping it wasn't 
+too late, I really began to pursue getting to know her better.</p>
+
+<p class="elisabeth">At this point, I'm thinking "What the hell?"  He had never 
+once shown an interest in my personal life, and now he wants to hear my life 
+story?  I had really fallen for him years ago... when we had an assignment in a 
+Health Science class to bring in a picture of our ideal mate, most of my 
+classmates brought pictures of models or movie stars.  I brought in a picture 
+of Will.  But then I moved on, and thought that was the end of it.</p>
+
+<p class="will">We kept chatting a bit online for a couple of weeks, and then 
+starting calling around Thanksgiving of that year... a good 3-4 hours a night, 
+every night.  The job at USC hadn't been a perfect fit, but given where things 
+were headed with Elisabeth, I decided to fly out to California over New Years.  
+It'd give me a good opportunity to spend time with her and talk to the guys at 
+USC again.</p>
+
+<p class="elisabeth">Our first official date was that New Year's Eve at Knott's 
+Berry Farm to see Skillet.  We commemorated the evening with some <a 
+href="">photobooth pictures</a>.  Before I knew it, he was back on a plane 
+heading home.</p>
+
+<p class="will">Less than a month later though, I had accepted a full time 
+position at USC and was making plans to move to California.  Elisabeth flew out 
+to Memphis and we spent three days driving back to the west coast.  Let's just 
+say that our new circumstances were certainly not conducive to nurturing a 
+budding romance.  I was working full-time in downtown Los Angeles and she had 
+just started full-time at San Diego State University.  For the next two years 
+(and still to this day) we only ever saw each other on the weekends.</p>
+
+<p class="elisabeth">Will was pretty convinced from the beginning that he was 
+going to marry me.  I always knew that could be somewhere in our future, but he 
+seemed over-eager at times.  He must have jokingly asked me a hundred times if 
+I would marry him, to which I would always tell him "no".  But then in June 
+2007, we went back to Knott's Berry Farm for some family event with his work.  
+As the day winded down, we decided to find our old photobooth and take another 
+set of pictures like we had on our first date.  We did one set, but Will 
+claimed they didn't look very good and he wanted to take another one.  It was 
+late in the day and we were both tired, and I really didn't want to do another 
+set.  And then he put the money in the machine before we even got situated and 
+started fiddling with his bag, so I was getting pretty annoyed.</p>
+
+<p class="will">She really was upset at me, telling me I shouldn't have put the 
+money in yet.  It was a tight squeeze, but I managed to get down on one knee 
+and get the ring out of my bag.  I told her that I loved her and asked her to 
+be my wife.</p>
+
+<p class="elisabeth">"Are you for sure this time?"  That's what I asked him...  
+he had asked so many times before, I had to be sure.</p>
+
+<p class="will">yeah, but never before did I have a ring!</p>
+
+<p class="elisabeth">Of course I said "yes", and we ended up getting some <a 
+href="">really cool pictures of the proposal</a> to boot.</p>
 
 <?php
 	pageFooter();
