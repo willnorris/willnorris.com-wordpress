@@ -86,6 +86,12 @@ body#info h2 { background: transparent url('../images/title-info.png') no-repeat
 body#contact h2 { background: transparent url('../images/title-contact.png') no-repeat; width: 149px; }
 body#photos h2 { background: transparent url('../images/title-photos.png') no-repeat; width: 90px; }
 
+ul#toc {
+	margin: 0 3em;
+}
+ul#toc li {
+	line-height: 2.5em;
+}
 
 body#info h3 {
 	margin-top: 2em;
