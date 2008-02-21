@@ -66,8 +66,8 @@ class Invitation
 	public function update() {
 		global $db, $alertEmail;
 
-		$subject = sprintf("TEST RSVP received for %s", $this->addressee);
-		$message = sprintf("TEST RSVP received for %s:\n\n", $this->addressee);
+		$subject = sprintf("RSVP received for %s", $this->addressee);
+		$message = sprintf("RSVP received for %s:\n\n", $this->addressee);
 
 		$sql = 'UPDATE invitation SET received=now() WHERE id="'.$this->id.'"';
 		$res = $db->exec($sql);
