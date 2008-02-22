@@ -38,14 +38,18 @@ html > body {
 	height: 175px;
 	text-decoration: none;
 }
-h1 {
+
+html > body h1 {
 	background: transparent url('../images/title.png') no-repeat;
-	position: relative;
 	text-indent: -999999px;
 	width: 186px;
 	height: 76px;
+}
+h1 {
+	position: relative;
 	top: 40px;
 	left: 450px;
+	font-size: 2em;
 }
 
 
@@ -88,12 +92,12 @@ h1 {
 }
 
 
-body h2 { height: 40px; text-indent: -99999px; margin-bottom: 0.5em; margin-left: -0.5em;}
-body#about h2 { background: transparent url('../images/title-about.png') no-repeat; width: 131px; }
-body#rsvp h2 { background: transparent url('../images/title-rsvp.png') no-repeat; width: 86px; }
-body#info h2 { background: transparent url('../images/title-info.png') no-repeat; width: 281px; }
-body#contact h2 { background: transparent url('../images/title-contact.png') no-repeat; width: 149px; }
-body#photos h2 { background: transparent url('../images/title-photos.png') no-repeat; width: 90px; }
+html > body h2 { height: 40px; text-indent: -99999px; margin-bottom: 0.5em; margin-left: -0.5em;}
+html > body#about h2 { background: transparent url('../images/title-about.png') no-repeat; width: 131px; }
+html > body#rsvp h2 { background: transparent url('../images/title-rsvp.png') no-repeat; width: 86px; }
+html > body#info h2 { background: transparent url('../images/title-info.png') no-repeat; width: 281px; }
+html > body#contact h2 { background: transparent url('../images/title-contact.png') no-repeat; width: 149px; }
+html > body#photos h2 { background: transparent url('../images/title-photos.png') no-repeat; width: 90px; }
 
 ul#toc {
 	margin: 0 3em;
@@ -180,6 +184,8 @@ img#directions-map {
 	display: block;
 	float: right;
 	margin: 1em;
+	height: 323px;
+	width: 371px;
 }
 #google-maps {
 	margin: 1em;
