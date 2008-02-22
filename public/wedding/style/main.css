@@ -1,6 +1,14 @@
 @import url('reset.css');
 @import url('typography.css');
 
+body {
+	background: #809eb6 url('../images/two-pegasus.png') 50px 150px repeat fixed;
+	margin: 0;
+	padding: 0;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 14px;
+	text-align: center;
+}
 html > body {
 	background: #809eb6 url('../images/two-pegasus.png') 50px 150px repeat fixed;
 	margin: 0;
@@ -14,6 +22,7 @@ html > body {
 	background: #FFF;
 	margin: 1em auto;
 	border: 2px solid #000;
+	text-align: left;
 }
 
 
@@ -52,15 +61,15 @@ h1 {
 #navigation li {
 	margin: 0;
 	padding: 0;
+	display: block;
+	float: right;
 }
 #navigation li a {
 	color: #FFF;
-	display: block;
 	line-height: 1.5em;
 	padding: 0 2em;
 	margin: 0;
 	text-decoration: none;
-	float: right;
 }
 #navigation li a:hover {
 	color: #809eb6;
@@ -163,7 +172,6 @@ body#info .vcard {
 }
 #directions {
 	display: block;
-	width: 43%;
 }
 #directions li {
 	margin: 1em 0;
@@ -181,11 +189,19 @@ img#directions-map {
 
 
 /* Our Story */
+#our-story {
+	text-align: center;
+}
 #our-story p {
 	min-height: 60px;
 	border-top: 1px solid #999;
 	width: 80%;
 	margin: 2em auto;
+	text-align: left;
+	height: 60px;
+}
+html > body #our-story p {
+	height: auto;
 }
 #our-story p.elisabeth {
 	background: transparent url('../images/avatar_elisabeth.jpg') left 3px no-repeat;
@@ -202,23 +218,20 @@ body#contact .adr {
 	margin-top: 0.5em;
 }
 
-body#photos ul#thumbnails {
-	list-style: none;
+body#photos #thumbnails {
 	margin: 0 1.5em;
-}
-body#photos ul#thumbnails li {
-	display: block;
-	margin: 1em;
-	height: 75px;
-	width: 100px;
-
-	float: left;
 	text-align: center;
+}
+body#photos #thumbnails td {
+	margin: 1em;
+
+	text-align: center;
+	padding: 1em 1.5em;
+	vertical-align: middle;
 }
 body#photos #thumbnails img {
 	border: 1px solid #000;
 	padding: 1px;
-	vertical-align: middle;
 }
 
 body#photos kbd {

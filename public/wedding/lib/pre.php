@@ -5,7 +5,7 @@ function pageHeader() {
 ?>
 <html>
 	<head>
-		<title>Will & Elisabeth<?php echo $bodyTitle ? " - $bodyTitle" : '' ?>
+		<title>Will & Elisabeth<?php echo $bodyTitle ? " - $bodyTitle" : '' ?></title>
 		<link type="text/css" rel="stylesheet" href="style/main.css" />
 
 		<script src="/script/FancyZoom.js" type="text/javascript"></script>
