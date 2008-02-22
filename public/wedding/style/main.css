@@ -2,7 +2,7 @@
 @import url('typography.css');
 
 body {
-	background: #809eb6 url('../images/two-pegasus.png') 50px 150px repeat fixed;
+	background: #809eb6 url('../images/two-pegasus-ie6.png') 50px 150px repeat fixed;
 	margin: 0;
 	padding: 0;
 	font-family: Georgia, "Times New Roman", Times, serif;
@@ -15,6 +15,7 @@ html > body {
 	padding: 0;
 	font-family: Georgia, "Times New Roman", Times, serif;
 	font-size: 14px;
+	text-align: left;
 }
 
 #content {
