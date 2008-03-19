@@ -247,3 +247,16 @@ body#photos kbd {
 }
 
 
+body#admin table#guests td {
+	padding: 0.5em;
+}	
+body#admin td.no {
+	text-indent: -99999px;
+	background-color: #FF0000;
+	width: 2em;
+}
+body#admin td.yes {
+	text-indent: -99999px;
+	background-color: #00FF00;
+	width: 2em;
+}
