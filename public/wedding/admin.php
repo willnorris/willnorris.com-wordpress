@@ -12,7 +12,7 @@
 		'-' => 0,
 	);
 
-	echo '<table id="guests">';
+	echo '<table id="guests" cellPadding="0" cellSpacing="0">';
 	foreach($invitations as $invite) {
 		foreach ($invite->guests as $guest) {
 			echo '

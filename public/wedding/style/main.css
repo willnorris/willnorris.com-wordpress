@@ -247,8 +247,15 @@ body#photos kbd {
 }
 
 
+body#admin table#guests,
+body#admin table#guests tr {
+	border-left: 1px solid #000;
+	border-top: 1px solid #000;
+}
 body#admin table#guests td {
 	padding: 0.5em;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
 }	
 body#admin td.no {
 	text-indent: -99999px;
