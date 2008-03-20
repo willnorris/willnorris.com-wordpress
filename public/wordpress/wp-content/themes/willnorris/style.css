@@ -156,12 +156,12 @@ body.single .entry-meta .author			{ display: inline; }
 .comments li + li						{ margin-top: 3em; }
 
 .comments li p							{ line-height: 2.0em; text-align: left; margin-left: 5px; }
-img.gravatar							{ float: right; width: 32px; height: 32px; margin: 2px; }
+img.avatar								{ float: right; width: 32px; height: 32px; margin: 2px; }
 .comment-author							{ border-top: 1px solid #ccc; padding-top: 1px; }
 .comment-author .fn						{ font-weight: bold; font-size: 1.2em}
 .comment-meta							{ font-size: 0.9em; color: #999; padding-bottom: 0px;
 										  border-bottom: 1px solid #ccc; }
-.comments li.alt img.gravatar			{ float: left; }
+.comments li.alt img.avatar				{ float: left; }
 .comments li.alt .comment-author,		
 .comments li.alt .comment-meta			{ text-align: right; }
 
