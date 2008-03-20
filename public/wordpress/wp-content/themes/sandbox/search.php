@@ -5,7 +5,7 @@
 
 <?php if (have_posts()) : ?>
 
-		<h2 class="page-title"><?php _e('Search Results for:', 'sandbox') ?> <span id="search-terms"><?php echo wp_specialchars(stripslashes($_GET['s']), true); ?></span></h2>
+		<h2 class="page-title"><?php _e('Search Results for:', 'sandbox') ?> <span id="search-terms"><?php the_search_query() ?></span></h2>
 
 			<div id="nav-above" class="navigation">
 				<div class="nav-previous"><?php next_posts_link(__('<span class="meta-nav">&laquo;</span> Older posts', 'sandbox')) ?></div>
@@ -49,8 +49,8 @@
 				</div>
 				<form id="noresults-searchform" method="get" action="<?php bloginfo('home') ?>">
 					<div>
-						<input id="noresults-s" name="s" type="text" value="<?php echo wp_specialchars(stripslashes($_GET['s']), true) ?>" size="40" />
-						<input id="noresults-searchsubmit" name="searchsubmit" type="submit" value="<?php _e('Find', 'sandbox') ?>" />
+						<input id="noresults-s" class="text-input" name="s" type="text" value="<?php the_search_query() ?>" size="40" />
+						<input id="noresults-searchsubmit" class="submit-button" name="searchsubmit" type="submit" value="<?php _e('Find', 'sandbox') ?>" />
 					</div>
 				</form>
 			</div><!-- .post -->

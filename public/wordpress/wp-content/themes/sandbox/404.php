@@ -10,8 +10,8 @@
 				</div>
 				<form id="error404-searchform" method="get" action="<?php bloginfo('home') ?>">
 					<div>
-						<input id="error404-s" name="s" type="text" value="<?php echo wp_specialchars(stripslashes($_GET['s']), true) ?>" size="40" />
-						<input id="error404-searchsubmit" name="searchsubmit" type="submit" value="<?php _e('Find', 'sandbox') ?>" />
+						<input id="error404-s" class="text-input" name="s" type="text" value="<?php the_search_query() ?>" size="40" />
+						<input id="error404-searchsubmit" class="submit-button" name="searchsubmit" type="submit" value="<?php _e('Find', 'sandbox') ?>" />
 					</div>
 				</form>
 			</div><!-- .post -->

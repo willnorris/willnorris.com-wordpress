@@ -8,35 +8,34 @@
 	<meta name="keywords" content="sandbox,xhtml,hatom,hcard,microformats,semantics,css,wordpress" />
 	<style type="text/css" media="all">
 	/*<![CDATA[*/
-	body{background:#fcfcfc;color:#444;font:normal 70%/150% verdana,geneva,sans-serif;margin:0;padding:0;}
-	body blockquote{border-left:5px solid #f6f6f6;padding-left:0.5em;}
-	body code,body pre{font:1em/150% consolas,"courier new",courier,monospace;}
-	body div#readme{background:#fff;border-left:3px solid #f9f9f9;border-right:3px solid #f9f9f9;color:#444;margin:0 auto;padding:1em 2em;width:50em;}
-	body div#readme div#footer{margin:3em auto 1em;text-align:center;}
-	body div#readme div#footer p{background:#ffd;color:#666;display:inline;padding:0.2em 0.5em;}
-	body div#readme div#header{margin:0 auto;text-align:center;}
-	body div#readme div#header div.readme-version{font-size:0.9em;letter-spacing:0.1em;margin:0 0 0.5em;text-transform:uppercase;}
-	body h1{font-size:3.2em;}
-	body h1,body h2,body h3{font-family:garamond,georgia,times,serif;font-weight:400;}
-	body h2{font-size:2em;margin-top:3em;}
-	body h3{font-size:1.6em;margin-top:2em;}
-	body ol li ol li,body ol li#features ol li ol li{list-style:decimal;}
-	body ol li#functions h3{font-size:1.5em;}
-	body ol li#functions ol{list-style:lower-alpha;margin:0 0 0 2em;padding:0;}
-	body ol li#license blockquote a{color:#222;text-decoration:none;}
-	body ol li#license blockquote strong{font-size:0.9em;font-weight:400;text-transform:uppercase;}
-	body ol li,body ol#menu li ol li{list-style:upper-roman;}
-	body ol ul li{list-style:square;}
-	body ol#menu li{list-style:none;}
-	body ol#menu li ol li ol li,body ol li#functions ol li,body ol li#features ol li{list-style:lower-roman;}
-	body pre span,body span.bold{font-weight:700;}
-	body span.vcard span.family-name,body span.vcard span.additional-name{display:none;}
-	table{border-collapse:separate;border-color:#aaa;border-spacing:0;border-style:solid;border-width:1px;padding:0 0.5em;}
-	table tbody td{border-collapse:separate;border-color:#aaa;border-style:solid;border-width:0.5px 0;padding:0.2em 0.5em;}
-	table tbody th{border-bottom:1px solid #aaa;font-size:0.8em;text-align:left;text-transform:uppercase;}
-	table tbody tr.alt{background:#f5f5f5;}
-	table tfoot th{font-size:0.8em;padding-top:1em;text-align:left;text-transform:uppercase;}
-	table thead th{padding:0.5em;}
+		body{background:#fcfcfc;color:#444;font:normal 70%/150% verdana,geneva,sans-serif;margin:0;padding:0;}
+		body blockquote{border-left:5px solid #f6f6f6;padding-left:0.5em;}
+		body code,body pre{font:1em/150% consolas,"courier new",courier,monospace;}
+		body div#readme{background:#fff;border-left:3px solid #f9f9f9;border-right:3px solid #f9f9f9;color:#444;margin:0 auto;padding:1em 2em;width:50em;}
+		body div#readme div#footer{margin:3em auto 1em;text-align:center;}
+		body div#readme div#footer p{background:#ffd;color:#666;display:inline;padding:0.2em 0.5em;}
+		body div#readme div#header{margin:0 auto;text-align:center;}
+		body div#readme div#header div.readme-version{font-size:0.9em;letter-spacing:0.1em;margin:0 0 0.5em;text-transform:uppercase;}
+		body h1{font-size:3.2em;}
+		body h1,body h2,body h3{font-family:garamond,georgia,times,serif;font-weight:400;}
+		body h2{font-size:2em;margin-top:3em;}
+		body h3{font-size:1.6em;margin-top:2em;}
+		body ol li ol li,body ol li#features ol li ol li{list-style:decimal;}
+		body ol li#functions h3{font-size:1.5em;}
+		body ol li#functions ol{list-style:lower-alpha;margin:0 0 0 2em;padding:0;}
+		body ol li#license blockquote a{color:#222;text-decoration:none;}
+		body ol li#license blockquote strong{font-size:0.9em;font-weight:400;text-transform:uppercase;}
+		body ol li,body ol#menu li ol li{list-style:upper-roman;}
+		body ol ul li{list-style:square;}
+		body ol li pre.shell{margin:-0.5em 2.5em 1em 1em;padding:0.2em 0.5em;background:#eee;}
+		body ol#menu li{list-style:none;}
+		body ol#menu li ol li ol li,body ol li#functions ol li,body ol li#features ol li{list-style:lower-roman;}
+		body pre span,body span.bold{font-weight:700;}
+		body p span.vcard span.family-name,body p span.vcard span.additional-name{display:none;}
+		table *{border:none;}
+		table tbody th,table tfoot th{background:#ddd;text-align:left;}
+		table tbody tr.alt{background:#eee;}
+		table tr td,table tr th{padding:0.1em 0.5em;}
 	/*]]>*/
 	</style>
 </head>
@@ -44,7 +43,7 @@
 	<div id="readme">
 		<div id="header">
 			<h1 id="title">The Sandbox</h1>
-			<div class="readme-version">Version 1.1</div>
+			<div class="readme-version">Version 1.5</div>
 			<div class="readme-subtitle">A theme rich and powerful with dynamic semantic class selectors</div>
 		</div><!-- #header -->
 		<ol id="menu" class="xoxo">
@@ -68,6 +67,7 @@
 						</ol>
 					</li>
 					<li><a href="#creating" title="Skip to Creating Sandbox templates">Creating a theme template</a></li>
+					<li><a href="#translations" title="Skip to Translations">Translations</a></li>
 					<li><a href="#standards" title="Skip to Web standards">Web standards</a></li>
 					<li><a href="#microformats" title="Skip to Microformats">Microformats</a></li>
 					<li><a href="#credits" title="Skip to Credits and thanks">Credits and thanks</a></li>
@@ -78,42 +78,46 @@
 		<ol id="content" class="xoxo">
 			<li id="introduction">
 				<h2>Introduction</h2>
-				<p>The Sandbox is a lot of things:</p>
+				<p>Sandbox is a lot of things:</p>
 				<ul>
+					<li>For WordPress 2.5.x</li>
 					<li>Beautiful on the inside</li>
-					<li>For WordPress 2.3.x</li>
 					<li>Valid <abbr title="eXtensible HyperText Markup Language">XHTML</abbr> 1.0 Transitional</li>
 					<li>Widgets friendly</li>
-					<li>The basis for your new, <abbr title="GNU Public Licence">GPL</abbr>-licensed theme</li>
+					<li>The basis for your <abbr title="GNU General Public Licence">GPL</abbr>-licensed theme</li>
 				</ul>
 				<p>More importantly, the Sandbox <em>can be</em> a lot of things.</p>
 				<p>What began as <span class="vcard"><a class="url fn n" href="http://www.plaintxt.org/" title="Scott, plaintxt.org" rel="me"><span class="given-name">Scott</span><span class="additional-name"> Allan</span><span class="family-name"> Wallick</span></a></span>'s leftovers has become an advanced, semantics-based theme. <span class="vcard"><a class="url fn n" href="http://andy.wordpress.com/" title="Andy, WordPress.com"><span class="given-name">Andy</span><span class="family-name"> Skelton</span></a></span> added his innovative semantic class-generating functions and Scott edited it to oblivion.</p>
 				<p>So what can you do with the Sandbox?</p>
 				<ul>
 					<li>You can just use it as-is and have a super-cool, truly minimalist theme.</li>
-					<li>You can totally customize it with <abbr title="Cascading Style Sheets">CSS</abbr> alone&mdash;no need to bother with other files.</li>
-					<li>You can use the functions, theme files, et al, as pleases you&mdash;even for your own theme.</li>
-					<li>You can use it as a good place to learn a few things about <abbr title="Cascading Style Sheets">CSS</abbr>, <abbr title="eXtensible HyperText Markup Language">XHTML</abbr>, and <abbr title="Hypertext Preprocessor">PHP</abbr>, perhaps.</li>
+					<li>You can thoroughly customize it with <abbr title="Cascading Style Sheets">CSS</abbr> alone.</li>
+					<li>You can use its functions, files, et al, as pleases you.</li>
+					<li>You can use it to learn a few things about <abbr title="Cascading Style Sheets">CSS</abbr>, <abbr title="eXtensible HyperText Markup Language">XHTML</abbr>, and <abbr title="Hypertext Preprocessor">PHP</abbr>.</li>
 				</ul>
 				<p>The real feature of the Sandbox is its markup. The use of class-generating functions in the <code>body</code>, post <code>div</code>, and comment/trackback <code>li</code> elements create an exceptionally extensible foundation. As Andy said, <q cite="http://andy.wordpress.com/2006/07/20/generated-semantic-classes-2/" title="Generated Semantic Classes 2">Given straightforward markup with plenty of selectors, there isn't much that can't be accomplished with <abbr title="Cascading Style Sheets">CSS</abbr> and a decent browser.</q></p>
-				<p>And the implementation of the hAtom and hCard microformats means we're looking forward (and pleasing the barons at <a href="http://www.technorait.com/" title="Technorati" rel="external">Technorati</a>). You might be able to improve on our markup, but, well, who wants to work that hard?</p>
+				<p>And the implementation of the hAtom and hCard microformats means we're looking forward. You might be able to improve on our markup, but who wants to work that hard?</p>
 			</li><!-- #introduction -->
 			<li id="installing">
 				<h2>Installing</h2>
 				<p>The Sandbox theme is installed just like any other WordPress theme. To install this theme:</p>
 				<ol>
-					<li>Download the <a href="http://www.plaintxt.org/themes/sandbox/" title="The Sandbox for WordPress" rel="me">Sandbox</a></li>
+					<li>Download the latest <a href="http://www.plaintxt.org/themes/sandbox/" title="Sandbox theme for WordPress" rel="me">Sandbox</a> release</li>
 					<li>Extract the <code>/sandbox/</code> folder from the archive</li>
-					<li>Upload this folder to the <code>/wp-contents/themes/</code> directory</li>
-					<li>Activate the theme in the <i>Dashboard &rsaquo; Presentation</i> menu</li>
+					<li>Upload it to the <code>../wp-contents/themes/</code> directory</li>
+					<li>Activate the theme in the <i>Design</i> submenu</li>
 					<li>Enjoy</li>
 				</ol>
 				<p>You can read more detailed installation instructions on the <a href="http://codex.wordpress.org/Using_Themes#Adding_New_Themes" title="Adding new themes - WordPress Codex" rel="external">WordPress Codex</a>.</p>
+				<h3>Subversion Access</h3>
 				<p>Developers interested in <a href="http://en.wikipedia.org/wiki/Subversion_(software)" title="Subersion - Wikipedia" rel="external">Subversion</a> access to the Sandbox repository may visit <a href="http://code.google.com/p/sandbox-theme" title="Sandbox theme on Google Code" rel="external">code.google.com/p/sandbox-theme</a>. Please ignore if unfamiliar with Subversion.</p>
+				<p>For the latest and possibly unstable version, check out the <code>/trunk/</code>:</p>
+				<pre class="shell">svn checkout http://sandbox-theme.googlecode.com/svn/trunk/</pre>
+				<p>A legacy version for WordPress 2.0.x is in <code>/branches/0.9/</code>. Otherwise, please check out tagged versions in the <code>/tags/</code> subdirectory. Tagged versions are stable and the latest release will be for the current stable version of WordPress.</p>
 			</li><!-- #installing -->
 			<li id="started">
 				<h2>Getting started</h2>
-				<p>To help beginners get started, example layouts in <code>/sandbox-layouts/</code> have been included. Instructions for using the included layouts and designs can be found in the folder.</p>
+				<p>For beginners getting started, see the example layouts in <code>/sandbox-layouts/</code>. Instructions for using the included layouts can be found in the folder.</p>
 				<p>The simplest way to get started with the Sandbox is to jump right in to <code>style.css</code>, using <abbr title="Cascading Style Sheets">CSS</abbr> to design the appearence of the Sandbox.</p>
 				<p>For help learning <abbr title="Cascading Style Sheets">CSS</abbr>, visit:</p>
 				<ul>
@@ -163,15 +167,20 @@
 									<th scope="col" abbr="tag">WP Tag</th>
 									<th scope="col" abbr="use">Usage</th>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">archive</td>
 									<td><code>is_archive()</code></td>
 									<td>When <em>any</em> archive page is displayed, i.e., applies to category-, date-, and author-based archive pages</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">attachment</td>
 									<td><code>is_attachment()</code></td>
 									<td>When the post subpage containing an attachment is displayed, as set with "Linked to Page" in the post editor</td>
+								</tr>
+								<tr>
+									<td scope="row">attachmentid-[n]</td>
+									<td><code>is_attachment()</code></td>
+									<td>Displays the ID number of queried attachment page, where <i>[n]</i> is the ID, e.g., <code>attachmentid-20</code></td>
 								</tr>
 								<tr class="alt">
 									<td scope="row">attachment-[mime]</td>
@@ -194,69 +203,79 @@
 									<td>Displays the "paged" number of author archive, where <i>[n]</i> is the paginated number</td>
 								</tr>
 								<tr class="alt">
+									<td scope="row">blog</td>
+									<td><code>is_home()</code></td>
+									<td>When the page containing blog posts is displayed</td>
+								</tr>
+								<tr>
 									<td scope="row">category</td>
 									<td><code>is_category()</code></td>
 									<td>When a category archive page is displayed</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">category-[name]</td>
 									<td><code>is_category()</code></td>
 									<td>For a specific category, where <i>[name]</i> is the category slug, e.g., <code>category-useful-links</code></td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">category-paged-[n]</td>
 									<td><code>is_category()</code> &amp; <code>is_paged()</code></td>
 									<td>Displays the "paged" number of category archive, where <i>[n]</i> is the paginated number</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">d01&ndash;31</td>
 									<td><code>gmdate('d')</code></td>
 									<td>The current day of when the page is displayed (Offset to GMT)</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">date</td>
 									<td><code>is_date()</code></td>
 									<td>When a date archive page is displayed, e.g., by month, by year</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">date-paged-[n]</td>
 									<td><code>is_date()</code> &amp; <code>is_paged()</code></td>
 									<td>Displays the "paged" number of date-based archive, where <i>[n]</i> is the paginated number</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">h00&ndash;24</td>
 									<td><code>gmdate('h')</code></td>
 									<td>The current hour of when the page is displayed (Offset to GMT)</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">four04</td>
 									<td><code>is_404()</code></td>
 									<td>When a request results in zero posts, i.e., a 404 error page</td>
 								</tr>
-								<tr class="alt">
-									<td scope="row">home</td>
-									<td><code>is_home()</code></td>
-									<td>When the home page is displayed</td>
-								</tr>
 								<tr>
+									<td scope="row">home</td>
+									<td><code>is_front_page()</code></td>
+									<td>When the front page is displayed</td>
+								</tr>
+								<tr class="alt">
 									<td scope="row">m00&ndash;12</td>
 									<td><code>gmdate('m')</code></td>
 									<td>The current month of when the page is displayed (Offset to GMT)</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">loggedin</td>
 									<td>n/a</td>
 									<td>When the page is displayed by a logged-in user</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">page</td>
 									<td><code>is_page()</code></td>
 									<td>When a page is displayed</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">page-author-[name]</td>
 									<td><code>is_page()</code></td>
 									<td>For a page by a specific author, where <i>[name]</i> is the user's login name, e.g., <code>page-author-admin</code></td>
+								</tr>
+								<tr class="alt">
+									<td scope="row">page-child</td>
+									<td><code>is_page()</code></td>
+									<td>When the page is a child page to another page</td>
 								</tr>
 								<tr>
 									<td scope="row">page-paged-[n]</td>
@@ -264,19 +283,29 @@
 									<td>Displays the "paged" number of pages, where <i>[n]</i> is the paginated number</td>
 								</tr>
 								<tr class="alt">
+									<td scope="row">page-parent</td>
+									<td><code>is_page()</code></td>
+									<td>When the page has one or more child pages</td>
+								</tr>
+								<tr>
 									<td scope="row">paged</td>
 									<td><code>is_paged()</code></td>
 									<td>When whatever is displayed is "paged," e.g., page 2 of the index</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">paged-[n]</td>
 									<td><code>is_paged()</code></td>
 									<td>Displays the "paged" number, where <i>[n]</i> is the paginated number, e.g., <code>paged-3</code> for third page of index</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">pageid-[n]</td>
 									<td><code>is_page()</code></td>
-									<td>Displays the page ID number of queried page, where <i>[n]</i> is the page ID, e.g., <code>pageid-20</code></td>
+									<td>Displays the page ID number of queried page, where <i>[n]</i> is the ID, e.g., <code>pageid-20</code></td>
+								</tr>
+								<tr class="alt">
+									<td scope="row">parent-pageid-[n]</td>
+									<td><code>is_page()</code></td>
+									<td>Displays the page ID of the current page's parent, where <i>[n]</i> is the ID, e.g., <code>parent-pageid-20</code></td>
 								</tr>
 								<tr>
 									<td scope="row">postid-[n]</td>
@@ -381,80 +410,85 @@
 									<th scope="col" abbr="tag">WP Tag</th>
 									<th scope="col" abbr="use">Usage</th>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">alt</td>
 									<td>n/a</td>
 									<td>For odd-numbered posts, e.g., for the 1<sup>st</sup>, 3<sup>rd</sup>, 5<sup>th</sup> posts</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">author-[name]</td>
 									<td><code>is_author()</code></td>
 									<td>For any specific author, where <i>[name]</i> is the user's login name, e.g., <code>author-admin</code></td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">category-[name]</td>
 									<td><code>is_category()</code></td>
 									<td>For any specific category, where <i>[name]</i> is the category slug, e.g., <code>category-news</code></td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">d01&ndash;31</td>
 									<td><code>gmdate('d')</code></td>
 									<td>For a post published on a specific day (Offset to GMT)</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">draft</td>
 									<td>n/a</td>
 									<td>For a post saved as a draft, as contrasted with an published post</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">h00&ndash;24</td>
 									<td><code>gmdate('h')</code></td>
 									<td>For a post published at a specific hour (Offset to GMT)</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">hentry</td>
 									<td>n/a</td>
 									<td>For the hAtom 0.1 specification, applied every post</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">m00&ndash;12</td>
 									<td><code>gmdate('m')</code></td>
 									<td>For a post published in a specific month (Offset to GMT)</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">p[n]</td>
 									<td>n/a</td>
 									<td>For counting posts relative to the top of the page, where <i>[n]</i> is the number, e.g., <code>p1</code> for the first post, <code>p2</code> for the second, <code>p3</code> for the third</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">page</td>
 									<td>n/a</td>
 									<td>A general class, applied to every page</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">post</td>
 									<td>n/a</td>
 									<td>A general class, applied to every post</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">private</td>
 									<td>n/a</td>
 									<td>For a post that has been saved as private</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">protected</td>
 									<td>n/a</td>
 									<td>For a post protected by a password</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">publish</td>
 									<td>n/a</td>
 									<td>For any published post, as contrasted with an unpublished draft</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">tag-[name]</td>
 									<td><code>is_tag()</code></td>
 									<td>For any specific tag, where <i>[name]</i> is the tag slug, e.g., <code>tag-foo-bar</code></td>
+								</tr>
+								<tr class="alt">
+									<td scope="row">untagged</td>
+									<td><code>is_tag()</code></td>
+									<td>If there are no tags assigned to the post</td>
 								</tr>
 								<tr>
 									<td scope="row">y2007</td>
@@ -489,62 +523,72 @@
 									<th scope="col" abbr="tag">WP Tag</th>
 									<th scope="col" abbr="use">Usage</th>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">alt</td>
 									<td>n/a</td>
 									<td>For odd-numbered comments, e.g., for the 1<sup>st</sup>, 3<sup>rd</sup>, 5<sup>th</sup> comments</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">bypostauthor</td>
 									<td>n/a</td>
 									<td>When the comment author is also the post author</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">byuser</td>
 									<td>n/a</td>
 									<td>For comments by registered users</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">c-h00&ndash;24</td>
 									<td><code>gmdate('h')</code></td>
 									<td>For a comment posted at a specific hour (Offset to GMT)</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">c[n]</td>
 									<td>n/a</td>
 									<td>For counting comments relative to the first, where <i>[n]</i> is the number, e.g., <code>c1</code> for the first comment, <code>c2</code> for the second, <code>c3</code> for the third</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">c-d01&ndash;31</td>
 									<td><code>gmdate('d')</code></td>
 									<td>For a comment posted on a specific date (Offset to GMT)</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">c-m00&ndash;12</td>
 									<td><code>gmdate('m')</code></td>
 									<td>For a comment posted in a specific month (Offset to GMT)</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">c-y2007</td>
 									<td><code>gmdate('Y')</code></td>
 									<td>For a comment posted in a specific year (Offset to GMT)</td>
 								</tr>
-								<tr class="alt">
+								<tr>
 									<td scope="row">comment</td>
 									<td>n/a</td>
 									<td>A general class, applied to every comment</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">comment-author-[name]</td>
 									<td>n/a</td>
 									<td>For a comment by a specific registered user, where <i>[name]</i> is the user's login name, e.g., <code>comment-author-susan</code></td>
 								</tr>
+								<tr>
+									<td scope="row">p[n]</td>
+									<td>n/a</td>
+									<td>For counting pingbacks relative to the first, where <i>[n]</i> is the number, e.g., <code>p1</code> for the first pingback, <code>p2</code> for the second, <code>p3</code> for the third</td>
+								</tr>
 								<tr class="alt">
+									<td scope="row">pingback</td>
+									<td>is_pingback()</td>
+									<td>When a comment is a pingback</td>
+								</tr>
+								<tr>
 									<td scope="row">t[n]</td>
 									<td>n/a</td>
 									<td>For counting trackbacks relative to the first, where <i>[n]</i> is the number, e.g., <code>t1</code> for the first trackback, <code>t2</code> for the second, <code>t3</code> for the third</td>
 								</tr>
-								<tr>
+								<tr class="alt">
 									<td scope="row">trackback</td>
 									<td>is_trackback()</td>
 									<td>When a comment is a trackback</td>
@@ -593,16 +637,35 @@
 				<p>Creating a theme template is essentially the same as creating a regular theme for WordPress, except you are not modifying any of the theme files and instead providing an alternate <code>style.css</code>.</p>
 				<pre class="css">/*
 THEME NAME: My Design
-THEME URI: http://www.sndbx.org/
+THEME URI: http://www.example.com/my-design/
 DESCRIPTION: New curtains for an old room
 VERSION: 0.1
-AUTHOR: Scott Allan Wallick
-AUTHOR Uri: http://scottwallick.com/
+AUTHOR: John Doe
+AUTHOR Uri: http://www.example.com
+TAGS: one column, two columns, three columns, awesome, blue, pink
 TEMPLATE: sandbox
 */</pre>
 				<p>The line <code>TEMPLATE: sandbox</code> tells WordPress to use the theme files installed in the <code>/sandbox/</code> folder with the &quot;My Design&quot; <code>style.css</code> style sheet.</p>
 				<p>You can read more detailed information about developing <a href="http://codex.wordpress.org/Theme_Development#Theme_Style_Sheet" title="WordPress Theme Development - Theme Style Sheets" rel="external">WordPress Theme Style Sheets</a> on the WordPress Codex.</p>
 			</li><!-- #creating -->
+			<li id="translations">
+				<h2>Translations</h2>
+				<p>The Sandbox allows for complete localization. For detailed information about translating the Sandbox into your language, see <a href="http://code.google.com/p/sandbox-theme/wiki/SandboxInYourLanguage" title="Sandbox in your language - Sandbox on Google Code" rel="external">Sandbox in your language</a> on the Sandbox wiki.</p>
+				<p>If you would like to submit a translation for the Sandbox, please open a new issue on the <a href="http://sandbox-theme.googlecode.com/" title="Sandbox on Google Code">Sandbox project home</a>. Please include both the <code>PO</code> and <code>MO</code> files. You're also welcome to help edit existing translations.</p>
+				<p>Translations have been graciously provided by the following individuals:</p>
+				<ul>
+					<li class="vcard">Brazilian Portuguese by <a class="fn n url" href="http://adrianocorreia.com/" title="Adriano Correia"><span class="given-name">Adriano</span> <span class="family-name">Correia</span></a></li>
+					<li class="vcard">Chilean Spanish by <a class="fn n url" href="http://daidaros.com/" title="Daidaros"><span class="nickname">Daidaros</span></a></li>
+					<li class="vcard">Danish by <a class="fn n url" href="http://danish-wordpress.dk/" title="Carl Andersen"><span class="given-name">Carl</span> <span class="family-name">Andersen</span></a></li>
+					<li class="vcard">French by <a class="fn n url" href="http://www.mederel.fr/" title="Emile de Weerd"><span class="given-name">Emile</span> <span class="family-name">de Weerd</span></a></li>
+					<li>German by <span class="vcard"><span class="given-name">Daniel</span> <span class="family-name">Netzer</span></span> and <span class="vcard"><a class="fn n url" href="http://blog.piecho.de/" title="Lars Piechowiak"><span class="given-name">Lars</span> <span class="family-name">Piechowiak</span></a></span></li>
+					<li>Italian by <span class="vcard"><a class="fn n url" href="http://www.nokao.com/" title="Nokao"><span class="nickname">Nokao</span></a></span> and <span class="vcard"><span class="given-name">Jan</span> <span class="family-name">Reister</span></span></li>
+					<li class="vcard">Japanese by <a class="fn n url" href="http://ideasilo.wordpress.com/" title="Takayuki Miyoshi"><span class="given-name">Takayuki</span> <span class="family-name">Miyoshi</span></a></li>
+					<li class="vcard">Norwegian by <a class="fn n url" href="http://kjell.langvass.org/" title="Kjell Knudsen"><span class="given-name">Kjell</span> <span class="family-name">Knudsen</span></a></li>
+					<li class="vcard">Simplified Chinese by <a class="fn n url" href="http://www.wpcng.com/" title="WordPress Chinese Group"><span class="org">WordPress Chinese Group</span></a></li>
+					<li class="vcard">Spanish by <a class="fn n url" href="http://daidaros.com/" title="Daidaros"><span class="nickname">Daidaros</span></a></li>
+				</ul>
+			</li><!-- #translations -->
 			<li id="standards">
 				<h2>Web standards</h2>
 				<p>The Sandbox is compliant with both <abbr title="eXtensible HyperText Markup Language">XHTML</abbr> and <abbr title="Cascading Style Sheets">CSS</abbr> standards. What does this mean? An explanation of web standards from <a href="http://webstandards.org" title="Web Standards Project" rel="external">The Web Standards Project</a>:</p>
@@ -622,14 +685,7 @@ TEMPLATE: sandbox
 					<li><a href="http://microformats.org/wiki/rel-home" title="rel-home - Microformats" rel="external">rel="home"</a>: For marking links pointing to the blog home page</li>
 					<li><a href="http://microformats.org/wiki/xoxo" title="XOXO - Microformats" rel="external">XOXO</a>: For menu, blogroll, archive, and sidebar lists</li>
 				</ul>
-				<p>Microformats help the Sandbox be an especially <abbr title="Plain old semantic HTML">POSH</abbr> WordPress theme. POSH stands for "plain old semantic <abbr title="HyperText Markup Language">HTML</abbr>." It is a term used to refer to best practices of semantic <abbr title="HyperText Markup Language">HTML</abbr> development. The Microformats Wiki <a href="http://microformats.org/wiki/posh" title="POSH - Microformats" rel="external"><abbr title="Plain old semantic HTML">POSH</abbr> article</a> has a working copy of these best practices:</p>
-				<ol>
-					<li>Validate your markup, meaning it should <em>be</em> valid, not just validated</li>
-					<li>No use of tables for presentational purposes&mdash;only for tabular data</li>
-					<li>Correct any "<span class="bold">B</span>ed and <span class="bold">BR</span>eakfast" markup, i.e., no presentational elements like <code>b</code>, and no <code>&lt;br /&gt;</code></li>
-					<li>Correct any "<span class="bold">A</span>norexic anchors," e.g., an <code>a</code> element with only a <code>name</code> attribute</li>
-					<li>Use well-formed, semantic class names (Sandbox does this for you)</li>
-				</ol>
+				<p>Microformats help the Sandbox be an especially <abbr title="Plain old semantic HTML">POSH</abbr> WordPress theme. POSH stands for "plain old semantic <abbr title="HyperText Markup Language">HTML</abbr>." It is a term used to refer to best practices of semantic <abbr title="HyperText Markup Language">HTML</abbr> development.</p>
 				<p>So the Sandbox can be highly <abbr title="Plain old semantic HTML">POSH</abbr>, but the semantic use of <abbr title="HyperText Markup Language">HTML</abbr> elements is completely up to you, the end user. To learn more about semantic <abbr title="HyperText Markup Language">HTML</abbr>, visit <a href="http://www.mezzoblue.com/downloads/markupguide/" title="mezzoblue &sect; Markup Guide">Mezzoblue</a>.</p>
 			</li><!-- #microformats -->
 			<li id="credits">
@@ -673,7 +729,7 @@ TEMPLATE: sandbox
 			</li><!-- #license -->
 		</ol><!-- #readme .xoxo -->
 		<div id="footer">
-			<p>Last updated 10 November 2007</p>
+			<p>Last updated 01 March 2008</p>
 		</div><!-- #footer -->
 	</div><!-- #readme -->
 </body>

@@ -3,28 +3,29 @@
 function sandbox_globalnav() {
 	echo '<div id="menu"><ul>';
 	$menu = wp_list_pages('title_li=&sort_column=menu_order&echo=0'); // Params for the page list in header.php
-	echo str_replace(array("\r", "\n", "\t"), '', $menu);
+	echo str_replace( array( "\r", "\n", "\t" ), '', $menu );
 	echo "</ul></div>\n";
 }
 
 // Generates semantic classes for BODY element
 function sandbox_body_class( $print = true ) {
 	global $wp_query, $current_user;
-	
+
 	// It's surely a WordPress blog, right?
 	$c = array('wordpress');
 
 	// Applies the time- and date-based classes (below) to BODY element
-	sandbox_date_classes(time(), $c);
+	sandbox_date_classes( time(), $c );
 
 	// Generic semantic classes for what type of content is displayed
-	is_home()       ? $c[] = 'home'       : null;
-	is_archive()    ? $c[] = 'archive'    : null;
-	is_date()       ? $c[] = 'date'       : null;
-	is_search()     ? $c[] = 'search'     : null;
-	is_paged()      ? $c[] = 'paged'      : null;
-	is_attachment() ? $c[] = 'attachment' : null;
-	is_404()        ? $c[] = 'four04'     : null; // CSS does not allow a digit as first character
+	is_front_page()  ? $c[] = 'home'       : null; // New 'front' class for WP 2.5
+	is_home()        ? $c[] = 'blog'       : null; // Class for the posts, if set
+	is_archive()     ? $c[] = 'archive'    : null;
+	is_date()        ? $c[] = 'date'       : null;
+	is_search()      ? $c[] = 'search'     : null;
+	is_paged()       ? $c[] = 'paged'      : null;
+	is_attachment()  ? $c[] = 'attachment' : null;
+	is_404()         ? $c[] = 'four04'     : null; // CSS does not allow a digit as first character
 
 	// Special classes for BODY element when a single post
 	if ( is_single() ) {
@@ -35,8 +36,8 @@ function sandbox_body_class( $print = true ) {
 		$c[] = 'single postid-' . $postID;
 
 		// Adds classes for the month, day, and hour when the post was published
-		if ( isset($wp_query->post->post_date) )
-			sandbox_date_classes(mysql2date('U', $wp_query->post->post_date), $c, 's-');
+		if ( isset( $wp_query->post->post_date ) )
+			sandbox_date_classes( mysql2date( 'U', $wp_query->post->post_date ), $c, 's-' );
 
 		// Adds category classes for each category on single posts
 		if ( $cats = get_the_category() )
@@ -50,9 +51,9 @@ function sandbox_body_class( $print = true ) {
 
 		// Adds MIME-specific classes for attachments
 		if ( is_attachment() ) {
-			$the_mime = get_post_mime_type();
-			$boring_stuff = array("application/", "image/", "text/", "audio/", "video/", "music/");
-				$c[] = 'attachment-' . str_replace($boring_stuff, "", "$the_mime");
+			$mime_type = get_post_mime_type();
+			$mime_prefix = array( 'application/', 'image/', 'text/', 'audio/', 'video/', 'music/' );
+				$c[] = 'attachmentid-' . $postID . ' attachment-' . str_replace( $mime_prefix, "", "$mime_type" );
 		}
 
 		// Adds author class for the post author
@@ -61,32 +62,38 @@ function sandbox_body_class( $print = true ) {
 	}
 
 	// Author name classes for BODY on author archives
-	else if ( is_author() ) {
+	elseif ( is_author() ) {
 		$author = $wp_query->get_queried_object();
 		$c[] = 'author';
 		$c[] = 'author-' . $author->user_nicename;
 	}
 
 	// Category name classes for BODY on category archvies
-	else if ( is_category() ) {
+	elseif ( is_category() ) {
 		$cat = $wp_query->get_queried_object();
 		$c[] = 'category';
 		$c[] = 'category-' . $cat->slug;
 	}
 
 	// Tag name classes for BODY on tag archives
-	else if ( is_tag() ) {
+	elseif ( is_tag() ) {
 		$tags = $wp_query->get_queried_object();
 		$c[] = 'tag';
-		$c[] = 'tag-' . $tags->slug; // Does not work; however I try to return the tag I get a false. Grrr.
+		$c[] = 'tag-' . $tags->slug;
 	}
 
 	// Page author for BODY on 'pages'
-	else if ( is_page() ) {
+	elseif ( is_page() ) {
 		$pageID = $wp_query->post->ID;
+		$page_children = wp_list_pages("child_of=$pageID&echo=0");
 		the_post();
 		$c[] = 'page pageid-' . $pageID;
 		$c[] = 'page-author-' . sanitize_title_with_dashes(strtolower(get_the_author('login')));
+		// Checks to see if the page has children and/or is a child page; props to Adam
+		if ( $page_children != '' )
+			$c[] = 'page-parent';
+		if ( $wp_query->post->post_parent )
+			$c[] = 'page-child parent-pageid-' . $wp_query->post->post_parent;
 		rewind_posts();
 	}
 
@@ -95,27 +102,27 @@ function sandbox_body_class( $print = true ) {
 		$c[] = 'loggedin';
 
 	// Paged classes; for 'page X' classes of index, single, etc.
-	if ( ( ( $page = $wp_query->get("paged") ) || ( $page = $wp_query->get("page") ) ) && $page > 1 ) {
-		$c[] = 'paged-'.$page.'';
+	if ( ( ( $page = $wp_query->get('paged') ) || ( $page = $wp_query->get('page') ) ) && $page > 1 ) {
+		$c[] = 'paged-' . $page;
 		if ( is_single() ) {
-			$c[] = 'single-paged-'.$page.'';
-		} else if ( is_page() ) {
-			$c[] = 'page-paged-'.$page.'';
-		} else if ( is_category() ) {
-			$c[] = 'category-paged-'.$page.'';
-		} else if ( is_tag() ) {
-			$c[] = 'tag-paged-'.$page.'';
-		} else if ( is_date() ) {
-			$c[] = 'date-paged-'.$page.'';
-		} else if ( is_author() ) {
-			$c[] = 'author-paged-'.$page.'';
-		} else if ( is_search() ) {
-			$c[] = 'search-paged-'.$page.'';
+			$c[] = 'single-paged-' . $page;
+		} elseif ( is_page() ) {
+			$c[] = 'page-paged-' . $page;
+		} elseif ( is_category() ) {
+			$c[] = 'category-paged-' . $page;
+		} elseif ( is_tag() ) {
+			$c[] = 'tag-paged-' . $page;
+		} elseif ( is_date() ) {
+			$c[] = 'date-paged-' . $page;
+		} elseif ( is_author() ) {
+			$c[] = 'author-paged-' . $page;
+		} elseif ( is_search() ) {
+			$c[] = 'search-paged-' . $page;
 		}
 	}
 
 	// Separates classes with a single space, collates classes for BODY
-	$c = join(' ', apply_filters('body_class',  $c));
+	$c = join( ' ', apply_filters( 'body_class',  $c ) );
 
 	// And tada!
 	return $print ? print($c) : $c;
@@ -126,7 +133,7 @@ function sandbox_post_class( $print = true ) {
 	global $post, $sandbox_post_alt;
 
 	// hentry for hAtom compliace, gets 'alt' for every other post DIV, describes the post type and p[n]
-	$c = array('hentry', "p$sandbox_post_alt", $post->post_type, $post->post_status);
+	$c = array( 'hentry', "p$sandbox_post_alt", $post->post_type, $post->post_status );
 
 	// Author for the post queried
 	$c[] = 'author-' . sanitize_title_with_dashes(strtolower(get_the_author('login')));
@@ -135,23 +142,27 @@ function sandbox_post_class( $print = true ) {
 	foreach ( (array) get_the_category() as $cat )
 		$c[] = 'category-' . $cat->slug;
 
-	// Tags for the post queried
-	foreach ( (array) get_the_tags() as $tag )
-		$c[] = 'tag-' . $tag->slug;
+	// Tags for the post queried; if not tagged, use .untagged
+	if ( get_the_tags() == null ) {
+		$c[] = 'untagged';
+	} else {
+		foreach ( (array) get_the_tags() as $tag )
+			$c[] = 'tag-' . $tag->slug;
+	}
 
 	// For password-protected posts
 	if ( $post->post_password )
 		$c[] = 'protected';
 
 	// Applies the time- and date-based classes (below) to post DIV
-	sandbox_date_classes(mysql2date('U', $post->post_date), $c);
+	sandbox_date_classes( mysql2date( 'U', $post->post_date ), $c );
 
 	// If it's the other to the every, then add 'alt' class
 	if ( ++$sandbox_post_alt % 2 )
 		$c[] = 'alt';
 
 	// Separates classes with a single space, collates classes for post DIV
-	$c = join(' ', apply_filters('post_class', $c));
+	$c = join( ' ', apply_filters( 'post_class', $c ) );
 
 	// And tada!
 	return $print ? print($c) : $c;
@@ -165,13 +176,13 @@ function sandbox_comment_class( $print = true ) {
 	global $comment, $post, $sandbox_comment_alt;
 
 	// Collects the comment type (comment, trackback),
-	$c = array($comment->comment_type);
+	$c = array( $comment->comment_type );
 
 	// Counts trackbacks (t[n]) or comments (c[n])
-	if ($comment->comment_type == 'trackback') {
-		$c[] = "t$sandbox_comment_alt";
-	} else {
+	if ( $comment->comment_type == 'comment' ) {
 		$c[] = "c$sandbox_comment_alt";
+	} else {
+		$c[] = "t$sandbox_comment_alt";
 	}
 
 	// If the comment author has an id (registered), then print the log in name
@@ -179,41 +190,41 @@ function sandbox_comment_class( $print = true ) {
 		$user = get_userdata($comment->user_id);
 
 		// For all registered users, 'byuser'; to specificy the registered user, 'commentauthor+[log in name]'
-		$c[] = "byuser comment-author-" . sanitize_title_with_dashes(strtolower($user->user_login));
+		$c[] = 'byuser comment-author-' . sanitize_title_with_dashes(strtolower( $user->user_login ));
 		// For comment authors who are the author of the post
 		if ( $comment->user_id === $post->post_author )
 			$c[] = 'bypostauthor';
 	}
 
 	// If it's the other to the every, then add 'alt' class; collects time- and date-based classes
-	sandbox_date_classes(mysql2date('U', $comment->comment_date), $c, 'c-');
+	sandbox_date_classes( mysql2date( 'U', $comment->comment_date ), $c, 'c-' );
 	if ( ++$sandbox_comment_alt % 2 )
 		$c[] = 'alt';
 
 	// Separates classes with a single space, collates classes for comment LI
-	$c = join(' ', apply_filters('comment_class', $c));
+	$c = join( ' ', apply_filters( 'comment_class', $c ) );
 
 	// Tada again!
 	return $print ? print($c) : $c;
 }
 
 // Generates time- and date-based classes for BODY, post DIVs, and comment LIs; relative to GMT (UTC)
-function sandbox_date_classes($t, &$c, $p = '') {
-	$t = $t + (get_option('gmt_offset') * 3600);
-	$c[] = $p . 'y' . gmdate('Y', $t); // Year
-	$c[] = $p . 'm' . gmdate('m', $t); // Month
-	$c[] = $p . 'd' . gmdate('d', $t); // Day
-	$c[] = $p . 'h' . gmdate('H', $t); // Hour
+function sandbox_date_classes( $t, &$c, $p = '' ) {
+	$t = $t + ( get_option('gmt_offset') * 3600 );
+	$c[] = $p . 'y' . gmdate( 'Y', $t ); // Year
+	$c[] = $p . 'm' . gmdate( 'm', $t ); // Month
+	$c[] = $p . 'd' . gmdate( 'd', $t ); // Day
+	$c[] = $p . 'h' . gmdate( 'H', $t ); // Hour
 }
 
 // For category lists on category archives: Returns other categories except the current one (redundant)
 function sandbox_cats_meow($glue) {
-	$current_cat = single_cat_title('', false);
+	$current_cat = single_cat_title( '', false );
 	$separator = "\n";
-	$cats = explode($separator, get_the_category_list($separator));
+	$cats = explode( $separator, get_the_category_list($separator) );
 
 	foreach ( $cats as $i => $str ) {
-		if ( strstr($str, ">$current_cat<") ) {
+		if ( strstr( $str, ">$current_cat<" ) ) {
 			unset($cats[$i]);
 			break;
 		}
@@ -222,17 +233,17 @@ function sandbox_cats_meow($glue) {
 	if ( empty($cats) )
 		return false;
 
-	return trim(join($glue, $cats));
+	return trim(join( $glue, $cats ));
 }
 
 // For tag lists on tag archives: Returns other tags except the current one (redundant)
 function sandbox_tag_ur_it($glue) {
-	$current_tag = single_tag_title('', '',  false);
+	$current_tag = single_tag_title( '', '',  false );
 	$separator = "\n";
-	$tags = explode($separator, get_the_tag_list("", "$separator", ""));
+	$tags = explode( $separator, get_the_tag_list( "", "$separator", "" ) );
 
 	foreach ( $tags as $i => $str ) {
-		if ( strstr($str, ">$current_tag<") ) {
+		if ( strstr( $str, ">$current_tag<" ) ) {
 			unset($tags[$i]);
 			break;
 		}
@@ -241,43 +252,72 @@ function sandbox_tag_ur_it($glue) {
 	if ( empty($tags) )
 		return false;
 
-	return trim(join($glue, $tags));
+	return trim(join( $glue, $tags ));
 }
 
+// Produces an avatar image with the hCard-compliant photo class
+function sandbox_commenter_link() {
+	$sandbox_commenter = str_replace( "<a href", "<a class='url' href", get_comment_author_link() );
+	$email = get_comment_author_email();
+	$sandbox_avatar = str_replace( "class='avatar", "class='photo avatar", get_avatar( "$email", "64" ) );
+	echo $sandbox_avatar . '<span class="fn n">' . $sandbox_commenter . '</span>';
+}
 
 // Widget: Search; to match the Sandbox style and replace Widget plugin default
 function widget_sandbox_search($args) {
 	extract($args);
-	if ( empty($title) )
-		$title = __('Search', 'sandbox');
+	$options = get_option('widget_sandbox_search');
+	$title = empty($options['title']) ? __( 'Search', 'sandbox' ) : $options['title'];
+	$button = empty($options['button']) ? __( 'Find', 'sandbox' ) : $options['button'];
 ?>
-		<?php echo $before_widget ?>
-			<?php echo $before_title ?><label for="s"><?php echo $title ?></label><?php echo $after_title ?>
-			<form id="searchform" method="get" action="<?php bloginfo('home') ?>">
-				<div>
-					<input id="s" name="s" type="text" value="<?php echo wp_specialchars(stripslashes($_GET['s']), true) ?>" size="10" tabindex="1" />
-					<input id="searchsubmit" name="searchsubmit" type="submit" value="<?php _e('Find', 'sandbox') ?>" tabindex="2" />
-				</div>
-			</form>
-		<?php echo $after_widget ?>
+			<?php echo $before_widget ?>
+				<?php echo $before_title ?><label for="s"><?php echo $title ?></label><?php echo $after_title ?>
+				<form id="searchform" method="get" action="<?php bloginfo('home') ?>">
+					<div>
+						<input id="s" class="text-input" name="s" type="text" value="<?php the_search_query() ?>" size="10" tabindex="1" accesskey="S" />
+						<input id="searchsubmit" class="submit-button" name="searchsubmit" type="submit" value="<?php echo $button ?>" tabindex="2" />
+					</div>
+				</form>
+			<?php echo $after_widget ?>
+<?php
+}
 
+// Widget: Search; element controls for customizing text within Widget plugin
+function widget_sandbox_search_control() {
+	$options = $newoptions = get_option('widget_sandbox_search');
+	if ( $_POST['search-submit'] ) {
+		$newoptions['title'] = strip_tags( stripslashes( $_POST['search-title'] ) );
+		$newoptions['button'] = strip_tags( stripslashes( $_POST['search-button'] ) );
+	}
+	if ( $options != $newoptions ) {
+		$options = $newoptions;
+		update_option( 'widget_sandbox_search', $options );
+	}
+	$title = attribute_escape( $options['title'] );
+	$button = attribute_escape( $options['button'] );
+?>
+			<p><label for="search-title"><?php _e( 'Title:', 'sandbox' ) ?> <input class="widefat" id="search-title" name="search-title" type="text" value="<?php echo $title; ?>" /></label></p>
+			<p><label for="search-button"><?php _e( 'Button Text:', 'sandbox' ) ?> <input class="widefat" id="search-button" name="search-button" type="text" value="<?php echo $button; ?>" /></label></p>
+			<input type="hidden" id="search-submit" name="search-submit" value="1" />
 <?php
 }
 
 // Widget: Meta; to match the Sandbox style and replace Widget plugin default
 function widget_sandbox_meta($args) {
 	extract($args);
-	if ( empty($title) )
-		$title = __('Meta', 'sandbox');
+	$options = get_option('widget_meta');
+	$title = empty($options['title']) ? __( 'Meta', 'sandbox' ) : $options['title'];
 ?>
-		<?php echo $before_widget; ?>
-			<?php echo $before_title . $title . $after_title; ?>
-			<ul>
-				<?php wp_register() ?>
-				<li><?php wp_loginout() ?></li>
-				<?php wp_meta() ?>
-			</ul>
-		<?php echo $after_widget; ?>
+			<?php echo $before_widget; ?>
+				<?php echo $before_title . $title . $after_title; ?>
+				<ul>
+					<?php wp_register() ?>
+
+					<li><?php wp_loginout() ?></li>
+					<?php wp_meta() ?>
+
+				</ul>
+			<?php echo $after_widget; ?>
 <?php
 }
 
@@ -285,13 +325,13 @@ function widget_sandbox_meta($args) {
 function widget_sandbox_rsslinks($args) {
 	extract($args);
 	$options = get_option('widget_sandbox_rsslinks');
-	$title = empty($options['title']) ? __('RSS Links', 'sandbox') : $options['title'];
+	$title = empty($options['title']) ? __( 'RSS Links', 'sandbox' ) : $options['title'];
 ?>
 		<?php echo $before_widget; ?>
 			<?php echo $before_title . $title . $after_title; ?>
 			<ul>
-				<li><a href="<?php bloginfo('rss2_url') ?>" title="<?php echo wp_specialchars(get_bloginfo('name'), 1) ?> <?php _e('Posts RSS feed', 'sandbox'); ?>" rel="alternate" type="application/rss+xml"><?php _e('All posts', 'sandbox') ?></a></li>
-				<li><a href="<?php bloginfo('comments_rss2_url') ?>" title="<?php echo wp_specialchars(bloginfo('name'), 1) ?> <?php _e('Comments RSS feed', 'sandbox'); ?>" rel="alternate" type="application/rss+xml"><?php _e('All comments', 'sandbox') ?></a></li>
+				<li><a href="<?php bloginfo('rss2_url') ?>" title="<?php echo wp_specialchars( get_bloginfo('name'), 1 ) ?> <?php _e( 'Posts RSS feed', 'sandbox' ); ?>" rel="alternate" type="application/rss+xml"><?php _e( 'All posts', 'sandbox' ) ?></a></li>
+				<li><a href="<?php bloginfo('comments_rss2_url') ?>" title="<?php echo wp_specialchars(bloginfo('name'), 1) ?> <?php _e( 'Comments RSS feed', 'sandbox' ); ?>" rel="alternate" type="application/rss+xml"><?php _e( 'All comments', 'sandbox' ) ?></a></li>
 			</ul>
 		<?php echo $after_widget; ?>
 <?php
@@ -300,16 +340,16 @@ function widget_sandbox_rsslinks($args) {
 // Widget: RSS links; element controls for customizing text within Widget plugin
 function widget_sandbox_rsslinks_control() {
 	$options = $newoptions = get_option('widget_sandbox_rsslinks');
-	if ( $_POST["rsslinks-submit"] ) {
-		$newoptions['title'] = strip_tags(stripslashes($_POST["rsslinks-title"]));
+	if ( $_POST['rsslinks-submit'] ) {
+		$newoptions['title'] = strip_tags( stripslashes( $_POST['rsslinks-title'] ) );
 	}
 	if ( $options != $newoptions ) {
 		$options = $newoptions;
-		update_option('widget_sandbox_rsslinks', $options);
+		update_option( 'widget_sandbox_rsslinks', $options );
 	}
-	$title = htmlspecialchars($options['title'], ENT_QUOTES);
+	$title = attribute_escape( $options['title'] );
 ?>
-			<p><label for="rsslinks-title"><?php _e('Title:'); ?> <input style="width: 250px;" id="rsslinks-title" name="rsslinks-title" type="text" value="<?php echo $title; ?>" /></label></p>
+			<p><label for="rsslinks-title"><?php _e( 'Title:', 'sandbox' ) ?> <input class="widefat" id="rsslinks-title" name="rsslinks-title" type="text" value="<?php echo $title; ?>" /></label></p>
 			<input type="hidden" id="rsslinks-submit" name="rsslinks-submit" value="1" />
 <?php
 }
@@ -319,35 +359,55 @@ function sandbox_widgets_init() {
 	if ( !function_exists('register_sidebars') )
 		return;
 
-	// Uses H3-level headings with all widgets to match Sandbox style
+	// Formats the Sandbox widgets, adding readability-improving whitespace
 	$p = array(
-		'before_title' => "<h3 class='widgettitle'>",
-		'after_title' => "</h3>\n",
+		'before_widget'  =>   "\n\t\t\t" . '<li id="%1$s" class="widget %2$s">',
+		'after_widget'   =>   "\n\t\t\t</li>\n",
+		'before_title'   =>   "\n\t\t\t\t". '<h3 class="widgettitle">',
+		'after_title'    =>   "</h3>\n"
 	);
 
 	// Table for how many? Two? This way, please.
-	register_sidebars(2, $p);
+	register_sidebars( 2, $p );
 
-	// Finished intializing Widgets plugin, now let's load the Sandbox default widgets
-	register_sidebar_widget(__('Search', 'sandbox'), 'widget_sandbox_search', null, 'search');
+	// Finished intializing Widgets plugin, now let's load the Sandbox default widgets; first, Sandbox search widget
+	$widget_ops = array(
+		'classname'    =>  'widget_search',
+		'description'  =>  __( "A search form for your blog (Sandbox)", "sandbox" )
+	);
+	wp_register_sidebar_widget( 'search', __( 'Search', 'sandbox' ), 'widget_sandbox_search', $widget_ops );
 	unregister_widget_control('search');
-	register_sidebar_widget(__('Meta', 'sandbox'), 'widget_sandbox_meta', null, 'meta');
+	wp_register_widget_control( 'search', __( 'Search', 'sandbox' ), 'widget_sandbox_search_control' );
+
+	// Sandbox Meta widget
+	$widget_ops = array(
+		'classname'    =>  'widget_meta',
+		'description'  =>  __( "Log in/out and administration links (Sandbox)", "sandbox" )
+	);
+	wp_register_sidebar_widget( 'meta', __( 'Meta', 'sandbox' ), 'widget_sandbox_meta', $widget_ops );
 	unregister_widget_control('meta');
-	register_sidebar_widget(array(__('RSS Links', 'sandbox'), 'widgets'), 'widget_sandbox_rsslinks');
-	register_widget_control(array(__('RSS Links', 'sandbox'), 'widgets'), 'widget_sandbox_rsslinks_control', 300, 90);
+	wp_register_widget_control( 'meta', __('Meta'), 'wp_widget_meta_control' );
+
+	//Sandbox RSS Links widget
+	$widget_ops = array(
+		'classname'    =>  'widget_rss_links',
+		'description'  =>  __( "RSS links for both posts and comments <small>(Sandbox)</small>", "sandbox" )
+	);
+	wp_register_sidebar_widget( 'rss_links', __( 'RSS Links', 'sandbox' ), 'widget_sandbox_rsslinks', $widget_ops );
+	wp_register_widget_control( 'rss_links', __( 'RSS Links', 'sandbox' ), 'widget_sandbox_rsslinks_control' );
 }
 
 // Translate, if applicable
 load_theme_textdomain('sandbox');
 
 // Runs our code at the end to check that everything needed has loaded
-add_action('init', 'sandbox_widgets_init');
+add_action( 'init', 'sandbox_widgets_init' );
 
 // Adds filters so that things run smoothly
-add_filter('archive_meta', 'wptexturize');
-add_filter('archive_meta', 'convert_smilies');
-add_filter('archive_meta', 'convert_chars');
-add_filter('archive_meta', 'wpautop');
+add_filter( 'archive_meta', 'wptexturize' );
+add_filter( 'archive_meta', 'convert_smilies' );
+add_filter( 'archive_meta', 'convert_chars' );
+add_filter( 'archive_meta', 'wpautop' );
 
 // Remember: the Sandbox is for play.
 ?>

@@ -15,7 +15,8 @@ Template Name: Links Page
 <?php the_content() ?>
 
 					<ul id="links-page" class="xoxo">
-<?php wp_list_bookmarks('title_before=<h3>&title_after=</h3>') ?>
+<?php wp_list_bookmarks('title_before=<h3>&title_after=</h3>&category_before=<li id="page-%id" class="%class">&after=</p></li>&between=<p>&show_description=1') ?>
+
 					</ul>
 <?php edit_post_link(__('Edit', 'sandbox'),'<span class="edit-link">','</span>') ?>
 

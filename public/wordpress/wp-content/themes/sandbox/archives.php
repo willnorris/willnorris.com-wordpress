@@ -19,7 +19,7 @@ Template Name: Archives Page
 						<li id="category-archives" class="content-column">
 							<h3><?php _e('Archives by Category', 'sandbox') ?></h3>
 							<ul>
-								<?php wp_list_cats('sort_column=name&optioncount=1&feed=RSS') ?> 
+								<?php wp_list_categories('optioncount=1&feed=RSS&title_li=&show_count=1') ?> 
 							</ul>
 						</li>
 						<li id="monthly-archives" class="content-column">
