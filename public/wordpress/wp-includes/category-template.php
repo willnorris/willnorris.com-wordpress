@@ -66,7 +66,7 @@ function get_category_parents($id, $link = FALSE, $separator = '/', $nicename = 
 }
 
 function get_the_category($id = false) {
-	global $post, $term_cache, $blog_id;
+	global $post;
 
 	$id = (int) $id;
 	if ( !$id )
@@ -109,9 +109,9 @@ function get_the_category_by_ID($cat_ID) {
 	return $category->name;
 }
 
-function get_the_category_list($separator = '', $parents='') {
+function get_the_category_list($separator = '', $parents='', $post_id = false) {
 	global $wp_rewrite;
-	$categories = get_the_category();
+	$categories = get_the_category($post_id);
 	if (empty($categories))
 		return apply_filters('the_category', __('Uncategorized'), $separator, $parents);
 
@@ -167,8 +167,24 @@ function get_the_category_list($separator = '', $parents='') {
 	return apply_filters('the_category', $thelist, $separator, $parents);
 }
 
+/*
+ * in_category() - Checks whether the current post is within a particular category
+ *
+ * This function checks to see if the post is within the supplied category.  The categoy
+ * can be specified by number or name and will be checked as a name first to allow for categories with numeric names.
+ * Note: Prior to v2.5 of WordPress category names where not supported.
+ *
+ * @since 1.2.0
+ *
+ * @param int|string $category
+ * @return bool true if the post is in the supplied category
+*/
 function in_category( $category ) { // Check if the current post is in the given category
-	global $post, $blog_id;
+	global $post;
+
+	$cat_ID = get_cat_ID($category);
+	if (0 != $cat_ID)
+		$category = $cat_ID;
 
 	$categories = get_object_term_cache($post->ID, 'category');
 	if ( false === $categories )
@@ -179,8 +195,8 @@ function in_category( $category ) { // Check if the current post is in the given
 		return false;
 }
 
-function the_category($separator = '', $parents='') {
-	echo get_the_category_list($separator, $parents);
+function the_category($separator = '', $parents='', $post_id = false) {
+	echo get_the_category_list($separator, $parents, $post_id);
 }
 
 function category_description($category = 0) {
@@ -199,7 +215,8 @@ function wp_dropdown_categories($args = '') {
 		'hide_empty' => 1, 'child_of' => 0,
 		'exclude' => '', 'echo' => 1,
 		'selected' => 0, 'hierarchical' => 0,
-		'name' => 'cat', 'class' => 'postform'
+		'name' => 'cat', 'class' => 'postform',
+		'depth' => 0
 	);
 
 	$defaults['selected'] = ( is_category() ) ? get_query_var('cat') : 0;
@@ -225,7 +242,7 @@ function wp_dropdown_categories($args = '') {
 		}
 
 		if ( $hierarchical )
-			$depth = 0;  // Walk the full depth.
+			$depth = $r['depth'];  // Walk the full depth.
 		else
 			$depth = -1; // Flat.
 
@@ -247,10 +264,10 @@ function wp_list_categories($args = '') {
 		'order' => 'ASC', 'show_last_update' => 0,
 		'style' => 'list', 'show_count' => 0,
 		'hide_empty' => 1, 'use_desc_for_title' => 1,
-		'child_of' => 0, 'feed' => '',
+		'child_of' => 0, 'feed' => '', 'feed_type' => '',
 		'feed_image' => '', 'exclude' => '',
 		'hierarchical' => true, 'title_li' => __('Categories'),
-		'echo' => 1
+		'echo' => 1, 'depth' => 0
 	);
 
 	$r = wp_parse_args( $args, $defaults );
@@ -289,7 +306,7 @@ function wp_list_categories($args = '') {
 			$r['current_category'] = $wp_query->get_queried_object_id();
 
 		if ( $hierarchical )
-			$depth = 0;  // Walk the full depth.
+			$depth = $r['depth'];
 		else
 			$depth = -1; // Flat.
 
@@ -321,10 +338,16 @@ function wp_tag_cloud( $args = '' ) {
 		return;
 
 	$return = wp_generate_tag_cloud( $tags, $args ); // Here's where those top tags get sorted according to $args
+
 	if ( is_wp_error( $return ) )
 		return false;
-	else 
-		echo apply_filters( 'wp_tag_cloud', $return, $args );
+
+	$return = apply_filters( 'wp_tag_cloud', $return, $args );
+
+	if ( 'array' == $args['format'] )
+		return $return;
+
+	echo $return;
 }
 
 // $tags = prefetched tag array ( get_tags() )
@@ -367,6 +390,13 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 
 	if ( 'DESC' == $order )
 		$counts = array_reverse( $counts, true );
+	elseif ( 'RAND' == $order ) {
+		$keys = array_rand( $counts, count($counts) );
+		foreach ( $keys as $key )
+			$temp[$key] = $counts[$key];
+		$counts = $temp;
+		unset($temp);
+	}
 
 	$a = array();
 
@@ -376,7 +406,7 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 		$tag_id = $tag_ids[$tag];
 		$tag_link = clean_url($tag_links[$tag]);
 		$tag = str_replace(' ', '&nbsp;', wp_specialchars( $tag ));
-		$a[] = "<a href='$tag_link' class='tag-link-$tag_id' title='" . attribute_escape( sprintf( __('%d topics'), $count ) ) . "'$rel style='font-size: " .
+		$a[] = "<a href='$tag_link' class='tag-link-$tag_id' title='" . attribute_escape( sprintf( __ngettext('%d topic','%d topics',$count), $count ) ) . "'$rel style='font-size: " .
 			( $smallest + ( ( $count - $min_count ) * $font_step ) )
 			. "$unit;'>$tag</a>";
 	}

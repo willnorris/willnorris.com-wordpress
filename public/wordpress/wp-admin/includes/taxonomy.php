@@ -16,11 +16,11 @@ function get_category_to_edit( $id ) {
 	return $category;
 }
 
-function wp_create_category($cat_name) {
+function wp_create_category( $cat_name, $parent = 0 ) {
 	if ( $id = category_exists($cat_name) )
 		return $id;
 
-	return wp_insert_category( array('cat_name' => $cat_name) );
+	return wp_insert_category( array('cat_name' => $cat_name, 'category_parent' => $parent) );
 }
 
 function wp_create_categories($categories, $post_id = '') {
@@ -40,8 +40,6 @@ function wp_create_categories($categories, $post_id = '') {
 }
 
 function wp_delete_category($cat_ID) {
-	global $wpdb;
-
 	$cat_ID = (int) $cat_ID;
 	$default = get_option('default_category');
 
@@ -52,9 +50,8 @@ function wp_delete_category($cat_ID) {
 	return wp_delete_term($cat_ID, 'category', "default=$default");
 }
 
-function wp_insert_category($catarr) {
-	global $wpdb;
-
+function wp_insert_category($catarr, $wp_error = false) {
+	$cat_defaults = array('cat_ID' => 0, 'cat_name' => '', 'category_description' => '', 'category_nicename' => '', 'category_parent' => '');
 	extract($catarr, EXTR_SKIP);
 
 	if ( trim( $cat_name ) == '' )
@@ -84,15 +81,17 @@ function wp_insert_category($catarr) {
 	else
 		$cat_ID = wp_insert_term($cat_name, 'category', $args);
 
-	if ( is_wp_error($cat_ID) )
-		return 0;
+	if ( is_wp_error($cat_ID) ) {
+		if ( $wp_error )
+			return $cat_ID;
+		else
+			return 0;
+	}
 
 	return $cat_ID['term_id'];
 }
 
 function wp_update_category($catarr) {
-	global $wpdb;
-
 	$cat_ID = (int) $catarr['cat_ID'];
 
 	if ( $cat_ID == $catarr['category_parent'] )
@@ -115,8 +114,6 @@ function wp_update_category($catarr) {
 //
 
 function get_tags_to_edit( $post_id ) {
-	global $wpdb;
-
 	$post_id = (int) $post_id;
 	if ( !$post_id )
 		return false;

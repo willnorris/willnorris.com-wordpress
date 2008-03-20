@@ -12,14 +12,12 @@ if ( isset( $_POST['deletepost'] ) )
 switch($action) {
 case 'postajaxpost':
 case 'post':
-	$parent_file = 'post-new.php';
-	$submenu_file = 'post-new.php';
 	check_admin_referer('add-post');
 
 	$post_ID = 'post' == $action ? write_post() : edit_post();
 
 	// Redirect.
-	if (!empty($_POST['mode'])) {
+	if ( !empty( $_POST['mode'] ) ) {
 	switch($_POST['mode']) {
 		case 'bookmarklet':
 			$location = $_POST['referredby'];
@@ -35,19 +33,24 @@ case 'post':
 		$location = "post-new.php?posted=$post_ID";
 	}
 
-	if ( isset($_POST['save']) )
+	if ( isset( $_POST['save'] ) )
 		$location = "post.php?action=edit&post=$post_ID";
 
-	if ( empty($post_ID) )
+	if ( empty( $post_ID ) )
 		$location = 'post-new.php';
 
-	wp_redirect($location);
+	wp_redirect( $location );
 	exit();
 	break;
 
 case 'edit':
 	$title = __('Edit');
 	$editing = true;
+
+	if ( empty( $_GET['post'] ) ) {
+		wp_redirect("post.php");
+		exit();
+	}
 	$post_ID = $p = (int) $_GET['post'];
 	$post = get_post($post_ID);
 
@@ -58,10 +61,22 @@ case 'edit':
 		exit();
 	}
 
-	if($post->post_status == 'draft') {
-		wp_enqueue_script('prototype');
+	wp_enqueue_script('post');
+	if ( user_can_richedit() )
+		wp_enqueue_script('editor');
+	wp_enqueue_script('thickbox');
+	wp_enqueue_script('media-upload');
+	if ( $last = wp_check_post_lock( $post->ID ) ) {
+		$last_user = get_userdata( $last );
+		$last_user_name = $last_user ? $last_user->display_name : __('Somebody');
+		$message = sprintf( __( 'Warning: %s is currently editing this post' ), wp_specialchars( $last_user_name ) );
+		$message = str_replace( "'", "\'", "<div class='error'><p>$message</p></div>" );
+		add_action('admin_notices', create_function( '', "echo '$message';" ) );
+	} else {
+		wp_set_post_lock( $post->ID );
 		wp_enqueue_script('autosave');
 	}
+
 	require_once('admin-header.php');
 
 	if ( !current_user_can('edit_post', $post_ID) )
@@ -93,6 +108,7 @@ case 'editpost':
 	check_admin_referer('update-post_' . $post_ID);
 
 	$post_ID = edit_post();
+	$post = get_post($post_ID);
 
 	if ( 'post' == $_POST['originalaction'] ) {
 		if (!empty($_POST['mode'])) {
@@ -119,20 +135,30 @@ case 'editpost':
 			$referredby = preg_replace('|https?://[^/]+|i', '', $_POST['referredby']);
 		$referer = preg_replace('|https?://[^/]+|i', '', wp_get_referer());
 
-		if ($_POST['save']) {
+		if ( isset($_POST['save']) && ( 'draft' == $post->post_status || 'pending' == $post->post_status ) ) {
 			$location = "post.php?action=edit&post=$post_ID";
-		} elseif ($_POST['updatemeta']) {
-			$location = wp_get_referer() . '&message=2#postcustom';
-		} elseif ($_POST['deletemeta']) {
-			$location = wp_get_referer() . '&message=3#postcustom';
+		} elseif ( isset($_POST['save']) && (empty($referredby) || $referredby == $referer) ) {
+			$location = "post.php?action=edit&post=$post_ID";
+		} elseif (isset($_POST['addmeta']) && $_POST['addmeta']) {
+			$location = add_query_arg( 'message', 2, wp_get_referer() );
+			$location = explode('#', $location);
+			$location = $location[0] . '#postcustom';
+		} elseif (isset($_POST['deletemeta']) && $_POST['deletemeta']) {
+			$location = add_query_arg( 'message', 3, wp_get_referer() );
+			$location = explode('#', $location);
+			$location = $location[0] . '#postcustom';
 		} elseif (!empty($referredby) && $referredby != $referer) {
 			$location = $_POST['referredby'];
 			if ( $_POST['referredby'] == 'redo' )
 				$location = get_permalink( $post_ID );
+			if (false !== strpos($location, 'edit.php') )
+				$location = add_query_arg('posted', $post_ID, $location);
+		} elseif ( isset($_POST['publish']) ) {
+			$location = "post-new.php?posted=$post_ID";
 		} elseif ($action == 'editattachment') {
 			$location = 'attachments.php';
 		} else {
-			$location = 'post-new.php';
+			$location = "post.php?action=edit&post=$post_ID";
 		}
 	}
 

@@ -1,0 +1,58 @@
+/* Fixes for IE bugs */
+
+#poststuff .postbox h3 {
+	padding-left: 23px;
+}
+
+#submenu li a.current {
+	background:none;
+	border:none;
+}
+
+* html body.minwidth {
+	_width: expression(document.documentElement.clientWidth < 810 ? "808px" : "99.9%");
+}
+
+* html #wpbody {
+	_width: expression(document.documentElement.clientWidth > 982 ? "980px" : "99.9%");
+}
+
+* html #poststuff .postarea, * html #poststuff #titlediv {
+	width: 95%;
+	margin-left: 3%;
+}
+
+.submitbox {
+	margin-top: 10px;
+}
+
+* html div.widget-liquid-left-holder, * html div.widget-liquid-right {
+	display: block;
+	position: relative;
+}
+
+#wpwrap, #wpcontent, #post, #wrap, #postdivrich, #postdiv, #poststuff, #titlediv, #post-body, #editorcontainer, .tablenav, .widget-control-list {
+	display: block;
+	zoom: 100%;
+}
+
+* html #editorcontainer {
+	padding: 0;
+}
+
+* html #editorcontainer #content {
+	position: relative;
+	overflow: auto;
+	padding: 6px;
+	margin: auto;
+	width: 98%;
+}
+
+form#template div {
+	width: 100%;
+}
+
+#ed_toolbar input {
+	overflow: visible;
+	padding: 1px 5px;
+}

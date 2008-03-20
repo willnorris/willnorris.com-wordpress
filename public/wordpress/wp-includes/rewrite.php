@@ -67,9 +67,11 @@ function url_to_postid($url) {
 	$url = apply_filters('url_to_postid', $url);
 
 	// First, check to see if there is a 'p=N' or 'page_id=N' to match against
-	preg_match('#[?&](p|page_id)=(\d+)#', $url, $values);
-	$id = intval($values[2]);
-	if ( $id ) return $id;
+	if ( preg_match('#[?&](p|page_id)=(\d+)#', $url, $values) )	{
+		$id = absint($values[2]);
+		if ($id)
+			return $id;
+	}
 
 	// Check to see if we are using rewrite rules
 	$rewrite = $wp_rewrite->wp_rewrite_rules();
@@ -125,7 +127,7 @@ function url_to_postid($url) {
 	foreach ($rewrite as $match => $query) {
 		// If the requesting file is the anchor of the match, prepend it
 		// to the path info.
-		if ( (! empty($url)) && (strpos($match, $url) === 0) ) {
+		if ( (! empty($url)) && (strpos($match, $url) === 0) && ($url != $request)) {
 			$request_match = $url . '/' . $request;
 		}
 
@@ -185,6 +187,7 @@ class WP_Rewrite {
 	var $non_wp_rules = array(); //rules that don't redirect to WP's index.php
 	var $endpoints;
 	var $use_verbose_rules = false;
+	var $use_verbose_page_rules = true;
 	var $rewritecode =
 		array(
 					'%year%',
@@ -215,7 +218,7 @@ class WP_Rewrite {
 					'(.+?)',
 					'(.+?)',
 					'([^/]+)',
-					'([^/]+)',
+					'([^/]+?)',
 					'(.+)'
 					);
 
@@ -277,12 +280,53 @@ class WP_Rewrite {
 		return "$match_prefix$number$match_suffix";
 	}
 
-	function page_rewrite_rules() {
-		$uris = get_option('page_uris');
-		$attachment_uris = get_option('page_attachment_uris');
+	function page_uri_index() {
+		global $wpdb;
 
+		//get pages in order of hierarchy, i.e. children after parents
+		$posts = get_page_hierarchy($wpdb->get_results("SELECT ID, post_name, post_parent FROM $wpdb->posts WHERE post_type = 'page'"));
+		//now reverse it, because we need parents after children for rewrite rules to work properly
+		$posts = array_reverse($posts, true);
+
+		$page_uris = array();
+		$page_attachment_uris = array();
+
+		if ( !$posts )
+			return array( array(), array() );
+
+
+		foreach ($posts as $id => $post) {
+			// URL => page name
+			$uri = get_page_uri($id);
+			$attachments = $wpdb->get_results( $wpdb->prepare( "SELECT ID, post_name, post_parent FROM $wpdb->posts WHERE post_type = 'attachment' AND post_parent = %d", $id ));
+			if ( $attachments ) {
+				foreach ( $attachments as $attachment ) {
+					$attach_uri = get_page_uri($attachment->ID);
+					$page_attachment_uris[$attach_uri] = $attachment->ID;
+				}
+			}
+
+			$page_uris[$uri] = $id;
+		}
+
+		return array( $page_uris, $page_attachment_uris );
+	}
+
+	function page_rewrite_rules() {
 		$rewrite_rules = array();
 		$page_structure = $this->get_page_permastruct();
+
+		if ( ! $this->use_verbose_page_rules ) {
+			$this->add_rewrite_tag('%pagename%', "(.+?)", 'pagename=');
+			$rewrite_rules = array_merge($rewrite_rules, $this->generate_rewrite_rules($page_structure, EP_PAGES));
+			return $rewrite_rules;
+		}
+
+		$page_uris = $this->page_uri_index();
+		$uris = $page_uris[0];
+		$attachment_uris = $page_uris[1];
+
+
 		if( is_array( $attachment_uris ) ) {
 			foreach ($attachment_uris as $uri => $pagename) {
 				$this->add_rewrite_tag('%pagename%', "($uri)", 'attachment=');
@@ -549,6 +593,8 @@ class WP_Rewrite {
 		for ($i = 0; $i < $num_tokens; ++$i) {
 			if (0 < $i) {
 				$queries[$i] = $queries[$i - 1] . '&';
+			} else {
+				$queries[$i] = '';
 			}
 
 			$query_token = str_replace($this->rewritecode, $this->queryreplace, $tokens[0][$i]) . $this->preg_index($i+1);
@@ -586,7 +632,7 @@ class WP_Rewrite {
 			//make a list of tags, and store how many there are in $num_toks
 			$num_toks = preg_match_all('/%.+?%/', $struct, $toks);
 			//get the 'tagname=$matches[i]'
-			$query = $queries[$num_toks - 1];
+			$query = ( isset($queries) && is_array($queries) ) ? $queries[$num_toks - 1] : '';
 
 			//set up $ep_mask_specific which is used to match more specific URL types
 			switch ($dirs[$j]) {
@@ -679,7 +725,7 @@ class WP_Rewrite {
 					$subfeedquery = $subquery . '&feed=' . $this->preg_index(2);
 
 					//do endpoints for attachments
-					if ($endpoint) { foreach ($ep_query_append as $regex => $ep) {
+					if (! empty($endpoint) ) { foreach ($ep_query_append as $regex => $ep) {
 						if ($ep[0] & EP_ATTACHMENT) {
 							$rewrite[$sub1 . $regex] = $subquery . '?' . $ep[1] . $this->preg_index(2);
 							$rewrite[$sub2 . $regex] = $subquery . '?' . $ep[1] . $this->preg_index(2);
@@ -785,7 +831,10 @@ class WP_Rewrite {
 		$page_rewrite = apply_filters('page_rewrite_rules', $page_rewrite);
 
 		// Put them together.
-		$this->rules = array_merge($this->extra_rules_top, $robots_rewrite, $default_feeds, $page_rewrite, $root_rewrite, $comments_rewrite, $search_rewrite, $category_rewrite, $tag_rewrite, $author_rewrite, $date_rewrite, $post_rewrite, $this->extra_rules);
+		if ( $this->use_verbose_page_rules )
+			$this->rules = array_merge($this->extra_rules_top, $robots_rewrite, $default_feeds, $page_rewrite, $root_rewrite, $comments_rewrite, $search_rewrite, $category_rewrite, $tag_rewrite, $author_rewrite, $date_rewrite, $post_rewrite, $this->extra_rules);
+		else
+			$this->rules = array_merge($this->extra_rules_top, $robots_rewrite, $default_feeds, $root_rewrite, $comments_rewrite, $search_rewrite, $category_rewrite, $tag_rewrite, $author_rewrite, $date_rewrite, $post_rewrite, $page_rewrite, $this->extra_rules);
 
 		do_action_ref_array('generate_rewrite_rules', array(&$this));
 		$this->rules = apply_filters('rewrite_rules_array', $this->rules);
@@ -900,7 +949,6 @@ class WP_Rewrite {
 	}
 
 	function flush_rules() {
-		generate_page_uri_index();
 		delete_option('rewrite_rules');
 		$this->wp_rewrite_rules();
 		if ( function_exists('save_mod_rewrite_rules') )
@@ -925,6 +973,16 @@ class WP_Rewrite {
 		unset($this->feed_structure);
 		unset($this->comment_feed_structure);
 		$this->use_trailing_slashes = ( substr($this->permalink_structure, -1, 1) == '/' ) ? true : false;
+
+		// Enable generic rules for pages if permalink structure doesn't begin with a wildcard.
+		$structure = ltrim($this->permalink_structure, '/');
+		if ( 0 === strpos($structure, '%postname%') ||
+			 0 === strpos($structure, '%category%') ||
+			 0 === strpos($structure, '%tag%') ||
+			 0 === strpos($structure, '%author%') )
+			 $this->use_verbose_page_rules = true;
+		else
+			$this->use_verbose_page_rules = false;
 	}
 
 	function set_permalink_structure($permalink_structure) {

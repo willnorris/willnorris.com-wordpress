@@ -1,0 +1,131 @@
+/* styles for use by people extending the WordPress interface */
+
+
+body	{
+	margin: 0;
+	padding: 0;
+}
+
+body, td {
+	font: 13px "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana, sans-serif;
+}
+
+form, label input { margin: 0; padding: 0; }
+
+img { border: 0; }
+
+label { cursor: pointer; }
+
+li, dd { margin-bottom: 6px; }
+
+p, li, dl, dd, dt { line-height: 140%; }
+
+textarea, input, select {
+	font: 13px Verdana, Arial, Helvetica, sans-serif;
+	margin: 1px;
+	padding: 3px;
+}
+
+.alignleft { float: left; }
+.alignright { float: right; }
+
+.textleft { text-align: left; }
+.textright { text-align: right; }
+
+.clear { clear: both; height: 2px; }
+
+.hidden { display: none; }
+
+.subsubsub {
+	list-style: none;
+	margin: 15px 0 10px 0;
+	padding: 0;
+	white-space: nowrap;
+	font-size: 12px;
+}
+
+.subsubsub a { line-height: 200%; padding: 3px; text-decoration: none; }
+
+.subsubsub a.current { font-weight: bold; background: none; border: none;}
+
+.subsubsub li { display: inline; margin: 0; padding: 0; }
+
+.widefat {
+	border-width: 1px;
+	border-style: solid;
+	border-collapse: collapse;
+	width: 100%;
+	clear: both;
+}
+
+.widefat a {
+	text-decoration: none;
+}
+
+.widefat td, .widefat th {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #ccc;
+	font-size: 12px;
+	padding: 10px 10px 20px;
+	vertical-align: text-top;
+}
+
+.widefat th {
+	padding-bottom: 8px;
+	padding-top: 10px;
+	text-align: left;
+}
+
+.widefat .check-column {
+	text-align: center;
+	vertical-align: text-top;
+	width: 3%;
+}
+
+.widefat .num {
+	text-align: center;
+}
+
+.wrap, .updated, .error {
+	margin: 0;
+	margin-left: 15px;
+	margin-right: 15px;
+	padding: 0;
+	max-width: 980px;
+}
+
+.updated, .error {
+	border-width: 1px;
+	border-style: solid;
+	padding: 0 15px;
+	max-width: 950px;
+	margin-bottom: 1em;
+}
+
+.wrap .updated, .wrap .error {
+	margin: auto 0 0;
+}
+
+.updated a, .error a {
+	text-decoration: underline;
+}
+
+.updated a {
+	text-decoration: none;
+	padding-bottom: 2px;
+}
+
+.wrap h2 {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	clear: both;
+	font: 24px Georgia, "Times New Roman", Times, serif;
+	margin: 5px 0 0 -4px;
+	padding: 0;
+	padding-bottom: 7px;
+}
+
+#timestampdiv {
+	display: none;
+}

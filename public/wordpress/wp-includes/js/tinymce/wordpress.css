@@ -1,0 +1,29 @@
+/* This file contains the CSS data for the editable area(iframe) of TinyMCE */
+
+body.mceContentBody {
+	background: #fff;
+	color: #000;
+	font: 13px/19px "Lucida Grande","Lucida Sans Unicode",Tahoma,Verdana,sans-serif;
+	padding: .2em;
+}
+
+td {
+	font-size: 10px;
+}
+
+pre {
+	font: 12px/18px "Courier New", monospace;
+}
+
+.mceVisualAid {
+	border: 1px dashed #BBBBBB !important;
+}
+
+.mceItemAnchor {
+	width: 12px;
+	line-height: 6px;
+	overflow: hidden;
+	padding-left: 12px;
+	background-position: bottom;
+	background-repeat: no-repeat;
+}

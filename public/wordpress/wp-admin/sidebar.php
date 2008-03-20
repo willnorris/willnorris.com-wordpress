@@ -11,9 +11,12 @@ if ('b' == $_GET['a']) {
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>WordPress &#8250; Posted</title>
 <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=UTF-8" />
-<?php wp_admin_css(); ?>
+<title>WordPress &#8250; Posted</title>
+<?php
+wp_admin_css( 'css/global' );
+wp_admin_css();
+?>
 </head>
 <body>
 	<p>Posted !</p>
@@ -26,9 +29,12 @@ if ('b' == $_GET['a']) {
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>WordPress &#8250; Sidebar</title>
 <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('blog_charset'); ?>" />
-<?php wp_admin_css(); ?>
+<title>WordPress &#8250; Sidebar</title>
+<?php
+wp_admin_css( 'css/global' );
+wp_admin_css();
+?>
 <style type="text/css" media="screen">
 form {
 	padding: 3px;
@@ -67,7 +73,7 @@ Post:
 <p>
 	<input name="saveasdraft" type="submit" id="saveasdraft" tabindex="9" value="Save as Draft" />
 <?php if ( current_user_can('publish_posts') ) : ?>
-	<input name="publish" type="submit" id="publish" tabindex="6" style="font-weight: bold;" value="Publish" />
+	<input name="publish" type="submit" id="publish" tabindex="6" value="Publish" class="button button-highlighted" />
 <?php endif; ?>
 </p>
 </div>

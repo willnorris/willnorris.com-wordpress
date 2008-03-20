@@ -6,6 +6,11 @@ $parent_file = 'plugins.php';
 
 wp_reset_vars(array('action', 'redirect', 'profile', 'error', 'warning', 'a', 'file'));
 
+add_action( 'admin_head', 'theme_editor_css' );
+function theme_editor_css(){
+	wp_admin_css( 'css/theme-editor' );
+}
+
 $plugins = get_plugins();
 $plugin_files = array_keys($plugins);
 
@@ -93,34 +98,40 @@ default:
  <div id="message" class="updated fade"><p><?php _e('This plugin has been deactivated because your changes resulted in a <strong>fatal error</strong>.') ?></p></div>
 <?php endif; ?>
  <div class="wrap">
-	<?php
+<div class="bordertitle">
+	<h2><?php _e('Plugin Editor'); ?></h2>
+</div>
+<div class="tablenav">
+<div class="alignleft">
+<big><strong><?php
 	if ( in_array($file, (array) get_option('active_plugins')) ) {
 		if (is_writeable($real_file)) {
-			echo '<h2>' . sprintf(__('Editing <strong>%s</strong> (active)'), $file) . '</h2>';
+			echo sprintf(__('Editing <strong>%s</strong> (active)'), $file);
 		} else {
-		echo '<h2>' . sprintf(__('Browsing <strong>%s</strong> (active)'), $file) . '</h2>';
+		echo sprintf(__('Browsing <strong>%s</strong> (active)'), $file);
 		}
 	} else {
 		if (is_writeable($real_file)) {
-			echo '<h2>' . sprintf(__('Editing <strong>%s</strong> (inactive)'), $file) . '</h2>';
+			echo sprintf(__('Editing <strong>%s</strong> (inactive)'), $file);
 		} else {
-		echo '<h2>' . sprintf(__('Browsing <strong>%s</strong> (inactive)'), $file) . '</h2>';
+		echo sprintf(__('Browsing <strong>%s</strong> (inactive)'), $file);
 		}
 	}
-	?>
-	<div id="templateside">
-<h3><?php _e('Plugin files') ?></h3>
-
-<?php
-if ($plugin_files) :
-?>
-	<ul>
-	<?php foreach($plugin_files as $plugin_file) : ?>
-		 <li><a href="plugin-editor.php?file=<?php echo "$plugin_file"; ?>"><?php echo $plugins[$plugin_file]['Name']; ?></a></li>
-	<?php endforeach; ?>
-	</ul>
-<?php endif; ?>
+	?></strong></big>
 </div>
+<br class="clear" />
+</div>
+<br class="clear" />
+	<div id="templateside">
+	<h3 id="bordertitle"><?php _e("Plugin Files"); ?></h3>
+
+	<h4><?php _e('Plugins'); ?></h4>
+	<ul>
+<?php foreach($plugin_files as $plugin_file) : ?>
+		<li><a href="plugin-editor.php?file=<?php echo "$plugin_file"; ?>"><?php echo $plugins[$plugin_file]['Name']; ?></a></li>
+<?php endforeach; ?>
+	</ul>
+	</div>
 <?php	if (!$error) { ?>
 	<form name="template" id="template" action="plugin-editor.php" method="post">
 	<?php wp_nonce_field('edit-plugin_' . $file) ?>
@@ -135,13 +146,13 @@ if ($plugin_files) :
 	<p class="submit">
 	<?php
 		if ( isset($_GET['phperror']) )
-			echo "<input type='hidden' name='phperror' value='1' /><input type='submit' name='submit' value='" . __('Update File and Attempt to Reactivate &raquo;') . "' tabindex='2' />";
+			echo "<input type='hidden' name='phperror' value='1' /><input type='submit' name='submit' value='" . __('Update File and Attempt to Reactivate') . "' tabindex='2' />";
 		else
-			echo "<input type='submit' name='submit' value='" . __('Update File &raquo;') . "' tabindex='2' />";
+			echo "<input type='submit' name='submit' value='" . __('Update File') . "' tabindex='2' />";
 	?>
 	</p>
 <?php else : ?>
-	<p><em><?php _e('If this file were writable you could edit it.'); ?></em></p>
+	<p><em><?php _e('You need to make this file writable before you can save your changes. See <a href="http://codex.wordpress.org/Changing_File_Permissions">the Codex</a> for more information.'); ?></em></p>
 <?php endif; ?>
  </form>
 <?php
@@ -154,5 +165,4 @@ if ($plugin_files) :
 <?php
 break;
 }
-
 include("admin-footer.php") ?>

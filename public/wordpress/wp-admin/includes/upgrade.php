@@ -6,7 +6,7 @@ require_once(ABSPATH . 'wp-admin/includes/admin.php');
 require_once(ABSPATH . 'wp-admin/includes/schema.php');
 
 if ( !function_exists('wp_install') ) :
-function wp_install($blog_title, $user_name, $user_email, $public, $meta='') {
+function wp_install($blog_title, $user_name, $user_email, $public, $deprecated='') {
 	global $wp_rewrite;
 
 	wp_check_mysql_version();
@@ -35,7 +35,7 @@ function wp_install($blog_title, $user_name, $user_email, $public, $meta='') {
 	// being shared among blogs.  Just set the role in that case.
 	$user_id = username_exists($user_name);
 	if ( !$user_id ) {
-		$random_password = substr(md5(uniqid(microtime())), 0, 6);
+		$random_password = wp_generate_password();
 		$user_id = wp_create_user($user_name, $random_password, $user_email);
 	} else {
 		$random_password = __('User already exists.  Password inherited.');
@@ -197,6 +197,9 @@ function upgrade_all() {
 
 	if ( $wp_current_db_version < 6124 )
 		upgrade_230_old_tables();
+
+	if ( $wp_current_db_version < 7098 )
+		upgrade_250();
 
 	maybe_disable_automattic_widgets();
 
@@ -715,6 +718,14 @@ function upgrade_old_slugs() {
 	$wpdb->query("UPDATE $wpdb->postmeta SET meta_key = '_wp_old_slug' WHERE meta_key = 'old_slug'");
 }
 
+
+function upgrade_250() {
+	global $wp_current_db_version;
+
+	if ( $wp_current_db_version < 6689 ) {
+		populate_roles_250();
+	}
+}
 
 // The functions we use to actually do stuff
 
@@ -1244,12 +1255,10 @@ function translate_level_to_role($level) {
 }
 
 function wp_check_mysql_version() {
-	global $wp_version;
-
-	// Make sure the server has MySQL 4.0
-	$mysql_version = preg_replace('|[^0-9\.]|', '', @mysql_get_server_info());
-	if ( version_compare($mysql_version, '4.0.0', '<') )
-		die(sprintf(__('<strong>ERROR</strong>: WordPress %s requires MySQL 4.0.0 or higher'), $wp_version));
+	global $wpdb;
+	$result = $wpdb->check_database_version();
+	if ( is_wp_error( $result ) )
+		die( $result->get_error_message() );
 }
 
 function maybe_disable_automattic_widgets() {
