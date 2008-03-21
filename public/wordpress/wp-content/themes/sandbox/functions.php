@@ -257,17 +257,15 @@ function sandbox_tag_ur_it($glue) {
 
 // Produces an avatar image with the hCard-compliant photo class
 function sandbox_commenter_link() {
-	$sandbox_commenter = get_comment_author_link();
-
-	if (ereg('<a[^>]* class=[^>]+>', $sandbox_commenter)) {
-		$sandbox_commenter = ereg_replace( '(<a[^>]* class=[\'"]?)', '\\1url ' , $sandbox_commenter );
+	$commenter = get_comment_author_link();
+	if ( ereg( '<a[^>]* class=[^>]+>', $commenter ) ) {
+		$commenter = ereg_replace( '(<a[^>]* class=[\'"]?)', '\\1url ' , $commenter );
 	} else {
-		$sandbox_commenter = ereg_replace( '(<a )/', '\\1class="url "' , $sandbox_commenter );
-	}   
-
+		$commenter = ereg_replace( '(<a )/', '\\1class="url "' , $commenter );
+	}
 	$email = get_comment_author_email();
-	$sandbox_avatar = str_replace( "class='avatar", "class='photo avatar", get_avatar( "$email", "64" ) );
-	echo $sandbox_avatar . '<span class="fn n">' . $sandbox_commenter . '</span>';
+	$avatar = str_replace( "class='avatar", "class='photo avatar", get_avatar( "$email", "64" ) );
+	echo $avatar . '<span class="fn n">' . $commenter . '</span>';
 }
 
 // Widget: Search; to match the Sandbox style and replace Widget plugin default
