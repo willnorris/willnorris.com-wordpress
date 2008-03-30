@@ -59,7 +59,7 @@ if ( isset($_GET['s']) )
 	$search_dirty = $_GET['s'];
 else
 	$search_dirty = '';
-$search = attribute_escape( $search );
+$search = attribute_escape( $search_dirty );
 ?>
 <?php
 if ( isset( $_GET['approved'] ) || isset( $_GET['deleted'] ) || isset( $_GET['spam'] ) ) {
@@ -97,7 +97,7 @@ if ( isset( $_GET['approved'] ) || isset( $_GET['deleted'] ) || isset( $_GET['sp
 <?php
 $status_links = array();
 $num_comments = wp_count_comments();
-$stati = array('moderated' => sprintf(__('Awaiting Moderation (%s)'), "<span class='comment-count'>$num_comments->moderated</span>"), 'approved' => __('Approved'));
+$stati = array('moderated' => sprintf(__ngettext('Awaiting Moderation (%s)', 'Awaiting Moderation (%s)', $num_comments->moderated), "<span class='comment-count'>$num_comments->moderated</span>"), 'approved' => _c('Approved|plural'));
 $class = ( '' === $comment_status ) ? ' class="current"' : '';
 $status_links[] = "<li><a href=\"edit-comments.php\"$class>".__('Show All Comments')."</a>";
 foreach ( $stati as $status => $label ) {

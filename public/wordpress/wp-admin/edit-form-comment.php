@@ -37,16 +37,16 @@ $date = mysql2date(get_option('date_format'), $comment->comment_date);
 $time = mysql2date(get_option('time_format'), $comment->comment_date);
 ?>
 <p class="curtime"><?php printf($stamp, $date, $time); ?>
-&nbsp;<a href="#edit_timestamp" class="edit-timestamp"><?php _e('Edit') ?></a></p>
+&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js"><?php _e('Edit') ?></a></p>
 
-<div id='timestampdiv'><?php touch_time(('editcomment' == $action), 0, 5); ?></div>
+<div id='timestampdiv' class='hide-if-js'><?php touch_time(('editcomment' == $action), 0, 5); ?></div>
 
 </div>
 
 <p class="submit">
 <input type="submit" name="save" value="<?php _e('Save'); ?>" tabindex="4" class="button button-highlighted" />
 <?php
-echo "<a href='" . wp_nonce_url("comment.php?action=deletecomment&amp;c=$comment->comment_ID", 'delete-comment_' . $comment->comment_ID) . "' onclick=\"if ( confirm('" . js_escape(__("You are about to delete this comment. \n  'Cancel' to stop, 'OK' to delete.")) . "') ) { return true;}return false;\">" . __('Delete comment') . "</a>";
+echo "<a class='submitdelete' href='" . wp_nonce_url("comment.php?action=deletecomment&amp;c=$comment->comment_ID", 'delete-comment_' . $comment->comment_ID) . "' onclick=\"if ( confirm('" . js_escape(__("You are about to delete this comment. \n  'Cancel' to stop, 'OK' to delete.")) . "') ) { return true;}return false;\">" . __('Delete comment') . "</a>";
 ?>
 </p>
 
@@ -55,7 +55,7 @@ echo "<a href='" . wp_nonce_url("comment.php?action=deletecomment&amp;c=$comment
 
 <ul>
 <li><a href="edit-comments.php"><?php _e('Manage All Comments') ?></a></li>
-<li><a href="moderation.php"><?php _e('Moderate Comments') ?></a></li>
+<li><a href="edit-comments.php?comment_status=moderated"><?php _e('Moderate Comments') ?></a></li>
 <?php do_action('comment_relatedlinks_list'); ?>
 </ul>
 </div>

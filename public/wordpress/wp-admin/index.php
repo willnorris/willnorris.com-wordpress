@@ -2,7 +2,7 @@
 
 require_once('admin.php');
 
-require( './includes/dashboard.php' );
+require_once(ABSPATH . 'wp-admin/includes/dashboard.php');
 
 wp_dashboard_setup();
 
@@ -74,6 +74,12 @@ if ( $can_edit_posts && !empty($num_posts->future) ) {
 	$post_type_texts[] = '<a href="edit.php?post_status=future">'.sprintf( __ngettext( '%s scheduled post', '%s scheduled posts', $num_posts->future ), number_format_i18n( $num_posts->future ) ).'</a>';
 }
 
+if ( current_user_can('publish_posts') && !empty($num_posts->pending) ) {
+	$pending_text = sprintf( __ngettext( 'There is <a href="%1$s">%2$s post</a> pending your review.', 'There are <a href="%1$s">%2$s posts</a> pending your review.', $num_posts->pending ), 'edit.php?post_status=pending', number_format_i18n( $num_posts->pending ) );
+} else {
+	$pending_text = '';
+}
+
 $cats_text = sprintf( __ngettext( '%s category', '%s categories', $num_cats ), number_format_i18n( $num_cats ) );
 $tags_text = sprintf( __ngettext( '%s tag', '%s tags', $num_tags ), number_format_i18n( $num_tags ) );
 if ( current_user_can( 'manage_categories' ) ) {
@@ -84,8 +90,8 @@ if ( current_user_can( 'manage_categories' ) ) {
 $post_type_text = implode(', ', $post_type_texts);
 
 // There is always a category
-$sentence = sprintf( __( 'You have %1$s, contained within %2$s and %3$s.' ), $post_type_text, $cats_text, $tags_text );
-$sentence = apply_filters( 'dashboard_count_sentence', $sentence, $post_type_text, $cats_text, $tags_text );
+$sentence = sprintf( __( 'You have %1$s, contained within %2$s and %3$s. %4$s' ), $post_type_text, $cats_text, $tags_text, $pending_text );
+$sentence = apply_filters( 'dashboard_count_sentence', $sentence, $post_type_text, $cats_text, $tags_text, $pending_text );
 
 ?>
 <p class="youhave"><?php echo $sentence; ?></p>

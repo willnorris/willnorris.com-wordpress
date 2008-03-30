@@ -31,7 +31,7 @@ input.disabled, textarea.disabled {
 	background-color: #ccc;
 }
 
-li.widget-list-control-item h4.widget-title a:hover, .submit a, #user_info a, #dashmenu a:hover, #footer a, #upload-menu li a.upload-tab-link, li.widget-list-control-item h4.widget-title a,
+#user_info a:hover, li.widget-list-control-item h4.widget-title a:hover, .submit a, #dashmenu a:hover, #footer a, #upload-menu li a.upload-tab-link, li.widget-list-control-item h4.widget-title a,
 #dragHelper li.widget-list-control-item h4.widget-title a,
 #draghelper li.widget-list-control-item h4.widget-title a:visited, .login #backtoblog a:hover {
 	color: #fff;
@@ -136,7 +136,7 @@ ul.widget-control-list .sorthelper {
 	color: #999;
 }
 
-#dashmenu a {
+#dashmenu a, #user_info a {
 	color: #88b4d7;
 }
 
@@ -182,11 +182,11 @@ ul.widget-control-list .sorthelper {
 	border-bottom-color: #dadada;
 }
 
-.side-info ul {
+.side-info ul, .widget-description {
 	color: #666;
 }
 
-.submit input, .button, .button-secondary, #login form .submit input, div.dashboard-widget-submit input {
+.submit input, .button, .button-secondary, #login form .submit input, div.dashboard-widget-submit input, #edit-slug-buttons a.save {
 	background-color: #e5e5e5;
 	color: #07273e;
 	border-color: #a3a3a3;
@@ -196,11 +196,11 @@ ul.widget-control-list .sorthelper {
 	border-color: #5396c5;
 }
 
-.submit input:hover, .button:hover {
+.submit input:hover, .button:hover, #edit-slug-buttons a.save:hover {
 	border-color: #535353;
 }
 
-.submit input:hover, .button:hover, .button-secondary:hover, #wphead #viewsite a:hover, #submenu a.current, #submenu a:hover, .submitbox #previewview a:hover, #the-comment-list .comment a:hover, #rightnow a:hover, a:hover, .subsubsub a:hover, .subsubsub a.current:hover, #login form .submit input:hover, div.dashboard-widget-submit input:hover {
+.submit input:hover, .button:hover, .button-secondary:hover, #wphead #viewsite a:hover, #submenu a.current, #submenu a:hover, .submitbox #previewview a:hover, #the-comment-list .comment a:hover, #rightnow a:hover, a:hover, .subsubsub a:hover, .subsubsub a.current:hover, #login form .submit input:hover, div.dashboard-widget-submit input:hover, #edit-slug-buttons a.save:hover {
 	color: #d54e21;
 }
 
@@ -406,16 +406,24 @@ input.readonly {
 	border-color: #319f52;
 }
 
-#plugins .active, .checkbox, .side-info, #your-profile #rich_editing {
+.checkbox, .side-info, #your-profile #rich_editing {
 	background-color: #fff;
+}
+
+#plugins .active {
+	background-color: #BBEEBB;
 }
 
 #plugins .togl {
 	border-right-color: #ccc;
 }
 
-#plugins tr, #the-comment-list .unapproved {
-	background-color: #f0f0f0;
+#the-comment-list .unapproved {
+	background-color: #ffffe0;
+}
+
+#plugins tr {
+	background-color: #fff;
 }
 
 #poststuff #editor-toolbar .active {
@@ -471,15 +479,11 @@ input.readonly {
 	color: #666;
 }
 
-#update-nag a:link, .plugin-update a:link {
-	color: #036;
-}
-
 #update-nag, .plugin-update {
 	background-color: #fffeeb;
 	border-bottom-color: #ccc;
 	border-top-color: #ccc;
-	color: #cfebf6;
+	color: #555;
 }
 
 #upload-files a.file-link {

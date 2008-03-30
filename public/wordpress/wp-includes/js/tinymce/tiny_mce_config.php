@@ -36,11 +36,13 @@ function putFileContents( $path, $content ) {
 	if ( function_exists('file_put_contents') )
 		return @file_put_contents( $path, $content );
 
+	$newfile = false;
 	$fp = @fopen( $path, 'wb' );
 	if ($fp) {
-		fwrite( $fp, $content );
+		$newfile = fwrite( $fp, $content );
 		fclose($fp);
 	}
+	return $newfile;
 }
 
 // Set up init variables
@@ -54,19 +56,6 @@ $mce_css = apply_filters('mce_css', $mce_css);
 if ( $https ) str_replace('http://', 'https://', $mce_css);
 
 $mce_locale = ( '' == get_locale() ) ? 'en' : strtolower( substr(get_locale(), 0, 2) ); // only ISO 639-1
-
-/*
-Setting mce_valid_elements to *[*] skips all of the internal cleanup and can cause problems.
-The minimal setting would be -strong/-b[*],-em/-i[*],*[*].
-Best is to use the default cleanup by not specifying mce_valid_elements,
-and then use extended_valid_elements to add to it.
-*/
-$valid_elements = apply_filters('mce_valid_elements', '');
-$invalid_elements = apply_filters('mce_invalid_elements', '');
-
-$extended_valid_elements = '@[id|class|style|title|dir<ltr?rtl|lang|xml::lang|onclick|ondblclick|onmousedown|onmouseup|onmouseover|onmousemove|onmouseout|onkeypress|onkeydown|onkeyup],bdo,code,col[*],colgroup[*],dfn,fieldset,form[*],input[*],kbd,label[*],legend[*],noscript,optgroup[*],option[*],q[cite|class],samp,textarea[*],title,var';
-
-$extended_valid_elements = apply_filters('mce_extended_valid_elements', $extended_valid_elements);
 
 /*
 The following filter allows localization scripts to change the languages displayed in the spellchecker's drop-down menu.
@@ -105,10 +94,11 @@ if ( ! empty($mce_external_plugins) ) {
 	
 	if ( ! empty($mce_external_languages) ) {
 		foreach ( $mce_external_languages as $name => $path ) {
-			$loaded_langs[] = $name;
-		
-			if ( is_file($path) ) include_once($path);
-			$ext_plugins .= $strings;
+			if ( is_file($path) && is_readable($path) ) { 
+				include_once($path);
+				$ext_plugins .= $strings;
+				$loaded_langs[] = $name;
+			}
 		}
 	}
 
@@ -143,7 +133,7 @@ $mce_buttons_4 = implode($mce_buttons_4, ',');
 $initArray = array (
 	'mode' => 'none',
 	'onpageload' => 'wpEditorInit',
-    'width' => '100%',
+	'width' => '100%',
 	'theme' => 'advanced',
 	'skin' => 'wp_theme',
 	'theme_advanced_buttons1' => "$mce_buttons",
@@ -160,6 +150,11 @@ $initArray = array (
 	'dialog_type' => 'modal',
 	'relative_urls' => false,
 	'remove_script_host' => false,
+	'apply_source_formatting' => false,
+	'remove_linebreaks' => true,
+	'paste_convert_middot_lists' => true,
+	'paste_remove_spans' => true,
+	'paste_remove_styles' => true,
 	'gecko_spellcheck' => true,
 	'entities' => '38,amp,60,lt,62,gt',
 	'accessibility_focus' => false,
@@ -173,19 +168,22 @@ $initArray = array (
 	'old_cache_max' => '1' // number of cache files to keep
 );
 
-if ( $valid_elements ) $initArray['valid_elements'] = $valid_elements;
-//if ( $extended_valid_elements ) $initArray['extended_valid_elements'] = $extended_valid_elements;
-if ( $invalid_elements ) $initArray['invalid_elements'] = $invalid_elements;
-
 // For people who really REALLY know what they're doing with TinyMCE
-// You can modify initArray to add, remove, change elements of the config before tinyMCE.init
-$initArray = apply_filters('tiny_mce_before_init', $initArray); // changed from action to filter
+// You can modify initArray to add, remove, change elements of the config before tinyMCE.init (changed from action to filter)
+$initArray = apply_filters('tiny_mce_before_init', $initArray);
+
+// Setting "valid_elements", "invalid_elements" and "extended_valid_elements" can be done through "tiny_mce_before_init".
+// Best is to use the default cleanup by not specifying valid_elements, as TinyMCE contains full set of XHTML 1.0.
 
 // support for deprecated actions
 ob_start();
 do_action('mce_options');
-$mce_deprecated1 = ob_get_contents() || '';
+$mce_deprecated = ob_get_contents();
 ob_end_clean();
+
+$mce_deprecated = (string) $mce_deprecated;
+if ( strlen( $mce_deprecated ) < 10 || ! strpos( $mce_deprecated, ':' ) || ! strpos( $mce_deprecated, ',' ) )	
+	$mce_deprecated = '';
 
 // Settings for the gzip compression and cache
 $disk_cache = ( ! isset($initArray['disk_cache']) || false == $initArray['disk_cache'] ) ? false : true;
@@ -222,7 +220,7 @@ if ( $compress && isset($_SERVER['HTTP_ACCEPT_ENCODING']) ) {
 // Setup cache info
 if ( $disk_cache ) {
 
-	$cacheKey = apply_filters('tiny_mce_version', '20080317');
+	$cacheKey = apply_filters('tiny_mce_version', '20080327');
 
 	foreach ( $initArray as $v )
 		$cacheKey .= $v;
@@ -242,7 +240,7 @@ header( 'Vary: Accept-Encoding' ); // Handle proxies
 header( 'Expires: ' . gmdate( "D, d M Y H:i:s", time() + $expiresOffset ) . ' GMT' );
 
 // Use cached file if exists
-if ( $disk_cache && is_file($cache_file) ) {
+if ( $disk_cache && is_file($cache_file) && is_readable($cache_file) ) {
 
 	$mtime = gmdate("D, d M Y H:i:s", filemtime($cache_file)) . " GMT";
 	
@@ -267,7 +265,8 @@ if ( $disk_cache && is_file($cache_file) ) {
 foreach ( $initArray as $k => $v ) 
     $mce_options .= $k . ':"' . $v . '",';
 
-$mce_options .= $mce_deprecated1;
+if ( $mce_deprecated ) $mce_options .= $mce_deprecated;
+
 $mce_options = rtrim( trim($mce_options), '\n\r,' );
 
 $content = 'var tinyMCEPreInit = { settings : { themes : "' . $theme . '", plugins : "' . $initArray['plugins'] . '", languages : "' . $language . '", debug : false }, base : "' . $baseurl . '", suffix : "" };';
@@ -301,35 +300,30 @@ if ( '.gz' == $cache_ext ) {
 	$content = gzencode( $content, 9, FORCE_GZIP );
 }
 
-// Write file
-if ( '' != $cacheKey ) {
-	if ( is_dir($cache_path) ) {		
-
-		$old_cache = array();
-		$handle = opendir($cache_path);
-		while ( false !== ( $file = readdir($handle) ) ) {
-			if ( $file == '.' || $file == '..' ) continue;
-            $saved = filectime("$cache_path/$file");
-			if ( strpos($file, 'tinymce_') !== false && substr($file, -3) == $cache_ext ) $old_cache["$saved"] = $file;
-		}
-		closedir($handle);
-			
-		krsort($old_cache);
-		if ( 1 >= $old_cache_max ) $del_cache = $old_cache;
-		else $del_cache = array_slice( $old_cache, ($old_cache_max - 1) );
-			
-		foreach ( $del_cache as $key )
-			@unlink("$cache_path/$key");
-	}
-
-	putFileContents( $cache_file, $content );
-
-	$mtime = gmdate( "D, d M Y H:i:s", filemtime($cache_file) ) . " GMT";
-	header( 'Last-Modified: ' . $mtime );
-}
-
 // Stream to client
-header( 'Cache-Control: must-revalidate', false );
 header( 'Content-Length: ' . strlen($content) );
 echo $content;
+
+// Write file
+if ( '' != $cacheKey && is_dir($cache_path) && is_readable($cache_path) ) {	
+
+	$old_cache = array();
+	$handle = opendir($cache_path);
+	while ( false !== ( $file = readdir($handle) ) ) {
+		if ( $file == '.' || $file == '..' ) continue;
+        $saved = filectime("$cache_path/$file");
+		if ( strpos($file, 'tinymce_') !== false && substr($file, -3) == $cache_ext ) $old_cache["$saved"] = $file;
+	}
+	closedir($handle);
+			
+	krsort($old_cache);
+	if ( 1 >= $old_cache_max ) $del_cache = $old_cache;
+	else $del_cache = array_slice( $old_cache, ($old_cache_max - 1) );
+
+	foreach ( $del_cache as $key )
+		@unlink("$cache_path/$key");
+
+	putFileContents( $cache_file, $content );
+}
+
 ?>

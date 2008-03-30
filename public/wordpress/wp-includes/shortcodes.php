@@ -118,6 +118,7 @@ function shortcode_parse_atts($text) {
 }
 
 function shortcode_atts($pairs, $atts) {
+	$atts = (array)$atts;
 	$out = array();
 	foreach($pairs as $name => $default) {
 		if ( array_key_exists($name, $atts) )
@@ -128,6 +129,6 @@ function shortcode_atts($pairs, $atts) {
 	return $out;
 }
 
-add_filter('the_content', 'do_shortcode');
+add_filter( 'the_content', 'do_shortcode', 9 );
 
 ?>

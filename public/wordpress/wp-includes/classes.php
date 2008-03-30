@@ -1,7 +1,7 @@
 <?php
 
 class WP {
-	var $public_query_vars = array('m', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'debug', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'comments_popup', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots');
+	var $public_query_vars = array('m', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'debug', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'comments_popup', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots', 'taxonomy', 'term');
 
 	var $private_query_vars = array('offset', 'posts_per_page', 'posts_per_archive_page', 'what_to_show', 'showposts', 'nopaging', 'post_type', 'post_status', 'category__in', 'category__not_in', 'category__and', 'tag__in', 'tag__not_in', 'tag__and', 'tag_slug__in', 'tag_slug__and', 'tag_id', 'post_mime_type', 'perm');
 	var $extra_query_vars = array();
@@ -14,7 +14,8 @@ class WP {
 	var $did_permalink = false;
 
 	function add_query_var($qv) {
-		$this->public_query_vars[] = $qv;
+		if ( !in_array($qv, $this->public_query_vars) )
+			$this->public_query_vars[] = $qv;
 	}
 
 	function set_query_var($key, $value) {
@@ -71,7 +72,6 @@ class WP {
 			$pathinfo = trim($pathinfo, '/');
 			$self = trim($self, '/');
 			$self = preg_replace("|^$home_path|", '', $self);
-			$self = str_replace($home_path, '', $self);
 			$self = trim($self, '/');
 
 			// The requested permalink is in $pathinfo for path info requests and
@@ -503,10 +503,11 @@ class Walker {
 			for ( $i = 0; $i < sizeof( $children_elements ); $i++ ) {
 
 				$child = $children_elements[$i];
-				if ($root->$parent_field == $child->$parent_field )
+				if ($root->$parent_field == $child->$parent_field ) {
 					$top_level_elements[] = $child;
 					array_splice( $children_elements, $i, 1 );
 					$i--;
+				}
 			}
 		}
 
@@ -550,13 +551,15 @@ class Walker_Page extends Walker {
 
 		extract($args, EXTR_SKIP);
 		$css_class = 'page_item page-item-'.$page->ID;
-		$_current_page = get_page( $current_page );
-		if ( in_array($page->ID, (array) $_current_page->ancestors) )
-			$css_class .= ' current_page_ancestor';
-		if ( $page->ID == $current_page )
-			$css_class .= ' current_page_item';
-		elseif ( $_current_page && $page->ID == $_current_page->post_parent )
-			$css_class .= ' current_page_parent';
+		if ( !empty($current_page) ) {
+			$_current_page = get_page( $current_page );
+			if ( in_array($page->ID, (array) $_current_page->ancestors) )
+				$css_class .= ' current_page_ancestor';
+			if ( $page->ID == $current_page )
+				$css_class .= ' current_page_item';
+			elseif ( $_current_page && $page->ID == $_current_page->post_parent )
+				$css_class .= ' current_page_parent';
+		}
 
 		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_page_link($page->ID) . '" title="' . attribute_escape(apply_filters('the_title', $page->post_title)) . '">' . apply_filters('the_title', $page->post_title) . '</a>';
 
@@ -764,7 +767,7 @@ class WP_Ajax_Response {
 				$response .= "<wp_error_data code='$code'$class>";
 
 				if ( is_scalar($error_data) ) {
-					$response .= "<![CDATA[$v]]>";
+					$response .= "<![CDATA[$error_data]]>";
 				} elseif ( is_array($error_data) ) {
 					foreach ( $error_data as $k => $v )
 						$response .= "<$k><![CDATA[$v]]></$k>";

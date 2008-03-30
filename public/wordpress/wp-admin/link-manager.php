@@ -62,9 +62,7 @@ switch ($order_by) {
 		$sqlorderby = 'name';
 		break;
 }
-?>
-<script type="text/javascript" src="js/edit-comments.js"></script>
-<?php
+
 if ( isset($_GET['deleted']) ) {
 	echo '<div style="background-color: rgb(207, 235, 247);" id="message" class="updated fade"><p>';
 	$deleted = (int) $_GET['deleted'];
@@ -77,7 +75,7 @@ if ( isset($_GET['deleted']) ) {
 <div class="wrap">
 
 <form id="posts-filter" action="" method="get">
-<h2><?php _e('Manage Links'); ?></h2>
+<h2><?php printf( __( 'Manage Links (<a href="%s">add new</a>)' ), 'link-add.php' ); ?></h2>
 
 <p id="post-search">
 	<input type="text" id="post-search-input" name="s" value="<?php echo attribute_escape(stripslashes($_GET['s'])); ?>" />

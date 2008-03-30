@@ -11,7 +11,7 @@ class WP_Scripts {
 	}
 
 	function default_scripts() {
-		$this->add( 'common', '/wp-admin/js/common.js', array('jquery'), '1.0' );
+		$this->add( 'common', '/wp-admin/js/common.js', array('jquery'), '20080318' );
 		$this->add( 'sack', '/wp-includes/js/tw-sack.js', false, '1.6.1' );
 
 		$this->add( 'quicktags', '/wp-includes/js/quicktags.js', false, '3958' );
@@ -31,33 +31,33 @@ class WP_Scripts {
 
 		// Let a plugin replace the visual editor
 		$visual_editor = apply_filters('visual_editor', array('tiny_mce'));
-		$this->add( 'editor', false, $visual_editor, '20080218' );
+		$this->add( 'editor', false, $visual_editor, '20080321' );
 
-		$this->add( 'editor_functions', '/wp-admin/js/editor.js', false, '20080317' );
+		$this->add( 'editor_functions', '/wp-admin/js/editor.js', false, '20080325' );
 
 		// Modify this version when tinyMCE plugins are changed.
-		$mce_version = apply_filters('tiny_mce_version', '20080317');
+		$mce_version = apply_filters('tiny_mce_version', '20080327');
 		$this->add( 'tiny_mce', '/wp-includes/js/tinymce/tiny_mce_config.php', array('editor_functions'), $mce_version );
 
 		$this->add( 'prototype', '/wp-includes/js/prototype.js', false, '1.6');
 
 		$this->add( 'wp-ajax-response', '/wp-includes/js/wp-ajax-response.js', array('jquery'), '20080316' );
 		$this->localize( 'wp-ajax-response', 'wpAjax', array(
-			'noPerm' => 'You do not have permission to do that.',
-			'broken' => 'AJAX is teh b0rked.'
+			'noPerm' => __('You do not have permission to do that.'),
+			'broken' => __('An unidentified error has occurred.')
 		) );
 
-		$this->add( 'autosave', '/wp-includes/js/autosave.js', array('schedule', 'wp-ajax-response'), '20080312' );
+		$this->add( 'autosave', '/wp-includes/js/autosave.js', array('schedule', 'wp-ajax-response'), '20080326b' );
 
 		$this->add( 'wp-ajax', '/wp-includes/js/wp-ajax.js', array('prototype'), '20070306');
 		$this->localize( 'wp-ajax', 'WPAjaxL10n', array(
 			'defaultUrl' => get_option( 'siteurl' ) . '/wp-admin/admin-ajax.php',
-			'permText' => __("You don't have permission to do that."),
+			'permText' => __("You do not have permission to do that."),
 			'strangeText' => __("Something strange happened.  Try refreshing the page."),
 			'whoaText' => __("Slow down, I'm still sending your data!")
 		) );
 
-		$this->add( 'wp-lists', '/wp-includes/js/wp-lists.js', array('wp-ajax-response'), '20080312' );
+		$this->add( 'wp-lists', '/wp-includes/js/wp-lists.js', array('wp-ajax-response'), '20080322' );
 		$this->localize( 'wp-lists', 'wpListL10n', array(
 			'url' => get_option( 'siteurl' ) . '/wp-admin/admin-ajax.php'
 		) );
@@ -83,6 +83,9 @@ class WP_Scripts {
 		$this->add( 'thickbox', '/wp-includes/js/thickbox/thickbox.js', array('jquery'), '3.1');
 		$this->add( 'swfupload', '/wp-includes/js/swfupload/swfupload.js', false, '2.0.2');
 		$this->add( 'swfupload-degrade', '/wp-includes/js/swfupload/plugins/swfupload.graceful_degradation.js', array('swfupload'), '2.0.2');
+		$this->localize( 'swfupload-degrade', 'uploadDegradeOptions', array(
+			'is_lighttpd_before_150' => is_lighttpd_before_150(),
+		) );
 		$this->add( 'swfupload-queue', '/wp-includes/js/swfupload/plugins/swfupload.queue.js', array('swfupload'), '2.0.2');
 		$this->add( 'swfupload-handlers', '/wp-includes/js/swfupload/handlers.js', array('swfupload'), '2.0.2-20080301');
 		// these error messages came from the sample swfupload js, they might need changing.
@@ -141,7 +144,7 @@ class WP_Scripts {
 				'save' => __('Save'),
 				'cancel' => __('Cancel'),
 			) );
-			$this->add( 'post', '/wp-admin/js/post.js', array('suggest', 'jquery-ui-tabs', 'wp-lists', 'postbox', 'slug'), '20080221' );
+			$this->add( 'post', '/wp-admin/js/post.js', array('suggest', 'jquery-ui-tabs', 'wp-lists', 'postbox', 'slug'), '20080322' );
 			$this->localize( 'post', 'postL10n', array(
 				'tagsUsed' =>  __('Tags used on this post:'),
 				'add' => attribute_escape(__('Add')),
@@ -150,13 +153,17 @@ class WP_Scripts {
 				'cancel' => __('Cancel'),
 				'edit' => __('Edit'),
 			) );
-			$this->add( 'page', '/wp-admin/js/page.js', array('jquery', 'slug', 'postbox'), '20080208' );
+			$this->add( 'page', '/wp-admin/js/page.js', array('jquery', 'slug', 'postbox'), '20080318' );
 			$this->localize( 'page', 'postL10n', array(
 				'cancel' => __('Cancel'),
 				'edit' => __('Edit'),
 			) );
 			$this->add( 'link', '/wp-admin/js/link.js', array('jquery-ui-tabs', 'wp-lists', 'postbox'), '20080131' );
 			$this->add( 'comment', '/wp-admin/js/comment.js', array('postbox'), '20080219' );
+			$this->localize( 'comment', 'commentL10n', array(
+					'cancel' => __('Cancel'),
+					'edit' => __('Edit'),
+				) );
 			$this->add( 'media-upload', '/wp-admin/js/media-upload.js', false, '20080109' );
 			$this->localize( 'upload', 'uploadL10n', array(
 				'browseTitle' => attribute_escape(__('Browse your files')),
@@ -180,7 +187,7 @@ class WP_Scripts {
 				'saveText' => attribute_escape(__('Save &raquo;')),
 				'confirmText' => __("Are you sure you want to delete the file '%title%'?\nClick ok to delete or cancel to go back.")
 			) );
-			$this->add( 'admin-widgets', '/wp-admin/js/widgets.js', array( 'interface' ), '20080313' );
+			$this->add( 'admin-widgets', '/wp-admin/js/widgets.js', array( 'interface' ), '20080319' );
 			$this->localize( 'admin-widgets', 'widgetsL10n', array(
 				'add' => __('Add'),
 				'edit' => __('Edit'),

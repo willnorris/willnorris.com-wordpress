@@ -24,7 +24,7 @@ function wp_dashboard_setup() {
 	// Recent Comments Widget
 	if ( current_user_can( 'moderate_comments' ) && $mod_comments = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = '0'") ) {
 		$notice = sprintf( __ngettext( '%d comment awaiting moderation', '%d comments awaiting moderation', $mod_comments ), $mod_comments );
-		$notice = "<a href='moderation.php'>$notice</a>";
+		$notice = "<a href='edit-comments.php?comment_status=moderated'>$notice</a>";
 	} else {
 		$notice = '';
 	}
@@ -144,7 +144,7 @@ function wp_dashboard_setup() {
 
 	if ( 'POST' == $_SERVER['REQUEST_METHOD'] && isset($_POST['widget_id']) ) {
 		ob_start(); // hack - but the same hack wp-admin/widgets.php uses
-		wp_dashbaord_trigger_widget_control( $_POST['widget_id'] );
+		wp_dashboard_trigger_widget_control( $_POST['widget_id'] );
 		ob_end_clean();
 		wp_redirect( remove_query_arg( 'edit' ) );
 		exit;
@@ -212,7 +212,7 @@ function wp_dashboard_dynamic_sidebar_params( $params ) {
 			$content_class .= ' dashboard-widget-control';
 			$wp_registered_widgets[$widget_id]['callback'] = 'wp_dashboard_empty';
 			$sidebar_widget_name = $wp_registered_widget_controls[$widget_id]['name'];
-			$params[1] = 'wp_dashbaord_trigger_widget_control';
+			$params[1] = 'wp_dashboard_trigger_widget_control';
 			$sidebar_before_widget .= '<form action="' . remove_query_arg( 'edit' )  . '" method="post">';
 			$sidebar_after_widget   = "<div class='dashboard-widget-submit'><input type='hidden' name='sidebar' value='wp_dashboard' /><input type='hidden' name='widget_id' value='$widget_id' /><input type='submit' value='" . __( 'Save' ) . "' /></div></form>$sidebar_after_widget";
 			$links[] = '<a href="' . remove_query_arg( 'edit' ) . '">' . __( 'Cancel' ) . '</a>';
@@ -284,21 +284,23 @@ function wp_dashboard_recent_comments( $sidebar_args ) {
 ?>
 				<blockquote><p>&#8220;<?php comment_excerpt(); ?>&#8221;</p></blockquote>
 				<p class='comment-meta'><?php echo $comment_meta; ?></p>
-
+<?php
+				if ( $comments_query->comment_count > 1 ) : ?>
 				<ul id="dashboard-comments-list">
 <?php
-			else :
+				endif; // comment_count
+			else : // is_first
 ?>
 
 					<li class='comment-meta'><?php echo $comment_meta; ?></li>
 <?php
-			endif;
+			endif; // is_first
 		}
-?>
 
+		if ( $comments_query->comment_count > 1 ) : ?>
 				</ul>
-
 <?php
+		endif; // comment_count;
 
 	}
 
@@ -361,7 +363,7 @@ function wp_dashboard_incoming_links_output() {
 		echo "</ul>\n";
 
 	} else {
-		echo '<p>' . __('This dashboard widget queries <a href="http://blogsearch.google.com/">Google Blog Search</a> so that when another blog links to your site it will show up here. They have found no incoming links found&hellip; yet. It&#8217;s okay &#8212; there is no rush.') . "</p>\n";
+		echo '<p>' . __('This dashboard widget queries <a href="http://blogsearch.google.com/">Google Blog Search</a> so that when another blog links to your site it will show up here. It has found no incoming links&hellip; yet. It&#8217;s okay &#8212; there is no rush.') . "</p>\n";
 	}
 }
 
@@ -499,7 +501,7 @@ function wp_dashboard_empty( $sidebar_args, $callback = false ) {
 /* Dashboard Widgets Controls. Ssee also wp_dashboard_empty() */
 
 // Calls widget_control callback
-function wp_dashbaord_trigger_widget_control( $widget_control_id = false ) {
+function wp_dashboard_trigger_widget_control( $widget_control_id = false ) {
 	global $wp_registered_widget_controls;
 	if ( is_scalar($widget_control_id) && $widget_control_id && isset($wp_registered_widget_controls[$widget_control_id]) && is_callable($wp_registered_widget_controls[$widget_control_id]['callback']) )
 		call_user_func_array( $wp_registered_widget_controls[$widget_control_id]['callback'], $wp_registered_widget_controls[$widget_control_id]['params'] );

@@ -1,4 +1,14 @@
 <?php
+if ( isset($_GET['message']) )
+	$_GET['message'] = absint( $_GET['message'] );
+$messages[1] = sprintf( __( 'Page updated. Continue editing below or <a href="%s">go back</a>.' ), attribute_escape( stripslashes( $_GET['_wp_original_http_referer'] ) ) );
+$messages[2] = __('Custom field updated.');
+$messages[3] = __('Custom field deleted.');
+$messages[4] = __('Page updated.');
+?>
+<?php if (isset($_GET['message'])) : ?>
+<div id="message" class="updated fade"><p><?php echo $messages[$_GET['message']]; ?></p></div>
+<?php endif;
 
 if (!isset($post_ID) || 0 == $post_ID) {
 	$form_action = 'post';
@@ -38,11 +48,12 @@ if (isset($mode) && 'bookmarklet' == $mode)
 <input type="hidden" id="post_type" name="post_type" value="<?php echo $post->post_type ?>" />
 <input type="hidden" id="original_post_status" name="original_post_status" value="<?php echo $post->post_status ?>" />
 <input name="referredby" type="hidden" id="referredby" value="<?php
-if ( url_to_postid(wp_get_referer()) == $post_ID )
+if ( url_to_postid(wp_get_referer()) == $post_ID && strpos( wp_get_referer(), '/wp-admin/' ) === false )
 	echo 'redo';
 else
 	echo clean_url(stripslashes(wp_get_referer()));
 ?>" />
+<?php if ( 'draft' != $post->post_status ) wp_original_referer_field(true, 'previous'); ?>
 
 <div id="poststuff">
 
@@ -50,9 +61,9 @@ else
 
 <div id="previewview">
 <?php if ( 'publish' == $post->post_status ) { ?>
-<a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank"><?php _e('View this Page'); ?></a>
+<a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank"  tabindex="4"><?php _e('View this Page'); ?></a>
 <?php } elseif ( 'edit' == $action ) { ?>
-<a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"><?php _e('Preview this Page'); ?></a>
+<a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank" tabindex="4"><?php _e('Preview this Page'); ?></a>
 <?php } ?>
 </div>
 
@@ -60,7 +71,7 @@ else
 
 <p><strong><?php _e('Publish Status') ?></strong></p>
 <p>
-<select name='post_status'>
+<select name='post_status' tabindex='4'>
 <?php if ( current_user_can('publish_posts') ) : ?>
 <option<?php selected( $post->post_status, 'publish' ); selected( $post->post_status, 'private' );?> value='publish'><?php _e('Published') ?></option>
 <?php else: ?>
@@ -74,7 +85,7 @@ else
 </select>
 </p>
 
-<p><label for="post_status_private" class="selectit"><input id="post_status_private" name="post_status" type="checkbox" value="private" <?php checked($post->post_status, 'private'); ?> /> <?php _e('Keep this page private') ?></label></p>
+<p><label for="post_status_private" class="selectit"><input id="post_status_private" name="post_status" type="checkbox" value="private" <?php checked($post->post_status, 'private'); ?> tabindex='4' /> <?php _e('Keep this page private') ?></label></p>
 <?php
 if ($post_ID) {
 	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
@@ -95,9 +106,9 @@ if ($post_ID) {
 }
 ?>
 <p class="curtime"><?php printf($stamp, $date, $time); ?>
-&nbsp;<a href="#edit_timestamp" class="edit-timestamp"><?php _e('Edit') ?></a></p>
+&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e('Edit') ?></a></p>
 
-<div id='timestampdiv'><?php touch_time(($action == 'edit')); ?></div>
+<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
 
 </div>
 
@@ -263,7 +274,7 @@ if ( $post->post_author && !in_array($post->post_author, $authors) )
 if ( $authors && count( $authors ) > 1 ) :
 ?>
 <div id="pageauthordiv" class="postbox <?php echo postbox_classes('pageauthordiv', 'page'); ?>">
-<h3><?php _e('Post Author'); ?></h3>
+<h3><?php _e('Page Author'); ?></h3>
 <div class="inside">
 <?php wp_dropdown_users( array('include' => $authors, 'name' => 'post_author_override', 'selected' => empty($post_ID) ? $user_ID : $post->post_author) ); ?>
 </div>

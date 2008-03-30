@@ -431,14 +431,10 @@ function wp_authenticate($username, $password) {
 		return $user;
 	}
 
-	if ( !wp_check_password($password, $user->user_pass) ) {
+	if ( !wp_check_password($password, $user->user_pass, $user->ID) ) {
 		do_action( 'wp_login_failed', $username );
 		return new WP_Error('incorrect_password', __('<strong>ERROR</strong>: Incorrect password.'));
 	}
-
-	// If using old md5 password, rehash.
-	if ( strlen($user->user_pass) <= 32 )
-		wp_set_password($password, $user->ID);
 
 	return new WP_User($user->ID);
 }
@@ -895,7 +891,7 @@ function wp_notify_moderator($comment_id) {
 
 	$strCommentsPending = sprintf( __ngettext('%s comment', '%s comments', $comments_waiting), $comments_waiting );
 	$notify_message .= sprintf( __('Currently %s are waiting for approval. Please visit the moderation panel:'), $strCommentsPending ) . "\r\n";
-	$notify_message .= get_option('siteurl') . "/wp-admin/moderation.php\r\n";
+	$notify_message .= get_option('siteurl') . "/wp-admin/edit-comments.php?comment_status=moderated\r\n";
 
 	$subject = sprintf( __('[%1$s] Please moderate: "%2$s"'), get_option('blogname'), $post->post_title );
 	$admin_email = get_option('admin_email');
@@ -1134,11 +1130,20 @@ if ( !function_exists('wp_check_password') ) :
  * @param string $hash Hash of the user's password to check against.
  * @return bool False, if the $password does not match the hashed password
  */
-function wp_check_password($password, $hash) {
+function wp_check_password($password, $hash, $user_id = '') {
 	global $wp_hasher;
 
-	if ( strlen($hash) <= 32 )
-		return ( $hash == md5($password) );
+	// If the hash is still md5...
+	if ( strlen($hash) <= 32 ) {
+		$check = ( $hash == md5($password) );
+		if ( $check && $user_id ) {
+			// Rehash using new hash.
+			wp_set_password($password, $user_id);
+			$hash = wp_hash_password($password);
+		}
+
+		return apply_filters('check_password', $check, $password, $hash, $user_id);
+	}
 
 	// If the stored hash is longer than an MD5, presume the
 	// new style phpass portable hash.
@@ -1150,7 +1155,7 @@ function wp_check_password($password, $hash) {
 
 	$check = $wp_hasher->CheckPassword($password, $hash);
 
-	return apply_filters('check_password', $check, $password, $hash);
+	return apply_filters('check_password', $check, $password, $hash, $user_id);
 }
 endif;
 
@@ -1250,7 +1255,7 @@ function get_avatar( $id_or_email, $size = '96', $default = '' ) {
 
 		$avatar = "<img alt='' src='{$out}' class='avatar avatar-{$size}' height='{$size}' width='{$size}' />";
 	} else {
-		$avatar = "<img alt='' src='{$default}' class='avatar avatar-{$size} avatar-default' height='{$size}' width='{$size}'>";
+		$avatar = "<img alt='' src='{$default}' class='avatar avatar-{$size} avatar-default' height='{$size}' width='{$size}' />";
 	}
 
 	return apply_filters('get_avatar', $avatar, $id_or_email, $size, $default);

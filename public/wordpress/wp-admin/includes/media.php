@@ -50,7 +50,7 @@ function the_media_upload_tabs() {
 
 function get_image_send_to_editor($id, $alt, $title, $align, $url='', $rel = false, $size='medium') {
 
-	$html = get_image_tag($id, $alt, $title, $align, $rel, $size);
+	$html = get_image_tag($id, $alt, $title, $align, $size);
 
 	$rel = $rel ? ' rel="attachment wp-att-'.attribute_escape($id).'"' : '';
 
@@ -124,7 +124,7 @@ function wp_iframe($content_func /* ... */) {
 <html xmlns="http://www.w3.org/1999/xhtml" <?php do_action('admin_xml_ns'); ?> <?php language_attributes(); ?>>
 <head>
 <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
-<title><?php bloginfo('name') ?> &rsaquo; <?php _e('Uploads'); ?> &#8212; WordPress</title>
+<title><?php bloginfo('name') ?> &rsaquo; <?php _e('Uploads'); ?> &#8212; <?php _e('WordPress'); ?></title>
 <?php
 wp_admin_css( 'css/global' );
 wp_admin_css();
@@ -203,7 +203,7 @@ function media_upload_form_handler() {
 	check_admin_referer('media-form');
 
 	// Insert media button was clicked
-	if ( !empty($_FILES) ) {
+	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 
 		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
@@ -246,8 +246,11 @@ function media_upload_form_handler() {
 		$send_id = (int) array_shift($keys);
 		$attachment = $_POST['attachments'][$send_id];
 		$html = $attachment['post_title'];
-		if ( !empty($attachment['url']) )
-			$html = "<a href='{$attachment['url']}'>$html</a>";
+		if ( !empty($attachment['url']) ) {
+			if ( strpos($attachment['url'], 'attachment_id') || false !== strpos($attachment['url'], get_permalink($_POST['post_id'])) )
+				$rel = " rel='attachment wp-att-".attribute_escape($send_id)."'";
+			$html = "<a href='{$attachment['url']}'$rel>$html</a>";
+		}
 		$html = apply_filters('media_send_to_editor', $html, $send_id, $attachment);
 		return media_send_to_editor($html);
 	}
@@ -256,7 +259,7 @@ function media_upload_form_handler() {
 }
 
 function media_upload_image() {
-	if ( !empty($_FILES) ) {
+	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
 		unset($_FILES);
@@ -289,11 +292,14 @@ function media_upload_image() {
 			$errors = $return;
 	}
 
+	if ( isset($_POST['save']) )
+		$errors['upload_notice'] = __('Saved.');
+
 	return wp_iframe( 'media_upload_type_form', 'image', $errors, $id );
 }
 
 function media_upload_audio() {
-	if ( !empty($_FILES) ) {
+	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
 		unset($_FILES);
@@ -323,12 +329,15 @@ function media_upload_audio() {
 		if ( is_array($return) )
 			$errors = $return;
 	}
+
+	if ( isset($_POST['save']) )
+		$errors['upload_notice'] = __('Saved.');
 
 	return wp_iframe( 'media_upload_type_form', 'audio', $errors, $id );
 }
 
 function media_upload_video() {
-	if ( !empty($_FILES) ) {
+	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
 		unset($_FILES);
@@ -358,12 +367,15 @@ function media_upload_video() {
 		if ( is_array($return) )
 			$errors = $return;
 	}
+
+	if ( isset($_POST['save']) )
+		$errors['upload_notice'] = __('Saved.');
 
 	return wp_iframe( 'media_upload_type_form', 'video', $errors, $id );
 }
 
 function media_upload_file() {
-	if ( !empty($_FILES) ) {
+	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
 		unset($_FILES);
@@ -393,6 +405,9 @@ function media_upload_file() {
 		if ( is_array($return) )
 			$errors = $return;
 	}
+
+	if ( isset($_POST['save']) )
+		$errors['upload_notice'] = __('Saved.');
 
 	return wp_iframe( 'media_upload_type_form', 'file', $errors, $id );
 }
@@ -423,44 +438,13 @@ function media_upload_library() {
 	return wp_iframe( 'media_upload_library_form', $errors );
 }
 
-function get_attachment_taxonomies($attachment) {
-	if ( is_int( $attachment ) )
-		$attachment = get_post($attachment);
-	else if ( is_array($attachment) )
-		$attachment = (object) $attachment;
-
-	if ( ! is_object($attachment) )
-		return array();
-
-	$filename = basename($attachment->guid);
-
-	$objects = array('attachment');
-
-	if ( false !== strpos($filename, '.') )
-		$objects[] = 'attachment:' . substr($filename, strrpos($filename, '.') + 1);
-	if ( !empty($attachment->post_mime_type) ) {
-		$objects[] = 'attachment:' . $attachment->post_mime_type;
-		if ( false !== strpos($attachment->post_mime_type, '/') )
-			foreach ( explode('/', $attachment->post_mime_type) as $token )
-				if ( !empty($token) )
-					$objects[] = "attachment:$token";
-	}
-
-	$taxonomies = array();
-	foreach ( $objects as $object )
-		if ( $taxes = get_object_taxonomies($object) )
-			$taxonomies = array_merge($taxonomies, $taxes);
-
-	return array_unique($taxonomies);
-}
-
 function image_attachment_fields_to_edit($form_fields, $post) {
 	if ( substr($post->post_mime_type, 0, 5) == 'image' ) {
 		$form_fields['post_title']['required'] = true;
-		$form_fields['post_excerpt']['label'] = __('Description');
+		$form_fields['post_excerpt']['label'] = __('Caption');
 		$form_fields['post_excerpt']['helps'][] = __('Alternate text, e.g. "The Mona Lisa"');
 
-		$form_fields['post_content']['label'] = __('Long Description');
+		$form_fields['post_content']['label'] = __('Description');
 
 		$thumb = wp_get_attachment_thumb_url($post->ID);
 
@@ -468,7 +452,7 @@ function image_attachment_fields_to_edit($form_fields, $post) {
 			'label' => __('Alignment'),
 			'input' => 'html',
 			'html'  => "
-				<input type='radio' name='attachments[$post->ID][align]' id='image-align-none-$post->ID' value='none' />
+				<input type='radio' name='attachments[$post->ID][align]' id='image-align-none-$post->ID' value='none' checked='checked' />
 				<label for='image-align-none-$post->ID' class='align image-align-none-label'>" . __('None') . "</label>
 				<input type='radio' name='attachments[$post->ID][align]' id='image-align-left-$post->ID' value='left' />
 				<label for='image-align-left-$post->ID' class='align image-align-left-label'>" . __('Left') . "</label>
@@ -527,6 +511,8 @@ function image_media_send_to_editor($html, $attachment_id, $attachment) {
 		else
 			$size = 'medium';
 
+		$rel = ( $url == get_attachment_link($attachment_id) );
+
 		return get_image_send_to_editor($attachment_id, $attachment['post_excerpt'], $attachment['post_title'], $align, $url, $rel, $size);
 	}
 
@@ -551,11 +537,11 @@ function get_attachment_fields_to_edit($post, $errors = null) {
 			'value'      => $edit_post->post_title,
 		),
 		'post_excerpt' => array(
-			'label'      => __('Description'),
+			'label'      => __('Caption'),
 			'value'      => $edit_post->post_excerpt,
 		),
 		'post_content' => array(
-			'label'      => __('Long description'),
+			'label'      => __('Description'),
 			'value'      => $edit_post->post_content,
 			'input'      => 'textarea',
 		),
@@ -672,10 +658,12 @@ function get_media_item( $attachment_id, $args = null ) {
 		$toggle_links = '';
 	}
 
+	$display_title = ( !empty( $title ) ) ? $title : $filename; // $title shouldn't ever be empty, but just in case
+
 	$item = "
 	$type
 	$toggle_links
-	<div class='filename new'>$filename</div>
+	<div class='filename new'>$display_title</div>
 	<table class='slidetoggle describe $class'>
 		<tbody class='media-item-info'>
 		<tr>
@@ -778,15 +766,27 @@ function media_upload_form( $errors = null ) {
 
 	$flash_action_url = get_option('siteurl') . "/wp-admin/async-upload.php";
 
+	// If Mac and mod_security, no Flash. :(
+	$flash = true;
+	if ( false !== strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mac') && apache_mod_loaded('mod_security') )
+		$flash = false;
+
+	$flash = apply_filters('flash_uploader', $flash);
 	$post_id = intval($_REQUEST['post_id']);
 
 ?>
 <input type='hidden' name='post_id' value='<?php echo $post_id; ?>' />
+<div id="media-upload-notice">
+<?php if (isset($errors['upload_notice']) ) { ?>
+	<?php echo $errors['upload_notice']; ?>
+<?php } ?>
+</div>
 <div id="media-upload-error">
 <?php if (isset($errors['upload_error']) && is_wp_error($errors['upload_error'])) { ?>
 	<?php echo $errors['upload_error']->get_error_message(); ?>
 <?php } ?>
 </div>
+<?php if ( $flash ) : ?>
 <script type="text/javascript">
 <!--
 jQuery(function($){
@@ -804,7 +804,6 @@ jQuery(function($){
 			file_size_limit : "<?php echo wp_max_upload_size(); ?>b",
 			swfupload_element_id : "flash-upload-ui", // id of the element displayed when swfupload is available
 			degraded_element_id : "html-upload-ui",   // when swfupload is unavailable
-			swfupload_loaded_handler : uploadLoaded,
 			file_dialog_start_handler : fileDialogStart,
 			file_queued_handler : fileQueued,
 			upload_start_handler : uploadStart,
@@ -828,12 +827,17 @@ jQuery(function($){
 	<p><?php _e('After a file has been uploaded, you can add titles and descriptions.'); ?></p>
 </div>
 
+<?php endif; // $flash ?>
+
 <div id="html-upload-ui">
 	<p>
-	<input type="file" name="async-upload" id="async-upload" /> <input type="submit" class="button" value="<?php echo attribute_escape(__('Upload')); ?>" /> <a href="#" onClick="return top.tb_remove();"><?php _e('Cancel'); ?></a>
+	<input type="file" name="async-upload" id="async-upload" /> <input type="submit" class="button" name="html-upload" value="<?php echo attribute_escape(__('Upload')); ?>" /> <a href="#" onClick="return top.tb_remove();"><?php _e('Cancel'); ?></a>
 	</p>
 	<input type="hidden" name="post_id" id="post_id" value="<?php echo $post_id; ?>" />
 	<br class="clear" />
+	<?php if ( is_lighttpd_before_150() ): ?>
+	<p><?php _e('If you want to use all capabilities of the uploader, like uploading multiple files at once, please upgrade to lighttpd 1.5.'); ?></p>
+	<?php endif;?>
 </div>
 <?php
 }
@@ -848,7 +852,7 @@ function media_upload_type_form($type = 'file', $errors = null, $id = null) {
 	$callback = "type_form_$type";
 ?>
 
-<form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form type-form" id="<?php echo $type; ?>-form">
+<form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form type-form validate" id="<?php echo $type; ?>-form">
 <input type="hidden" name="post_id" id="post_id" value="<?php echo $post_id; ?>" />
 <?php wp_nonce_field('media-form'); ?>
 <h3><?php _e('From Computer'); ?></h3>
@@ -909,7 +913,7 @@ jQuery(function($){
 -->
 </script>
 
-<form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form" id="gallery-form">
+<form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form validate" id="gallery-form">
 <?php wp_nonce_field('media-form'); ?>
 <?php //media_upload_form( $errors ); ?>
 
@@ -983,7 +987,7 @@ foreach ( $post_mime_types as $mime_type => $label ) {
 	if ( wp_match_mime_types($mime_type, $_GET['post_mime_type']) )
 		$class = ' class="current"';
 
-	$type_links[] = "<li><a href='" . add_query_arg(array('post_mime_type'=>$mime_type, 'paged'=>false)) . "'$class>" . sprintf($label[2], "<span id='$mime_type-counter'>{$num_posts[$mime_type]}</span>") . '</a>';
+	$type_links[] = "<li><a href='" . add_query_arg(array('post_mime_type'=>$mime_type, 'paged'=>false)) . "'$class>" . sprintf(__ngettext($label[2][0], $label[2][1], $num_posts[$mime_type]), "<span id='$mime_type-counter'>" . number_format_i18n( $num_posts[$mime_type] ) . '</span>') . '</a>';
 }
 echo implode(' | </li>', $type_links) . '</li>';
 unset($type_links);
@@ -1044,7 +1048,7 @@ foreach ($arc_result as $arc_row) {
 </div>
 </form>
 
-<form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form" id="library-form">
+<form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form validate" id="library-form">
 
 <?php wp_nonce_field('media-form'); ?>
 <?php //media_upload_form( $errors ); ?>
@@ -1091,13 +1095,13 @@ function type_form_image() {
 		<tr class="align">
 			<th valign="top" scope="row" class="label"><label for="insertonly[align]">' . __('Alignment') . '</label></th>
 			<td class="field">
-				<input name="insertonly[align]" id="image-align-none-0" value="none" type="radio">
+				<input name="insertonly[align]" id="image-align-none-0" value="none" type="radio" checked="checked" />
 				<label for="image-align-none-0" class="align image-align-none-label">' . __('None') . '</label>
-				<input name="insertonly[align]" id="image-align-left-0" value="left" type="radio">
+				<input name="insertonly[align]" id="image-align-left-0" value="left" type="radio" />
 				<label for="image-align-left-0" class="align image-align-left-label">' . __('Left') . '</label>
-				<input name="insertonly[align]" id="image-align-center-0" value="center" type="radio">
+				<input name="insertonly[align]" id="image-align-center-0" value="center" type="radio" />
 				<label for="image-align-center-0" class="align image-align-center-label">' . __('Center') . '</label>
-				<input name="insertonly[align]" id="image-align-right-0" value="right" type="radio">
+				<input name="insertonly[align]" id="image-align-right-0" value="right" type="radio" />
 				<label for="image-align-right-0" class="align image-align-right-label">' . __('Right') . '</label>
 			</td>
 		</tr>
@@ -1211,31 +1215,5 @@ add_action('admin_head_media_upload_gallery_form', 'media_admin_css');
 
 add_filter('media_upload_library', 'media_upload_library');
 add_action('admin_head_media_upload_library_form', 'media_admin_css');
-
-
-// Any 'attachment' taxonomy will be included in the description input form for the multi uploader
-// Example:
-/*
-register_taxonomy(
-	'image_people',
-	'attachment:image',
-	array(
-		'label' => __('People'),
-		'template' => __('People: %l'),
-		'helps' => __('Left to right, top to bottom.'),
-		'sort' => true,
-		'args' => array(
-			'orderby' => 'term_order'
-		)
-	)
-);
-*/
-/*
-register_taxonomy('movie_director', 'attachment:video', array('label'=>__('Directors'), 'template'=>__('Directed by %l.')));
-register_taxonomy('movie_producer', 'attachment:video', array('label'=>__('Producers'), 'template'=>__('Produced by %l.')));
-register_taxonomy('movie_screenwriter', 'attachment:video', array('label'=>__('Screenwriter'), 'template'=>__('Screenplay by %l.')));
-register_taxonomy('movie_actor', 'attachment:video', array('label'=>__('Cast'), 'template'=>array(__('Cast: %l.')));
-register_taxonomy('movie_crew', 'attachment:video', array('label'=>__('Crew'), 'template'=>array(__('Crew: %l.')));
-*/
 
 ?>

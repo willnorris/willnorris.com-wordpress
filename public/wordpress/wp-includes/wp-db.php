@@ -18,6 +18,7 @@ class wpdb {
 
 	var $show_errors = false;
 	var $suppress_errors = false;
+	var $last_error = '';
 	var $num_queries = 0;
 	var $last_query;
 	var $col_info;
@@ -189,8 +190,17 @@ class wpdb {
 		$error_str = "WordPress database error $str for query $this->last_query";
 		if ( $caller = $this->get_caller() )
 			$error_str .= " made by $caller";
-		
-		@error_log($error_str, 0);
+
+		$log_error = true;
+		if ( ! function_exists('error_log') )
+			$log_error = false;
+
+		$log_file = @ini_get('error_log');
+		if ( !empty($log_file) && ('syslog' != $log_file) && !is_writable($log_file) )
+			$log_error = false;
+
+		if ( $log_error )
+			@error_log($error_str, 0);
 
 		// Is error output turned on or not..
 		if ( !$this->show_errors )
@@ -269,7 +279,7 @@ class wpdb {
 			$this->queries[] = array( $query, $this->timer_stop(), $this->get_caller() );
 
 		// If there is an error then take note of it..
-		if ( mysql_error($this->dbh) ) {
+		if ( $this->last_error = mysql_error($this->dbh) ) {
 			$this->print_error();
 			return false;
 		}

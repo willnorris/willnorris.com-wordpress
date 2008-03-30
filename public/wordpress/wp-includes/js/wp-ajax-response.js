@@ -46,8 +46,8 @@ wpAjax = jQuery.extend( {
 		}
 		if ( isNaN(x) ) { return !re.html('<div class="error"><p>' + x + '</p></div>'); }
 		x = parseInt(x,10);
-		if ( -1 == x ) { return !re.html('<div class="error"><p>' + this.noPerm + '</p></div>'); }
-		else if ( 0 === x ) { return !re.html('<div class="error"><p>' + this.broken  + '</p></div>'); }
+		if ( -1 == x ) { return !re.html('<div class="error"><p>' + wpAjax.noPerm + '</p></div>'); }
+		else if ( 0 === x ) { return !re.html('<div class="error"><p>' + wpAjax.broken  + '</p></div>'); }
 		return true;
 	},
 	invalidateForm: function ( selector ) {
@@ -57,4 +57,4 @@ wpAjax = jQuery.extend( {
 		selector = jQuery( selector );
 		return !wpAjax.invalidateForm( selector.find('.form-required').andSelf().filter('.form-required:has(:input[value=""]), .form-required:input[value=""]') ).size();
 	}
-}, wpAjax || { noPerm: 'You do not have permission to do that.', broken: 'AJAX is teh b0rked.' } );
+}, wpAjax || { noPerm: 'You do not have permission to do that.', broken: 'An unidentified error has occurred.' } );

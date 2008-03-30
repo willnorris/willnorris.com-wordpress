@@ -151,7 +151,7 @@ function akismet_verify_key( $key ) {
 if ( !get_option('wordpress_api_key') && !$wpcom_api_key && !isset($_POST['submit']) ) {
 	function akismet_warning() {
 		echo "
-		<div id='akismet-warning' class='updated fade-ff0000'><p><strong>".__('Akismet is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your WordPress.com API key</a> for it to work.'), "plugins.php?page=akismet-key-config")."</p></div>
+		<div id='akismet-warning' class='updated fade'><p><strong>".__('Akismet is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">enter your WordPress.com API key</a> for it to work.'), "plugins.php?page=akismet-key-config")."</p></div>
 		";
 	}
 	add_action('admin_notices', 'akismet_warning');
@@ -703,7 +703,9 @@ if ( 'moderation.php' == $pagenow ) {
 function akismet_check_for_spam_button($comment_status) {
 	if ( 'moderated' != $comment_status )
 		return;
-	echo "<a href='edit-comments.php?page=akismet-admin&amp;recheckqueue=true&amp;noheader=true'>" . __('Check for Spam') . "</a>";
+	$count = wp_count_comments();
+	if ( !empty($count->moderated ) )
+		echo "<a href='edit-comments.php?page=akismet-admin&amp;recheckqueue=true&amp;noheader=true'>" . __('Check for Spam') . "</a>";
 }
 add_action('manage_comments_nav', 'akismet_check_for_spam_button');
 

@@ -31,7 +31,7 @@ function get_plugin_data( $plugin_file ) {
 	return array('Name' => $name, 'Title' => $plugin, 'Description' => $description, 'Author' => $author, 'Version' => $version);
 }
 
-function get_plugins() {
+function get_plugins($plugin_folder = '') {
 	global $wp_plugins;
 
 	if ( isset( $wp_plugins ) ) {
@@ -40,6 +40,8 @@ function get_plugins() {
 
 	$wp_plugins = array ();
 	$plugin_root = ABSPATH . PLUGINDIR;
+	if( !empty($plugin_folder) )
+		$plugin_root .= $plugin_folder;
 
 	// Files in wp-content/plugins directory
 	$plugins_dir = @ opendir( $plugin_root);
@@ -86,6 +88,10 @@ function get_plugins() {
 	return $wp_plugins;
 }
 
+function is_plugin_active($plugin){
+	return in_array($plugin, get_option('active_plugins'));
+}
+
 function activate_plugin($plugin, $redirect = '') {
 		$current = get_option('active_plugins');
 		$plugin = trim($plugin);
@@ -109,15 +115,18 @@ function activate_plugin($plugin, $redirect = '') {
 		return null;
 }
 
-function deactivate_plugins($plugins) {
+function deactivate_plugins($plugins, $silent= false) {
 	$current = get_option('active_plugins');
 
 	if ( !is_array($plugins) )
 		$plugins = array($plugins);
 
 	foreach ( $plugins as $plugin ) {
-		array_splice($current, array_search( $plugin, $current), 1 ); // Array-fu!
-		do_action('deactivate_' . trim( $plugin ));
+		if( ! is_plugin_active($plugin) )
+			continue;
+		array_splice($current, array_search( $plugin, $current), 1 ); // Fixed Array-fu!
+		if ( ! $silent ) //Used by Plugin updater to internally deactivate plugin, however, not to notify plugins of the fact to prevent plugin output.
+			do_action('deactivate_' . trim( $plugin ));
 	}
 
 	update_option('active_plugins', $current);

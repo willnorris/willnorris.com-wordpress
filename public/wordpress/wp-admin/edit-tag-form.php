@@ -2,14 +2,14 @@
 if ( ! empty($tag_ID) ) {
 	$heading = __('Edit Tag');
 	$submit_text = __('Edit Tag');
-	$form = '<form name="edittag" id="edittag" method="post" action="edit-tags.php">';
+	$form = '<form name="edittag" id="edittag" method="post" action="edit-tags.php" class="validate">';
 	$action = 'editedtag';
 	$nonce_action = 'update-tag_' . $tag_ID;
 	do_action('edit_tag_form_pre', $tag);
 } else {
 	$heading = __('Add Tag');
 	$submit_text = __('Add Tag');
-	$form = '<form name="addtag" id="addtag" method="post" action="edit-tags.php" class="add:the-list:">';
+	$form = '<form name="addtag" id="addtag" method="post" action="edit-tags.php" class="add:the-list: validate">';
 	$action = 'addtag';
 	$nonce_action = 'add-tag';
 	do_action('add_tag_form_pre', $tag);
@@ -22,7 +22,7 @@ if ( ! empty($tag_ID) ) {
 <?php echo $form ?>
 <input type="hidden" name="action" value="<?php echo $action ?>" />
 <input type="hidden" name="tag_ID" value="<?php echo $tag->term_id ?>" />
-<?php wp_nonce_field($nonce_action); ?>
+<?php wp_original_referer_field(true, 'previous'); wp_nonce_field($nonce_action); ?>
 	<table class="form-table">
 		<tr class="form-field form-required">
 			<th scope="row" valign="top"><label for="name"><?php _e('Tag name') ?></label></th>

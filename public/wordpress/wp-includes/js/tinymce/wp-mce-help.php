@@ -10,31 +10,51 @@ header('Content-Type: text/html; charset=' . get_bloginfo('charset'));
 <?php 
 wp_admin_css( 'css/global' );
 wp_admin_css();
-wp_admin_css( 'css/colors' );
 ?>
 <style type="text/css">
-	body {
-    }
-    #wphead {
-		padding-top: 2px;
-		padding-left: 15px;
+	#wphead {
 		font-size: 80%;
 		border-top: 0;
+		color:#555;
+		background-color: #e4f2fd;
+	}
+	#wphead h1 {
+		font-size: 32px;
+		color: #555;
+		margin: 0;
+		padding: 10px;
 	}
 	#adminmenu {
 		padding-top: 2px;
 		padding-left: 15px;
-		font-size: 80%;
+		background-color: #e4f2fd;
+		border-color: #C6D9E9;
+	}
+	#adminmenu a.current {
+		background-color: #fff;
+		border-color: #c6d9e9;
+		border-bottom-color: #fff;
+		color: #d54e21;
+	}
+	#adminmenu a {
+		color: #2583AD;
+		padding: 6px;
+		border-width: 1px;
+		border-style: solid solid none;
+		border-color: #E4F2FD;
+	}
+	#adminmenu a:hover {
+		color: #d54e21;
+	}
+	.wrap h2 {
+		border-bottom-color:#DADADA;
+		color:#666666;
+		margin: 12px 0;
+		padding: 0;
 	}
 	#user_info {
 		right: 5%;
 		top: 5px;
-	}
-	h2 {
-		font-size: 2em;
-		border-bottom-width: .5em;
-		margin-top: 12px;
-		margin-bottom: 2px;
 	}
 	h3 {
 		font-size: 1.1em;
@@ -132,10 +152,6 @@ wp_admin_css( 'css/colors' );
         document.getElementById('date').innerHTML = tinymce.releaseDate;
     }
     tinyMCEPopup.onInit.add(init);
-
-    // For modal dialogs in IE
-    if (tinymce.isIE)
-	   document.write('<base target="_self" />');
 </script>
 </head>
 <body>
@@ -143,10 +159,10 @@ wp_admin_css( 'css/colors' );
 <div id="wphead"><h1><?php echo get_bloginfo('blogtitle'); ?></h1></div>
 
 <ul id="adminmenu">
-	<li><a id="tab1" href="javascript:flipTab(1)" title="<?php _e('Basics of Rich Editing') ?>" accesskey="1" class="current"><?php _e('Basics') ?></a></li>
-	<li><a id="tab2" href="javascript:flipTab(2)" title="<?php _e('Advanced use of the Rich Editor') ?>" accesskey="2"><?php _e('Advanced') ?></a></li>
-	<li><a id="tab3" href="javascript:flipTab(3)" title="<?php _e('Hotkeys') ?>" accesskey="3"><?php _e('Hotkeys') ?></a></li>
-	<li><a id="tab4" href="javascript:flipTab(4)" title="<?php _e('About the software') ?>" accesskey="4"><?php _e('About') ?></a></li>
+	<li><a id="tab1" href="javascript:flipTab(1)" title="<?php _e('Basics of Rich Editing') ?>" accesskey="1" tabindex="1" class="current"><?php _e('Basics') ?></a></li>
+	<li><a id="tab2" href="javascript:flipTab(2)" title="<?php _e('Advanced use of the Rich Editor') ?>" accesskey="2" tabindex="2"><?php _e('Advanced') ?></a></li>
+	<li><a id="tab3" href="javascript:flipTab(3)" title="<?php _e('Hotkeys') ?>" accesskey="3" tabindex="3"><?php _e('Hotkeys') ?></a></li>
+	<li><a id="tab4" href="javascript:flipTab(4)" title="<?php _e('About the software') ?>" accesskey="4" tabindex="4"><?php _e('About') ?></a></li>
 </ul>
 
 <div id="flipper" class="wrap">
@@ -154,7 +170,7 @@ wp_admin_css( 'css/colors' );
 <div id="content1">
 	<h2><?php _e('Rich Editing Basics') ?></h2>
 	<p><?php _e('<em>Rich editing</em>, also called WYSIWYG for What You See Is What You Get, means your text is formatted as you type. The rich editor creates HTML code behind the scenes while you concentrate on writing. Font styles, links and images all appear approximately as they will on the internet.') ?></p>
-	<p><?php _e('WordPress includes a rich HTML editor that works well in all major web browsers used today. However editing HTML is not the same as typing text. Each web page has two major components: the structure, which is the actual HTML code and is produced by the editor as you type, and the display, that is applied to it by the currently selected WordPress theme and is defined in style.css. Furthermore WordPress is producing valid XHTML 1.0 which means that display cannot be controlled by structural elements. So inserting multiple line breaks (BR tags) after a paragraph would not produce white space on the web page. The BR tags will be stripped as invalid by the internal HTML correcting functions.') ?></p>
+	<p><?php _e('WordPress includes a rich HTML editor that works well in all major web browsers used today. However editing HTML is not the same as typing text. Each web page has two major components: the structure, which is the actual HTML code and is produced by the editor as you type, and the display, that is applied to it by the currently selected WordPress theme and is defined in style.css. WordPress is producing valid XHTML 1.0 which means that inserting multiple line breaks (BR tags) after a paragraph would not produce white space on the web page. The BR tags will be removed as invalid by the internal HTML correcting functions.') ?></p>
 	<p><?php _e('While using the editor, most basic keyboard shortcuts work like in any other text editor. For example: Shift+Enter inserts line break, Ctrl+C = copy, Ctrl+X = cut, Ctrl+Z = undo, Ctrl+Y = redo, Ctrl+A = select all, etc. (on Mac use the Command key instead of Ctrl). See the Hotkeys tab for all available keyboard shortcuts.') ?></p>
     <p><?php _e('If you do not like the way the rich editor works, you may turn it off from Your Profile submenu, under Users in the admin menu.') ?></p>
 </div>
@@ -163,9 +179,12 @@ wp_admin_css( 'css/colors' );
 	<h2><?php _e('Advanced Rich Editing') ?></h2>
 	<h3><?php _e('Images and Attachments') ?></h3>
 	<p><?php _e('There is a button in the editor toolbar for inserting images that are already hosted somewhere on the internet. If you have a URL for an image, click this button and enter the URL in the box which appears.') ?></p>
-	<p><?php _e('If you need to upload an image or sound file from your computer, you can use the uploading tool below the editor. The tool will attempt to create a thumbnail-sized image when you upload an image. To insert your uploaded image into the post, first click on the thumbnail to reveal a menu of options. Clicking on a "Using.." or "Linked..." option will change that option. For instance, you might want to use the thumbnail in the post and link it to a page showing the original with a caption. When you have selected the options you like, click "Send to Editor" and your image or file will appear in the post you are editing.') ?></p>
+	<p><?php _e('If you need to upload an image or another media file from your computer, you can use the Media Library buttons above the editor. The media library will attempt to create a thumbnail-sized copy from each uploaded image. To insert your image into the post, first click on the thumbnail to reveal a menu of options. When you have selected the options you like, click "Send to Editor" and your image or file will appear in the post you are editing. If you are inserting a movie, there are additional options in the "Media" dialog that can be opened from the second toolbar row.') ?></p>
 	<h3><?php _e('HTML in the Rich Editor') ?></h3>
-	<p><?php _e('Any HTML entered directly into the rich editor will show up as text when the post is viewed. What you see is what you get. When you want to include HTML elements that cannot be generated with the toolbar buttons, you must enter it by hand in the HTML editor. Examples are tables and &lt;code&gt;. To do this, click the HTML button and edit the code, then click Update. If the code is valid and understood by the editor, you should see it rendered immediately.') ?></p>
+	<p><?php _e('Any HTML entered directly into the rich editor will show up as text when the post is viewed. What you see is what you get. When you want to include HTML elements that cannot be generated with the toolbar buttons, you must enter it by hand in the HTML editor. Examples are tables and &lt;code&gt;. To do this, click the HTML tab and edit the code, then switch back to Visual mode. If the code is valid and understood by the editor, you should see it rendered immediately.') ?></p>
+	<h3><?php _e('Pasting in the Rich Editor') ?></h3>
+	<p><?php _e('When pasting content from another web page the results can be inconsistent and depend on your browser and on the web page you are pasting from. The editor tries to correct any invalid HTML code that was pasted, but for best results try using the HTML tab or one of the paste buttons that are on the second row. Alternatively try pasting paragraph by paragraph. In most browsers to select one paragraph at a time, triple-click on it.') ?></p>
+	<p><?php _e('Pasting content from another application, like Word or Excel, is best done with the Paste from Word button on the second row, or in HTML mode.') ?></p>
 </div>
 
 <div id="content3" class="hidden">

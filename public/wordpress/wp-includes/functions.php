@@ -216,11 +216,11 @@ function get_option( $setting ) {
 
 		if ( false === $value ) {
 			if ( defined( 'WP_INSTALLING' ) )
-				$show = $wpdb->hide_errors();
+				$supress = $wpdb->suppress_errors();
 			// expected_slashed ($setting)
 			$row = $wpdb->get_row( "SELECT option_value FROM $wpdb->options WHERE option_name = '$setting' LIMIT 1" );
 			if ( defined( 'WP_INSTALLING' ) )
-				$wpdb->show_errors($show);
+				$wpdb->suppress_errors($suppress);
 
 			if ( is_object( $row) ) { // Has to be get_row instead of get_var because of funkiness with 0, false, null values
 				$value = $row->option_value;
@@ -279,10 +279,10 @@ function wp_load_alloptions() {
 	$alloptions = wp_cache_get( 'alloptions', 'options' );
 
 	if ( !$alloptions ) {
-		$show = $wpdb->hide_errors();
+		$suppress = $wpdb->suppress_errors();
 		if ( !$alloptions_db = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options WHERE autoload = 'yes'" ) )
 			$alloptions_db = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options" );
-		$wpdb->show_errors($show);
+		$wpdb->suppress_errors($suppress);
 		$alloptions = array();
 		foreach ( (array) $alloptions_db as $o )
 			$alloptions[$o->option_name] = $o->option_value;
@@ -344,6 +344,7 @@ function add_option( $name, $value = '', $deprecated = '', $autoload = 'yes' ) {
 
 	wp_protect_special_option( $name );
 	$safe_name = $wpdb->escape( $name );
+	$value = sanitize_option( $name, $value );
 
 	// Make sure the option doesn't already exist. We can check the 'notoptions' cache before we ask for a db query
 	$notoptions = wp_cache_get( 'notoptions', 'options' );
@@ -371,6 +372,7 @@ function add_option( $name, $value = '', $deprecated = '', $autoload = 'yes' ) {
 
 	$wpdb->query( $wpdb->prepare( "INSERT INTO $wpdb->options (option_name, option_value, autoload) VALUES (%s, %s, %s)", $name, $value, $autoload ) );
 
+	do_action( "add_option_{$name}", $name, $value ); 
 	return;
 }
 
@@ -981,42 +983,39 @@ function wp_nonce_field( $action = -1, $name = "_wpnonce", $referer = true , $ec
 		echo $nonce_field;
 	
 	if ( $referer )
-		wp_referer_field( $echo );
+		wp_referer_field( $echo, 'previous' );
 	
 	return $nonce_field;
 }
 
 
-function wp_referer_field( $echo = true ) {
+function wp_referer_field( $echo = true) {
 	$ref = attribute_escape( $_SERVER['REQUEST_URI'] );
 	$referer_field = '<input type="hidden" name="_wp_http_referer" value="'. $ref . '" />';
-	
-	if ( wp_get_original_referer() ) {
-		$original_ref = attribute_escape( stripslashes( wp_get_original_referer() ) );
-		$referer_field .= "\n".'<input type="hidden" name="_wp_original_http_referer" value="'. $original_ref . '" />';
-	}
 
 	if ( $echo )
 		echo $referer_field;
-	
 	return $referer_field;
 }
 
-
-function wp_original_referer_field( $echo = true ) {
-	$orig_referer_field = '<input type="hidden" name="_wp_original_http_referer" value="' . attribute_escape( stripslashes( $_SERVER['REQUEST_URI'] ) ) . '" />';
+function wp_original_referer_field( $echo = true, $jump_back_to = 'current' ) {
+	$jump_back_to = ( 'previous' == $jump_back_to ) ? wp_get_referer() : $_SERVER['REQUEST_URI'];
+	$ref = ( wp_get_original_referer() ) ? wp_get_original_referer() : $jump_back_to;
+	$orig_referer_field = '<input type="hidden" name="_wp_original_http_referer" value="' . attribute_escape( stripslashes( $ref ) ) . '" />';
 	if ( $echo )
 		echo $orig_referer_field;
-	
 	return $orig_referer_field;
 }
 
 
 function wp_get_referer() {
 	if ( ! empty( $_REQUEST['_wp_http_referer'] ) )
-		return $_REQUEST['_wp_http_referer'];
+		$ref = $_REQUEST['_wp_http_referer'];
 	else if ( ! empty( $_SERVER['HTTP_REFERER'] ) )
-		return $_SERVER['HTTP_REFERER'];
+		$ref = $_SERVER['HTTP_REFERER'];
+
+	if ( $ref !== $_SERVER['REQUEST_URI'] )
+		return $ref;
 	return false;
 }
 
@@ -1030,6 +1029,7 @@ function wp_get_original_referer() {
 
 function wp_mkdir_p( $target ) {
 	// from php.net/mkdir user contributed notes
+	$target = str_replace( '//', '/', $target );
 	if ( file_exists( $target ) )
 		return @is_dir( $target );
 
@@ -1120,32 +1120,36 @@ function wp_upload_dir( $time = NULL ) {
 
 // return a filename that is sanitized and unique for the given directory
 function wp_unique_filename( $dir, $filename, $unique_filename_callback = NULL ) {
-
+	$filename = strtolower( $filename );
 	// separate the filename into a name and extension
 	$info = pathinfo($filename);
 	$ext = $info['extension'];
 	$name = basename($filename, ".{$ext}");
+	
+	// edge case: if file is named '.ext', treat as an empty name
+	if( $name === ".$ext" )
+		$name = '';
 
 	// Increment the file number until we have a unique file to save in $dir. Use $override['unique_filename_callback'] if supplied.
 	if ( $unique_filename_callback && function_exists( $unique_filename_callback ) ) {
 		$filename = $unique_filename_callback( $dir, $name );
 	} else {
 		$number = '';
-		$filename = str_replace( '#', '_', $name );
-		$filename = str_replace( array( '\\', "'" ), '', $filename );
-		if ( empty( $ext) )
+
+		if ( empty( $ext ) )
 			$ext = '';
 		else
 			$ext = strtolower( ".$ext" );
-		$filename = $filename . $ext;
+
+		$filename = str_replace( $ext, '', $filename );
+		$filename = sanitize_title_with_dashes( $filename ) . $ext;
+
 		while ( file_exists( $dir . "/$filename" ) ) {
 			if ( '' == "$number$ext" )
 				$filename = $filename . ++$number . $ext;
 			else
 				$filename = str_replace( "$number$ext", ++$number . $ext, $filename );
 		}
-		$filename = str_replace( $ext, '', $filename );
-		$filename = sanitize_title_with_dashes( $filename ) . $ext;
 	}
 
 	return $filename;
@@ -1337,14 +1341,11 @@ function wp_explain_nonce( $action ) {
 
 
 function wp_nonce_ays( $action ) {
-	global $pagenow;
 	$title = __( 'WordPress Failure Notice' );
-	$html .= "\t<div id='message' class='updated fade'>\n\t<p>" . wp_specialchars( wp_explain_nonce( $action ) ) . "</p>\n\t<p>";
+	$html = wp_specialchars( wp_explain_nonce( $action ) ) . '</p>';
 	if ( wp_get_referer() )
-		$html .= "<a href='" . remove_query_arg( 'updated', clean_url( wp_get_referer() ) ) . "'>" . __( 'Please try again.' ) . "</a>";
-	$html .= "</p>\n\t</div>\n";
-	$html .= "</body>\n</html>";
-	wp_die( $html, $title );
+		$html .= "<p><a href='" . remove_query_arg( 'updated', clean_url( wp_get_referer() ) ) . "'>" . __( 'Please try again.' ) . "</a>";
+	wp_die( $html, $title);
 }
 
 
@@ -1708,4 +1709,43 @@ function _deprecated_file($file, $version, $replacement=null) {
 			trigger_error( printf( __("%1$s is <strong>deprecated</strong> since version %2$s with no alternative available."), $file, $version ) );
 	}
 }
+
+/**
+ * is_lighttpd_before_150() - Is the server running earlier than 1.5.0 version of lighttpd
+ *
+ * @return bool Whether the server is running lighttpd < 1.5.0
+ */
+function is_lighttpd_before_150() {
+	$server_parts = explode( '/', isset( $_SERVER['SERVER_SOFTWARE'] )? $_SERVER['SERVER_SOFTWARE'] : '' );
+	$server_parts[1] = isset( $server_parts[1] )? $server_parts[1] : '';
+	return  'lighttpd' == $server_parts[0] && -1 == version_compare( $server_parts[1], '1.5.0' );
+}
+
+/**
+ * apache_mod_loaded() - Does the specified module exist in the apache config?
+ *
+ * @param string $mod e.g. mod_rewrite
+ * @param bool $default The default return value if the module is not found
+ * @return bool
+ */
+function apache_mod_loaded($mod, $default = false) {
+	global $is_apache;
+
+	if ( !$is_apache )
+		return false;
+
+	if ( function_exists('apache_get_modules') ) {
+		$mods = apache_get_modules();
+		if ( in_array($mod, $mods) )
+			return true;
+	} elseif ( function_exists('phpinfo') ) {
+			ob_start();
+			phpinfo(8);
+			$phpinfo = ob_get_clean();
+			if ( false !== strpos($phpinfo, $mod) )
+				return true;
+	}
+	return $default;
+}
+
 ?>

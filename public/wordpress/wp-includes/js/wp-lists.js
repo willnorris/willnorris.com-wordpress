@@ -36,7 +36,8 @@ var wpList = {
 		var bg; var r;
 		s = $.extend( {}, this.wpList.settings, {
 			element: null,
-			nonce: 0
+			nonce: 0,
+			target: e.get(0)
 		}, s || {} );
 		if ( $.isFunction( s.confirm ) ) {
 			if ( 'add' != a ) {
@@ -153,7 +154,7 @@ var wpList = {
 		s.success = function(r) {
 			var res = wpAjax.parseAjaxResponse(r, s.response, s.element);
 			if ( !res || res.errors ) {
-				element.stop().css( 'backgroundColor', '#FF3333' ).show().queue( function() { list.wpList.recolor(); $(this).dequeue(); } );
+				element.stop().stop().css( 'backgroundColor', '#FF3333' ).show().queue( function() { list.wpList.recolor(); $(this).dequeue(); } );
 				return false;
 			}
 			if ( $.isFunction(s.delAfter) ) {
@@ -216,7 +217,7 @@ var wpList = {
 		s.success = function(r) {
 			var res = wpAjax.parseAjaxResponse(r, s.response, s.element);
 			if ( !res || res.errors ) {
-				element.stop().css( 'backgroundColor', '#FF3333' )[isClass?'removeClass':'addClass'](s.dimClass).show().queue( function() { list.wpList.recolor(); $(this).dequeue(); } );
+				element.stop().stop().css( 'backgroundColor', '#FF3333' )[isClass?'removeClass':'addClass'](s.dimClass).show().queue( function() { list.wpList.recolor(); $(this).dequeue(); } );
 				return false;
 			}
 			if ( $.isFunction(s.dimAfter) ) {

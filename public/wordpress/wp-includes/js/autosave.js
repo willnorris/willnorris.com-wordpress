@@ -8,12 +8,6 @@ jQuery(function($) {
 
 	//Disable autosave after the form has been submitted
 	$("#post").submit(function() { $.cancel(autosavePeriodical); });
-
-	// Autosave early on for a new post.  Why?  Should this only be run once?
-	$("#content").keypress(function() {
-		if ( 1 === ( $(this).val().length % 15 ) && 1 > parseInt($("#post_ID").val(),10) )
-			setTimeout(autosave, 5000);
-	});
 });
 
 // called when autosaving pre-existing post
@@ -52,27 +46,35 @@ function autosave_saved(response) {
 }
 
 // called when autosaving new post
-function autosave_update_post_ID(response) {
+function autosave_saved_new(response) {
 	var res = autosave_saved(response); // parse the ajax response do the above
-
 	// if no errors: update post_ID from the temporary value, grab new save-nonce for that new ID
 	if ( res && res.responses.length && !res.errors ) {
+		var tempID = jQuery('#post_ID').val();
 		var postID = parseInt( res.responses[0].id );
-		if ( !isNaN(postID) && postID > 0 ) {
-			if ( postID == parseInt(jQuery('#post_ID').val()) ) { return; } // no need to do this more than once
-			jQuery('#post_ID').attr({name: "post_ID"});
-			jQuery('#post_ID').val(postID);
-			// We need new nonces
-			jQuery.post(autosaveL10n.requestFile, {
-				action: "autosave-generate-nonces",
-				post_ID: postID,
-				autosavenonce: jQuery('#autosavenonce').val(),
-				post_type: jQuery('#post_type').val()
-			}, function(html) {
-				jQuery('#_wpnonce').val(html);
+		autosave_update_post_ID( postID );
+		if ( tempID < 0 && postID > 0) // update media buttons
+			jQuery('#media-buttons a').each(function(){
+				this.href = this.href.replace(tempID, postID);
 			});
-			jQuery('#hiddenaction').val('editpost');
-		}
+	}
+}
+
+function autosave_update_post_ID( postID ) {
+	if ( !isNaN(postID) && postID > 0 ) {
+		if ( postID == parseInt(jQuery('#post_ID').val()) ) { return; } // no need to do this more than once
+		jQuery('#post_ID').attr({name: "post_ID"});
+		jQuery('#post_ID').val(postID);
+		// We need new nonces
+		jQuery.post(autosaveL10n.requestFile, {
+			action: "autosave-generate-nonces",
+			post_ID: postID,
+			autosavenonce: jQuery('#autosavenonce').val(),
+			post_type: jQuery('#post_type').val()
+		}, function(html) {
+			jQuery('#_wpnonce').val(html);
+		});
+		jQuery('#hiddenaction').val('editpost');
 	}
 }
 
@@ -86,7 +88,7 @@ function autosave_update_preview_link(post_id) {
 			post_id: post_id,
 			getpermalinknonce: jQuery('#getpermalinknonce').val()
 		}, function(permalink) {
-			jQuery('#previewview').html('<a target="_blank" href="'+permalink+'">'+previewText+'</a>');
+			jQuery('#previewview').html('<a target="_blank" href="'+permalink+'" tabindex="4">'+previewText+'</a>');
 		});
 	}
 }
@@ -140,6 +142,10 @@ var autosave = function() {
 	// This (bool) tells whether or not to write the post to the DB during the ajax request.
 	var doAutoSave = true;
 
+	// No autosave while thickbox is open (media buttons)
+	if ( jQuery("#TB_window").css('display') == 'block' )
+		doAutoSave = false;
+
 	/* Gotta do this up here so we can check the length when tinyMCE is in use */
 	if ( rich ) { tinyMCE.triggerSave(); }
 
@@ -148,7 +154,7 @@ var autosave = function() {
 		post_data["post_name"] = jQuery('#post_name').val();
 
 	// Nothing to save or no change.
-	if(post_data["post_title"].length==0 || post_data["content"].length==0 || post_data["post_title"] + post_data["content"] == autosaveLast) {
+	if( (post_data["post_title"].length==0 && post_data["content"].length==0) || post_data["post_title"] + post_data["content"] == autosaveLast) {
 		doAutoSave = false
 	}
 
@@ -179,7 +185,7 @@ var autosave = function() {
 
 	if(parseInt(post_data["post_ID"]) < 1) {
 		post_data["temp_ID"] = post_data["post_ID"];
-		var successCallback = autosave_update_post_ID; // new post
+		var successCallback = autosave_saved_new;; // new post
 	} else {
 		var successCallback = autosave_saved; // pre-existing post
 	}

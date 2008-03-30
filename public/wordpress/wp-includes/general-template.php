@@ -940,7 +940,7 @@ function the_editor($content, $id = 'content', $prev_id = 'title', $media_button
 	}
 
 	if ( $media_buttons ) { ?>
-		<div id="media-buttons">
+		<div id="media-buttons" class="hide-if-no-js">
 		<?php do_action( 'media_buttons' ); ?>
 		</div>
 	<?php } ?>
@@ -977,6 +977,7 @@ function the_editor($content, $id = 'content', $prev_id = 'title', $media_button
             e = e || window.event;
             if (e.keyCode == 9 && !e.shiftKey && !e.controlKey && !e.altKey) {
                 if ( tinyMCE.activeEditor ) {
+                    if ( (jQuery("#post_ID").val() < 1) && (jQuery("#title").val().length > 0) ) { autosave(); }
                     e = null;
                     if ( tinyMCE.activeEditor.isHidden() ) return true;
                     tinyMCE.activeEditor.focus();
@@ -1120,6 +1121,7 @@ function wp_admin_css_uri( $file = 'wp-admin' ) {
 				$color = 'fresh';
 			$color = $_wp_admin_css_colors[$color];
 			$_file = $color->url;
+			$_file = ('css/colors-rtl' == $file) ? str_replace('.css','-rtl.css',$_file) : $_file;
 		} else {
 			$_file = get_option( 'siteurl' ) . "/wp-admin/$file.css";
 		}
@@ -1161,10 +1163,10 @@ function the_generator ( $type ) {
 function get_the_generator ( $type ) {
 	switch ($type) {
 		case 'html':
-			$gen = '<meta name="generator" content="WordPress/' . get_bloginfo( 'version' ) . '">' . "\n";
+			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '">' . "\n";
 			break;
 		case 'xhtml':
-			$gen = '<meta name="generator" content="WordPress/' . get_bloginfo( 'version' ) . '" />' . "\n";
+			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '" />' . "\n";
 			break;
 		case 'atom':
 			$gen = '<generator uri="http://wordpress.org/" version="' . get_bloginfo_rss( 'version' ) . '">WordPress</generator>';
@@ -1179,7 +1181,7 @@ function get_the_generator ( $type ) {
 			$gen = '<!-- generator="WordPress/' . get_bloginfo( 'version' ) . '" -->';
 			break;
 		case 'export':
-			$gen = '<!-- generator="wordpress/' . get_bloginfo_rss('version') . '" created="'. date('Y-m-d H:i') . '"-->';
+			$gen = '<!-- generator="WordPress/' . get_bloginfo_rss('version') . '" created="'. date('Y-m-d H:i') . '"-->';
 			break;
 	}
 	return apply_filters( "get_the_generator_{$type}", $gen, $type );

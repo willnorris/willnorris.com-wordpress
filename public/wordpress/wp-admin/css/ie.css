@@ -31,7 +31,7 @@
 	position: relative;
 }
 
-#wpwrap, #wpcontent, #post, #wrap, #postdivrich, #postdiv, #poststuff, #titlediv, #post-body, #editorcontainer, .tablenav, .widget-control-list {
+#wpwrap, #wpcontent, #post, #wrap, #postdivrich, #postdiv, #poststuff, #titlediv, #post-body, #editorcontainer, .tablenav, .widget-control-list, li.widget-list-control-item, #dragHelper, li.widget-list-control-item h4, .widget-sortable, .widget-control-actions {
 	display: block;
 	zoom: 100%;
 }
@@ -54,5 +54,88 @@ form#template div {
 
 #ed_toolbar input {
 	overflow: visible;
-	padding: 1px 5px;
+	padding: 0 4px;
+}
+
+#poststuff h2 {
+	font-size: 1.6em;
+}
+
+* html #poststuff h2 {
+	margin-left: 0;
+}
+
+#bh {
+	padding-right: 15px;
+}
+
+/* without this dashboard widgets appear in one column for some screen widths */
+div#dashboard-widgets {
+	padding-right: 1px;
+}
+
+#tagchecklist {
+	display: block;
+	zoom: 100%;
+}
+
+#tagchecklist span, #tagchecklist span a {
+	display: inline-block;
+	display: block;
+}
+
+#tagchecklist span a {
+	margin: 4px 0 0 -9px;
+}
+
+#poststuff .togbox {
+	margin-left: -19px;
+}
+
+.tablenav .button-secondary, .nav .button-secondary {
+	padding: 0 1px;
+	vertical-align: middle;
+}
+
+.tablenav select {
+	font-size: 13px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 2px;
+}
+
+.tablenav-pages .page-numbers {
+	display: inline-block;
+}
+
+.tablenav-pages {
+	display: block;
+	margin-top: -3px;
+
+}
+
+#post-search .button, #widget-search .button {
+	padding: 1px;
+}
+
+.widefat tr, .widefat th {
+	margin-bottom: 0;
+	border-spacing: 0;
+}
+
+.widefat th input {
+	margin: 0 0 0 5px;
+}
+
+.widefat .check-column {
+	padding: 6px 0 2px;
+}
+
+.widefat tbody th.check-column {
+	padding: 4px 0 22px;
+}
+
+.tablenav a.button-secondary {
+	display: inline-block;
+	padding: 2px 5px;
 }

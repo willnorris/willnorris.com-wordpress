@@ -631,21 +631,32 @@ function antispambot($emailaddy, $mailto=0) {
 }
 
 function _make_url_clickable_cb($matches) {
+	$ret = '';
 	$url = $matches[2];
 	$url = clean_url($url);
 	if ( empty($url) )
 		return $matches[0];
-	return $matches[1] . "<a href=\"$url\" rel=\"nofollow\">$url</a>";
+	// removed trailing [.,;:] from URL
+	if ( in_array(substr($url, -1), array('.', ',', ';', ':')) === true ) {
+		$ret = substr($url, -1);
+		$url = substr($url, 0, strlen($url)-1);
+	}
+	return $matches[1] . "<a href=\"$url\" rel=\"nofollow\">$url</a>" . $ret;
 }
 
 function _make_web_ftp_clickable_cb($matches) {
+	$ret = '';
 	$dest = $matches[2];
 	$dest = 'http://' . $dest;
 	$dest = clean_url($dest);
 	if ( empty($dest) )
 		return $matches[0];
-
-	return $matches[1] . "<a href=\"$dest\" rel=\"nofollow\">$dest</a>";
+	// removed trailing [,;:] from URL
+	if ( in_array(substr($dest, -1), array('.', ',', ';', ':')) === true ) {
+		$ret = substr($dest, -1);
+		$dest = substr($dest, 0, strlen($dest)-1);
+	}
+	return $matches[1] . "<a href=\"$dest\" rel=\"nofollow\">$dest</a>" . $ret;
 }
 
 function _make_email_clickable_cb($matches) {
@@ -1171,6 +1182,13 @@ function attribute_escape($text) {
 	$safe_text = wp_specialchars($text, true);
 	return apply_filters('attribute_escape', $safe_text, $text);
 }
+
+// Escape a HTML tag name
+function tag_escape($tag_name) {
+	$safe_tag = strtolower( preg_replace('[^a-zA-Z_:]', '', $tag_name) );
+	return apply_filters('tag_escape', $safe_tag, $tag_name);
+}
+
 /**
  * Escapes text for SQL LIKE special characters % and _
  *
@@ -1358,7 +1376,7 @@ function wp_sprintf_l($pattern, $args) {
 	$args = (array) $args;
 	$result = array_shift($args);
 	if ( count($args) == 1 )
-		$result .= $l['between_two'] . array_shift($args);
+		$result .= $l['between_only_two'] . array_shift($args);
 	// Loop when more than two args
 	while ( count($args) ) {
 		$arg = array_shift($args);

@@ -91,12 +91,12 @@ function image_downsize($id, $size = 'medium') {
 }
 
 // return an <img src /> tag for the given image attachment, scaling it down if requested
-function get_image_tag($id, $alt, $title, $align, $rel = false, $size='medium') {
+function get_image_tag($id, $alt, $title, $align, $size='medium') {
 
 	list( $img_src, $width, $height ) = image_downsize($id, $size);
 	$hwstring = image_hwstring($width, $height);
 
-	$html = '<img src="'.attribute_escape($img_src).'" alt="'.attribute_escape($alt).'" title="'.attribute_escape($title).'" '.$hwstring.'class="align'.attribute_escape($align).' size-'.attribute_escape($size).' attachment wp-att-'.attribute_escape($id).'" />';
+	$html = '<img src="'.attribute_escape($img_src).'" alt="'.attribute_escape($alt).'" title="'.attribute_escape($title).'" '.$hwstring.'class="align'.attribute_escape($align).' size-'.attribute_escape($size).' wp-image-'.$id.'" />';
 
 	$html = apply_filters( 'image_send_to_editor', $html, $id, $alt, $title, $align, $url );
 
@@ -175,7 +175,7 @@ function image_resize_dimensions($orig_w, $orig_h, $dest_w, $dest_h, $crop=false
 }
 
 // Scale down an image to fit a particular size and save a new copy of the image
-function image_resize( $file, $max_w, $max_h, $crop=false, $suffix=null, $dest_path=null, $jpeg_quality=75) {
+function image_resize( $file, $max_w, $max_h, $crop=false, $suffix=null, $dest_path=null, $jpeg_quality=90) {
 
 	$image = wp_load_image( $file );
 	if ( !is_resource( $image ) )
@@ -223,7 +223,7 @@ function image_resize( $file, $max_w, $max_h, $crop=false, $suffix=null, $dest_p
 	else {
 		// all other formats are converted to jpg
 		$destfilename = "{$dir}/{$name}-{$suffix}.jpg";
-		if (!imagejpeg( $newimage, $destfilename, $jpeg_quality ) )
+		if (!imagejpeg( $newimage, $destfilename, apply_filters( 'jpeg_quality', $jpeg_quality ) ) )
 			return new WP_Error('resize_path_invalid', __( 'Resize path invalid' ));
 	}
 
@@ -339,8 +339,20 @@ function gallery_shortcode($attr) {
 	$output = apply_filters('post_gallery', '', $attr);
 	if ( $output != '' )
 		return $output;
+		
+	extract(shortcode_atts(array(
+		'orderby'    => 'menu_order ASC, ID ASC',
+		'id'         => $post->ID,
+		'itemtag'    => 'dl',
+		'icontag'    => 'dt',
+		'captiontag' => 'dd',
+		'columns'    => 3,
+		'size'       => 'thumbnail',
+	), $attr));
 
-	$attachments = get_children("post_parent=$post->ID&post_type=attachment&post_mime_type=image&orderby=\"menu_order ASC, ID ASC\"");
+	$id = intval($id);
+	$orderby = addslashes($orderby);
+	$attachments = get_children("post_parent=$id&post_type=attachment&post_mime_type=image&orderby=\"{$orderby}\"");
 
 	if ( empty($attachments) )
 		return '';
@@ -348,33 +360,51 @@ function gallery_shortcode($attr) {
 	if ( is_feed() ) {
 		$output = "\n";
 		foreach ( $attachments as $id => $attachment )
-			$output .= wp_get_attachment_link($id, 'thumbnail', true) . "\n";
+			$output .= wp_get_attachment_link($id, $size, true) . "\n";
 		return $output;
 	}
 
+	$listtag = tag_escape($listtag);
+	$itemtag = tag_escape($itemtag);
+	$captiontag = tag_escape($captiontag);
+	$columns = intval($columns);
+	$itemwidth = $columns > 0 ? floor(100/$columns) : 100;
+	
 	$output = apply_filters('gallery_style', "
 		<style type='text/css'>
 			.gallery {
 				margin: auto;
 			}
-			.gallery div {
+			.gallery-item {
 				float: left;
 				margin-top: 10px;
 				text-align: center;
-				width: 33%;			}
+				width: {$itemwidth}%;			}
 			.gallery img {
 				border: 2px solid #cfcfcf;
 			}
+			.gallery-caption {
+				margin-left: 0;
+			}
 		</style>
+		<!-- see gallery_shortcode() in wp-includes/media.php -->
 		<div class='gallery'>");
 
 	foreach ( $attachments as $id => $attachment ) {
-		$link = wp_get_attachment_link($id, 'thumbnail', true);
+		$link = wp_get_attachment_link($id, $size, true);
+		$output .= "<{$itemtag} class='gallery-item'>";
 		$output .= "
-			<div>
+			<{$icontag} class='gallery-icon'>
 				$link
-			</div>";
-		if ( ++$i % 3 == 0 )
+			</{$icontag}>";
+		if ( $captiontag && trim($attachment->post_excerpt) ) {
+			$output .= "
+				<{$captiontag} class='gallery-caption'>
+				{$attachment->post_excerpt}
+				</{$captiontag}>";
+		}
+		$output .= "</{$itemtag}>";
+		if ( $columns > 0 && ++$i % $columns == 0 )
 			$output .= '<br style="clear: both" />';
 	}
 
@@ -406,6 +436,37 @@ function adjacent_image_link($prev = true) {
 
 	if ( isset($attachments[$k]) )
 		echo wp_get_attachment_link($attachments[$k]->ID, 'thumbnail', true);
+}
+
+function get_attachment_taxonomies($attachment) {
+	if ( is_int( $attachment ) )
+		$attachment = get_post($attachment);
+	else if ( is_array($attachment) )
+		$attachment = (object) $attachment;
+
+	if ( ! is_object($attachment) )
+		return array();
+
+	$filename = basename($attachment->guid);
+
+	$objects = array('attachment');
+
+	if ( false !== strpos($filename, '.') )
+		$objects[] = 'attachment:' . substr($filename, strrpos($filename, '.') + 1);
+	if ( !empty($attachment->post_mime_type) ) {
+		$objects[] = 'attachment:' . $attachment->post_mime_type;
+		if ( false !== strpos($attachment->post_mime_type, '/') )
+			foreach ( explode('/', $attachment->post_mime_type) as $token )
+				if ( !empty($token) )
+					$objects[] = "attachment:$token";
+	}
+
+	$taxonomies = array();
+	foreach ( $objects as $object )
+		if ( $taxes = get_object_taxonomies($object) )
+			$taxonomies = array_merge($taxonomies, $taxes);
+
+	return array_unique($taxonomies);
 }
 
 ?>
