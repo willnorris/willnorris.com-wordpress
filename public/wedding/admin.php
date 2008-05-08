@@ -14,10 +14,12 @@
 
 	echo '<table id="guests" cellPadding="0" cellSpacing="0">';
 	foreach($invitations as $invite) {
+		$first = true;
 		foreach ($invite->guests as $guest) {
 			echo '
 			<tr>
-			<td>' . $guest->name . '</td>';
+			<td>' . $guest->name . '</td>' .
+			($first ? '<td>' . $invite->code . '</td>'  : '<td>&nbsp;</td>');
 			if ($invite->received) {
 				if ($guest->attending) {
 					$response['Y']++;
@@ -28,10 +30,12 @@
 				}
 			} else {
 				$response['-']++;
-				echo '<td></td>';
+				echo '<td>&nbsp;</td>';
 			}
 			echo'
 			</tr>';
+
+			$first = false;
 		}
 	}
 	echo '</table>';
