@@ -1,0 +1,100 @@
+# Absolute Comments - plugin for WordPress
+# Ozh <ozh@planetozh.com>, 2007
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-10-28 08:27-0700\n"
+"PO-Revision-Date: 2008-04-17 10:37+0100\n"
+"Last-Translator: Thomas Blomberg Hansen <playr@playr.dk>\n"
+"Language-Team: Ozh <ozh@planetozh.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "Ups, ingen kommentar med dette ID."
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "Tilbage"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "Dit svar"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "Svar"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "Drevet af"
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "Svar på kommentar &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "Tråd svar &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "Vent..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "Annuller"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "Vis alle"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "Hurtig svar"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "Svar med avanceret editor"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "Vis alle kommentar til dette indlæg"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "Udgiver kommentar..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "Ups! Dobbelt kommentar fundet. Afbrudt."
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "Ups! Du udgiver for hurtigt. Afbrudt."
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "Fejl (dobbelt kommentar eller udgiver for hurtigt ?). Afbrudt"
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "aktuelt markeret som"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "Dit svar til denne kommentar"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "Kommentarer til"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "Fra:"
+

@@ -1,8 +1,8 @@
 === WP Super Cache ===
 Contributors: donncha
 Tags: performance,caching,wp-cache
-Tested up to: 2.5
-Stable tag: 0.6.3
+Tested up to: 2.5.1
+Stable tag: 0.6.4
 Requires at least: 2.2
 
 A very fast caching engine for WordPress that produces static html files.
@@ -38,6 +38,7 @@ The [changelog](http://svn.wp-plugins.org/wp-super-cache/trunk/Changelog.txt) is
 	`RewriteEngine On`
 	`RewriteBase /`
 	
+	`RewriteCond %{REQUEST_METHOD} !=POST`
 	`RewriteCond %{QUERY_STRING} !.*s=.*`
 	`RewriteCond %{QUERY_STRING} !.*attachment_id=.*`
 	`RewriteCond %{HTTP_COOKIE} !^.*(comment_author_|wordpress|wp-postpass_).*$`
@@ -45,6 +46,7 @@ The [changelog](http://svn.wp-plugins.org/wp-super-cache/trunk/Changelog.txt) is
 	`RewriteCond %{DOCUMENT_ROOT}/wp-content/cache/supercache/%{HTTP_HOST}/$1/index.html.gz -f`
 	`RewriteRule ^(.*) /wp-content/cache/supercache/%{HTTP_HOST}/$1/index.html.gz [L]`
 	
+	`RewriteCond %{REQUEST_METHOD} !=POST`
 	`RewriteCond %{QUERY_STRING} !.*s=.*`
 	`RewriteCond %{QUERY_STRING} !.*attachment_id=.*`
 	`RewriteCond %{HTTP_COOKIE} !^.*(comment_author_|wordpress|wp-postpass_).*$`

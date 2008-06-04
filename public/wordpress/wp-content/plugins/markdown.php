@@ -100,9 +100,9 @@ if (isset($wp_version)) {
 	if (MARKDOWN_WP_COMMENTS) {
 		remove_filter('comment_text', 'wpautop', 30);
 		remove_filter('comment_text', 'make_clickable');
-		add_filter('pre_comment_content', 'Markdown', 6);
-		add_filter('pre_comment_content', 'mdwp_hide_tags', 8);
-		add_filter('pre_comment_content', 'mdwp_show_tags', 12);
+		#add_filter('pre_comment_content', 'Markdown', 6);
+		#add_filter('pre_comment_content', 'mdwp_hide_tags', 8);
+		#add_filter('pre_comment_content', 'mdwp_show_tags', 12);
 		add_filter('get_comment_text',    'Markdown', 6);
 		add_filter('get_comment_excerpt', 'Markdown', 6);
 		add_filter('get_comment_excerpt', 'mdwp_strip_p', 7);

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe To Comments
-Version: 2.1.1
+Version: 2.1.2
 Plugin URI: http://txfx.net/code/wordpress/subscribe-to-comments/
 Description: Allows readers to receive notifications of new comments that are posted to an entry.  Based on version 1 from <a href="http://scriptygoddess.com/">Scriptygoddess</a>
 Author: Mark Jaquith
@@ -15,8 +15,7 @@ function show_subscription_checkbox ($id='0') {
 
 	if ( $sg_subscribe->checkbox_shown ) return $id;
 	if ( !$email = $sg_subscribe->current_viewer_subscription_status() ) :
-		if (!empty($_COOKIE['subscribe_checkbox_'.COOKIEHASH]))
-			$checked_status = ( 'checked' == $_COOKIE['subscribe_checkbox_'.COOKIEHASH] ) ? true : false;
+		$checked_status = ( !empty($_COOKIE['subscribe_checkbox_'.COOKIEHASH]) && 'checked' == $_COOKIE['subscribe_checkbox_'.COOKIEHASH] ) ? true : false;
 	?>
 
 <?php /* ------------------------------------------------------------------- */ ?>
@@ -24,7 +23,7 @@ function show_subscription_checkbox ($id='0') {
 <?php /* ------------------------------------------------------------------- */ ?>
 
 	<p <?php if ($sg_subscribe->clear_both) echo 'style="clear: both;" '; ?>class="subscribe-to-comments">
-	<input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;" <?php if ( (isset($checked_status) && $checked_status ) || ( !isset($checked_status) && $sg_subscribe->default_subscribed ) ) echo 'checked="checked" '; ?>/>
+	<input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;" <?php if ( $checked_status ) echo 'checked="checked" '; ?>/>
 	<label for="subscribe"><?php echo $sg_subscribe->not_subscribed_text; ?></label>
 	</p>
 
@@ -130,10 +129,12 @@ return false;
 
 class sg_subscribe_settings {
 	function options_page_contents() {
-		/** Commit changed options if posted **/
+		global $sg_subscribe;
+		sg_subscribe_start();
 		if ( isset($_POST['sg_subscribe_settings_submit']) ) {
 			check_admin_referer('subscribe-to-comments-update_options');
-			update_option('sg_subscribe_settings', $_POST['sg_subscribe_settings']);
+			$update_settings = stripslashes_deep($_POST['sg_subscribe_settings']);
+			$sg_subscribe->update_settings($update_settings);
 		}
 
 
@@ -142,7 +143,6 @@ class sg_subscribe_settings {
 
 		echo '<li><label for="name">' . __('"From" name for notifications:', 'subscribe-to-comments') . ' <input type="text" size="40" id="name" name="sg_subscribe_settings[name]" value="' . sg_subscribe_settings::form_setting('name') . '" /></label></li>';
 		echo '<li><label for="email">' . __('"From" e-mail addresss for notifications:', 'subscribe-to-comments') . ' <input type="text" size="40" id="email" name="sg_subscribe_settings[email]" value="' . sg_subscribe_settings::form_setting('email') . '" /></label></li>';
-		echo '<li><label for="default_subscribed"><input type="checkbox" id="default_subscribed" name="sg_subscribe_settings[default_subscribed]" value="default_subscribed"' . sg_subscribe_settings::checkflag('default_subscribed') . ' /> ' . __('"Subscribe" box should be checked by default', 'subscribe-to-comments') . '</label></li>';
 		echo '<li><label for="clear_both"><input type="checkbox" id="clear_both" name="sg_subscribe_settings[clear_both]" value="clear_both"' . sg_subscribe_settings::checkflag('clear_both') . ' /> ' . __('Do a CSS "clear" on the subscription checkbox/message (uncheck this if the checkbox/message appears in a strange location in your theme)', 'subscribe-to-comments') . '</label></li>';
 		echo '</ul>';
 
@@ -187,12 +187,12 @@ class sg_subscribe_settings {
 
 	function form_setting($optname) {
 		$options = get_settings('sg_subscribe_settings');
-		return htmlspecialchars(stripslashes($options[$optname]), ENT_QUOTES);
+		return attribute_escape($options[$optname]);
 	}
 
 	function textarea_setting($optname) {
 		$options = get_settings('sg_subscribe_settings');
-		return htmlspecialchars(stripslashes($options[$optname]));
+		return wp_specialchars($options[$optname]);
 	}
 
 	function options_page() {
@@ -252,7 +252,7 @@ class sg_subscribe {
 	var $author_text;
 	var $salt;
 	var $settings;
-
+	var $version = '2.1.2';
 
 	function sg_subscribe() {
 		global $wpdb;
@@ -262,16 +262,16 @@ class sg_subscribe {
 
 		$this->salt = $this->settings['salt'];
 		$this->site_email = ( is_email($this->settings['email']) && $this->settings['email'] != 'email@example.com' ) ? $this->settings['email'] : get_bloginfo('admin_email');
-		$this->site_name = ( $this->settings['name'] != 'YOUR NAME' && !empty($this->settings['name']) ) ? stripslashes($this->settings['name']) : get_bloginfo('name');
+		$this->site_name = ( $this->settings['name'] != 'YOUR NAME' && !empty($this->settings['name']) ) ? $this->settings['name'] : get_bloginfo('name');
 		$this->default_subscribed = ($this->settings['default_subscribed']) ? true : false;
 
-		$this->not_subscribed_text = stripslashes($this->settings['not_subscribed_text']);
-		$this->subscribed_text = stripslashes($this->settings['subscribed_text']);
-		$this->author_text = stripslashes($this->settings['author_text']);
+		$this->not_subscribed_text = $this->settings['not_subscribed_text'];
+		$this->subscribed_text = $this->settings['subscribed_text'];
+		$this->author_text = $this->settings['author_text'];
 		$this->clear_both = $this->settings['clear_both'];
 
 		$this->errors = '';
-		$this->post_subscriptions = '';
+		$this->post_subscriptions = array();
 		$this->email_subscriptions = '';
 	}
 
@@ -280,17 +280,12 @@ class sg_subscribe {
 		$this->messages = '';
 		$this->use_wp_style = ( $this->settings['use_custom_style'] == 'use_custom_style' ) ? false : true;
 		if ( !$this->use_wp_style ) {
-			$this->header = str_replace('[theme_path]', get_template_directory(), stripslashes($this->settings['header']));
-			$this->sidebar = str_replace('[theme_path]', get_template_directory(), stripslashes($this->settings['sidebar']));
-			$this->footer = str_replace('[theme_path]', get_template_directory(), stripslashes($this->settings['footer']));
-			$this->before_manager = stripslashes($this->settings['before_manager']);
-			$this->after_manager = stripslashes($this->settings['after_manager']);
+			$this->header = str_replace('[theme_path]', get_template_directory(), $this->settings['header']);
+			$this->sidebar = str_replace('[theme_path]', get_template_directory(), $this->settings['sidebar']);
+			$this->footer = str_replace('[theme_path]', get_template_directory(), $this->settings['footer']);
+			$this->before_manager = $this->settings['before_manager'];
+			$this->after_manager = $this->settings['after_manager'];
 		}
-
-		// version 2.0.8 -- allow plugin file to be renamed or placed in a subdirectory
-		if ( 'edit.php?page=subscribe-to-comments.php' == $this->form_action )
-			$this->form_action = 'edit.php?page=' . STC_PLUGIN_BASENAME;
-
 
 		foreach ( array('email', 'key', 'ref', 'new_email') as $var )
 			if ( isset($_REQUEST[$var]) && !empty($_REQUEST[$var]) )
@@ -333,15 +328,15 @@ class sg_subscribe {
 
 
 	function subscriptions_from_post($postid) {
-		if ( is_array($this->post_subscriptions) )
-			return $this->post_subscriptions;
+		if ( is_array($this->post_subscriptions[$postid]) )
+			return $this->post_subscriptions[$postid];
 		global $wpdb;
 		$postid = (int) $postid;
-		$this->post_subscriptions = $wpdb->get_results("SELECT comment_author_email FROM $wpdb->comments WHERE comment_post_ID = '$postid' AND comment_subscribe='Y' AND comment_author_email != '' AND comment_approved = '1' GROUP BY LCASE(comment_author_email)");
-		$subscribed_without_comment = get_post_meta($postid, '_sg_subscribe-to-comments');
-		foreach ( (array) $subscribed_without_comment as $email )
-			$this->post_subscriptions[]->comment_author_email = $email;
-		return $this->post_subscriptions;
+		$this->post_subscriptions[$postid] = $wpdb->get_col("SELECT comment_author_email FROM $wpdb->comments WHERE comment_post_ID = '$postid' AND comment_subscribe='Y' AND comment_author_email != '' AND comment_approved = '1' GROUP BY LCASE(comment_author_email)");
+		$subscribed_without_comment = (array) get_post_meta($postid, '_sg_subscribe-to-comments');
+		$this->post_subscriptions[$postid] = array_merge((array) $this->post_subscriptions[$postid], (array) $subscribed_without_comment);
+		$this->post_subscriptions[$postid] = array_unique($this->post_subscriptions[$postid]);
+		return $this->post_subscriptions[$postid];
 	}
 
 
@@ -385,7 +380,7 @@ class sg_subscribe {
 		if ( is_array($this->subscriptions_from_email($email)) )
 			if (in_array($postid, (array) $this->subscriptions_from_email($email))) {
 				// already subscribed
-				setcookie('comment_author_email_' . COOKIEHASH, stripslashes($email), time() + 30000000, COOKIEPATH);
+				setcookie('comment_author_email_' . COOKIEHASH, $email, time() + 30000000, COOKIEPATH);
 				$this->add_error(__('You appear to be already subscribed to this entry.', 'subscribe-to-comments'),'solo_subscribe');
 				}
 		$email = $wpdb->escape($email);
@@ -401,13 +396,13 @@ class sg_subscribe {
 
 		$post_author = $cache_userdata[$post->post_author];
 
-		if ( strtolower($post_author->user_email) == stripslashes($email) )
+		if ( strtolower($post_author->user_email) == ($email) )
 			$this->add_error(__('You appear to be already subscribed to this entry.', 'subscribe-to-comments'),'solo_subscribe');
 
 		if ( !is_array($this->errors['solo_subscribe']) ) {
-			add_post_meta($postid, '_sg_subscribe-to-comments', stripslashes($email));
-			setcookie('comment_author_email_' . COOKIEHASH, stripslashes($email), time() + 30000000, COOKIEPATH);
-			$location = $this->manage_link(stripslashes($email), false, false) . '&subscribeid=' . $postid;
+			add_post_meta($postid, '_sg_subscribe-to-comments', $email);
+			setcookie('comment_author_email_' . COOKIEHASH, $email, time() + 30000000, COOKIEPATH);
+			$location = $this->manage_link($email, false, false) . '&subscribeid=' . $postid;
 			header("Location: $location");
 			exit();
 		}
@@ -416,15 +411,17 @@ class sg_subscribe {
 
 	function add_subscriber($cid) {
 		global $wpdb;
+		$cid = (int) $cid;
 		$id = (int) $id;
-    	$email = $wpdb->escape(strtolower($wpdb->get_var("SELECT comment_author_email FROM $wpdb->comments WHERE comment_ID = '$cid'")));
+    	$email = strtolower($wpdb->get_var("SELECT comment_author_email FROM $wpdb->comments WHERE comment_ID = '$cid'"));
+		$email_sql = $wpdb->escape($email);
 		$postid = $wpdb->get_var("SELECT comment_post_ID from $wpdb->comments WHERE comment_ID = '$cid'");
 
-		$previously_subscribed = ( $wpdb->get_var("SELECT comment_subscribe from $wpdb->comments WHERE comment_post_ID = '$postid' AND LCASE(comment_author_email) = '$email' AND comment_subscribe = 'Y' LIMIT 1") || in_array(stripslashes($email), (array) get_post_meta($postid, '_sg_subscribe-to-comments')) ) ? true : false;
+		$previously_subscribed = ( $wpdb->get_var("SELECT comment_subscribe from $wpdb->comments WHERE comment_post_ID = '$postid' AND LCASE(comment_author_email) = '$email_sql' AND comment_subscribe = 'Y' LIMIT 1") || in_array($email, (array) get_post_meta($postid, '_sg_subscribe-to-comments')) ) ? true : false;
 
 		// If user wants to be notified or has previously subscribed, set the flag on this current comment
 		if (($_POST['subscribe'] == 'subscribe' && is_email($email)) || $previously_subscribed) {
-			delete_post_meta($postid, '_sg_subscribe-to-comments', stripslashes($email));
+			delete_post_meta($postid, '_sg_subscribe-to-comments', $email);
 			$wpdb->query("UPDATE $wpdb->comments SET comment_subscribe = 'Y' where comment_post_ID = '$postid' AND LCASE(comment_author_email) = '$email'");
 		}
 		return $cid;
@@ -567,9 +564,10 @@ class sg_subscribe {
 	function remove_subscriber($email, $postid) {
 		global $wpdb;
 		$postid = (int) $postid;
-		$email = $wpdb->escape(strtolower($email));
+		$email = strtolower($email);
+		$email_sql = $wpdb->escape($email);
 
-		if ( delete_post_meta($postid, '_sg_subscribe-to-comments', stripslashes($email)) || $wpdb->query("UPDATE $wpdb->comments SET comment_subscribe = 'N' WHERE comment_post_ID  = '$postid' AND LCASE(comment_author_email) ='$email'") )
+		if ( delete_post_meta($postid, '_sg_subscribe-to-comments', $email) || $wpdb->query("UPDATE $wpdb->comments SET comment_subscribe = 'N' WHERE comment_post_ID  = '$postid' AND LCASE(comment_author_email) ='$email_sql'") )
 			return true;
 		else
 			return false;
@@ -596,23 +594,23 @@ class sg_subscribe {
 		if ( $comment->comment_approved == '1' && $comment->comment_type == '' ) {
 			// Comment has been approved and isn't a trackback or a pingback, so we should send out notifications
 
-			$message  = sprintf(__("There is a new comment on the post \"%s\"", 'subscribe-to-comments') . ". \n%s\n\n", stripslashes($post->post_title), get_permalink($comment->comment_post_ID));
+			$message  = sprintf(__("There is a new comment on the post \"%s\"", 'subscribe-to-comments') . ". \n%s\n\n", $post->post_title, get_permalink($comment->comment_post_ID));
 			$message .= sprintf(__("Author: %s\n", 'subscribe-to-comments'), $comment->comment_author);
-			$message .= __("Comment:\n", 'subscribe-to-comments') . stripslashes($comment->comment_content) . "\n\n";
+			$message .= __("Comment:\n", 'subscribe-to-comments') . $comment->comment_content . "\n\n";
 			$message .= __("See all comments on this post here:\n", 'subscribe-to-comments');
 			$message .= get_permalink($comment->comment_post_ID) . "#comments\n\n";
 			//add link to manage comment notifications
 			$message .= __("To manage your subscriptions or to block all notifications from this site, click the link below:\n", 'subscribe-to-comments');
 			$message .= get_settings('home') . '/?wp-subscription-manager=1&email=[email]&key=[key]';
 
-			$subject = sprintf(__('New Comment On: %s', 'subscribe-to-comments'), stripslashes($post->post_title));
+			$subject = sprintf(__('New Comment On: %s', 'subscribe-to-comments'), $post->post_title);
 
 			$subscriptions = $this->subscriptions_from_post($comment->comment_post_ID);
 			foreach ( (array) $subscriptions as $email ) {
-				if ( !$this->is_blocked($email->comment_author_email) && $email->comment_author_email != $comment->comment_author_email && is_email($email->comment_author_email) ) {
-				        $message_final = str_replace('[email]', urlencode($email->comment_author_email), $message);
-				        $message_final = str_replace('[key]', $this->generate_key($email->comment_author_email), $message_final);
-					$this->send_mail($email->comment_author_email, $subject, $message_final);
+				if ( !$this->is_blocked($email) && $email != $comment->comment_author_email && is_email($email) ) {
+				        $message_final = str_replace('[email]', urlencode($email), $message);
+				        $message_final = str_replace('[key]', $this->generate_key($email), $message_final);
+					$this->send_mail($email, $subject, $message_final);
 				}
 			} // foreach subscription
 		} // end if comment approved
@@ -700,9 +698,13 @@ class sg_subscribe {
 		global $wpdb;
 
 		// add the options
-		add_option('sg_subscribe_settings', array('use_custom_style' => '', 'email' => get_bloginfo('admin_email'), 'name' => get_bloginfo('name'), 'header' => '[theme_path]/header.php', 'sidebar' => '', 'footer' => '[theme_path]/footer.php', 'before_manager' => '<div id="content" class="widecolumn subscription-manager">', 'after_manager' => '</div>', 'default_subscribed' => '', 'not_subscribed_text' => __('Notify me of followup comments via e-mail', 'subscribe-to-comments'), 'subscribed_text' => __('You are subscribed to this entry.  <a href="[manager_link]">Manage your subscriptions</a>.', 'subscribe-to-comments'), 'author_text' => __('You are the author of this entry.  <a href="[manager_link]">Manage subscriptions</a>.', 'subscribe-to-comments')));
+		add_option('sg_subscribe_settings', array('use_custom_style' => '', 'email' => get_bloginfo('admin_email'), 'name' => get_bloginfo('name'), 'header' => '[theme_path]/header.php', 'sidebar' => '', 'footer' => '[theme_path]/footer.php', 'before_manager' => '<div id="content" class="widecolumn subscription-manager">', 'after_manager' => '</div>', 'not_subscribed_text' => __('Notify me of followup comments via e-mail', 'subscribe-to-comments'), 'subscribed_text' => __('You are subscribed to this entry.  <a href="[manager_link]">Manage your subscriptions</a>.', 'subscribe-to-comments'), 'author_text' => __('You are the author of this entry.  <a href="[manager_link]">Manage subscriptions</a>.', 'subscribe-to-comments'), 'version' => $this->version));
 
 		$settings = get_option('sg_subscribe_settings');
+		if ( !$settings ) { // work around WP 2.2/2.2.1 bug
+			wp_redirect('http://' . $_SERVER['HTTP_HOST'] . add_query_arg('stcwpbug', '1'));
+			exit;
+		}
 
 		if ( !$settings['salt'] ) {
 			$settings['salt'] = md5(md5(uniqid(rand() . rand() . rand() . rand() . rand(), true))); // random MD5 hash
@@ -714,8 +716,19 @@ class sg_subscribe {
 			$update = true;
 		}
 
+		if ( !$settings['version'] ) {
+			$settings = stripslashes_deep($settings);
+			$update = true;
+		}
+
+		if ( $settings['not_subscribed_text'] == '' || $settings['subscribed_text'] == '' ) { // recover from WP 2.2/2.2.1 bug
+			delete_option('sg_subscribe_settings');
+			wp_redirect('http://' . $_SERVER['HTTP_HOST'] . add_query_arg('stcwpbug', '2'));
+			exit;
+		}
+
 		if ( $update )
-			update_option('sg_subscribe_settings', $settings);
+			$this->update_settings($settings);
 
 		$column_name = 'comment_subscribe';
 		foreach ( (array) $wpdb->get_col("DESC $wpdb->comments", 0) as $column )
@@ -724,6 +737,12 @@ class sg_subscribe {
 
 		// didn't find it... create it
 		$wpdb->query("ALTER TABLE $wpdb->comments ADD COLUMN comment_subscribe enum('Y','N') NOT NULL default 'N'");
+	}
+
+
+	function update_settings($settings) {
+		$settings['version'] = $this->version;
+		update_option('sg_subscribe_settings', $settings);
 	}
 
 
@@ -779,9 +798,9 @@ class sg_subscribe {
 
 
 	function add_admin_menu() {
-		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 8, __FILE__, 'sg_subscribe_admin');
+		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 8, 'stc-management', 'sg_subscribe_admin');
 
-		add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 5, basename(__FILE__), array('sg_subscribe_settings', 'options_page'));
+		add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 5, 'stc-options', array('sg_subscribe_settings', 'options_page'));
 	}
 
 
@@ -829,11 +848,9 @@ add_filter('preprocess_comment', 'stc_checkbox_state', 1);
 // detect "subscribe without commenting" attempts
 add_action('init', create_function('$a','global $sg_subscribe; if ( $_POST[\'solo-comment-subscribe\'] == \'solo-comment-subscribe\' && is_numeric($_POST[\'postid\']) ) {
 	sg_subscribe_start();
-	$sg_subscribe->solo_subscribe($_POST[\'email\'], $_POST[\'postid\']);
+	$sg_subscribe->solo_subscribe(stripslashes($_POST[\'email\']), (int) $_POST[\'postid\']);
 }')
 );
-
-define('STC_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 if ( isset($_REQUEST['wp-subscription-manager']) )
 	add_action('template_redirect', 'sg_subscribe_admin_standalone');
@@ -852,7 +869,7 @@ function sg_subscribe_admin($standalone = false) {
 		$sg_subscribe->standalone = true;
 		ob_start(create_function('$a', 'return str_replace("<title>", "<title> " . __("Subscription Manager", "subscribe-to-comments") . " &raquo; ", $a);'));
 	} else {
-		$sg_subscribe->form_action = 'edit.php?page=subscribe-to-comments.php';
+		$sg_subscribe->form_action = 'edit.php?page=stc-management';
 		$sg_subscribe->standalone = false;
 	}
 

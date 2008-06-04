@@ -1,8 +1,8 @@
 === Subscribe to Comments ===
 Tags: comments, subscription, email
 Contributors: markjaquith
-Requires at least: 2.0
-Tested up to: 2.2.1
+Requires at least: 2.0.6
+Tested up to: 2.3.1
 Stable tag: trunk
 
 Subscribe to Comments allows commenters on an entry to subscribe to e-mail notifications for subsequent comments.
@@ -29,7 +29,7 @@ Subscribe to Comments is a robust plugin that enables commenters to sign up for 
 
 = I'd like the subscription checkbox to be checked by default.  Can I do that? =
 
-By default, the "subscribe" checkbox is unchecked, but you can change that in the options (i.e. so that it is checked by default).
+Not anymore.  But the checkbox status will be remembered on a per-user basis.
 
 = My subscription checkbox shows up in a strange place.  How do I fix it? =
 

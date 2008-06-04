@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments 2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-10-28 08:27-0700\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Einar Helland Berger <einar@hellandberger.org>\n"
+"Language-Team: Einar Helland Berger <einar@hellandberger.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Norwegian Bokmal\n"
+"X-Poedit-Country: NORWAY\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "Uups, ingen kommentar med denne ID-en."
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "Gå tilbake"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "Ditt svar"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "Svar"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "Med kraft fra"
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "Svar på kommentar &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "Trådsvar &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "Vent..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "Vis alle"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "Raskt svar"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "Svar med avansert editor"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "Vis alle kommentarer til denne posten"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "Poster kommentar..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "Uups! Duplikatkommentar oppdaget. Avbrutt."
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "Uups! Du poster for fort. Avbrutt."
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "Feil (duplikatkommentar, eller for rask posting ?). Avbrutt."
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "merket som"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "Ditt svar til denne kommentaren"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "Kommentarer til"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "Fra:"
+

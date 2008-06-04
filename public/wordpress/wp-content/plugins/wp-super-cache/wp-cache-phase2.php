@@ -299,12 +299,11 @@ function wp_cache_phase2_clean_expired($file_prefix) {
 				if( is_dir( $cache_path . $file ) == false && (filemtime($cache_path . $file) + $cache_max_time) <= $now  ) {
 					if( substr( $file, -9 ) != '.htaccess' )
 						@unlink($cache_path . $file);
-				} elseif( is_dir( $cache_path . $file ) ) {
-					prune_super_cache( $cache_path . $file );
 				}
 			}
 		}
 		closedir($handle);
+		prune_super_cache( $cache_path . 'supercache' );
 	}
 
 	wp_cache_writers_exit();
@@ -382,9 +381,8 @@ function wp_cache_shutdown_callback() {
 		wp_cache_writers_exit();
 	}
 
-	if ($file_expired == false) {
+	if( mt_rand( 0, 500 ) != 1 )
 		return;
-	}
 
 	// we delete expired files
 	flush(); //Ensure we send data to the client
@@ -420,18 +418,21 @@ function wp_cache_post_change($post_id) {
 	global $file_prefix, $cache_path, $blog_id, $blogcacheid, $super_cache_enabled;
 	static $last_processed = -1;
 
-	// Avoid cleaning twice the same pages
 	if ($post_id == $last_processed) return $post_id;
 	$last_processed = $post_id;
 	$permalink = trailingslashit( str_replace( get_option( 'siteurl' ), '', post_permalink( $post_id ) ) );
 	if( $super_cache_enabled ) {
-		$permalink = trailingslashit( str_replace( get_option( 'siteurl' ), '', post_permalink( $post_id ) ) );
-		$siteurl = str_replace( 'http://', '', get_option( 'siteurl' ) );
-		$dir = $cache_path . 'supercache/' . strtolower(preg_replace('/:.*$/', '', $siteurl ) );
-		$files_to_delete = array( $dir . '/index.html', $dir . '/feed/index.html', $dir . $permalink . 'index.html', $dir . $permalink . 'feed/index.html' );
-		foreach( $files_to_delete as $cache_file ) {
-			@unlink( $cache_file );
-			@unlink( $cache_file . '.gz' );
+		$siteurl = strtolower( preg_replace( '/:.*$/', '', str_replace( 'http://', '', get_option( 'siteurl' ) ) ) );
+		if( $post_id == 0 ) {
+			prune_super_cache( $cache_path . 'supercache/' . $siteurl );
+		} else {
+			$permalink = trailingslashit( str_replace( get_option( 'siteurl' ), '', post_permalink( $post_id ) ) );
+			$dir = $cache_path . 'supercache/' . $siteurl;
+			$files_to_delete = array( $dir . '/index.html', $dir . '/feed/index.html', $dir . $permalink . 'index.html', $dir . $permalink . 'feed/index.html' );
+			foreach( $files_to_delete as $cache_file ) {
+				@unlink( $cache_file );
+				@unlink( $cache_file . '.gz' );
+			}
 		}
 	}
 

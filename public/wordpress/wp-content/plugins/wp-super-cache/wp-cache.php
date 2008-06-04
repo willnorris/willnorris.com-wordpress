@@ -3,7 +3,7 @@
 Plugin Name: WP Super Cache
 Plugin URI: http://ocaoimh.ie/wp-super-cache/
 Description: Very fast caching module for WordPress. Once enabled, you must <a href="options-general.php?page=wp-super-cache/wp-cache.php">enable the cache</a>. Based on WP-Cache by <a href="http://mnm.uib.es/gallir/">Ricardo Galli Granada</a>.
-Version: 0.6.3
+Version: 0.6.4
 Author: Donncha O Caoimh
 Author URI: http://ocaoimh.ie/
 */
@@ -63,6 +63,7 @@ function wp_cache_add_pages() {
 		add_options_page('WP Super Cache', 'WP Super Cache', 'manage_options', __FILE__, 'wp_cache_manager');
 	}
 }
+add_action('admin_menu', 'wp_cache_add_pages');
 
 function wp_cache_manager() {
 	global $wp_cache_config_file, $valid_nonce, $supercachedir, $cache_path, $cache_enabled, $cache_compression, $super_cache_enabled, $wp_cache_hello_world;
@@ -96,7 +97,7 @@ function toggleLayer( whichLayer ) {
 // -->
 </script>
 <?php
- 	echo '<div class="wrap">';
+	echo '<div class="wrap">';
 	echo "<h2>WP Super Cache Manager</h2>\n";
 	if( ini_get( 'safe_mode' ) ) {
 		?><h3>Warning! PHP safe mode enabled!</h3>
@@ -236,6 +237,7 @@ function toggleLayer( whichLayer ) {
 	$rules .= "RewriteBase $home_root\n"; // props Chris Messina
 	$charset = get_option('blog_charset') == '' ? 'UTF-8' : get_option('blog_charset');
 	$rules .= "AddDefaultCharset {$charset}\n";
+	$rules .= "RewriteCond %{REQUEST_METHOD} !=POST\n";
 	$rules .= "RewriteCond %{QUERY_STRING} !.*s=.*\n";
 	$rules .= "RewriteCond %{QUERY_STRING} !.*attachment_id=.*\n";
 	$rules .= "RewriteCond %{HTTP_COOKIE} !^.*(comment_author_|wordpress|wp-postpass_).*$\n";
@@ -243,6 +245,7 @@ function toggleLayer( whichLayer ) {
 	$rules .= "RewriteCond %{DOCUMENT_ROOT}{$home_root}wp-content/cache/supercache/%{HTTP_HOST}{$home_root}$1/index.html.gz -f\n";
 	$rules .= "RewriteRule ^(.*) {$home_root}wp-content/cache/supercache/%{HTTP_HOST}{$home_root}$1/index.html.gz [L]\n\n";
 
+	$rules .= "RewriteCond %{REQUEST_METHOD} !=POST\n";
 	$rules .= "RewriteCond %{QUERY_STRING} !.*s=.*\n";
 	$rules .= "RewriteCond %{QUERY_STRING} !.*attachment_id=.*\n";
 	$rules .= "RewriteCond %{HTTP_COOKIE} !^.*(comment_author_|wordpress|wp-postpass_).*$\n";
@@ -1037,8 +1040,6 @@ function wp_cache_clean_expired($file_prefix) {
 	}
 }
 
-add_action('admin_menu', 'wp_cache_add_pages');
-
 function wpsc_remove_marker( $filename, $marker ) {
 	if (!file_exists( $filename ) || is_writeable( $filename ) ) {
 		if (!file_exists( $filename ) ) {
@@ -1072,7 +1073,7 @@ function wpsc_remove_marker( $filename, $marker ) {
 }
 
 function wp_super_cache_footer() {
-	?><p><?php bloginfo('name'); ?> is Digg proof thanks to caching by <a href="http://ocaoimh.ie/wp-super-cache/">WP Super Cache</a>!</p><?php
+	?><p id='supercache'><?php bloginfo('name'); ?> is Digg proof thanks to caching by <a href="http://ocaoimh.ie/wp-super-cache/">WP Super Cache</a>!</p><?php
 }
 if( isset( $wp_cache_hello_world ) && $wp_cache_hello_world )
 	add_action( 'wp_footer', 'wp_super_cache_footer' );

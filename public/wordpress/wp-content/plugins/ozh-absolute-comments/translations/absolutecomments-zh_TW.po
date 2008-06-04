@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Absolute Comments\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-11-08 13:15+0800\n"
+"Last-Translator: Cronobow <crono0720@gmail.com>\n"
+"Language-Team: Ozh <ozh at planetozh dot com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "抱歉，沒有這個ID的迴響。"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "返回"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "你的回應"
+
+#: wp_ozh_absolutecomments.php:141
+#: includes/_print_js.php:14
+msgid "Reply"
+msgstr "回應"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr "提供："
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "回應這個迴響 &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "處理回應 &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "請稍等..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "取消"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "查看所有迴響"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "快速回應"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "使用進階編輯器回覆"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "查看本文的所有迴響"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "發表迴響中..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "抱歉！你發表過一模一樣的迴響。"
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "抱歉！你發表的速度太快，請稍後再發表。"
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "錯誤（可能是重複發表或是發表速度過快）。"
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "目前被標記為"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "針對這則迴響，你的回應是"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "迴響在"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "來自："
+
