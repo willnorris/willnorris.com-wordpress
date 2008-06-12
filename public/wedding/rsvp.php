@@ -10,6 +10,7 @@
 ?>
 
 <?php
+	/*
 	if (!$action && array_key_exists('code', $_GET) && $_GET['code']) {
 		$action = 'code';
 	}
@@ -141,8 +142,9 @@
 		<script type="text/javascript">
 			document.getElementById('code').focus();
 		</script>
-
 <?php } 
+	 */
+	echo "You can't RSVP... the wedding is already over.";
 
 	pageFooter();
 ?>
