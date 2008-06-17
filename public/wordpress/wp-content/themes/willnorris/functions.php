@@ -45,9 +45,18 @@ function willnorris_bloginfo($output, $show) {
 	return $output;
 }
 
+function willnorris_remove_sharethis($content) {
+	if (!is_single() && function_exists('st_remove_st_add_link')) {
+		return st_remove_st_add_link($content);
+	} else {
+		return $content;
+	}
+}
+
 //add_action('wp_head', 'willnorris_header');
 add_action('stylesheet_uri', 'willnorris_stylesheet_uri' );
 add_action('get_footer', 'willnorris_footer');
 add_filter('bloginfo', 'willnorris_bloginfo', 5, 2);
+add_filter('the_content', 'willnorris_remove_sharethis', 0, 1);
 
 ?>
