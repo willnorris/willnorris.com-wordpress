@@ -31,7 +31,7 @@ function wp_imagefit_js() {
 function wpimagefit_add_scripts() {
 	if (function_exists('wp_enqueue_script') && function_exists('wp_register_script')) {
 		wp_register_script('jquery', get_bloginfo('wpurl') . '/wp-content/plugins/wp-imagefit/js/jquery.js');
-		wp_enqueue_script('jquery.imagefit', get_bloginfo('wpurl') . '/wp-content/plugins/wp-imagefit/js/jquery.imagefit.js', array('jquery'), '0.2');
+		wp_enqueue_script('jquery.imagefit', get_bloginfo('wpurl') . '/wp-content/plugins/wp-imagefit/js/jquery.imagefit.min.js', array('jquery'), '0.2');
 	} else {
 		wpimagefit_add_scripts_legacy();
 	}
