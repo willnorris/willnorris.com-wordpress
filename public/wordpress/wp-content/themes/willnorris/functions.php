@@ -5,6 +5,12 @@ function willnorris_header() {
 		<script type="text/javascript" src="'.get_option('siteurl').'/wp-content/themes/willnorris/willnorris.js"></script>';
 }
 
+function willnorris_stylesheet_uri($style) { 
+	return get_stylesheet_directory_uri().'/lib/reset.css" />
+	<link rel="stylesheet" type="text/css" href="'.get_stylesheet_directory_uri().'/lib/typography.css" />
+	<link rel="stylesheet" type="text/css" href="'.$style;
+}
+
 function willnorris_footer() { 
 ?>
 	<div id="copyright"> &copy; <?php echo date('Y'); ?>
@@ -40,6 +46,7 @@ function willnorris_bloginfo($output, $show) {
 }
 
 //add_action('wp_head', 'willnorris_header');
+add_action('stylesheet_uri', 'willnorris_stylesheet_uri' );
 add_action('get_footer', 'willnorris_footer');
 add_filter('bloginfo', 'willnorris_bloginfo', 5, 2);
 
