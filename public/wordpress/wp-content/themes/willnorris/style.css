@@ -205,3 +205,7 @@ img.right								{ float: right; }
 body.single .akst_link					{ display: block; text-align: right; }
 
 #project-license						{ font-size: 0.8em; }
+
+body.pageid-231 .entry-content ul		{ margin-left: 2em; list-style: none; }
+body.pageid-231 .entry-content li		{ display: inline; float: left; margin-right: 1em; list-style: none; text-align: center; }
+body.pageid-231 .entry-content li img	{ border: 1px solid #000; padding: 1px; display: block; margin: 0 auto;}
