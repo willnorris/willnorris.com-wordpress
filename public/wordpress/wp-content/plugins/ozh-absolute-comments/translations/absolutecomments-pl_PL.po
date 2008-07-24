@@ -1,0 +1,102 @@
+# translation of absolutecomments-pl_PL.po to Polish
+# Absolute Comments - plugin for WordPress
+#
+# Ozh <ozh@planetozh.com>, 2007.
+# Grzegorz Gibas <amigib@gmail.com>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: absolutecomments-pl_PL\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-10-28 08:27-0700\n"
+"PO-Revision-Date: 2008-06-22 22:03+0200\n"
+"Last-Translator: Grzegorz Gibas <amigib@gmail.com>\n"
+"Language-Team: Polish <pl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Oops, no comment with this ID."
+msgstr "Oops, brak komentarzy dla tego ID"
+
+#: wp_ozh_absolutecomments.php:108
+msgid "Go back"
+msgstr "Powróŧ"
+
+#: wp_ozh_absolutecomments.php:114
+msgid "Your Reply"
+msgstr "Twoja odpowiedź"
+
+#: wp_ozh_absolutecomments.php:141 includes/_print_js.php:14
+msgid "Reply"
+msgstr "Odpowiedz"
+
+#: wp_ozh_absolutecomments.php:143
+msgid "Powered by"
+msgstr ""
+
+#: includes/_print_js.php:11
+msgid "Reply to Comment &raquo;"
+msgstr "Odpowiedz na komentarz &raquo;"
+
+#: includes/_print_js.php:12
+msgid "Thread Reply &raquo;"
+msgstr "Odpowiedz na wątek &raquo;"
+
+#: includes/_print_js.php:13
+msgid "Wait..."
+msgstr "Poczekaj..."
+
+#: includes/_print_js.php:15
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: includes/_print_js.php:16
+msgid "View All"
+msgstr "Pokaż wszystkie"
+
+#: includes/_print_js.php:17
+msgid "Quick Reply"
+msgstr "Szybka odpowiedź"
+
+#: includes/_print_js.php:18
+msgid "Reply with advanced editor"
+msgstr "Odpowiedz w zaawansowanym edytorze"
+
+#: includes/_print_js.php:19
+msgid "View all comments for this post"
+msgstr "Pokaż wszystkie komentarze do tego wpisu"
+
+#: includes/_print_js.php:20
+msgid "Posting comment..."
+msgstr "Wstawianie komentarza..."
+
+#: includes/_print_js.php:21
+msgid "Ooops! Duplicate comment detected. Aborted."
+msgstr "Ooops! Wykryto zduplikowany komentarz. Przerwano"
+
+#: includes/_print_js.php:22
+msgid "Ooops! You are posting too quickly. Aborted."
+msgstr "Ooops! Wysyłasz za szybko. Przerwano"
+
+#: includes/_print_js.php:23
+msgid "Error (duplicate comment, or posting too quickly ?). Aborted"
+msgstr "Błąd (zduplikowany komentarz albo wysyłasz za szybko). Przerwano"
+
+#: includes/_reply_form.php:27
+msgid "currently flagged as"
+msgstr "obecnie zaznaczony jako"
+
+#: includes/_reply_form.php:28
+msgid "Your reply to this comment"
+msgstr "Twoja odpowiedź na ten komentarz"
+
+#: includes/_view_all.php:59
+msgid "Comments on"
+msgstr "Komentarzy dla"
+
+#: includes/_view_comment.php:23
+msgid "From: "
+msgstr "Od:"
+

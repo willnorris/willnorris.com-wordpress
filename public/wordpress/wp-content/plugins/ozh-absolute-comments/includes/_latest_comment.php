@@ -3,6 +3,8 @@
 Part of Plugin: Absolute Comments
 */
 
+function auth_redirect() {return;} // We don't want a login form. Security & Permissions are handled by current_user_can()
+
 if (!defined('ABSPATH')) require_once('../../../../wp-config.php');
 if (!function_exists('wp_ozh_cqr_take_over') or !current_user_can('edit_posts')) die('You cannot do this');
 

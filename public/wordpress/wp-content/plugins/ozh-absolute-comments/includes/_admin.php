@@ -37,7 +37,7 @@ function wp_ozh_cqr_adminpage_print() {
 	
 	$editor_rows = $wp_ozh_cqr['editor_rows'];
 	$icon = $wp_ozh_cqr['show_icon'];
-	$prefill = $wp_ozh_cqr['prefill_reply'];
+	$prefill = stripslashes($wp_ozh_cqr['prefill_reply']);
 	$thr = $wp_ozh_cqr['show_threaded'];
 	$mail = $wp_ozh_cqr['mail_promote'];
 	$viewall = $wp_ozh_cqr['viewall'];

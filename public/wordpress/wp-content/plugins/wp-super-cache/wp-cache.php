@@ -3,7 +3,7 @@
 Plugin Name: WP Super Cache
 Plugin URI: http://ocaoimh.ie/wp-super-cache/
 Description: Very fast caching module for WordPress. Once enabled, you must <a href="options-general.php?page=wp-super-cache/wp-cache.php">enable the cache</a>. Based on WP-Cache by <a href="http://mnm.uib.es/gallir/">Ricardo Galli Granada</a>.
-Version: 0.6.4
+Version: 0.6.5
 Author: Donncha O Caoimh
 Author URI: http://ocaoimh.ie/
 */
@@ -131,17 +131,23 @@ function toggleLayer( whichLayer ) {
 		<p>It appears that mod_rewrite is not installed. Sometimes this check isn't 100% reliable, especially if you are not using Apache. Please verify that the mod_rewrite module is loaded. It is required for serving Super Cache static files. You will still be able to use WP-Cache.</p><?php
 	}
 
-	if( !is_writeable( ABSPATH . 'wp-content/' ) || !is_writable($wp_cache_config_file) ) {
+	if( !is_writable($wp_cache_config_file) ) {
 		define( "SUBMITDISABLED", 'disabled style="color: #aaa" ' );
-		?><h4 style='color: #a00'>Read Only Mode. Configuration cannot be changed. <a href="javascript:toggleLayer('readonlywarning');" title="Why your configuration may not be changed">Why</a></h4>
+		?><h4 style='text-align:center; color: #a00'>Read Only Mode. Configuration cannot be changed. <a href="javascript:toggleLayer('readonlywarning');" title="Why your configuration may not be changed">Why</a></h4>
 		<div id='readonlywarning' style='border: 1px solid #aaa; margin: 2px; padding: 2px; display: none;'>
-		<p>The WP Super Cache configuration file is <code><?php echo ABSPATH ?>wp-content/wp-cache-config.php</code> and cannot be modified. The wp-content directory and wp-cache-config.php file must be writeable by the webserver to make any changes.<br />
+		<p>The WP Super Cache configuration file is <code><?php echo ABSPATH ?>wp-content/wp-cache-config.php</code> and cannot be modified. The file wp-content/wp-cache-config.php must be writeable by the webserver to make any changes.<br />
 		A simple way of doing that is by changing the permissions temporarily using the CHMOD command or through your ftp client. Make sure it's globally writeable and it should be fine.<br />
-		Writeable: <code>chmod 777 wp-content; chmod 666 wp-content/wp-cache-config.php</code><br />
-		Readonly: <code>chmod 755 wp-content; chmod 644 wp-content/wp-cache-config.php</code></p>
+		Writeable: <code>chmod 666 wp-content/wp-cache-config.php</code><br />
+		Readonly: <code>chmod 644 wp-content/wp-cache-config.php</code></p>
 		</div><?php
 	} else {
 		define( "SUBMITDISABLED", ' ' );
+	}
+
+	if( is_writable( ABSPATH . 'wp-content/' ) ) {
+		?><h4 style='text-align:center; color: #a00'>Warning! wp-content is writeable!</h4>
+		<p>You should change the permissions on <?php echo ABSPATH; ?>wp-content/ and make it more restrictive. Use your ftp client, or the following command to fix things:<br /><code>chmod 755 <?php echo ABSPATH; ?>wp-content/</code></p><?php
+
 	}
 
 	if ( $valid_nonce ) {
@@ -240,6 +246,7 @@ function toggleLayer( whichLayer ) {
 	$rules .= "RewriteCond %{REQUEST_METHOD} !=POST\n";
 	$rules .= "RewriteCond %{QUERY_STRING} !.*s=.*\n";
 	$rules .= "RewriteCond %{QUERY_STRING} !.*attachment_id=.*\n";
+	$rules .= "RewriteCond %{QUERY_STRING} !.*wp-subscription-manager=.*\n";
 	$rules .= "RewriteCond %{HTTP_COOKIE} !^.*(comment_author_|wordpress|wp-postpass_).*$\n";
 	$rules .= "RewriteCond %{HTTP:Accept-Encoding} gzip\n";
 	$rules .= "RewriteCond %{DOCUMENT_ROOT}{$home_root}wp-content/cache/supercache/%{HTTP_HOST}{$home_root}$1/index.html.gz -f\n";
@@ -248,6 +255,7 @@ function toggleLayer( whichLayer ) {
 	$rules .= "RewriteCond %{REQUEST_METHOD} !=POST\n";
 	$rules .= "RewriteCond %{QUERY_STRING} !.*s=.*\n";
 	$rules .= "RewriteCond %{QUERY_STRING} !.*attachment_id=.*\n";
+	$rules .= "RewriteCond %{QUERY_STRING} !.*wp-subscription-manager=.*\n";
 	$rules .= "RewriteCond %{HTTP_COOKIE} !^.*(comment_author_|wordpress|wp-postpass_).*$\n";
 	$rules .= "RewriteCond %{DOCUMENT_ROOT}{$home_root}wp-content/cache/supercache/%{HTTP_HOST}{$home_root}$1/index.html -f\n";
 	$rules .= "RewriteRule ^(.*) {$home_root}wp-content/cache/supercache/%{HTTP_HOST}{$home_root}$1/index.html [L]\n";
@@ -506,7 +514,7 @@ function RecursiveFolderDelete ( $folderPath ) { // from http://www.php.net/manu
 }
 
 function wp_cache_edit_max_time () {
-	global $super_cache_max_time, $cache_max_time, $wp_cache_config_file, $valid_nonce, $cache_enabled, $super_cache_enabled;
+	global $super_cache_max_time, $cache_max_time, $wp_cache_config_file, $valid_nonce, $cache_enabled, $super_cache_enabled, $wp_cache_gc;
 
 	if( !isset( $super_cache_max_time ) )
 		$super_cache_max_time = 21600;
@@ -525,6 +533,10 @@ function wp_cache_edit_max_time () {
 			wp_cache_replace_line('^ *\$super_cache_max_time', "\$super_cache_max_time = $super_cache_max_time;", $wp_cache_config_file);
 		}
 	}
+	if(isset($_POST['wp_cache_gc']) && $valid_nonce) {
+		$wp_cache_gc = (int)$_POST['wp_cache_gc'];
+		wp_cache_replace_line('^ *\$wp_cache_gc', "\$wp_cache_gc = $wp_cache_gc;", $wp_cache_config_file);
+	}
 	?><br /><fieldset style='border: 1px solid #aaa' class="options"> 
 	<legend>Expiry Time</legend><?php
 	echo '<form name="wp_edit_max_time" action="'. $_SERVER["REQUEST_URI"] . '" method="post">';
@@ -534,6 +546,15 @@ function wp_cache_edit_max_time () {
 		echo '<label for="super_cache_max_time">Super Cache Expire time:</label> ';
 		echo "<input type=\"text\" size=6 name=\"super_cache_max_time\" value=\"$super_cache_max_time\" /> seconds";
 	}
+	if( !isset( $wp_cache_gc ) )
+		$wp_cache_gc = 100;
+	echo "<h4>Garbage Collection</h4><p>How often should expired files be deleted? Once every:</p>";
+	echo "<ul><li><input type='radio' name='wp_cache_gc' value='100'" . ( $wp_cache_gc == 100 ? ' checked' : '' ) . " /> 100 requests (very often)</li>\n";
+	echo "<li><input type='radio' name='wp_cache_gc' value='500'" . ( $wp_cache_gc == 500 ? ' checked' : '' ) . " /> 500 requests</li>\n";
+	echo "<li><input type='radio' name='wp_cache_gc' value='1000'" . ( $wp_cache_gc == 1000 ? ' checked' : '' ) . " /> 1000 requests</li>\n";
+	echo "<li><input type='radio' name='wp_cache_gc' value='2000'" . ( $wp_cache_gc == 2000 ? ' checked' : '' ) . " /> 2000 requests</li>\n";
+	echo "<li><input type='radio' name='wp_cache_gc' value='5000'" . ( $wp_cache_gc == 5000 ? ' checked' : '' ) . " /> 5000 requests (very seldom)</li></ul>\n";
+	echo "<p>Checking for and deleting expired files is expensive, but it's expensive leaving them there too. On a very busy site you can leave this fairly high. Experiment with different values and visit this page to see how many expired files remain at different times during the day.</p><p>Simple rule of thumb: divide your number of daily page views by 5 and pick the closest number above.</p>";
 	echo '<div class="submit"><input type="submit" ' . SUBMITDISABLED . 'value="Change expiration &raquo;" /></div>';
 	wp_nonce_field('wp-cache');
 	echo "</form>\n";
