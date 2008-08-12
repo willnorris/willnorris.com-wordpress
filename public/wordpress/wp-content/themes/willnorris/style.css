@@ -152,8 +152,10 @@ body.single .entry-meta .author			{ display: inline; }
 #commentform legend						{ font-weight: bold; }
 
 
-.comments li							{ list-style: none; }
-.comments li + li						{ margin-top: 3em; }
+.comments li.comment					{ list-style: none; }
+.comment ul								{ margin: 0 0 0 3em; }
+.comment li								{ list-style-type: disc; margin: 0.5em; }
+li.comment + li.comment					{ margin-top: 3em; }
 
 .comments li p							{ line-height: 2.0em; text-align: left; margin-left: 5px; }
 img.avatar								{ float: right; width: 32px; height: 32px; margin: 2px; }
