@@ -1,3 +1,340 @@
+2008-09-26 23:15  donncha
+
+	* readme.txt, wp-cache.php: Bump the version number to 0.8.2
+
+2008-09-26 23:14  donncha
+
+	* wp-cache-config-sample.php, wp-cache-phase2.php, wp-cache.php:
+	  Added $cache_rebuild_files setting to switch off "need rebuild"
+	  functionality by default
+
+2008-09-26 16:00  donncha
+
+	* wp-cache-phase2.php: On post change clear the front page
+
+2008-09-26 12:04  donncha
+
+	* wp-cache-phase2.php: Move cache writers entry up above supercache
+	  cleaning.
+	  Only clean individual posts, don't clear cache when no post_id
+
+2008-09-26 09:49  donncha
+
+	* wp-cache.php: Only show "Delete Cache" link to MU site admins or
+	  admins on WP blogs
+
+2008-09-25 12:47  donncha
+
+	* wp-cache.php: Save "wp_cache_clear_on_post_edit" properly, thanks
+	  HarryRAR,
+	  http://wordpress.org/support/topic/206371?replies=2#post-861998
+
+2008-09-25 11:12  donncha
+
+	* wp-cache-phase2.php, wp-cache.php: Can't clear cache on edit_post
+	  because leaving a comment calls edit_post unfortunately
+	  Experimental code to preserve supercache version of a page while
+	  it's being regenerated.
+
+2008-09-24 14:21  donncha
+
+	* wp-cache.php: Added "Delete Cache" link at top of admin pages
+
+2008-09-24 13:57  donncha
+
+	* Changelog.txt: Updated changelog, still release 0.8.1
+
+2008-09-24 13:03  donncha
+
+	* wp-cache-phase2.php: Added function to clear cache when a post is
+	  edited
+
+2008-09-24 13:02  donncha
+
+	* wp-cache.php: Added "Clear on edit" checkbox to clear all cache
+	  files when a post or page is edited
+
+2008-09-24 13:01  donncha
+
+	* wp-cache.php: Remove meta and supercache directories when
+	  deactivating
+
+2008-09-24 12:47  donncha
+
+	* wp-cache.php: Switch status messages around.
+
+2008-09-24 12:47  donncha
+
+	* wp-cache.php: Remove cache/.htaccess when uninstalling.
+
+2008-09-24 12:44  donncha
+
+	* readme.txt: Make mod mime and rewrite line clearer, hopefully
+
+2008-09-24 12:38  donncha
+
+	* wp-cache-phase2.php: comment_id typo
+	  Only clear supercache files if it's enabled
+
+2008-09-24 12:37  donncha
+
+	* readme.txt: Updated mod_rewrite rules and expiry/mime type rules
+
+2008-09-24 11:57  donncha
+
+	* Changelog.txt: Updated changelog for 0.8.1
+
+2008-09-24 11:57  donncha
+
+	* readme.txt, wp-cache.php: Bump the version number
+
+2008-09-24 10:01  donncha
+
+	* wp-cache-phase2.php: Make the temporary filename world readable
+	  to avoid problems where Apache and PHP run as different users.
+	  Thanks Tigertech for the code.
+
+2008-09-24 09:57  donncha
+
+	* wp-cache-phase2.php: Check that rename worked, if not, remove
+	  cache file and rename again. Props tigertech
+
+2008-09-23 19:55  donncha
+
+	* wp-cache-phase2.php: Don't clear the supercache if it's not
+	  enabled (In blog context, when a moderated comment is made)
+
+2008-09-23 13:09  donncha
+
+	* Changelog.txt: Updated changelog
+
+2008-09-23 13:05  donncha
+
+	* readme.txt, wp-cache.php: Bump the version to 0.8
+
+2008-09-23 13:01  donncha
+
+	* wp-cache-phase1.php: Comment: reminder to update .htaccess rules
+	  if get_cookie cacheaction is used.
+
+2008-09-23 12:58  donncha
+
+	* wp-cache-phase1.php: Don't return if the $string is not ''
+
+2008-09-23 12:50  donncha
+
+	* wp-cache.php: Generate a semaphore id based on hostname and cache
+	  path, props Tigertech
+	  http://wordpress.org/support/topic/205195?replies=4#post-857610
+
+2008-09-23 11:14  donncha
+
+	* wp-cache.php: Make the expiry cleanup list an unordered list
+
+2008-09-23 11:06  donncha
+
+	* wp-cache-phase2.php: siteurl -> home for those who run WP in a
+	  different place
+
+2008-09-23 10:44  donncha
+
+	* wp-cache-config-sample.php, wp-cache-phase2.php, wp-cache.php: No
+	  need for $super_cache_max_time
+
+2008-09-23 10:39  donncha
+
+	* wp-cache-phase2.php: On post change:
+	  1. Clear all files from permalink in supercache directory.
+	  2. Clear siteurl/page/ permalinks.
+	  3. Clear supercache files when corresponding php meta files are
+	  removed.
+
+2008-09-18 09:45  donncha
+
+	* wp-cache.php: Show mod_rewrite rules when .htaccess is RO, props
+	  Matt @ http://mattsblog.ca/
+
+2008-09-17 16:29  donncha
+
+	* wp-cache-phase2.php, wp-cache.php: Decrease the chance of
+	  cleanup.
+
+2008-09-17 11:01  donncha
+
+	* wp-cache.php: Don't server cached static files when url contains
+	  "=". Should avoid lots of problems with query strings
+
+2008-09-17 11:00  donncha
+
+	* wp-cache-phase2.php: Replace the siteurl correctly for those who
+	  have installed in a subdir, but access from the directory above.
+	  Thanks Viper007Bond.
+
+2008-09-16 13:01  donncha
+
+	* wp-cache.php: Check for WordPress MU because .htaccess can't be
+	  updated.
+	  Set cache control and expiry headers of supercached files. Cached
+	  for 5 minutes, but with "must-revalidate"
+
+2008-09-06 11:00  donncha
+
+	* wp-cache-phase2.php: Write cache files to a temporary file first,
+	  then rename. Rename should be atomic.
+
+2008-08-28 11:30  donncha
+
+	* Changelog.txt: Updated changelog
+
+2008-08-28 11:29  donncha
+
+	* readme.txt, wp-cache.php: Bump the version number to 0.7.1
+
+2008-08-28 11:00  donncha
+
+	* wp-cache.php: Updated .htaccess code:
+	  Check that file is writable (again?)
+	  Fix warnings about upgrades.
+	  Bright yellow backgrounds on items that need attention
+	  Thanks Matt @ http://twitter.com/mattfreedman/statuses/901325274
+	  for reporting.
+
+2008-08-27 19:32  donncha
+
+	* Changelog.txt: Updated changelog
+
+2008-08-27 19:31  donncha
+
+	* readme.txt, wp-cache.php: Bump to 0.7, fix activation link
+
+2008-08-27 19:17  donncha
+
+	* Changelog.txt: Updated Changelog
+
+2008-08-27 19:16  donncha
+
+	* readme.txt, wp-cache.php: Bump the version number to 0.6.8
+
+2008-08-27 18:59  donncha
+
+	* wp-cache.php: Added rules to redirect to urls ending with a "/",
+	  props Andylav and definitelynot,
+	  http://wordpress.org/support/topic/199542?replies=6
+
+2008-08-21 16:41  donncha
+
+	* wp-cache.php: Change menu options url
+
+2008-08-20 11:47  donncha
+
+	* Changelog.txt: Update Changelog
+
+2008-08-20 10:49  donncha
+
+	* readme.txt, wp-cache.php: Bump version number to 0.6.7
+
+2008-08-20 09:38  donncha
+
+	* wp-cache.php: Added CRs
+
+2008-08-20 09:01  donncha
+
+	* wp-cache.php: Added apache_request_headers() as suggested in
+	  http://wordpress.org/support/topic/197053
+
+2008-08-19 16:27  donncha
+
+	* plugins/searchengine.php, wp-cache.php: Updated styling with the
+	  help of the simple trackback validation plugin
+
+2008-08-19 15:11  donncha
+
+	* wp-cache-config-sample.php: Don't include rss files in cacheable
+	  list
+
+2008-08-19 15:05  donncha
+
+	* wp-cache.php: Added "deactivation hook" to remove
+	  advanced-cache.php and wp-cache-config.php and cached files.
+
+2008-08-14 10:39  donncha
+
+	* wp-cache-phase1.php: Only include once
+
+2008-08-14 09:14  donncha
+
+	* wp-cache-phase1.php, wp-cache-phase2.php: Cron fixed from Mike
+
+2008-08-13 12:52  donncha
+
+	* wp-cache-phase2.php, wp-cache.php: Fixes from Mike Beggs:
+	  Use custom is_writeable() that works in Win32 NTFS
+	  Update "Vary" header
+	  Let WP Cron handle cache cleaning.
+	  Don't let mod_deflate try to compress gzipped cached files
+
+2008-08-09 10:13  donncha
+
+	* wp-cache-phase2.php: Use get_comment(), props Lazy @
+	  http://www.lazybrain.de/
+
+2008-07-31 15:53  donncha
+
+	* Changelog.txt: Updated changelog
+
+2008-07-31 10:47  donncha
+
+	* readme.txt, wp-cache.php: Bump version numbers
+
+2008-07-29 19:52  donncha
+
+	* wp-cache-config-sample.php, wp-cache-phase1.php, wp-cache.php: WP
+	  2.6 fixes. Use WP_CONTENT_DIR. Have not added to .htaccess rules
+	  yet
+
+2008-07-28 09:37  donncha
+
+	* readme.txt, wp-cache.php: Change wp-super-cache expiry to 3600
+	  seconds.
+	  Avoid foreach error on empty directories
+	  Minor change to status message
+
+2008-07-24 16:26  donncha
+
+	* wp-cache-phase2.php, wp-cache.php: Removed debug error log
+	  Catch 404 file not found requests when themes use query_posts()
+
+2008-07-24 13:17  donncha
+
+	* wp-cache-phase2.php: If we can't get a file lock, warn user.
+
+2008-07-23 18:30  donncha
+
+	* readme.txt: Update FAQ on cache times.
+
+2008-07-23 18:27  donncha
+
+	* readme.txt, wp-cache.php: Added p= parameter to htacess rules so
+	  they'll be served by wp-cache only,
+	  http://wordpress.org/support/topic/191275?replies=3
+
+2008-07-17 09:48  donncha
+
+	* wp-cache.php: Handle if wp-config.php has been moved ../ in
+	  WordPress 2.6
+
+2008-07-16 11:12  donncha
+
+	* wp-cache.php: Don't warn the user wp-content is writable if
+	  webserver is running as user.
+	  Create correct .htaccess rules when WordPress is installed in a
+	  different location. Both fixes props Allan Bazinet @
+	  http://sneezingfrog.com/blog/
+
+2008-07-15 10:17  donncha
+
+	* Changelog.txt: Update changelog
+
 2008-07-15 10:15  donncha
 
 	* readme.txt, wp-cache.php: Bump the version number to 0.6.5

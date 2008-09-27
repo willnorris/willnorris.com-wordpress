@@ -2,18 +2,23 @@
 Contributors: Mittineague
 Tags: remove options, wp_options
 Requires at least: 2.1
-Tested up to: 2.3
+Tested up to: 2.6
 Stable tag: Trunk
 
 == License ==
 Released under the terms of the GNU General Public License.
 
 == Version History ==
-Beta 0.9.6 19-Oct-2007 
-- added test for empty option_name field  
+Beta 0.9.7 06-Aug-2008  
+- provided for time limit increase  
+- updated the $known_ok array (for WordPress 2.6)  
+- added test for empty option_name field [autoload != yes block]  
+
+Beta 0.9.6 19-Oct-2007  
+- added test for empty option_name field [autoload = yes block]  
 - tweaked error handling  
--
-Beta 0.9.5 18-Oct-2007 
+
+Beta 0.9.5 18-Oct-2007  
 - scoped $cur_wp_ver  
 - changed WP_Error obj syntax  
 - replaced get_alloptions() with get_all_yes_autoload_options()  
@@ -21,10 +26,10 @@ Beta 0.9.5 18-Oct-2007
 - removed $wpdb->hide_errors() from get_all_no_autoload_options()  
 - removed global $wp_queries from get_all_no_autoload_options()  
 
-Beta 0.9.4 06-Oct-2007 
+Beta 0.9.4 06-Oct-2007  
 - added WordPress ver. 2.3 compatibility  
 
-Beta 0.9.3 06-Jul-2007 
+Beta 0.9.3 06-Jul-2007  
 - updated/improved WP core options array  
 - provided for memory limit increase  
 - optimized memory usage  
@@ -36,16 +41,16 @@ Beta 0.9.2 25-Apr-2007
 - - added backup suggestion  
 
 Beta 0.9.1 24-Apr-2007  
-- changed a 'hard-coded' wp_ to $wpdb->
+- changed a 'hard-coded' wp_ to $wpdb->  
 
 Beta 0.9.0 22-Apr-2007  
 -  added get _ all "rss _ " options  
--  changed str_replace() to wordwrap()
+-  changed str_replace() to wordwrap()  
 
 Beta 0.7.1 17-Apr-2007  
--  added "Further Information" section
+-  added "Further Information" section  
 
-Beta 0.7.0 13-Apr-2007
+Beta 0.7.0 13-Apr-2007  
 
 == Description ==
 Finds orphaned options and allows for their removal from the wp _ options table.
@@ -72,9 +77,10 @@ Please review this information very carefully and only remove Options that you k
 It is strongly suggested that you BACKUP your database before removing any options.  
 
 == Installation ==
-1.  Upload 'cleanoptions.php' to the '/wp-content/plugins/' directory
-2.  Activate the plugin through the 'Plugins' menu in WordPress
-3.  Click the 'Manage' admin menu link, and select 'CleanOptions'
+1.  If you are upgrading, deactivate the plugin before step 2
+2.  Upload 'cleanoptions.php' to the '/wp-content/plugins/' directory
+3.  Activate the plugin through the 'Plugins' menu in WordPress
+4.  Click the 'Manage' admin menu link, and select 'CleanOptions'
 
 == Frequently Asked Questions ==
 

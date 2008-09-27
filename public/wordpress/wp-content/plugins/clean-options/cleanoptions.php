@@ -3,7 +3,7 @@
 Plugin Name: Clean Options
 Plugin URI: http://www.mittineague.com/dev/co.php
 Description: finds orphaned options and allows for their removal from the wp_options table
-Version: Beta 0.9.6
+Version: Beta 0.9.7
 Author: Mittineague
 Author URI: http://www.mittineague.com
 */
@@ -11,9 +11,15 @@ Author URI: http://www.mittineague.com
 /*
 * Change Log
 * 
-* ver. Beta 0.9.6 19-Oct-2007
-* - added test for empty option_name field
+* ver. Beta 0.9.7 06-Aug-2008
+* - provided for time limit increase
+* - updated the $known_ok array (for WordPress 2.6)
+* - added test for empty option_name field [autoload != yes block]
 * 
+* ver. Beta 0.9.6 19-Oct-2007
+* - added test for empty option_name field [autoload = yes block]
+* - tweaked error handling
+*
 * ver. Beta 0.9.5 18-Oct-2007
 * - updated the $known_ok array
 * - scoped $cur_wp_ver
@@ -136,6 +142,15 @@ $mem_lim_as_bytes = co_return_bytes($co_mem_lim);
 if ( $mem_lim_as_bytes < 33554432 )
 {
 	ini_set('memory_limit', '32M');
+}
+
+/* similarly, attempt to increase time limit
+* - will not work if PHP is in safe mode
+*/
+$co_time_lim = ini_get('max_execution_time');
+if ( $co_time_lim < 60 )
+{
+	set_time_limit(60);
 }
 
 /* get blog version */
@@ -262,7 +277,7 @@ $cur_wp_ver = substr( $cur_wp_ver, 0, 3 );
 					$all_yes_options->{$yes_option->option_name} = apply_filters('pre_option_' . $yes_option->option_name, $yes_value);
 				}
 			}
-				return apply_filters('all_options', $all_yes_options);
+			return apply_filters('all_options', $all_yes_options);
 		}
 
 		$opt_arr = get_all_yes_autoload_options();
@@ -293,68 +308,87 @@ $cur_wp_ver = substr( $cur_wp_ver, 0, 3 );
 * they're in the $known_ok array too. A bit of code bloat perhaps, but better
 * than making it too easy to remove something that may break the blog.
 * these options are found in wp-admin/includes/schema.php, and
-* akismet.php, themes/default/functions.php, wp-cron.php, wp-includes/cron.php,
-* wp-includes/rewrite.php, wp-admin/options-reading.php, wp-includes/rewrite.php
+* wp-content/plugins/akismet/akismet.php~, wp-content/themes/default/functions.php^,
+* wp-cron.php#, wp-includes/cron.php@,
+* wp-includes/rewrite.php!, wp-admin/options-reading.php*
 */
-		$known_ok = array('xvalid_options', // created during backup, V core options V
-				'active_plugins',			//2.3
-				'admin_email',				//2.3
-				'advanced_edit',			//2.3
-				'akismet_discard_month',		// 2.3
-				'akismet_spam_count',			// 2.3
-				'blog_charset',				//2.3
-				'blogdescription',			//2.3
-				'blogname',				//2.3
-				'category_base',			//2.3
-				'comment_max_links',			//2.3
-				'comment_moderation',			//2.3
-				'comments_notify',			//2.3
-				'cron',					// 2.3
-				'date_format',				//2.3
-				'default_category',			//2.3
-				'default_comment_status',		//2.3
-				'default_ping_status',			//2.3
-				'default_pingback_flag',		//2.3
-				'default_post_edit_rows',		//2.3
-				'doing_cron',				// 2.3
-				'gmt_offset',				//2.3
-				'gzipcompression',			//2.3
-				'hack_file',				//2.3
-				'home',					//2.3
-				'kubrick_header_color',			// 2.3
-				'kubrick_header_display',		// 2.3
-				'kubrick_header_image',			// 2.3
-				'links_recently_updated_append',	//2.3
-				'links_recently_updated_prepend',	//2.3
-				'links_recently_updated_time',		//2.3
-				'links_updated_date_format',		//2.3
-				'mailserver_login',			//2.3
-				'mailserver_pass',			//2.3
-				'mailserver_port',			//2.3
-				'mailserver_url',			//2.3
-				'moderation_keys',			//2.3
-				'moderation_notify',			//2.3
-				'page_attachment_uris',			// 2.3
-				'page_for_posts',			// 2.3
-				'page_on_front',			// 2.3
-				'permalink_structure',			//2.3
-				'ping_sites',				//2.3
-				'posts_per_page',			//2.3
-				'posts_per_rss',			//2.3
-				'require_name_email',			//2.3
-				'rewrite_rules',			// 2.3
-				'rss_excerpt_length',			//2.3
-				'rss_use_excerpt',			//2.3
-				'siteurl',				//2.3
-				'start_of_week',			//2.3
-				'time_format',				//2.3
-				'use_balanceTags',			//2.3
-				'use_smilies',				//2.3
-				'users_can_register',			//2.3
-				'what_to_show',				//2.3
-				'widget_akismet',			// 2.3
-				'wordpress_api_key',			// 2.3
+		$known_ok = array('active_plugins',			//2.6
+				'admin_email',				//2.6
+				'advanced_edit',			//2.6
+				'akismet_discard_month',		//2.6~
+				'akismet_spam_count',			//2.6~
+				'blog_charset',				//2.6
+				'blogdescription',			//2.6
+				'blogname',				//2.6
+				'category_base',			//2.6
+				'comment_max_links',			//2.6
+				'comment_moderation',			//2.6
+				'comments_notify',			//2.6
+				'cron',					//2.6@
+				'date_format',				//2.6
+				'default_category',			//2.6
+				'default_comment_status',		//2.6
+				'default_ping_status',			//2.6
+				'default_pingback_flag',		//2.6
+				'default_post_edit_rows',		//2.6
+				'doing_cron',				//2.6#
+				'gmt_offset',				//2.6
+				'gzipcompression',			//2.6
+				'hack_file',				//2.6
+				'home',					//2.6
+				'kubrick_header_color',			//2.6^
+				'kubrick_header_display',		//2.6^
+				'kubrick_header_image',			//2.6^
+				'links_recently_updated_append',	//2.6
+				'links_recently_updated_prepend',	//2.6
+				'links_recently_updated_time',		//2.6
+				'links_updated_date_format',		//2.6
+				'mailserver_login',			//2.6
+				'mailserver_pass',			//2.6
+				'mailserver_port',			//2.6
+				'mailserver_url',			//2.6
+				'moderation_keys',			//2.6
+				'moderation_notify',			//2.6
+				'page_attachment_uris',			//2.6!
+				'page_for_posts',			//2.6*
+				'page_on_front',			//2.6*
+				'permalink_structure',			//2.6
+				'ping_sites',				//2.6
+				'posts_per_page',			//2.6
+				'posts_per_rss',			//2.6
+				'require_name_email',			//2.6
+				'rewrite_rules',			//2.6!
+				'rss_excerpt_length',			//2.6
+				'rss_use_excerpt',			//2.6
+				'show_on_front',			//2.6*
+				'siteurl',				//2.6
+				'start_of_week',			//2.6
+				'time_format',				//2.6
+				'use_balanceTags',			//2.6
+				'use_smilies',				//2.6
+				'users_can_register',			//2.6
+				'what_to_show',				//2.6
+				'widget_akismet',			//2.6~
+				'wordpress_api_key',			//2.6~
 				);
+		if ( $cur_wp_ver < '2.6' )
+		{
+			$ver_2_5_arr = array('avatar_rating',		//2.5
+				'medium_size_w',			//2.5
+				'medium_size_h',			//2.5
+				'show_avatars',				//2.5
+				'thumbnail_crop',			//2.5
+				'thumbnail_size_h',			//2.5
+				'thumbnail_size_w',			//2.5
+				'upload_url_path',			//2.5
+				);
+			$known_ok += $ver_2_5_arr;
+		}
+		if ( $cur_wp_ver < '2.5' )
+		{
+			$ver_2_3_arr = array('xvalid_options');		//2.3 during backup
+			$known_ok += $ver_2_3_arr;
+		}
 		if ( $cur_wp_ver < '2.3' )
 		{
 			$ver_2_2_arr = array('tag_base');		//2.2
@@ -422,15 +456,30 @@ $cur_wp_ver = substr( $cur_wp_ver, 0, 3 );
 
 		function get_all_no_autoload_options()
 		{
-			global $wpdb;
-			$options = $wpdb->get_results("SELECT option_name, option_value FROM $wpdb->options WHERE autoload != 'yes'");
+			global $wpdb, $errs;
+			$no_options = $wpdb->get_results("SELECT option_name, option_value FROM $wpdb->options WHERE autoload != 'yes'");
 
-			foreach ( $options as $option )
+			foreach ( $no_options as $no_option )
 			{
-				$value = maybe_unserialize($option->option_value);
-				$all_options->{$option->option_name} = apply_filters('pre_option_' . $option->option_name, $value);
+				if ( empty ($no_option->option_name) )
+				{
+					if ( is_object ($errs) )
+					{
+						$errs->add('Empty Value', 'autoload not equal to yes Option with No Name with the value: ' . wp_specialchars($no_option->option_value) );
+					}
+					else
+					{
+						echo '<strong>WARNING !! ERROR MESSAGE !!</strong><br />';
+						echo 'There is an autoload not equal to yes Option with No Name with the value: ' . wp_specialchars($no_option->option_value) . '<br />';
+					}
+				}
+				else
+				{
+					$no_value = maybe_unserialize($no_option->option_value);
+					$all_no_options->{$no_option->option_name} = apply_filters('pre_option_' . $no_option->option_name, $no_value);
+				}
 			}
-			return apply_filters('all_options', $all_options);
+			return apply_filters('all_options', $all_no_options);
 		}
 
 		function read_rss_ts($rss_opt_val)
@@ -624,6 +673,12 @@ $cur_wp_ver = substr( $cur_wp_ver, 0, 3 );
 		<form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
 		<p>Listed Options are those that are found in the wp_options table but are not referenced by "get_option" or "get_settings" by any of the PHP files located within your blog directory. If you have deactivated plugins and / or non-used themes in your directory, the associated options will not be considered orphaned until the files are removed.<br />Every "rss_hash" option in the wp_options table will be shown, including current ones.</p>
 <?php
+/* find out how many rows are in the options table */
+		global $wpdb;
+		$co_opt_tbl_len = $wpdb->get_results("SELECT COUNT(*) FROM $wpdb->options", ARRAY_A);
+?>
+		<p>The Options table currently has <b><?php echo $co_opt_tbl_len[0]['COUNT(*)']; ?></b> rows.</p>
+<?php
 		if ( function_exists('wp_nonce_field') )
 			wp_nonce_field('clean-options-find-orphans_' . $cononce);
 ?>
@@ -644,6 +699,12 @@ $cur_wp_ver = substr( $cur_wp_ver, 0, 3 );
 		<h2>Clean Options</h2>
 		<form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
 		<p>Listed Options are those that are found in the wp_options table but are not referenced by "get_option" or "get_settings" by any of the PHP files located within your blog directory. If you have deactivated plugins and / or non-used themes in your directory, the associated options will not be considered orphaned until the files are removed.<br />Every "rss_hash" option in the wp_options table will be shown, including current ones.</p>
+<?php
+/* find out how many rows are in the options table */
+		global $wpdb;
+		$co_opt_tbl_len = $wpdb->get_results("SELECT COUNT(*) FROM $wpdb->options", ARRAY_A);
+?>
+		<p>The Options table currently has <b><?php echo $co_opt_tbl_len[0]['COUNT(*)']; ?></b> rows.</p>
 <?php
 		if ( function_exists('wp_nonce_field') )
 			wp_nonce_field('clean-options-find-orphans_' . $cononce);

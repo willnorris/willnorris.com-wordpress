@@ -2,8 +2,8 @@
 Contributors: wnorris, erans
 Tags: microid
 Requires at least: 1.5
-Tested up to: 2.1.2
-Stable tag: 1.0
+Tested up to: 2.6.1
+Stable tag: 1.1
 
 Add MicroIDs to your blog to enable ownership claims with third-parties.
 
@@ -43,4 +43,13 @@ so that I'll see your post.  Additionally, you can file a bug report at
 == Screenshots ==
 
 1. Add a new MicroID using an Identity URI or the default admin data.
+
+== Changelog ==
+
+= version 1.1 =
+ - display microid on author pages (props: Craig Andrews)
+ - check is_front_page() in addition to is_home()
+
+= version 1.0 =
+ - initial release
 

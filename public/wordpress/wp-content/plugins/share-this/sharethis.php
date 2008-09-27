@@ -24,7 +24,7 @@
 Plugin Name: ShareThis
 Plugin URI: http://sharethis.com
 Description: Let your visitors share a post/page with others. Supports e-mail and posting to social bookmarking sites. <a href="options-general.php?page=sharethis.php">Configuration options are here</a>. Questions on configuration, etc.? Make sure to read the README.
-Version: 2.1
+Version: 2.3
 Author: ShareThis and Crowd Favorite (crowdfavorite.com)
 Author URI: http://sharethis.com
 */
@@ -169,41 +169,39 @@ function sharethis_button() {
 	echo st_widget();
 }
 
-function st_add_link($content) {
-	if (is_feed()) {
-		return $content.st_link();
-	}
-	else if (
-		(is_page() && get_option('st_add_to_page') != 'no')
-		|| (!is_page() && get_option('st_add_to_content') != 'no')
-		) {
-		return $content.'<p>'.st_widget().'</p>';
-	}
-	else {
-		return $content;
-	}
-}
 function st_remove_st_add_link($content) {
 	remove_action('the_content', 'st_add_link');
+	remove_action('the_content', 'st_add_widget');
 	return $content;
 }
 
-function st_add_st_add_link($content) {
-	add_action('the_content', 'st_add_link');
-	$content .= st_widget();
+function st_add_widget($content) {
+	if ((is_page() && get_option('st_add_to_page') != 'no') || (!is_page() && get_option('st_add_to_content') != 'no')) {
+		if (!is_feed()) {
+			return $content.'<p>'.st_widget().'</p>';
+		}
+	}		
+
 	return $content;
 }
 
+// 2006-06-02 Renamed function from st_add_st_link() to st_add_feed_link()
+function st_add_feed_link($content) {
+	if (is_feed()) {
+		$content .= st_link();
+	}
+
+	return $content;
+}
+
+// 2006-06-02 Filters to Add Sharethis widget on content and/or link on RSS
+// 2006-06-02 Expected behavior is that the feed link will show up if an option is not 'no'
 if (get_option('st_add_to_content') != 'no' || get_option('st_add_to_page') != 'no') {
-	add_action('the_content_rss', 'st_add_link');
-	add_filter('get_the_excerpt', 'st_remove_st_add_link', 9);
-	add_filter('the_content', 'st_add_link');
-	if (substr(get_bloginfo('version'), 0, 3) == "1.5" || substr(get_bloginfo('version'), 0, 3) == "2.0") {
-		add_filter('the_excerpt', 'st_add_st_add_link', 11);
-	}
-	else {
-		add_filter('get_the_excerpt', 'st_add_st_add_link', 11);
-	}
+	add_filter('the_content', 'st_add_widget');
+
+	// 2008-08-15 Excerpts don't play nice due to strip_tags().
+	add_filter('get_the_excerpt', 'st_remove_st_add_link',9);
+	add_filter('the_excerpt', 'st_add_widget');
 }
 
 function st_widget_fix_domain($widget) {

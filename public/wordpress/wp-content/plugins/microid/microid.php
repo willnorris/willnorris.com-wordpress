@@ -3,7 +3,7 @@
 Plugin Name: MicroID
 Plugin URI: http://willnorris.com/projects/wp-microid
 Description: Adds a MicroID to your WordPress blog
-Version: 1.0
+Version: 1.1
 Author: Will Norris
 Author URI: http://willnorris.com/
 */
@@ -31,13 +31,23 @@ class MicroID {
 	 */
 	function insert_meta_tags() 
 	{
-		if (is_home()) {
+		if (is_home() || (function_exists('is_front_page') && is_front_page()) ) {
 			$microid_identities = get_option('microid_identities');
 
 			if (!empty($microid_identities)) {
 				foreach($microid_identities as $k => $v) {
 					echo '<meta name="microid" content="' . $v . '" />' . "\n";
 				}
+			}
+		}
+
+		if (is_author()) {
+			$author  = get_userdata(get_query_var('author'));
+			$url = get_author_posts_url($author->user_login);
+			$identity = MicroID::canonicalize_identity_uri($author->user_email);
+			$microid = MicroID::generate($identity, $url);
+			if (!empty($microid)) {
+				echo '<meta name="microid" content="' . $microid . '" />' . "\n";
 			}
 		}
 	}

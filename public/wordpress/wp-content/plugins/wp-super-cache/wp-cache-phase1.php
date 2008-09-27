@@ -1,11 +1,19 @@
 <?php
-if( !@include(ABSPATH . 'wp-content/wp-cache-config.php') ) {
+// Pre-2.6 compatibility
+if( !defined('WP_CONTENT_DIR') )
+	define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
+
+if( !include( WP_CONTENT_DIR . '/wp-cache-config.php' ) )
 	return;
-}
 if( !defined( 'WPCACHEHOME' ) )
 	define('WPCACHEHOME', dirname(__FILE__).'/');
 
 include( WPCACHEHOME . 'wp-cache-base.php');
+
+if(defined('DOING_CRON')) {
+	require_once( WPCACHEHOME . 'wp-cache-phase2.php');
+	return;
+}
 
 $mutex_filename = 'wp_cache_mutex.lock';
 $new_cache = false;
@@ -82,7 +90,7 @@ function wp_cache_postload() {
 
 	if (!$cache_enabled) 
 		return;
-	require( WPCACHEHOME . 'wp-cache-phase2.php');
+	require_once( WPCACHEHOME . 'wp-cache-phase2.php');
 	wp_cache_phase2();
 }
 
@@ -95,9 +103,8 @@ function wp_cache_get_cookies_values() {
 		next($_COOKIE);
 	}
 	reset($_COOKIE);
-	if( $string != '' )
-		return $string;
 
+	// If you use this hook, make sure you update your .htaccess rules with the same conditions
 	$string = do_cacheaction( 'wp_cache_get_cookies_values', $string );
 	return $string;
 }
