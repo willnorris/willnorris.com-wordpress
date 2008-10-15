@@ -66,7 +66,7 @@ function willnorris_fix_quoter_head($wp) {
 }
 
 //add_action('wp_head', 'willnorris_header');
-add_action('stylesheet_uri', 'willnorris_stylesheet_uri' );
+//add_action('stylesheet_uri', 'willnorris_stylesheet_uri' );
 add_action('get_footer', 'willnorris_footer');
 add_filter('bloginfo', 'willnorris_bloginfo', 5, 2);
 add_action('wp', 'willnorris_fix_sharethis_head');
