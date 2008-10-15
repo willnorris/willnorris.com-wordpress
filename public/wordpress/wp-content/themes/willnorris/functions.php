@@ -45,19 +45,22 @@ function willnorris_bloginfo($output, $show) {
 	return $output;
 }
 
-function willnorris_add_sharethis($content) {
-	if (is_single() && function_exists('st_widget')) { 
-		$content .= '<p>' . st_widget() . '</p>';
+function willnorris_fix_sharethis_head($wp) {
+	if (function_exists('st_widget')) {
+		if (is_single()) { 
+			add_filter('the_content', create_function('$c', 'return $c."<p>".st_widget()."</p>";'));
+		} else {
+			remove_action('wp_head', 'st_widget_head');
+		}
 	}
 
-	return $content;
-
+	return $wp;
 }
 
 //add_action('wp_head', 'willnorris_header');
 add_action('stylesheet_uri', 'willnorris_stylesheet_uri' );
 add_action('get_footer', 'willnorris_footer');
 add_filter('bloginfo', 'willnorris_bloginfo', 5, 2);
-add_filter('the_content', 'willnorris_add_sharethis');
+add_action('wp', 'willnorris_fix_sharethis_head');
 
 ?>
