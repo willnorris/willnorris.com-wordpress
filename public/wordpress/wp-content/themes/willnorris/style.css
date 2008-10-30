@@ -193,6 +193,7 @@ img.avatar								{ float: right; width: 32px; height: 32px; margin: 2px; }
 										  10px 10px; border-bottom: 1px solid #ccc; padding-left: 30px; }
 #trackbacks-list li + li				{ margin-top: 1em; }
 #trackbacks-list li .comment-author		{ border-bottom: 1px solid #ccc; }
+#trackbacks-list li p					{ display: none; }
 
 
 
