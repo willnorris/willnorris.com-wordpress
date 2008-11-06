@@ -94,7 +94,7 @@ $default_button = "0";
 
 
 
-load_plugin_textdomain('cc-configurator');
+load_plugin_textdomain('cc-configurator', null, 'cc-configurator');
 
 function bccl_add_pages() {
 	add_options_page(__('License Options', 'cc-configurator'), __('License', 'cc-configurator'), 8, __FILE__, 'bccl_license_options');
