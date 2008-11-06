@@ -43,7 +43,7 @@ function widget_hcard_chicklet_init() {
 		?>
 
 		<?php echo $before_widget; ?>
-		<?php echo $before_title . '<a href="'.$options['url'].'" rel="me"><img src="'.$siteurl.'/wp-content/plugins/hcard-chicklet/hcard.png" alt="hCard" /></a>'.$after_title; ?>
+		<?php echo $before_title . '<a href="'.$options['url'].'" rel="me"><img src="' . plugins_url('hcard-chicklet') . '/hcard.png" alt="hCard" /></a>'.$after_title; ?>
 		<?php echo $after_widget; ?>
 <?php
 	}

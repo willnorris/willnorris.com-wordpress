@@ -155,7 +155,7 @@ function quoter_head() {
 	}
 
 	// Call Javascript
-	echo ("<script type=\"text/javascript\" src=\"" . get_option('siteurl') . "/wp-content/plugins/quoter/quoter.php?js=1\"></script>\n");
+	echo ("<script type=\"text/javascript\" src=\"" . plugins_url('quoter') . "/quoter.php?js=1\"></script>\n");
 	
 	// Fix for CITE in Kubrik CSS
 	
