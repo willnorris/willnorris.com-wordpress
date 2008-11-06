@@ -17,7 +17,7 @@
 	</div>
 
 	<div class="vcard">
-		<h3>Elisabeth Kennedy</h3>
+		<h3 class="fn">Elisabeth Kennedy</h3>
 		<div class="email">jaderossdale@gmail.com</div>
 		<div class="tel">
 			<span class="type">Cell</span> <span class="value">+1 909.815.0908</span>
