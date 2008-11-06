@@ -72,4 +72,15 @@ add_filter('bloginfo', 'willnorris_bloginfo', 5, 2);
 add_action('wp', 'willnorris_fix_sharethis_head');
 add_action('wp', 'willnorris_fix_quoter_head');
 
+
+add_filter('comments_template', 'legacy_comments');
+
+function legacy_comments($file) {
+		if(!function_exists('wp_list_comments')) : // WP 2.7-only check
+			$file = STYLESHEETPATH . '/legacy.comments.php';
+		endif;
+
+		return $file;
+}
+
 ?>
