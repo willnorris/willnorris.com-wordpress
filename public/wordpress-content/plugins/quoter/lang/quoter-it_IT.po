@@ -1,0 +1,252 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Quoter v1.1\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-03-02 11:05+0100\n"
+"Last-Translator: Daniele Mancino <ror@damagedgoods.it>\n"
+"Language-Team: ror (http://www.damagedgoods.it/) <ror@damagedgoods.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: c:\\inetpub\\wwwroot\\ror\\wp-content\\plugins\\quoter\n"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:411
+msgid "Moderated"
+msgstr "Moderato"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:417
+msgid "Spam"
+msgstr "Spam"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:502
+msgid "Quote"
+msgstr "Quota"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:503
+msgid "Quote this comment"
+msgstr "Quota questo commento"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:504
+msgid "<a href=\"%link%\" title=\"View original comment\"><cite>%name%</cite> wrote:</a>"
+msgstr "<a href=\"%link%\" title=\"Vedi il commento originale\"><cite>%name%</cite> ha scritto:</a>"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:509
+msgid "Quote selected text"
+msgstr "Quota il testo selezionato"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:510
+msgid "Click to quote selected text in your comment (requires Javascript)"
+msgstr "Clicca per quotare il testo selezionato (richiede Javascript)"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:509
+msgid "No text selected"
+msgstr "Devi prima selezionare del testo"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:619
+msgid "Options saved."
+msgstr "Opzioni salvate."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:643
+msgid "Options deleted. Now you can deactivate Quoter in <a href=\"plugins.php\">Manage Plugins</a>."
+msgstr "Opzioni eliminate. Ora &egrave; possibile disattivare Quoter in <a href=\"plugins.php\">Gestione Plugin</a>."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:645
+msgid "Don't reload this page, if you do options will be set again."
+msgstr "Non ricaricare questa pagina, o le opzioni saranno create nuovamente."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:656
+msgid "Quoter Options"
+msgstr "Opzioni di Quoter"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:659
+msgid "Comment quoting"
+msgstr "Quota commento"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:664
+msgid "Quote link:"
+msgstr "Link per quotare:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:672
+msgid "Quote link text."
+msgstr "Testo del link per quotare."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:672
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:765
+msgid "Cannot be empty."
+msgstr "Non pu&ograve; essere vuoto."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:673
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:688
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:702
+msgid "Replacement tags:"
+msgstr "Tag di sostituzione:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:679
+msgid "Quote link title:"
+msgstr "Titolo del link per quotare:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:687
+msgid "Quote link title."
+msgstr "Titolo del link per quotare."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:840
+msgid "Quote header:"
+msgstr "Intestazione della citazione:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:702
+msgid "Text showed before a quoted comment."
+msgstr "Testo da mostrare prima di un commento quotato."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:702
+msgid "It will be wrapped in a <a href=\"#headerlink\" title=\"Go to paragraph class option\"><code>&lt;p&gt;</code>aragraph</a> in order to generate valid XHTML."
+msgstr "Sar&agrave; inserito in un <a href=\"#headerlink\" title=\"Vai alla classe del paragrafo\"><code>&lt;p&gt;</code>aragrafo</a> in modo da generare XHTML valido."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:708
+msgid "Date format:"
+msgstr "Formato della data:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:716
+msgid "<code>%date%</code> format."
+msgstr "Formato di <code>%date%</code>."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:716
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:730
+msgid "Uses PHP <a href=\"http://www.php.net/date\" rel=\"external\"><code>date()</code></a> format. If empty, uses blog default value."
+msgstr "Utilizza il formato di PHP <a href=\"http://www.php.net/date\" rel=\"external\"><code>date()</code></a>. Se non impostato, utilizza il formato predefinito del blog."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:716
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:730
+msgid "Output:"
+msgstr "Esempio:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:722
+msgid "Time format:"
+msgstr "Formato dell'ora:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:730
+msgid "<code>%time%</code> format."
+msgstr "Formato di <code>%time%</code>."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:736
+msgid "Disable URL Rewrite:"
+msgstr "Disabilita URL Rewrite:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:744
+msgid "Quoter uses WordPress-style URL rewriting for server side comment quoting (needed if users have Javascript disabled). However this may not always work. If you get 404 errors when trying to quote a comment without Javascript, check the above option."
+msgstr "Quoter utilizza il sistema di riscrittura URL di WordPress per quotare i commenti lato server (per gli utenti che hanno Javascript disabilitato). In alcuni casi questo potrebbe non funzionare. Se, provando a quotare un commento senza Javascript, ricevi un errore 404, spunta questa opzione."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:752
+msgid "Selected text quoting"
+msgstr "Quota testo selezionato"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:757
+msgid "&quot;Quote selected text&quot; link text:"
+msgstr "Testo del link &quot;Quota testo selezionato&quot;:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:765
+msgid "Text of the &quot;quote selected text&quot; link."
+msgstr "Testo del link &quot;Quota testo selezionato&quot;."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:770
+msgid "&quot;Quote selected text&quot; link title:"
+msgstr "Titolo del link &quot;Quota testo selezionato&quot;:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:778
+msgid "Title of the &quot;quote selected text&quot; link."
+msgstr "Titolo del link &quot;Quota testo selezionato&quot;."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:783
+msgid "&quot;No text selected&quot; alert text:"
+msgstr "Testo del messaggio &quot;Nessun testo selezionato&quot;:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:791
+msgid "Text of the alert message when the user has not selected any text."
+msgstr "Testo del messaggio popup nel caso l'utente non abbia selezionato del testo."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:798
+msgid "IDs and classes"
+msgstr "ID e classi"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:799
+msgid "Although not needed in most cases, you may have to change these values to fit your theme and CSS style."
+msgstr "Anche se di rado, in alcuni casi potrebbe essere necessario cambiare questi valori affinch&eacute; combacino con i propri tema e foglio di stile."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:804
+msgid "Quote link class:"
+msgstr "Classe del link di quote:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:812
+msgid "Class of the quote comment link."
+msgstr "Classe del link per quotare un commento."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:812
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:825
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:838
+msgid "CSS example:"
+msgstr "Esempio CSS:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:817
+msgid "Quote header paragraph class:"
+msgstr "Classe del paragrafo dell'intestazione:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:825
+msgid "Class of the paragraph that contains the quote header."
+msgstr "Classe del paragrafo che contiene la riga mostrata prima di una citazione di un commento."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:830
+msgid "Quote selected text class:"
+msgstr "Classe di &quot;Quota testo selezionato&quot;:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:838
+msgid "Class of the &quot;Quote selected text&quot; link."
+msgstr "Classe del link &quot;Quota testo selezionato&quot;."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:843
+msgid "Comment textarea ID:"
+msgstr "ID della textarea di commento:"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:851
+msgid "Leave it to &quot;comment&quot; if you haven't modified it in your theme."
+msgstr "Lascia &quot;comment&quot; se non l'hai modificato nel tuo tema."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:860
+msgid "Update Options"
+msgstr "Aggiorna Opzioni"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:867
+msgid "Uninstall"
+msgstr "Disinstalla"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:868
+msgid "If you wish to deactivate Quoter and do not plan to use it again in the future, click this button to delete all options from the database.<br />Do this <strong>before</strong> you deactivate Quoter from Manage Plugins."
+msgstr "Se vuoi disattivare Quoter e pensi di non riattivarlo in futuro, clicca questo pulsante per eliminare tutte le opzioni dal database.<br />Fai questo <strong>prima</strong> di disattivare Quoter da Gestione Plugin."
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:870
+msgid "Delete options"
+msgstr "Elimina opzioni"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:870
+msgid "Delete Quoter options from the database"
+msgstr "Elimina le opzioni di Quoter dal database"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:870
+msgid ""
+"You are going to permanently delete all Quoter options from the database.\\n"
+"Are you sure you want to continue?"
+msgstr ""
+"Stai per eliminare definitivamente le opzioni di Quoter dal database.\\n"
+"Continuare?"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:877
+msgid "Help and support"
+msgstr "Aiuto e supporto"
+
+# c:\inetpub\wwwroot\ror\wp-content\plugins\quoter/quoter.php:878
+msgid "Visit plugin homepage"
+msgstr "Visita l'homepage del plugin"
+
