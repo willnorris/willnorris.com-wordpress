@@ -1,0 +1,436 @@
+<html>
+	<head>
+		<title>OpenID Support</title>
+		<style type="text/css">
+			h1			 { font-size: 1.5em; }
+			td, th		 { padding: 5px; margin: 0; text-align: center; height: 2em; }
+			p			 { margin: 1em; }
+			th span      { font-size: 0.8em; display: block; width: 4em; }
+			td.supported { text-indent: -9999px; background: #6F6; }
+		</style>
+		<script src='/mint/?js' type='text/javascript' language='javascript'></script>
+	</head>
+	<body>
+		<h1>OpenID Support</h1>
+
+		<p>This table shows the varying degrees of support by a few OpenID
+providers, both in terms of OpenID discovery and the OpenID protocols
+themselves.  You may hover over any of the protocols to see a little more
+detail about them.  The small "x" link next to each provider is the OpenID URL
+I used for testing.  Protocol support is based on what is advertised in the
+published XRDS document, but have not actually been tested.  If any providers
+would like to be added to the list, please <a
+href="http://willnorris.com/about#contact">let me know</a>.</p>
+
+		<!--
+		<p>This page was generated in connection with an <a
+href="http://willnorris.com/projects/wp-yadis">XRDS/Yadis plugin</a> I have for
+wordpress.  I'll see about making it more of a service that individuals can use
+to test their own OpenIDs.</a></p>
+-->
+		<p><strong>Full Disclosure:</strong> I currently work for <a href="http://www.vidoop.com/">Vidoop</a> 
+which runs the OpenID Provider <a href="http://www.myvidoop.com/">MyVidoop</a>.</p>
+
+		<p>See my post about it <a href="http://willnorris.com/2007/10/how-well-does-your-openid-provider-stack-up">here</a>.</p>
+
+		<table cellpadding="0" cellspacing="0" border="1">
+			<tr>
+				<th rowspan="2"></th>
+				<th colspan="6">Discovery Support</th>
+				<th colspan="9">OpenID Protocol Support</th>
+			</tr>
+			<tr>
+
+				<th><span title="Accept: application/xrds+xml">content- type</span></th>
+				<th><span title="X-XRDS-Location">xrds- header</span></th>
+				<th><span title="&lt;meta http-equiv=&quot;X-XRDS-Location&quot; /&gt;">xrds- html</span></th>
+				<th><span title="&lt;meta http-equiv=&quot;X-YADIS-Location&quot; /&gt;">yadis- html</span></th>
+				<th><span title="&lt;link rel=&quot;openid.server&quot; /&gt;">openid- html</span></th>
+				<th><span title="&lt;link rel=&quot;openid2.provider&quot; /&gt;">openid2- html</span></th>
+				<th><span title="http://openid.net/signon/1.0">signon- 10</span></th>
+				<th><span title="http://openid.net/signon/1.1">signon- 11</span></th>
+				<th><span title="http://specs.openid.net/auth/2.0/signon">signon- 20</span></th>
+				<th><span title="http://openid.net/sreg/1.0">sreg-10</span></th>
+				<th><span title="http://openid.net/extensions/sreg/1.1">sreg-11</span></th>
+				<th><span title="http://openid.net/srv/ax/1.0">ax-10</span></th>
+				<th><span title="http://schemas.openid.net/pape/policies/2007/06/phishing-resistant">pape- phishing</span></th>
+				<th><span title="http://schemas.openid.net/pape/policies/2007/06/multi-factor">pape- multi</span></th>
+				<th><span title="http://schemas.openid.net/pape/policies/2007/06/multi-factor-physical">pape- physical</span></th>
+			</tr>
+			<tr>
+				<td><a href="http://www.2idi.com/">2idi</a> (<a href="http://xri.net/=will.norris">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://openid.aol.com/">AOL</a> (<a href="http://openid.aol.com/wjn730">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://www.atlassian.com/software/crowd/">Atlassian Crowd</a> (<a href="https://openid.atlassian.com/users/jstepka">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://claimid.com/">ClaimID</a> (<a href="http://claimid.com/willnorris">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://claimid.com/">ClaimID 2</a> (<a href="http://openid.claimid.com/willnorris">x</a>)</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://www.idtail.com/">IDtail</a> (<a href="http://hojin.idtail.com/">x</a>)</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://www.iden.tt/">Iden.tt</a> (<a href="https://iden.tt/identt">x</a>)</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://www.linksafe.name/">Linksafe</a> (<a href="http://xri.net/=mike">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://livejournal.com/">LiveJournal</a> (<a href="http://hugwill.livejournal.com/">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://myid.net/">MyID</a> (<a href="http://robse.myid.net/">x</a>)</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://myopenid.com/">MyOpenID</a> (<a href="http://wnorris.myopenid.com/">x</a>)</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://myvidoop.com/">MyVidoop</a> (<a href="http://willnorris.myvidoop.com/">x</a>)</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+			</tr>
+			<tr>
+				<td><a href="http://protectnetwork.org/">Protect Network</a> (<a href="http://willnorris.protectnetwork.org/">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://openid.sun.com/">SUN</a> (<a href="http://openid.sun.com/bblfish/">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://signon.com/">SignOn</a> (<a href="http://willnorris.signon.com/">x</a>)</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://www.sxipper.com/">Sxipper</a> (<a href="http://johnny.sxipper.com/">x</a>)</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://technorati.com/">Technorati</a> (<a href="http://technorati.com/people/technorati/willnorris">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://typekey.com/">TypeKey</a> (<a href="http://profile.typekey.com/wnorris/">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><a href="http://pip.verisignlabs.com/">Verisign PIP</a> (<a href="http://willnorris.pip.verisignlabs.com/">x</a>)</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+				<td class="supported">x</td>
+			</tr>
+			<tr>
+				<td><a href="http://wordpress.com/">Wordpress</a> (<a href="http://willnorris.wordpress.com/">x</a>)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="supported">x</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+
+		<p>File Generated: Fri, 25 Jul 2008 02:16:49 +0000</p>
+
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+
+		<script type="text/javascript">
+			var pageTracker = _gat._getTracker("UA-620101-2");
+			pageTracker._initData();
+			pageTracker._trackPageview();
+		</script>
+
+		</body>
+</html>
