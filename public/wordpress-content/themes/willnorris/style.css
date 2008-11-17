@@ -5,7 +5,7 @@ Description: Sandbox-based theme for willnorris.com
 Version: 0.1
 Author: Will Norris
 Author URI: http://willnorris.com/
-Template: sandbox
+Template: thematic
 */
 
 /* Reset.css -- yuicompress -o reset.min.css reset.css */
@@ -32,26 +32,24 @@ h1, h2, h3, h4 							{ font-family: 'Trebuchet MS', Verdana, Sans-Serif; }
 
 
 /* Header and Menu */
-#header, #access 						{ border-left: 1px solid #ddd; height: auto; color: #FFF;
+#header 								{ border: 1px solid #ddd; border-top: 0; border-bottom: 0; height: auto; color: #FFF;
 										  background: #000; border-top: 4px solid #AE0B35; }
 
-#header 								{ font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
-										  float: left; }
+#branding 								{ font-family: 'Trebuchet MS', 'Lucida Grande', Verdana, Arial, Sans-Serif; float: left; }
 
-#access 								{ border-right: 1px solid #ddd; padding: 0.8em 0; }
+#access 								{ padding: 0.8em 0; }
 
-#blog-title 							{ font-size: 1.7em; font-weight: bold;
-										  margin: 0.3em 0 0 2em; }
+#blog-title 							{ font-size: 1.7em; font-weight: bold; margin: 0.3em 0 0 2em; }
 
 #blog-title a, #blog-title a:hover 		{ color: #FFF; text-decoration: none; z-index: 99; }
 
 #blog-description, .skip-link 			{ display: none; }
 
-#menu 									{ margin: 0.4em 0 0.4em 10em; position: relative; left: 3em; }
+#menu 									{ margin: 0.4em 0 0.4em 15em; position: relative; left: 3em; }
 #menu ul 								{ display: inline; }
 #menu li 								{ display: inline; margin: 0; }
 #menu ul li ul 							{ display: none; }
-#menu ul li a 							{ padding: 5px 15px 6px; color: #FFF; background: #000; font-size: .9em; 
+#menu ul li a 							{ padding: 15px; color: #FFF; background: #000; font-size: .9em; 
 										  font-weight: bold; text-decoration: none; }
 
 #menu ul li a:hover 					{ color: #B9AF00 !important; text-decoration: none; }
@@ -61,25 +59,24 @@ h1, h2, h3, h4 							{ font-family: 'Trebuchet MS', Verdana, Sans-Serif; }
 
 
 /* Main Container */
-#container 								{ border-left: 1px solid #ddd; border-right: 1px solid #ddd;
-										  clear: both; }
+#container									{ border: 1px solid #ddd; border-bottom: 0; clear: both; }
 
 #content 								{ width: 70%; padding: 20px 20px 10px 20px; 
 										  margin: 0; float: left; }
 
 /* Sidebar */
-.sidebar 								{ margin: 0 0 20px 71%; width: 26%; color: #666; }
+.aside 								{ margin: 0 0 20px 71%; width: 26%; color: #666; }
 #primary								{ margin-top: 3em; }
 
-.sidebar ul 							{ list-style: none; margin: 0; }
+.aside ul 							{ list-style: none; margin: 0; }
 
-.sidebar h3 							{ clear: none; color: #444; font-size: 1.2em; 
+.aside h3 							{ clear: none; color: #444; font-size: 1.2em; 
 										  margin-top: 1.0em; }
 
 .widget ul								{ font-size: 0.9em; line-height: 1.8em; }
 
 li#search label 						{ display: none; }
-#s										{ width: 60%; margin-right: 0.5em; }
+#s										{ width: 55%; margin-right: 0.5em; }
 
 
 /* Navigation */
@@ -123,9 +120,6 @@ body.archive .entry-title,
 body.search .entry-title				{ line-height: normal; }
 body.single .entry-title				{ font-size: 2.0em; }
 
-.entry-date 							{ font-size: 0.9em; color: #bbb; }
-.entry-date:before 						{ content: "Published "; }
-
 .entry-content p, .entry-content li		{ margin-bottom: 0.5em; line-height: 2.0em; }
 .entry-content p						{ margin: 1.2em 0; }
 .entry-content h3 + p					{ margin-top: 0em; }
@@ -133,15 +127,13 @@ body.single .entry-title				{ font-size: 2.0em; }
 .entry-content ul						{ margin-left: 3em; }
 
 
-.entry-meta, body.page .edit-link		{ border-top: 1px solid #CCC; border-bottom: 1px solid #CCC;
+
+.entry-meta								{ margin-bottom: 1.5em; }
+
+.entry-utility, body.page .edit-link	{ border-top: 1px solid #CCC; border-bottom: 1px solid #CCC;
 										  background: #f0f0f0; padding: 0.3em 0.7em; 
 										  font-size: 0.9em; line-height: 1.7em; clear: both; 
 										  display: block; }
-
-.entry-meta .author,
-.entry-meta .author + .meta-sep			{ display: none; }
-body.single .entry-meta .author			{ display: inline; }
-
 
 
 /* Comments */
