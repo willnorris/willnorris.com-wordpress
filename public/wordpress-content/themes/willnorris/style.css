@@ -49,7 +49,7 @@ h1, h2, h3, h4 							{ font-family: 'Trebuchet MS', Verdana, Sans-Serif; }
 #menu ul 								{ display: inline; }
 #menu li 								{ display: inline; margin: 0; }
 #menu ul li ul 							{ display: none; }
-#menu ul li a 							{ padding: 15px; color: #FFF; background: #000; font-size: .9em; 
+#menu ul li a 							{ padding: 13px; color: #FFF; background: #000; font-size: .9em; 
 										  font-weight: bold; text-decoration: none; }
 
 #menu ul li a:hover 					{ color: #B9AF00 !important; text-decoration: none; }
