@@ -73,7 +73,7 @@ h1, h2, h3, h4 							{ font-family: 'Trebuchet MS', Verdana, Sans-Serif; }
 .aside h3 							{ clear: none; color: #444; font-size: 1.2em; 
 										  margin-top: 1.0em; }
 
-.widget ul								{ font-size: 0.9em; line-height: 1.8em; }
+.widgetcontainer ul								{ font-size: 0.9em; line-height: 1.8em; }
 
 li#search label 						{ display: none; }
 #s										{ width: 55%; margin-right: 0.5em; }
