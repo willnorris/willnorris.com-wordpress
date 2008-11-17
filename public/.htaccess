@@ -27,8 +27,8 @@ FileETag none
 	RewriteRule projects/wpopenid					http://wordpress.org/extend/plugins/openid/ [L,R]
 	RewriteRule projects/wp-(openid|xrds|yadis)     http://wordpress.org/extend/plugins/openid/ [L,R]
 
-	RewriteCond %{SERVER_NAME} !^willnorris.com$ [NC]
-	RewriteRule (.*) http://willnorris.com/$1 [L,R]
+	#RewriteCond %{SERVER_NAME} !^willnorris.com$ [NC]
+	#RewriteRule (.*) http://willnorris.com/$1 [L,R]
 
 
 #	RewriteCond %{HTTPS} off
