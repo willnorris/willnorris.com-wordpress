@@ -45,16 +45,16 @@ h1, h2, h3, h4 							{ font-family: 'Trebuchet MS', Verdana, Sans-Serif; }
 
 #blog-description, .skip-link 			{ display: none; }
 
-#menu 									{ margin: 0.4em 0 0.4em 15em; position: relative; left: 3em; }
-#menu ul 								{ display: inline; }
-#menu li 								{ display: inline; margin: 0; }
-#menu ul li ul 							{ display: none; }
-#menu ul li a 							{ padding: 13px; color: #FFF; background: #000; font-size: .9em; 
+.menu 									{ margin: 0.4em 0 0.4em 15em; position: relative; left: 3em; }
+.menu ul 								{ display: inline; }
+.menu li 								{ display: inline; margin: 0; }
+.menu ul li ul 							{ display: none; }
+.menu ul li a 							{ padding: 13px; color: #FFF; background: #000; font-size: .9em; 
 										  font-weight: bold; text-decoration: none; }
 
-#menu ul li a:hover 					{ color: #B9AF00 !important; text-decoration: none; }
-#menu ul li.current_page_item a,
-#menu ul li.current_page_item a:hover 	{ color: #999 !important; text-decoration: none; }
+.menu ul li a:hover 					{ color: #B9AF00 !important; text-decoration: none; }
+.menu ul li.current_page_item a,
+.menu ul li.current_page_item a:hover 	{ color: #999 !important; text-decoration: none; }
 
 
 
@@ -62,7 +62,7 @@ h1, h2, h3, h4 							{ font-family: 'Trebuchet MS', Verdana, Sans-Serif; }
 #container									{ border: 1px solid #ddd; border-bottom: 0; clear: both; }
 
 #content 								{ width: 70%; padding: 20px 20px 10px 20px; 
-										  margin: 0; float: left; }
+										  margin: 0; float: left; min-height: 450px;}
 
 /* Sidebar */
 .aside 								{ margin: 0 0 20px 71%; width: 26%; color: #666; }
