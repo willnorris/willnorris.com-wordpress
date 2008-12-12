@@ -1,14 +1,33 @@
 <?php
 
+function willnorris_init() {
+	register_sidebar(array(
+		'name' => 'Front Page',
+		'before_widget' => '<li id="%1$s" class="widgetcontainer %2$s">',
+		'after_widget' => "</li>",
+		'before_title' => "<h3 class=\"widgettitle\">",
+		'after_title' => "</h3>\n",
+	));
+}
+
+function willnorris_page_menu_args($args) {
+	if (empty($args['exclude'])) {
+		$args['exclude'] = '';
+	} else {
+		$args['exclude'] .= ',';
+	}
+
+	$page_list .= get_option('page_on_front');
+	$args['exclude'] .= $page_list;
+	$args['sort_column'] = 'menu_order, post_title';
+
+    return $args;
+}
+
+
 function willnorris_header() { 
 	echo '
 		<script type="text/javascript" src="'.get_option('siteurl').'/wp-content/themes/willnorris/willnorris.js"></script>';
-}
-
-function willnorris_stylesheet_uri($style) { 
-	return get_stylesheet_directory_uri().'/lib/reset.css" />
-	<link rel="stylesheet" type="text/css" href="'.get_stylesheet_directory_uri().'/lib/typography.css" />
-	<link rel="stylesheet" type="text/css" href="'.$style;
 }
 
 function willnorris_footer() { 
@@ -19,30 +38,6 @@ function willnorris_footer() {
 		</address>
 	</div>
 <?php
-}
-
-function willnorris_remove_title_prefix($title, $sep) {
-	$prefix = " $sep ";
-	if (strpos($title, $prefix) == 0) {
-		$title = substr($title, strlen($prefix));
-	}
-
-	return $title;
-}
-
-
-function willnorris_bloginfo($output, $show) {
-	global $willnorris_removed_title;
-
-	if (is_singular() && $show == 'name') {
-		if (empty($willnorris_removed_title)) {
-			$willnorris_removed_title = 1;
-			add_filter('wp_title', 'willnorris_remove_title_prefix', 5, 2);
-			return '';
-		}
-	}
-
-	return $output;
 }
 
 function willnorris_fix_sharethis_head($wp) {
@@ -65,11 +60,45 @@ function willnorris_fix_quoter_head($wp) {
 	return $wp;
 }
 
+
+function contactlist_widget_init() {
+
+	function contactlist_widget($args) {
+		extract($args);
+		echo $before_widget;
+
+		$arguments = array(
+			'category_before' => '', 
+			'category_after' => '', 
+			'title_before' => '<h3>',
+			'title_after' => '</h3>',
+		);  
+
+		wp_list_bookmarks($arguments);
+
+		echo $after_widget;
+	}
+
+	register_sidebar_widget('Contact List', 'contactlist_widget');
+	register_widget_control('Contact List', 'contactlist_widget_control', 270, 270);
+}
+
+function willnorris_single_post_title($title) {
+	$p = get_query_var('p');
+	if ($p == get_option('page_on_front')) {
+		$title = get_bloginfo('name') . ' | ' . get_bloginfo('description');
+	}
+
+	return $title;
+}
+
 //add_action('wp_head', 'willnorris_header');
-//add_action('stylesheet_uri', 'willnorris_stylesheet_uri' );
+add_action('init', 'willnorris_init', 11);
+add_filter('wp_page_menu_args', 'willnorris_page_menu_args');
 add_action('get_footer', 'willnorris_footer');
-//add_filter('bloginfo', 'willnorris_bloginfo', 5, 2);
 add_action('wp', 'willnorris_fix_sharethis_head');
 add_action('wp', 'willnorris_fix_quoter_head');
+add_action('widgets_init', 'contactlist_widget_init');
 
+add_filter('single_post_title', 'willnorris_single_post_title');
 ?>
