@@ -92,6 +92,18 @@ function willnorris_single_post_title($title) {
 	return $title;
 }
 
+function willnorris_actionstream_parse_page_token($content) {
+	if (function_exists('actionstream_render')) {
+		if(preg_match('/<!--actionstream(\((.*)\))?-->/',$content,$matches)) {
+			$user = $matches[2];
+			$content = preg_replace('/<!--actionstream(\((.*)\))?-->/',actionstream_render($user,50,false,false), $content);
+		}
+	}
+
+	return $content;
+}
+
+
 //add_action('wp_head', 'willnorris_header');
 add_action('init', 'willnorris_init', 11);
 add_filter('wp_page_menu_args', 'willnorris_page_menu_args');
@@ -101,4 +113,6 @@ add_action('wp', 'willnorris_fix_quoter_head');
 add_action('widgets_init', 'contactlist_widget_init');
 
 add_filter('single_post_title', 'willnorris_single_post_title');
+remove_filter('the_content', 'diso_actionstream_parse_page_token');
+add_filter('the_content', 'willnorris_actionstream_parse_page_token');
 ?>
