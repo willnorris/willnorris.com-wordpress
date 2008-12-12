@@ -207,6 +207,8 @@ body.pageid-231 .entry-content li img	{ border: 1px solid #000; padding: 1px; di
 
 /* -- Front Page -- */
 .page-template-front-page-php #content	{ width: 65%; }
+.page-template-front-page-php .entry-content a:visited			
+										{ color: #2277DD; }
 
 /* DiSo Profile */
 .diso-profile .uid                      { display: none; }
