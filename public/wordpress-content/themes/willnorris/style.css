@@ -20,11 +20,11 @@ body, html > body 						{ color: #444;
 
 a 										{ text-decoration: none; }
 a:link, a:hover, a:visited 				{ color: #2277DD; }
-a:hover 								{ text-decoration: underline; }
+a:hover 								{ text-decoration: none; }
 
 #wrapper 								{ max-width: 900px; margin: 0 auto; background: #FFF; }
 
-#wrapper a:hover 						{ text-decoration: underline; }
+#main a:hover 							{ text-decoration: underline; }
 
 h2, h2 a:link, h2 a:hover, h2 a:visited { text-decoration: none; color: #444; }
 
@@ -218,4 +218,13 @@ body.pageid-231 .entry-content li img	{ border: 1px solid #000; padding: 1px; di
 ul.action-stream-list  					{ margin: 0; padding: 0; list-style: none; }
 a#actionstream_feed						{ display: none; }
 
+/* Meta Widget */
+#meta 									{ position: absolute; top: 4px; padding: 0.8em 0; }
+#meta h3 								{ display: none; }
+#meta ul								{ margin: 0.4em 0; }
+#meta ul li 							{ display: inline; }
+#meta ul li a 							{ color: #FFF; font-weight: bold; padding: 13px;}
+#meta a:hover 							{ color: #B9AF00 !important; text-decoration: none; }
+
 /* vim: set sw=4 ts=4 */
+
