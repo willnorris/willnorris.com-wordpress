@@ -103,6 +103,7 @@ function willnorris_actionstream_parse_page_token($content) {
 	return $content;
 }
 
+add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
 //add_action('wp_head', 'willnorris_header');
 add_action('init', 'willnorris_init', 11);
