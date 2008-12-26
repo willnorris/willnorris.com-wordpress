@@ -58,7 +58,7 @@ function wphd_hide_dashboard() {
 		} else if (0 == wphd_hide_dashboard_version('2.7')) {
 			unset($menu[0]);
 			unset($menu[4]);
-			unset($menu[55]);
+			//unset($menu[55]);
 		}
 	}
 }
