@@ -33,7 +33,7 @@ function willnorris_header() {
 function willnorris_footer() { 
 ?>
 	<div id="copyright"> &copy; <?php echo date('Y'); ?>
-		<address class="vcard author" id="hcard">
+		<address class="vcard author">
 			<a class="url fn" href="http://willnorris.com/">Will Norris</a>
 		</address>
 	</div>

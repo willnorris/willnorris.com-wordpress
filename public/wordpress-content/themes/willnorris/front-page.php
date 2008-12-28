@@ -36,13 +36,12 @@ Template Name: Front Page
 			<?php dynamic_sidebar('front-page'); ?>
 		</ul>
 	</div>
-	<?php if (is_sidebar_active('secondary-aside') ) { ?>
-	<div id="primary" class="aside main-aside">
+
+	<div id="secondary" class="aside main-aside">
 		<ul class="xoxo">
 			<?php dynamic_sidebar('secondary-aside'); ?>
 		</ul>
 	</div>
-	<?php } ?>
 <?php 
 	} else {
 		get_sidebar();
