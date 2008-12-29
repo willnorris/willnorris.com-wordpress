@@ -116,4 +116,8 @@ add_action('widgets_init', 'contactlist_widget_init');
 add_filter('single_post_title', 'willnorris_single_post_title');
 remove_filter('the_content', 'diso_actionstream_parse_page_token');
 add_filter('the_content', 'willnorris_actionstream_parse_page_token');
+
+add_filter('extended_profile_first_name', create_function('$n', 'return "<span class=\"given-name\">William</span>";'));
+remove_filter('get_avatar', 'ext_profile_avatar');
+
 ?>

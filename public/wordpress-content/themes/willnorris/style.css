@@ -150,7 +150,7 @@ body.single .entry-title				{ font-size: 2.0em; }
 li.comment + li.comment					{ margin-top: 3em; }
 
 .comments li p							{ line-height: 2.0em; text-align: left; margin-left: 5px; }
-img.avatar								{ float: right; width: 32px; height: 32px; margin: 2px; }
+img.avatar								{ float: right; margin: 2px; }
 .comment-author							{ border-top: 1px solid #ccc; padding-top: 1px; }
 .comment-author .fn						{ font-weight: bold; font-size: 1.2em}
 .comment-meta							{ font-size: 0.9em; color: #999; padding-bottom: 0px;
@@ -213,11 +213,13 @@ body.pageid-231 .entry-content li img	{ border: 1px solid #000; padding: 1px; di
 .page-template-front-page-php .aside	{ width: 30%; margin-left: 70%; }
 
 /* DiSo Profile */
-.hcard-profile .uid					  	{ display: none; }
+/* .hcard-profile .uid					  	{ display: none; } */
 .hcard-profile .photo					{ width: 75px; height: auto; }
 .hcard-profile h3						{ height: 0; text-indent: -99999px; clear: right; }
 .hcard-profile ul						{ font-size: 1em; }
 .hcard-profile .contact					{ margin-top: 50px; }
+.hcard-profile .nickname				{ display: none; }
+.hcard-profile .org						{ display: block; font-style: italic; }
 
 ul.action-stream-list  					{ margin: 0; padding: 0; list-style: none; }
 a#actionstream_feed						{ display: none; }
