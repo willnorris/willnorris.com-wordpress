@@ -39,7 +39,6 @@ function brightkite_profile($userid) {
 	}
 
 	if ($loc) {
-		error_log(var_export($loc, true));
 ?>
 	<dl class="geo">
 		<dt><abbr class="latitude" title="<?php _e($loc['lat']) ?>">Current</abbr> <abbr class="longitude" title="<?php _e($loc['lon']) ?>">Location</abbr>:</dt>
