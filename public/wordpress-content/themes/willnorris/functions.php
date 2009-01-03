@@ -120,4 +120,6 @@ add_filter('the_content', 'willnorris_actionstream_parse_page_token');
 add_filter('extended_profile_first_name', create_function('$n', 'return "<span class=\"given-name\">William</span>";'));
 remove_filter('get_avatar', 'ext_profile_avatar');
 
+add_filter('avatar_size', create_function('$s', 'return 32;'));
+add_filter('extended_profile_adr', create_function('$s', 'return preg_replace("/Current (Address)/", "\\\1", $s);'));
 ?>
