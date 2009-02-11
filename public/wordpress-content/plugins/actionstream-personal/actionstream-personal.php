@@ -8,7 +8,30 @@
  License: Dual GPL (http://www.fsf.org/licensing/licenses/info/GPLv2.html) and Modified BSD (http://www.fsf.org/licensing/licenses/index_html#ModifiedBSD)
  */
 
+function actionstream_personal_googlecode($k, $value) {
+	return $value;
+}
+
 function actionstream_personal_services($services) {
+	// Google Code
+	$services['services']['googlecode'] = array(
+		'name' => 'Google Code',
+		'url' => 'http://code.google.com/u/%s/',
+	);
+
+	$services['streams']['googlecode'] = array(
+		'commits' => array(
+			'name' => 'Commits',
+			'description' => 'Your Recent Commits',
+			'html_form' => '[_1] updated [_3]',
+			'html_params' => array('url', 'title'),
+			'url' => 'http://code.google.com/feeds/u/{{ident}}/updates/user/basic',
+			'atom' => 1,
+			'callback' => 'actionstream_personal_googlecode',
+		),
+	);
+
+
 	// DiSo
 	$services['services']['diso'] = array(
 		'name' => 'DiSo',

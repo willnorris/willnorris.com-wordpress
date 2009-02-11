@@ -37,26 +37,7 @@ FileETag none
 #	RewriteRule .* https://willnorris.com/%1 [L,R]
 </IfModule>
 
-# BEGIN WPSuperCache
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /
-AddDefaultCharset UTF-8
-RewriteCond %{QUERY_STRING} !.*s=.*
-RewriteCond %{QUERY_STRING} !.*attachment_id=.*
-RewriteCond %{HTTP_COOKIE} !^.*(comment_author_|wordpress|wp-postpass_).*$
-RewriteCond %{HTTP:Accept-Encoding} gzip
-RewriteCond %{DOCUMENT_ROOT}/wp-content/cache/supercache/%{HTTP_HOST}/$1/index.html.gz -f
-RewriteRule ^(.*) /wp-content/cache/supercache/%{HTTP_HOST}/$1/index.html.gz [L]
 
-RewriteCond %{QUERY_STRING} !.*s=.*
-RewriteCond %{QUERY_STRING} !.*attachment_id=.*
-RewriteCond %{HTTP_COOKIE} !^.*(comment_author_|wordpress|wp-postpass_).*$
-RewriteCond %{DOCUMENT_ROOT}/wp-content/cache/supercache/%{HTTP_HOST}/$1/index.html -f
-RewriteRule ^(.*) /wp-content/cache/supercache/%{HTTP_HOST}/$1/index.html [L]
-</IfModule>
-
-# END WPSuperCache
 
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
@@ -68,3 +49,8 @@ RewriteRule . /index.php [L]
 </IfModule>
 
 # END WordPress
+
+# BEGIN Shibboleth
+AuthType Shibboleth
+Require Shibboleth
+# END Shibboleth
