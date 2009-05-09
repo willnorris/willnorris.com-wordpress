@@ -1,6 +1,9 @@
 <?php
 
-function willnorris_init() {
+/**
+ * Register new sidebar named "Front Page".
+ */
+function willnorris_register_sidebars() {
 	register_sidebar(array(
 		'name' => 'Front Page',
 		'before_widget' => '<li id="%1$s" class="widgetcontainer %2$s">',
@@ -9,6 +12,8 @@ function willnorris_init() {
 		'after_title' => "</h3>\n",
 	));
 }
+add_action('init', 'willnorris_registe_sidebars', 11);
+
 
 function willnorris_page_menu_args($args) {
 	if (empty($args['exclude'])) {
@@ -19,6 +24,7 @@ function willnorris_page_menu_args($args) {
 
 	$page_list .= get_option('page_on_front');
 	$args['exclude'] .= $page_list;
+	$args['depth'] = 1;
 	$args['sort_column'] = 'menu_order, post_title';
 
     return $args;
@@ -106,7 +112,6 @@ function willnorris_actionstream_parse_page_token($content) {
 add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
 //add_action('wp_head', 'willnorris_header');
-add_action('init', 'willnorris_init', 11);
 add_filter('wp_page_menu_args', 'willnorris_page_menu_args');
 add_action('get_footer', 'willnorris_footer');
 add_action('wp', 'willnorris_fix_sharethis_head');
@@ -122,4 +127,32 @@ remove_filter('get_avatar', 'ext_profile_avatar');
 
 add_filter('avatar_size', create_function('$s', 'return 32;'));
 add_filter('extended_profile_adr', create_function('$s', 'return preg_replace("/Current (Address)/", "\\\1", $s);'));
+
+
+
+function willnorris_thematic_description($content) {
+	if ( is_home() || is_front_page() ) {
+		$content = "\t" . '<meta name="description" content="' . get_bloginfo('description') . '" />' . "\n\n";
+	}
+	return $content;
+}
+//add_filter('thematic_create_description', 'willnorris_thematic_description');
+
+function willnorris_thematic_doctitle($elements) {
+	if ( array_key_exists('separator', $elements) ) {
+		$elements['separator'] = '&#8212;';
+	}
+
+	if ( ! array_key_exists('site_name', $elements) ) {
+		$elements[] = '&#8212;';
+		$elements[] = get_bloginfo('name');
+	}
+
+	return $elements;
+}
+add_filter('thematic_doctitle', 'willnorris_thematic_doctitle');
+
+// don't import hcard on account creation (I've had problems with this in the past)
+add_filter('init', create_function('', 'remove_action("user_register", "ext_profile_hcard_import");'));
+
 ?>
