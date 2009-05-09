@@ -33,13 +33,13 @@ Template Name: Front Page
 ?>
 	<div id="primary" class="aside main-aside">
 		<ul class="xoxo">
-			<?php dynamic_sidebar('front-page'); ?>
+			<?php dynamic_sidebar('primary-aside'); ?>
 		</ul>
 	</div>
 
 	<div id="secondary" class="aside main-aside">
 		<ul class="xoxo">
-			<?php dynamic_sidebar('secondary-aside'); ?>
+			<?php dynamic_sidebar('front-page'); ?>
 		</ul>
 	</div>
 <?php 
