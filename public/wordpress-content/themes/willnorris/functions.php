@@ -1,5 +1,8 @@
 <?php
 
+require_once dirname(__FILE__) . '/library/search.php';
+
+
 /**
  * Register new sidebar named "Front Page".
  */
@@ -153,4 +156,4 @@ add_filter('thematic_doctitle', 'willnorris_thematic_doctitle');
 // don't import hcard on account creation (I've had problems with this in the past)
 add_filter('init', create_function('', 'remove_action("user_register", "ext_profile_hcard_import");'));
 
-?>
+
