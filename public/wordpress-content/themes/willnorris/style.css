@@ -220,7 +220,10 @@ body.pageid-231 .entry-content li img	{ border: 1px solid #000; padding: 1px; di
 .hcard-profile .contact					{ margin-top: 50px; }
 .hcard-profile .nickname				{ display: none; }
 .hcard-profile .org						{ display: block; font-style: italic; }
-.hcard-profile dl.geo dt				{ float: left; width: 10em; }
+.hcard-profile dl						{ margin: 0.5em; }
+.hcard-profile dl dt					{ float: left; width: 10em; }
+.hcard-profile dl dd					{ margin-left: 10em; }
+.hcard-profile dl.geo dd em				{ font-size: 0.9em; }
 
 ul.action-stream-list  					{ margin: 0; padding: 0; list-style: none; }
 a#actionstream_feed						{ display: none; }
