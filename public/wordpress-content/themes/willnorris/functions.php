@@ -12,23 +12,22 @@ function willnorris_register_sidebars() {
 		'after_title' => "</h3>\n",
 	));
 }
-add_action('init', 'willnorris_registe_sidebars', 11);
-
+add_action('init', 'willnorris_register_sidebars', 11);
 
 function willnorris_page_menu_args($args) {
-	if (empty($args['exclude'])) {
-		$args['exclude'] = '';
-	} else {
-		$args['exclude'] .= ',';
+	$args['depth'] = 1;
+	return $args;
+}
+add_filter('wp_page_menu_args', 'willnorris_page_menu_args');
+
+function willnorris_list_pages_exludes($pages) {
+	if (get_option('show_on_front') == 'page') {
+		$pages[] = get_option('page_on_front');
 	}
 
-	$page_list .= get_option('page_on_front');
-	$args['exclude'] .= $page_list;
-	$args['depth'] = 1;
-	$args['sort_column'] = 'menu_order, post_title';
-
-    return $args;
+    return $pages;
 }
+add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
 
 
 function willnorris_header() { 
@@ -112,7 +111,6 @@ function willnorris_actionstream_parse_page_token($content) {
 add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
 //add_action('wp_head', 'willnorris_header');
-add_filter('wp_page_menu_args', 'willnorris_page_menu_args');
 add_action('get_footer', 'willnorris_footer');
 add_action('wp', 'willnorris_fix_sharethis_head');
 add_action('wp', 'willnorris_fix_quoter_head');
