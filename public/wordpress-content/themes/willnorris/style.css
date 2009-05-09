@@ -208,10 +208,9 @@ body.pageid-231 .entry-content li		{ display: inline; float: left; margin-right:
 body.pageid-231 .entry-content li img	{ border: 1px solid #000; padding: 1px; display: block; margin: 0 auto;}
 
 /* -- Front Page -- */
-.page-template-front-page-php #content	{ width: 65%; }
-.page-template-front-page-php .entry-content a:visited			
-										{ color: #2277DD; }
-.page-template-front-page-php .aside	{ width: 30%; margin-left: 70%; }
+body.home #content						{ width: 65%; }
+body.home .entry-content a:visited		{ color: #2277DD; }
+body.home .aside						{ width: 30%; margin-left: 70%; }
 
 /* DiSo Profile */
 /* .hcard-profile .uid					  	{ display: none; } */
