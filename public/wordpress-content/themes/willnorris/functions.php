@@ -1,21 +1,9 @@
 <?php
 
 require_once dirname(__FILE__) . '/library/search.php';
+require_once dirname(__FILE__) . '/library/widgets.php';
 
 
-/**
- * Register new sidebar named "Front Page".
- */
-function willnorris_register_sidebars() {
-	register_sidebar(array(
-		'name' => 'Front Page',
-		'before_widget' => '<li id="%1$s" class="widgetcontainer %2$s">',
-		'after_widget' => "</li>",
-		'before_title' => "<h3 class=\"widgettitle\">",
-		'after_title' => "</h3>\n",
-	));
-}
-add_action('init', 'willnorris_register_sidebars', 11);
 
 function willnorris_page_menu_args($args) {
 	$args['depth'] = 1;
@@ -69,27 +57,6 @@ function willnorris_fix_quoter_head($wp) {
 }
 
 
-function contactlist_widget_init() {
-
-	function contactlist_widget($args) {
-		extract($args);
-		echo $before_widget;
-
-		$arguments = array(
-			'category_before' => '', 
-			'category_after' => '', 
-			'title_before' => '<h3>',
-			'title_after' => '</h3>',
-		);  
-
-		wp_list_bookmarks($arguments);
-
-		echo $after_widget;
-	}
-
-	register_sidebar_widget('Contact List', 'contactlist_widget');
-	register_widget_control('Contact List', 'contactlist_widget_control', 270, 270);
-}
 
 function willnorris_single_post_title($title) {
 	$p = get_query_var('p');
@@ -117,7 +84,6 @@ add_filter('wp_redirect_status', create_function('$s', 'status_header($s); retur
 add_action('get_footer', 'willnorris_footer');
 add_action('wp', 'willnorris_fix_sharethis_head');
 add_action('wp', 'willnorris_fix_quoter_head');
-add_action('widgets_init', 'contactlist_widget_init');
 
 add_filter('single_post_title', 'willnorris_single_post_title');
 remove_filter('the_content', 'diso_actionstream_parse_page_token');

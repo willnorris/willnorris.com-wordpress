@@ -8,6 +8,12 @@ Template Name: Front Page
 	<div id="container">
 		<div id="content">
 
+<?php 
+if ( is_sidebar_active('front-page-top') ) { 
+	dynamic_sidebar('front-page-top');
+}
+?>
+
 <?php the_post() ?>
 			<div id="post-<?php the_ID(); ?>" class="<?php thematic_post_class() ?>">
 				<div class="entry-content">
@@ -29,7 +35,7 @@ Template Name: Front Page
 
 <?php 
 	// sidebar
-	if (function_exists('dynamic_sidebar') || is_sidebar_active('front-page') ) { 
+	if ( true || is_sidebar_active('front-page-aside') ) { 
 ?>
 	<div id="primary" class="aside main-aside">
 		<ul class="xoxo">
@@ -39,7 +45,7 @@ Template Name: Front Page
 
 	<div id="secondary" class="aside main-aside">
 		<ul class="xoxo">
-			<?php dynamic_sidebar('front-page'); ?>
+			<?php dynamic_sidebar('front-page-aside'); ?>
 		</ul>
 	</div>
 <?php 
