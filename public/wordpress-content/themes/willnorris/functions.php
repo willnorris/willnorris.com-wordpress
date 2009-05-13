@@ -16,7 +16,7 @@ function willnorris_list_pages_exludes($pages) {
 		$pages[] = get_option('page_on_front');
 	}
 
-    return $pages;
+	return $pages;
 }
 add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
 
@@ -123,3 +123,54 @@ add_filter('thematic_doctitle', 'willnorris_thematic_doctitle');
 add_filter('init', create_function('', 'remove_action("user_register", "ext_profile_hcard_import");'));
 
 
+
+
+
+
+
+function willnorris_postfooter_postcategory($postcategory) {
+	if ( is_attachment() ) {
+		$postcategory = '';
+	}
+	return $postcategory;
+}
+add_filter('thematic_postfooter_postcategory', 'willnorris_postfooter_postcategory');
+
+/**
+ * Attachments don't need comments
+ */
+function willnorris_comments_open($open, $post_id) {
+	if ( is_attachment($post_id) ) {
+		$open = false;
+	}
+	return $open;
+}
+add_filter('comments_open', 'willnorris_comments_open', 10, 2);
+
+
+function willnorris_get_attachment_link($link, $id, $size, $permalink, $icon, $text) {
+	$post = get_post($id);
+
+	if ( $post->post_excerpt && empty($text) ) {
+
+		if ( ( is_int($size) && $size != 0 ) or ( is_string($size) && $size != 'none' ) or $size != false ) {
+			$link_text = wp_get_attachment_image($id, $size, $icon);
+		}
+		if( trim($link_text) != '' ) return $link;
+
+		$link_text = $post->post_excerpt;
+
+		if ( $permalink ) {
+			$url = get_attachment_link($_post->ID);
+		} else {
+			$url = wp_get_attachment_url($post->ID);
+		}
+
+		$post_title = esc_attr($post->post_title);
+
+		$link = "<a href='$url' title='$post_title'>$link_text</a>";
+	}
+
+	return $link;
+}
+add_filter('wp_get_attachment_link', 'willnorris_get_attachment_link', 10, 6);
