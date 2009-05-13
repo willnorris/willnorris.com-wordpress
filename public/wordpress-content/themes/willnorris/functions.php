@@ -174,3 +174,23 @@ function willnorris_get_attachment_link($link, $id, $size, $permalink, $icon, $t
 	return $link;
 }
 add_filter('wp_get_attachment_link', 'willnorris_get_attachment_link', 10, 6);
+
+
+function willnorris_profile_email($email, $user_id) {
+	$userdata = get_userdata($user_id);
+
+	$email = '<dt>Email:</dt> <dd><a class="email" href="mailto:' . esc_attr(antispambot("$userdata->user_email")) . '">' . antispambot($userdata->user_email) . '</a><br />
+		<a href="' . get_bloginfo('url') . '/about/pgp">My PGP Key</a></dd>';
+	$email .= '
+	<dt>IRC:</dt>
+	<dd><a href="irc://irc.freenode.net/willnorris,isnick">willnorris@freenode</a></dd>';
+
+	return $email;
+}
+add_action('extended_profile_email', 'willnorris_profile_email', 10, 2);
+
+function willnorris_profile_jabber($jabber, $user_id) {
+	$userdata = get_userdata($user_id);
+	return '<dt>Jabber:</dt> <dd><a class="url" href="xmpp:' . esc_attr(antispambot("$userdata->jabber")) . '">' . antispambot($userdata->jabber) . '</a></dd>';
+}
+add_action('extended_profile_jabber', 'willnorris_profile_jabber', 10, 2);
