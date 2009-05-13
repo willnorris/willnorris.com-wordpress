@@ -241,6 +241,7 @@ a#actionstream_feed						{ display: none; }
 body.home #front-page-top				{ width: auto ; margin: 0; }
 body.home #front-page-top .widgetcontainer li	{ margin-left: 2em; }
 
+body.home .entry-content hr             { margin: 1em 0; }
 body.home .entry-content h2				{ font-size: 1.5em; margin: 1em 0 0.5em 0 ; }
 body.home .entry-content h2 + p			{ margin: 0; }
 body.home .entry-content h3				{ font-size: 1.2em; margin: 0; }
