@@ -229,12 +229,18 @@ ul.action-stream-list  					{ margin: 0; padding: 0; list-style: none; }
 a#actionstream_feed						{ display: none; }
 
 /* Meta Widget */
-#meta 									{ position: absolute; top: 4px; padding: 0.8em 0; }
-#meta h3 								{ display: none; }
-#meta ul								{ margin: 0.4em 0; }
-#meta ul li 							{ display: inline; }
-#meta ul li a 							{ color: #FFF; font-weight: bold; padding: 13px;}
-#meta a:hover 							{ color: #B9AF00 !important; text-decoration: none; }
+.widget_thematic_meta 					{ position: absolute; top: 4px; padding: 0.8em 0; }
+.widget_thematic_meta h3 				{ display: none; }
+.widget_thematic_meta ul				{ margin: 0.4em 0; }
+.widget_thematic_meta ul li 			{ display: inline; }
+.widget_thematic_meta ul li a 			{ color: #FFF; font-weight: bold; padding: 13px;}
+.widget_thematic_meta a:hover 			{ color: #B9AF00 !important; text-decoration: none; }
 
 /* vim: set sw=4 ts=4 */
 
+body.home #front-page-top				{ width: auto ; margin: 0; }
+body.home #front-page-top .widgetcontainer li	{ margin-left: 2em; }
+
+body.home .entry-content h2				{ font-size: 1.5em; margin: 1em 0 0.5em 0 ; }
+body.home .entry-content h2 + p			{ margin: 0; }
+body.home .entry-content h3				{ font-size: 1.2em; margin: 0; }

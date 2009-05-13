@@ -52,3 +52,11 @@ class ContactList_Widget extends WP_Widget {
 }
 add_action('widgets_init', create_function('', 'return register_widget("ContactList_Widget");'));
 
+
+
+// unregister duplicate widgets
+function willnorris_unregister_widgets() {
+	unregister_widget('WP_Widget_Meta');
+	unregister_widget('WP_Widget_Search');
+}
+add_action('widgets_init', 'willnorris_unregister_widgets');

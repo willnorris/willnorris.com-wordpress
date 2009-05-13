@@ -10,7 +10,9 @@ Template Name: Front Page
 
 <?php 
 if ( is_sidebar_active('front-page-top') ) { 
+	echo '<div id="front-page-top" class="aside"><ul class="xoxo">';
 	dynamic_sidebar('front-page-top');
+	echo '</ul></div>';
 }
 ?>
 
