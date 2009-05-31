@@ -194,3 +194,8 @@ function willnorris_profile_jabber($jabber, $user_id) {
 	return '<dt>Jabber:</dt> <dd><a class="url" href="xmpp:' . esc_attr(antispambot("$userdata->jabber")) . '">' . antispambot($userdata->jabber) . '</a></dd>';
 }
 add_action('extended_profile_jabber', 'willnorris_profile_jabber', 10, 2);
+
+function willnorris_head_scripts($scripts) {
+	return '';
+}
+add_filter('thematic_head_scripts', 'willnorris_head_scripts');
