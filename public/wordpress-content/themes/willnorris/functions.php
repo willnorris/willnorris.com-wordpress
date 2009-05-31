@@ -119,13 +119,18 @@ function willnorris_thematic_doctitle($elements) {
 }
 add_filter('thematic_doctitle', 'willnorris_thematic_doctitle');
 
-// don't import hcard on account creation (I've had problems with this in the past)
-add_filter('init', create_function('', 'remove_action("user_register", "ext_profile_hcard_import");'));
+function willnorris_cleanup_hooks() {
+	// don't import hcard on account creation (I've had problems with this in the past)
+	remove_action('user_register', 'ext_profile_hcard_import');
 
-
-
-
-
+	if ( !is_front_page() ) {
+		remove_action('wp_head', 'actionstream_styles');
+		remove_action('wp_head', 'actionstream_ext_styles');
+		remove_action('wp_head', 'actionstream_personal_styles');
+		wp_deregister_style('ext-profile');
+	}
+}
+add_filter('init', 'willnorris_cleanup_hooks');
 
 
 function willnorris_postfooter_postcategory($postcategory) {
