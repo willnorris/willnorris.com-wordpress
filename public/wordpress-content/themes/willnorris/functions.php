@@ -125,8 +125,8 @@ function willnorris_cleanup_hooks() {
 
 	if ( !is_front_page() ) {
 		remove_action('wp_head', 'actionstream_styles');
-		remove_action('wp_head', 'actionstream_ext_styles');
-		remove_action('wp_head', 'actionstream_personal_styles');
+		remove_action('wp_head', 'actionstream_ext_styles', 11);
+		remove_action('wp_head', 'actionstream_personal_styles', 11);
 		wp_deregister_style('ext-profile');
 	}
 }
