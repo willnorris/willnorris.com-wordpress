@@ -129,8 +129,23 @@ function willnorris_cleanup_hooks() {
 		remove_action('wp_head', 'actionstream_personal_styles', 11);
 		wp_deregister_style('ext-profile');
 	}
+
+	// move scripts to the footer
+	global $wp_scripts;
+
+	$wp_scripts->dequeue('jquery');
+	$wp_scripts->add_data('jquery', 'group', 1);
+	$wp_scripts->enqueue('jquery');
+
+	$wp_scripts->dequeue('jquery.imagefit');
+	$wp_scripts->add_data('jquery.imagefit', 'group', 1);
+	$wp_scripts->enqueue('jquery.imagefit');
+
+	remove_action('wp_head', 'wp_imagefit_js');
+	add_action('wp_footer', 'wp_imagefit_js', 20);
+
 }
-add_filter('init', 'willnorris_cleanup_hooks');
+add_filter('init', 'willnorris_cleanup_hooks', 20);
 
 
 function willnorris_postfooter_postcategory($postcategory) {
