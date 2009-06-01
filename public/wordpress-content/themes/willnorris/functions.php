@@ -222,3 +222,15 @@ function willnorris_head_scripts($scripts) {
 	return '';
 }
 add_filter('thematic_head_scripts', 'willnorris_head_scripts');
+
+// add related pages to end of post
+function willnorris_postfooter($content) {
+	if ( function_exists('related_pages') ) {
+		if ( related_pages_exist() ) {
+			$content = related_pages(array(), false) . $content;
+		}
+	}
+
+	return $content;
+}
+add_filter('thematic_postfooter', 'willnorris_postfooter');

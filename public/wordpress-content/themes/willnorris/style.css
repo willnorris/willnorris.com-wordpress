@@ -134,7 +134,7 @@ body.single .entry-title				{ font-size: 2.0em; }
 .entry-utility, body.page .edit-link	{ border-top: 1px solid #CCC; border-bottom: 1px solid #CCC;
 										  background: #f0f0f0; padding: 0.3em 0.7em; 
 										  font-size: 0.9em; line-height: 1.7em; clear: both; 
-										  display: block; }
+										  display: block; margin: 1em auto; }
 
 
 /* Comments */
@@ -245,3 +245,9 @@ body.home .entry-content hr             { margin: 1em 0; }
 body.home .entry-content h2				{ font-size: 1.5em; margin: 1em 0 0.5em 0 ; }
 body.home .entry-content h2 + p			{ margin: 0; }
 body.home .entry-content h3				{ font-size: 1.2em; margin: 0; }
+
+.related-posts			{ margin: 1em; font-size: 0.9em; height: 5em; }
+.related-posts p 		{ margin: 0; font-weight: bold; }
+.related-posts ul 	 	{ margin: 0; list-style: none; }
+.related-posts ul li 	{ float: left; margin: 0 2em; width: 40%; }
+
