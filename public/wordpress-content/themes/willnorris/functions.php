@@ -33,6 +33,9 @@ function willnorris_footer() {
 			<a class="url fn" href="http://willnorris.com/">Will Norris</a>
 		</address>
 	</div>
+
+	<!-- frame buster -->
+	<script type="text/javascript">if (parent.frames.length > 0) top.location.replace(document.location);</script>
 <?php
 }
 
@@ -145,7 +148,7 @@ function willnorris_cleanup_hooks() {
 	add_action('wp_footer', 'wp_imagefit_js', 20);
 
 }
-add_filter('init', 'willnorris_cleanup_hooks', 20);
+add_filter('wp', 'willnorris_cleanup_hooks', 20);
 
 
 function willnorris_postfooter_postcategory($postcategory) {
