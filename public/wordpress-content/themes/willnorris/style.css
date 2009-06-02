@@ -127,9 +127,13 @@ body.single .entry-title				{ font-size: 2.0em; }
 .entry-content a:visited				{ color: #b41; }
 .entry-content ul						{ margin-left: 3em; }
 
-
-
 .entry-meta								{ margin-bottom: 1.5em; }
+
+.related-posts							{ margin: 1em; font-size: 0.9em; overflow: auto; }
+.related-posts p 						{ margin: 0; font-weight: bold; }
+.related-posts ul 	 					{ margin: 0; list-style: none; }
+.related-posts ul li 					{ float: left; margin-left: 3%; width: 46%; }
+
 
 .entry-utility, body.page .edit-link	{ border-top: 1px solid #CCC; border-bottom: 1px solid #CCC;
 										  background: #f0f0f0; padding: 0.3em 0.7em; 
@@ -182,8 +186,10 @@ img.avatar								{ float: right; margin: 2px; }
 										  padding: 2px; padding-top: 0; }
 
 /* Trackbacks */
+#trackbacks-list ol						{ list-style: none; }
 #trackbacks-list li .comment-author 	{ background: url('images/arrow_refresh.png') no-repeat 
-										  10px 10px; border-bottom: 1px solid #ccc; padding-left: 30px; }
+										  7px 4px; border-bottom: 1px solid #ccc; padding-left: 30px; min-height: 22px; }
+#trackbacks-list li.alt .comment-author	{ text-align: left; }
 #trackbacks-list li + li				{ margin-top: 1em; }
 #trackbacks-list li .comment-author		{ border-bottom: 1px solid #ccc; }
 #trackbacks-list li p					{ display: none; }
@@ -245,9 +251,4 @@ body.home .entry-content hr             { margin: 1em 0; }
 body.home .entry-content h2				{ font-size: 1.5em; margin: 1em 0 0.5em 0 ; }
 body.home .entry-content h2 + p			{ margin: 0; }
 body.home .entry-content h3				{ font-size: 1.2em; margin: 0; }
-
-.related-posts			{ margin: 1em; font-size: 0.9em; overflow: auto; }
-.related-posts p 		{ margin: 0; font-weight: bold; }
-.related-posts ul 	 	{ margin: 0; list-style: none; }
-.related-posts ul li 	{ float: left; margin: 0 2em; width: 40%; }
 
