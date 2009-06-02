@@ -116,6 +116,7 @@ body.page .entry-title,
 /* Posts */
 
 .post + .post 							{ margin-top: 2em; }
+d
 
 body.archive .entry-title, 
 body.search .entry-title				{ line-height: normal; }
@@ -214,9 +215,11 @@ body.pageid-231 .entry-content li		{ display: inline; float: left; margin-right:
 body.pageid-231 .entry-content li img	{ border: 1px solid #000; padding: 1px; display: block; margin: 0 auto;}
 
 /* -- Front Page -- */
-body.home #content						{ width: 65%; }
+body.home #front-asides					{ width: 30%; margin-left: 0; float: right; clear: right; }
+body.home .aside						{ width: 100%; margin-left: 0; float: none; clear: right; }
+body.home #container					{ float: left; clear: none; width: 65%; border: 0; }
+body.home #container .aside				{ float: none; clear: none; }
 body.home .entry-content a:visited		{ color: #2277DD; }
-body.home .aside						{ width: 30%; margin-left: 70%; }
 
 /* DiSo Profile */
 /* .hcard-profile .uid					  	{ display: none; } */

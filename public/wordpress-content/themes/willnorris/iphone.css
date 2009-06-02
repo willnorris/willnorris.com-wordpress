@@ -15,7 +15,7 @@ body, html > body { background: transparent; }
 
 
 #container { border: 0; }
-#content { width: auto; float: none; padding: 0.5em; }
+#content, body.home #content { width: auto; float: none; padding: 0.5em; }
 
 .entry-title { font-size: 1.5em; font-weight: bold; margin: 0; }
 
@@ -23,8 +23,14 @@ body, html > body { background: transparent; }
 .nav-previous, .nav-next { float: none; }
 
 
-.aside { margin: 0.5em; width: auto; }
+.aside, body.home .aside { margin: 0.5em; width: auto; }
 
 .widget_thematic_meta { position: absolute: top 0; right: 0; padding: 0; margin: 0; }
 .widget_thematic_meta ul li a { padding: 0 0.5em 0 0; line-height: 2.2em; }
 .widget_thematic_meta li { float: right; clear: right; }
+
+
+
+body.home #search	{ display: none; }
+body.home #primary	{ margin: 0; }
+body.home #front-asides { float: none; width: 100%; }

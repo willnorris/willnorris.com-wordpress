@@ -4,6 +4,27 @@ Template Name: Front Page
 */
 ?>
 <?php get_header() ?>
+
+<div id="front-asides">
+<?php 
+	// sidebar
+	if ( is_sidebar_active('front-page-aside') ) { 
+?>
+	<div id="primary" class="aside main-aside">
+		<ul class="xoxo">
+			<?php dynamic_sidebar('primary-aside'); ?>
+		</ul>
+	</div>
+
+	<div id="secondary" class="aside main-aside">
+		<ul class="xoxo">
+			<?php dynamic_sidebar('front-page-aside'); ?>
+		</ul>
+	</div>
+<?php 
+	}
+?>
+</div>
 	
 	<div id="container">
 		<div id="content">
@@ -35,25 +56,5 @@ if ( is_sidebar_active('front-page-top') ) {
 		</div><!-- #content -->
 	</div><!-- #container -->
 
-<?php 
-	// sidebar
-	if ( true || is_sidebar_active('front-page-aside') ) { 
-?>
-	<div id="primary" class="aside main-aside">
-		<ul class="xoxo">
-			<?php dynamic_sidebar('primary-aside'); ?>
-		</ul>
-	</div>
-
-	<div id="secondary" class="aside main-aside">
-		<ul class="xoxo">
-			<?php dynamic_sidebar('front-page-aside'); ?>
-		</ul>
-	</div>
-<?php 
-	} else {
-		get_sidebar();
-	}
-?>
 
 <?php get_footer() ?>
