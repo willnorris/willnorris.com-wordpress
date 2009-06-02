@@ -246,7 +246,7 @@ body.home .entry-content h2				{ font-size: 1.5em; margin: 1em 0 0.5em 0 ; }
 body.home .entry-content h2 + p			{ margin: 0; }
 body.home .entry-content h3				{ font-size: 1.2em; margin: 0; }
 
-.related-posts			{ margin: 1em; font-size: 0.9em; height: 5em; }
+.related-posts			{ margin: 1em; font-size: 0.9em; overflow: auto; }
 .related-posts p 		{ margin: 0; font-weight: bold; }
 .related-posts ul 	 	{ margin: 0; list-style: none; }
 .related-posts ul li 	{ float: left; margin: 0 2em; width: 40%; }
