@@ -18,6 +18,8 @@ body{font-family:"Lucida Grande",Helvetica,Arial,Verdana,sans-serif;line-height:
 body, html > body 						{ color: #444;
    										  background: url('images/bg.png') fixed; }
 
+p 										{ text-align: left; }
+
 a 										{ text-decoration: none; }
 a:link, a:hover, a:visited 				{ color: #2277DD; }
 a:hover 								{ text-decoration: none; }
