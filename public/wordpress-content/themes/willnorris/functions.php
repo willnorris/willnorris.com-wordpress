@@ -23,7 +23,8 @@ add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
 
 function willnorris_header() { 
 	echo '
-		<script type="text/javascript" src="'.get_option('siteurl').'/wp-content/themes/willnorris/willnorris.js"></script>';
+		<meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+		<link media="only screen and (max-device-width: 480px)" href="' . get_stylesheet_directory_uri() . '/iphone.css" type="text/css" rel="stylesheet" />';
 }
 
 function willnorris_footer() { 
@@ -83,7 +84,7 @@ function willnorris_actionstream_parse_page_token($content) {
 
 add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
-//add_action('wp_head', 'willnorris_header');
+add_action('wp_head', 'willnorris_header');
 add_action('get_footer', 'willnorris_footer');
 add_action('wp', 'willnorris_fix_sharethis_head');
 add_action('wp', 'willnorris_fix_quoter_head');
