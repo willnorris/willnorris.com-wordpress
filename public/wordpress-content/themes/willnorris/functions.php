@@ -148,6 +148,9 @@ function willnorris_cleanup_hooks() {
 	remove_action('wp_head', 'wp_imagefit_js');
 	add_action('wp_footer', 'wp_imagefit_js', 20);
 
+	if ( is_preview() ) {
+		remove_action('wp_footer', 'add_mint_javascript');
+	}
 }
 add_filter('wp', 'willnorris_cleanup_hooks', 20);
 
