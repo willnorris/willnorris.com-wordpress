@@ -71,16 +71,6 @@ function willnorris_single_post_title($title) {
 	return $title;
 }
 
-function willnorris_actionstream_parse_page_token($content) {
-	if (function_exists('actionstream_render')) {
-		if(preg_match('/<!--actionstream(\((.*)\))?-->/',$content,$matches)) {
-			$user = $matches[2];
-			$content = preg_replace('/<!--actionstream(\((.*)\))?-->/',actionstream_render($user,50,false,false), $content);
-		}
-	}
-
-	return $content;
-}
 
 add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
@@ -90,8 +80,6 @@ add_action('wp', 'willnorris_fix_sharethis_head');
 add_action('wp', 'willnorris_fix_quoter_head');
 
 add_filter('single_post_title', 'willnorris_single_post_title');
-remove_filter('the_content', 'diso_actionstream_parse_page_token');
-add_filter('the_content', 'willnorris_actionstream_parse_page_token');
 
 add_filter('extended_profile_first_name', create_function('$n', 'return "<span class=\"given-name\">William</span>";'));
 remove_filter('get_avatar', 'ext_profile_avatar');
