@@ -22,7 +22,8 @@ function brightkite_profile($userid) {
 	if (empty($loc) || $last_checkin->identifier_hash != $loc['hash']) {
 
 		$checkin_data = unserialize($last_checkin->data);
-		$checkin_xml = simplexml_load_file($checkin_data['url'] . '.xml');
+		$response = wp_remote_get($checkin_data['url'] . '.xml');
+		$checkin_xml = simplexml_load_string($response['body']);
 
 		if ($checkin_xml !== false) {
 			$loc = array(
