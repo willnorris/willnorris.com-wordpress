@@ -238,3 +238,16 @@ function willnorris_postfooter($content) {
 	return $content;
 }
 add_filter('thematic_postfooter', 'willnorris_postfooter');
+
+
+function willnorris_admin_footer() {
+	// hide annoying box on wp-super-cache config page
+	if ($_REQUEST['page'] == 'wpsupercache') {
+		echo '<script type="text/javascript">
+			jQuery("h3:contains(\'Make WordPress Faster\')").closest("td").hide();
+		</script>';
+	}
+}
+add_filter('admin_footer', 'willnorris_admin_footer');
+
+
