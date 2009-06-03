@@ -118,7 +118,6 @@ body.page .entry-title,
 /* Posts */
 
 .post + .post 							{ margin-top: 2em; }
-d
 
 body.archive .entry-title, 
 body.search .entry-title				{ line-height: normal; }
@@ -221,6 +220,7 @@ body.home #front-asides					{ width: 30%; margin-left: 0; float: right; clear: r
 body.home .aside						{ width: 100%; margin-left: 0; float: none; clear: right; }
 body.home #container					{ float: left; clear: none; width: 65%; border: 0; }
 body.home #container .aside				{ float: none; clear: none; }
+body.home #content						{ width: 100%; }
 body.home .entry-content a:visited		{ color: #2277DD; }
 
 /* DiSo Profile */
