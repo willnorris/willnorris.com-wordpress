@@ -29,12 +29,31 @@ add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
 
 
 /**
+ * To optimize the order of styles and scripts, we need to move the main
+ * theme stylesheet to a little lower in the page.  This function will 
+ * hide the styleeshet only the first time it is called.
+ *
+ * @see http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts
+ */
+function willnorris_create_stylesheet($stylesheet) {
+	static $count;
+	if ( !isset($count) ) $count = 0;
+	if ( $count++ <= 0 ) $stylesheet = '';
+
+	return $stylesheet;
+}
+add_filter('thematic_create_stylesheet', 'willnorris_create_stylesheet');
+
+
+/**
  * Additional <head> stuff.
  */
 function willnorris_header() { 
 ?>
 		<!-- frame buster -->
 		<script type="text/javascript">if (parent.frames.length > 0) top.location.replace(document.location);</script>
+
+		<?php echo thematic_create_stylesheet(); ?>
 
 		<!-- iPhone support -->
 		<meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
@@ -123,16 +142,21 @@ function willnorris_cleanup_hooks() {
 	$wp_styles->dequeue($key);
 
 	// move scripts to the footer
-	$wp_scripts->dequeue('jquery');
 	$wp_scripts->add_data('jquery', 'group', 1);
-	$wp_scripts->enqueue('jquery');
 
-	$wp_scripts->dequeue('jquery.imagefit');
+
 	$wp_scripts->add_data('jquery.imagefit', 'group', 1);
-	$wp_scripts->enqueue('jquery.imagefit');
-
 	remove_action('wp_head', 'wp_imagefit_js');
-	add_action('wp_footer', 'wp_imagefit_js', 20);
+
+	if ( is_front_page() ) {
+		// remove jquery plugin from front page
+		$key = array_search('jquery.imagefit', $wp_scripts->queue);
+		$wp_scripts->dequeue($key);
+	} else {
+		// add imagefit to footer on non-front page
+		add_action('wp_footer', 'wp_imagefit_js', 20);
+	}
+
 
 	// don't load mint on page previews
 	if ( is_preview() ) {
@@ -143,6 +167,9 @@ function willnorris_cleanup_hooks() {
 	if (!is_single() && !is_comments_popup()) { 
 		remove_action('wp_head', 'quoter_head');
 	}
+	// until I update things to support threaded comments
+	wp_deregister_script('comment-reply');
+
 
 	// fix share this plugin
 	if (function_exists('st_widget')) {
