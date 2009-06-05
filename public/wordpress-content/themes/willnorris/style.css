@@ -257,3 +257,32 @@ body.home .entry-content h2				{ font-size: 1.5em; margin: 1em 0 0.5em 0 ; }
 body.home .entry-content h2 + p			{ margin: 0; }
 body.home .entry-content h3				{ font-size: 1.2em; margin: 0; }
 
+
+
+/* -- Extended Profiles Plugin Stylesheet */
+.hcard-profile img.photo {
+	float: left;
+	margin-right: 10px;
+	padding: 5px;
+	background-color: lightgrey;
+}
+.hcard-profile h2 {
+	clear: none;
+	background: none;
+}
+.hcard-profile p.note {
+	margin-top: 2em;
+}
+.hcard-profile dl.contact dt {
+	float: left;
+	width: 10em;
+}
+.hcard-profile dl.contact dd {
+	margin-left: 10em;
+}
+.hcard-profile dl.contact ul,
+.hcard-profile dl.contact ul li {
+	list-style-type: none;
+	padding: 0px;
+}
+

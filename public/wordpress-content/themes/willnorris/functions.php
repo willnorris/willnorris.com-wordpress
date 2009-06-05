@@ -5,12 +5,19 @@ require_once dirname(__FILE__) . '/library/widgets.php';
 
 
 
+/**
+ * Additional arguments to use when building the main menu.  
+ */
 function willnorris_page_menu_args($args) {
 	$args['depth'] = 1;
 	return $args;
 }
 add_filter('wp_page_menu_args', 'willnorris_page_menu_args');
 
+
+/**
+ * Exclude front page from menu, since the <h1> links there already.
+ */
 function willnorris_list_pages_exludes($pages) {
 	if (get_option('show_on_front') == 'page') {
 		$pages[] = get_option('page_on_front');
@@ -21,12 +28,25 @@ function willnorris_list_pages_exludes($pages) {
 add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
 
 
+/**
+ * Additional <head> stuff.
+ */
 function willnorris_header() { 
-	echo '
-		<meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
-		<link media="only screen and (max-device-width: 480px)" href="' . get_stylesheet_directory_uri() . '/iphone.css" type="text/css" rel="stylesheet" />';
-}
+?>
+		<!-- frame buster -->
+		<script type="text/javascript">if (parent.frames.length > 0) top.location.replace(document.location);</script>
 
+		<!-- iPhone support -->
+		<meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+		<link media="only screen and (max-device-width: 480px)" href="<?php bloginfo('stylesheet_directory'); ?>/iphone.css" type="text/css" rel="stylesheet" />
+<?php
+}
+add_action('wp_head', 'willnorris_header', 5);
+
+
+/**
+ * Add copyright at bottom of the page.
+ */
 function willnorris_footer() { 
 ?>
 	<div id="copyright"> &copy; <?php echo date('Y'); ?>
@@ -34,34 +54,14 @@ function willnorris_footer() {
 			<a class="url fn" href="http://willnorris.com/">Will Norris</a>
 		</address>
 	</div>
-
-	<!-- frame buster -->
-	<script type="text/javascript">if (parent.frames.length > 0) top.location.replace(document.location);</script>
 <?php
 }
-
-function willnorris_fix_sharethis_head($wp) {
-	if (function_exists('st_widget')) {
-		if (is_single()) { 
-			add_filter('the_content', create_function('$c', 'return $c."<p>".st_widget()."</p>";'));
-		} else {
-			remove_action('wp_head', 'st_widget_head');
-		}
-	}
-
-	return $wp;
-}
-
-function willnorris_fix_quoter_head($wp) {
-	if (!is_single() && !is_comments_popup()) { 
-		remove_action('wp_head', 'quoter_head');
-	}
-
-	return $wp;
-}
+add_action('thematic_abovefooter', 'willnorris_footer');
 
 
-
+/**
+ * Custom post title format for front page.
+ */
 function willnorris_single_post_title($title) {
 	$p = get_query_var('p');
 	if ($p == get_option('page_on_front')) {
@@ -70,23 +70,13 @@ function willnorris_single_post_title($title) {
 
 	return $title;
 }
+add_filter('single_post_title', 'willnorris_single_post_title');
 
 
 add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
-
-add_action('wp_head', 'willnorris_header');
-add_action('get_footer', 'willnorris_footer');
-add_action('wp', 'willnorris_fix_sharethis_head');
-add_action('wp', 'willnorris_fix_quoter_head');
-
-add_filter('single_post_title', 'willnorris_single_post_title');
-
-add_filter('extended_profile_first_name', create_function('$n', 'return "<span class=\"given-name\">William</span>";'));
-remove_filter('get_avatar', 'ext_profile_avatar');
-
 add_filter('avatar_size', create_function('$s', 'return 32;'));
+add_filter('extended_profile_first_name', create_function('$n', 'return "<span class=\"given-name\">William</span>";'));
 add_filter('extended_profile_adr', create_function('$s', 'return preg_replace("/Current (Address)/", "\\\1", $s);'));
-
 
 
 function willnorris_thematic_description($content) {
@@ -96,6 +86,7 @@ function willnorris_thematic_description($content) {
 	return $content;
 }
 //add_filter('thematic_create_description', 'willnorris_thematic_description');
+
 
 function willnorris_thematic_doctitle($elements) {
 	if ( array_key_exists('separator', $elements) ) {
@@ -111,6 +102,10 @@ function willnorris_thematic_doctitle($elements) {
 }
 add_filter('thematic_doctitle', 'willnorris_thematic_doctitle');
 
+
+/**
+ * Cleanup lots of hooks from WordPress, thematic, and plugins.
+ */
 function willnorris_cleanup_hooks() {
 	// don't import hcard on account creation (I've had problems with this in the past)
 	remove_action('user_register', 'ext_profile_hcard_import');
@@ -122,9 +117,12 @@ function willnorris_cleanup_hooks() {
 		wp_deregister_style('ext-profile');
 	}
 
-	// move scripts to the footer
-	global $wp_scripts;
+	global $wp_scripts, $wp_styles;
 
+	$key = array_search('ext-profile', $wp_styles->queue);
+	$wp_styles->dequeue($key);
+
+	// move scripts to the footer
 	$wp_scripts->dequeue('jquery');
 	$wp_scripts->add_data('jquery', 'group', 1);
 	$wp_scripts->enqueue('jquery');
@@ -136,9 +134,26 @@ function willnorris_cleanup_hooks() {
 	remove_action('wp_head', 'wp_imagefit_js');
 	add_action('wp_footer', 'wp_imagefit_js', 20);
 
+	// don't load mint on page previews
 	if ( is_preview() ) {
 		remove_action('wp_footer', 'add_mint_javascript');
 	}
+
+	// fix quoter plugin
+	if (!is_single() && !is_comments_popup()) { 
+		remove_action('wp_head', 'quoter_head');
+	}
+
+	// fix share this plugin
+	if (function_exists('st_widget')) {
+		if (is_single()) { 
+			add_filter('the_content', create_function('$c', 'return $c."<p>".st_widget()."</p>";'));
+		} else {
+			remove_action('wp_head', 'st_widget_head');
+		}
+	}
+
+	remove_filter('get_avatar', 'ext_profile_avatar');
 }
 add_filter('wp', 'willnorris_cleanup_hooks', 20);
 
@@ -150,6 +165,7 @@ function willnorris_postfooter_postcategory($postcategory) {
 	return $postcategory;
 }
 add_filter('thematic_postfooter_postcategory', 'willnorris_postfooter_postcategory');
+
 
 /**
  * Attachments don't need comments
@@ -191,6 +207,10 @@ function willnorris_get_attachment_link($link, $id, $size, $permalink, $icon, $t
 add_filter('wp_get_attachment_link', 'willnorris_get_attachment_link', 10, 6);
 
 
+/**
+ * Replace extended profile hCard with anti-spambot version of email 
+ * addres.  Also add link to PGP key and add IRC nick info.
+ */
 function willnorris_profile_email($email, $user_id) {
 	$userdata = get_userdata($user_id);
 
@@ -204,19 +224,28 @@ function willnorris_profile_email($email, $user_id) {
 }
 add_action('extended_profile_email', 'willnorris_profile_email', 10, 2);
 
+
+/**
+ * Add Jabber to extended profile hCard
+ */
 function willnorris_profile_jabber($jabber, $user_id) {
 	$userdata = get_userdata($user_id);
 	return '<dt>Jabber:</dt> <dd><a class="url" href="xmpp:' . esc_attr(antispambot("$userdata->jabber")) . '">' . antispambot($userdata->jabber) . '</a></dd>';
 }
 add_action('extended_profile_jabber', 'willnorris_profile_jabber', 10, 2);
 
+
+/**
+ * Don't include thematics head scripts, which are primarily superfish and related jQuery plugins.
+ */
 function willnorris_head_scripts($scripts) {
 	return '';
 }
 add_filter('thematic_head_scripts', 'willnorris_head_scripts');
 
-// add related pages to end of post
+
 function willnorris_postfooter($content) {
+	//Add related pages to end of post
 	if ( function_exists('related_pages') ) {
 		if ( related_pages_exist() ) {
 			$content = related_pages(array(), false) . $content;
@@ -228,6 +257,7 @@ function willnorris_postfooter($content) {
 add_filter('thematic_postfooter', 'willnorris_postfooter');
 
 
+
 function willnorris_admin_footer() {
 	// hide annoying box on wp-super-cache config page
 	if ($_REQUEST['page'] == 'wpsupercache') {
@@ -237,5 +267,4 @@ function willnorris_admin_footer() {
 	}
 }
 add_filter('admin_footer', 'willnorris_admin_footer');
-
 
