@@ -46,6 +46,16 @@ add_filter('thematic_create_stylesheet', 'willnorris_create_stylesheet');
 
 
 /**
+ * Add last modified time to stylesheet URI to ensure freshness.
+ *
+ * @see http://markjaquith.wordpress.com/2009/05/04/force-css-changes-to-go-live-immediately/
+ */
+function willnorris_stylesheet_uri($stylesheet) {
+	return $stylesheet . '?' . filemtime( get_stylesheet_directory() . '/style.css' );
+}
+add_filter('stylesheet_uri', 'willnorris_stylesheet_uri');
+
+/**
  * Additional <head> stuff.
  */
 function willnorris_header() { 
@@ -143,6 +153,7 @@ function willnorris_cleanup_hooks() {
 
 	// move scripts to the footer
 	$wp_scripts->add_data('jquery', 'group', 1);
+	$wp_scripts->add_data('comment-reply', 'group', 1);
 
 
 	$wp_scripts->add_data('jquery.imagefit', 'group', 1);
@@ -163,12 +174,19 @@ function willnorris_cleanup_hooks() {
 		remove_action('wp_footer', 'add_mint_javascript');
 	}
 
-	// fix quoter plugin
-	if (!is_single() && !is_comments_popup()) { 
-		remove_action('wp_head', 'quoter_head');
+	// ensure comment related stuff is only included when it makes sense
+	$comments = false;
+	if (is_single() || is_page() || is_comments_popup()) {
+		global $post;
+		if ( 'open' == $post->comment_status ) {
+			$comments = true;
+		}
 	}
-	// until I update things to support threaded comments
-	wp_deregister_script('comment-reply');
+
+	if ( $comments == false ) {
+		remove_action('wp_head', 'quoter_head');
+		wp_deregister_script('comment-reply');
+	}
 
 
 	// fix share this plugin
