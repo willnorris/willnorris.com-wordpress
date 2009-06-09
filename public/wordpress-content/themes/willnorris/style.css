@@ -33,7 +33,8 @@ strong 			{ font-weight: bold; }
 p 				{ margin-bottom: 1em; }
 hr 				{ background: #B2CCFF; height: 1px; border: 0; }
 pre 			{ background: #EEE; border: 1px solid #DDD; padding: 1.5em; margin-bottom: 1.3em; }
-pre > code      { line-height: 1.25em; }
+pre > code      { line-height: 1.75em; }
+blockquote		{ margin: 1.5em 0 1.5em 1.5em; color: #666; font-style: italic; }
 
 a 										{ text-decoration: none; }
 a:link, a:hover, a:visited 				{ color: #2277DD; }
@@ -120,11 +121,12 @@ body.page .entry-title,
 .post + .post 							{ margin-top: 4em; }
 .not-singular .entry-content > h2		{ font-size: 158%; color: #222; }
 
-.entry-content > p						{ margin: 1.0em 0; line-height: 2.0em; }
+.entry-content 							{ line-height: 2.0em; }
+.entry-content > p						{ margin: 1.0em 0; }
 .entry-content > p + p					{ margin-top: 1.3em; }
 .entry-content h3 + p					{ margin-top: 0em; }
 .entry-content a:visited				{ color: #bb4411; }
-.entry-content ul						{ margin: 1em 0 1em 3em; line-height: 2.0em; }
+.entry-content ul						{ margin: 1em 0 1em 3em; }
 .entry-content ul > li					{ list-style: disc; }
 
 .entry-meta								{ margin-bottom: 1.5em; }
