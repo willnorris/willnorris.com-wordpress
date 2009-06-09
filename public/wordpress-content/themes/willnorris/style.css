@@ -33,6 +33,7 @@ strong 			{ font-weight: bold; }
 p 				{ margin-bottom: 1em; }
 hr 				{ background: #B2CCFF; height: 1px; border: 0; }
 pre 			{ background: #EEE; border: 1px solid #DDD; padding: 1.5em; margin-bottom: 1.3em; }
+pre > code      { line-height: 1.25em; }
 
 a 										{ text-decoration: none; }
 a:link, a:hover, a:visited 				{ color: #2277DD; }
