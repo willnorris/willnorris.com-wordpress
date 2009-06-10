@@ -1,1 +1,0 @@
-/users/home/wnorris/Projects/yadis-support/yadis-support
