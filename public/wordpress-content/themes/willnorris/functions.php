@@ -18,12 +18,19 @@ add_filter('wp_page_menu_args', 'willnorris_page_menu_args');
 /**
  * Exclude front page from menu, since the <h1> links there already.
  */
-function willnorris_list_pages_exludes($pages) {
+function willnorris_list_pages_exludes($excludes) {
 	if (get_option('show_on_front') == 'page') {
-		$pages[] = get_option('page_on_front');
+		$excludes[] = get_option('page_on_front');
 	}
 
-	return $pages;
+	$pages = get_pages();
+	foreach ($pages as $page) {
+		if ( $page->post_name == 'openid-support' ) {
+			$excludes[] = $page->ID;
+		}
+	}
+
+	return $excludes;
 }
 add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
 
@@ -312,4 +319,22 @@ function willnorris_admin_footer() {
 	}
 }
 add_filter('admin_footer', 'willnorris_admin_footer');
+
+
+function willnorris_openid_support_table($attrs, $content) {
+	$table_file = dirname(__FILE__) . '/openid-support-table.html';
+
+	$support_table = '
+		<div id="openid-support">
+			' . file_get_contents( $table_file ) . '
+		</div>
+
+		<p id="last-modified">Table Last Updated: ' . date('r', filemtime($table_file) ) . '</p>
+		';
+
+	return $support_table;
+
+}
+add_shortcode('openid_support_table', 'willnorris_openid_support_table');
+
 

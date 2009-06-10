@@ -36,6 +36,9 @@ pre 			{ background: #EEE; border: 1px solid #DDD; padding: 1.5em; margin-bottom
 pre > code      { line-height: 1.75em; }
 blockquote		{ margin: 1.5em 0 1.5em 1.5em; color: #666; font-style: italic; }
 
+dt										{ font-weight: bold; }
+dd										{ margin-left: 1.5em; }
+
 a 										{ text-decoration: none; }
 a:link, a:hover, a:visited 				{ color: #2277DD; }
 
@@ -247,6 +250,13 @@ a#actionstream_feed						{ display: none; }
 .widget_thematic_meta > ul > li > a:hover	
 										{ color: #B9AF00; }
 
+/* OpenID Support Page */
+#openid-support 								{ width: 99%; display: block; overflow: auto; padding: 1px; }
+#openid-support, #openid-support th				{ text-align: center; line-height: 1.5em; }
+#openid-support > table > tbody > tr > td		{ padding: 5px; }
+#openid-support > table > tbody > tr > th > a	{ display: block; font-size: 0.8em; padding: 8px; width: 4em; line-height: 1.3em; }
+.openid_supported								{ text-indent: -9999px; background: #6F6; }
+.openid_service									{ display: block; width: 10em; }
+
+
 /* vim: set sw=4 ts=4 */
-
-
