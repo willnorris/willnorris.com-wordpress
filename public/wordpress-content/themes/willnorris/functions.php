@@ -273,7 +273,7 @@ function willnorris_profile_email($email, $user_id) {
 	<dd><a href="irc://irc.freenode.net/willnorris,isnick">willnorris@freenode</a></dd>
 
 	<dt>i-name:</dt>
-	<dd><a href="http://xri.net/=will.norris">=will.norris</a></dd>';
+	<dd><a href="http://xri.net/=willnorris">=willnorris</a></dd>';
 
 	return $email;
 }
