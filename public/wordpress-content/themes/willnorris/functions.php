@@ -261,7 +261,7 @@ add_filter('wp_get_attachment_link', 'willnorris_get_attachment_link', 10, 6);
 
 /**
  * Replace extended profile hCard with anti-spambot version of email 
- * addres.  Also add link to PGP key and add IRC nick info.
+ * addres.  Also add link to PGP key,  IRC nick, and i-name.
  */
 function willnorris_profile_email($email, $user_id) {
 	$userdata = get_userdata($user_id);
@@ -270,12 +270,24 @@ function willnorris_profile_email($email, $user_id) {
 		<a href="' . get_bloginfo('url') . '/about/pgp">My PGP Key</a></dd>';
 	$email .= '
 	<dt>IRC:</dt>
-	<dd><a href="irc://irc.freenode.net/willnorris,isnick">willnorris@freenode</a></dd>';
+	<dd><a href="irc://irc.freenode.net/willnorris,isnick">willnorris@freenode</a></dd>
+
+	<dt>i-name:</dt>
+	<dd><a href="http://xri.net/=will.norris">=will.norris</a></dd>';
 
 	return $email;
 }
 add_action('extended_profile_email', 'willnorris_profile_email', 10, 2);
 
+function willnorris_profile_tel($tel, $user_id) {
+	$userdata = get_userdata($user_id);
+	if ( $userdata->tel ) {
+		$link = 'callto:' . preg_replace('/[^0-9]/', '', $userdata->tel);
+		$tel = '<dt>Telephone:</dt> <dd class="tel"><a href="' . $link . '">' . $userdata->tel . '</a></dd>';
+	}
+	return $tel;
+}
+add_action('extended_profile_tel', 'willnorris_profile_tel', 10, 2);
 
 /**
  * Add Jabber to extended profile hCard

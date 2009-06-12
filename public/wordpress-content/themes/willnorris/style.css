@@ -25,8 +25,8 @@ body{font:12px/1.333 'lucida grande',arial,helvetica,clean,sans-serif;*font-size
  * 15 - 125%      22 - 183%      29 - 242%      36 - 300%      43 - 358%      50 - 417%
  */
 
-body			 						{ color: #444; background: url('images/bg.png') fixed; 
-										  font-family: 'Lucida Grande', arial, helvetica, clean, sans-serif; }
+body			 						{ color: #444; background: url('images/bg.png') fixed; }
+										  
 
 em 				{ font-style: italic; }
 strong 			{ font-weight: bold; }
