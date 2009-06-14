@@ -349,4 +349,12 @@ function willnorris_openid_support_table($attrs, $content) {
 }
 add_shortcode('openid_support_table', 'willnorris_openid_support_table');
 
+function willnorris_comment_form() {
+?>
+	<div id="form-markdown-allowed" class="form-section">
+		<p>You may use <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> syntax or basic <abbr title="<?php esc_attr_e(allowed_tags()); ?>">HTML</abbr>.
+	</div>
+<?php
+}
+add_action('comment_form', 'willnorris_comment_form', 1);
 
