@@ -161,6 +161,7 @@ function willnorris_cleanup_hooks() {
 	// move scripts to the footer
 	$wp_scripts->add_data('jquery', 'group', 1);
 	$wp_scripts->add_data('comment-reply', 'group', 1);
+	wp_enqueue_script('ga-external-tracking', plugins_url('/google-analyticator/external-tracking.js'), array('jquery'), false, true);
 
 
 	$wp_scripts->add_data('jquery.imagefit', 'group', 1);
