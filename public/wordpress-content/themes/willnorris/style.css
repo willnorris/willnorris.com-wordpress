@@ -85,8 +85,11 @@ h4 		{ font-size: 125%; color: #333; }
 .aside 									{ margin: 0 0 0 74%; }
 #primary								{ margin-top: 3em; }
 
-.widgetcontainer 						{ margin-bottom: 1.5em; font-size: 92%; line-height: 1.8em; }
+.widgetcontainer 						{ margin: 0 0.5em 1.5em 0; font-size: 92%; line-height: 1.8em; }
 .widgettitle 							{ color: #444; font-size: 125%; }
+
+.widget_recent_entries > ul > li,
+.widget_recent_comments > ul > li 		{ line-height: 150%; margin-bottom: 1em; }
 
 #search .widgettitle 					{ display: none; }
 #s										{ width: 55%; margin-right: 0.5em; }
