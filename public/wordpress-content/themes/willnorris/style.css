@@ -42,6 +42,9 @@ dd										{ margin-left: 1.5em; }
 
 a 										{ text-decoration: none; }
 a:link, a:hover, a:visited 				{ color: #2277DD; }
+a:hover									{ text-decoration: underline; }
+.entry-title a:hover, #header a:hover   { text-decoration: none; }
+
 
 #wrapper 								{ max-width: 900px; margin: 0 auto; background: #FFF;
 										  border: 1px solid #FFF; border-top: 0; border-bottom: 0; }
@@ -61,7 +64,7 @@ h4 		{ font-size: 125%; color: #333; }
 
 #blog-title 							{ float: left; font-size: 175%; font-weight: bold; margin: 0.4em 0 0 2em; }
 #blog-title > span > a, 
-#blog-title > span > a:hover 			{ color: #FFF; text-decoration: none; z-index: 99; }
+#blog-title > span > a:hover 			{ color: #FFF; z-index: 99; }
 
 #blog-description, .skip-link 			{ display: none; }
 
@@ -114,7 +117,7 @@ body.blog #nav-above 					{ display: none; }
 #footer									{ padding-bottom: 0.5em; }
 
 #copyright a, #footer a 				{ color: #999; }
-#copyright a:hover, #footer a:hover 	{ color: #CCC; text-decoration: underline; }
+#copyright a:hover, #footer a:hover 	{ color: #CCC; }
 #copyright .vcard 						{ display: inline; }
 
 
@@ -256,7 +259,7 @@ a#actionstream_feed						{ display: none; }
 .widget_thematic_meta > ul > li 		{ display: inline; }
 .widget_thematic_meta > ul > li > a 	{ color: #FFF; font-weight: bold; padding: 1.2em; line-height: 1.5em; }
 .widget_thematic_meta > ul > li > a:hover	
-										{ color: #B9AF00; }
+										{ color: #B9AF00; text-decoration: none; }
 
 /* OpenID Support Page */
 #openid-support 								{ width: 99%; display: block; overflow: auto; padding: 1px; }
