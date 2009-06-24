@@ -1,8 +1,9 @@
 <?php
 
+require_once dirname(__FILE__) . '/library/thematic.php';
+require_once dirname(__FILE__) . '/library/cleanup.php';
 require_once dirname(__FILE__) . '/library/search.php';
 require_once dirname(__FILE__) . '/library/widgets.php';
-
 
 
 /**
@@ -23,11 +24,9 @@ function willnorris_list_pages_exludes($excludes) {
 		$excludes[] = get_option('page_on_front');
 	}
 
-	$pages = get_pages();
-	foreach ($pages as $page) {
-		if ( $page->post_name == 'openid-support' ) {
-			$excludes[] = $page->ID;
-		}
+	$openid_support = get_page_by_path('openid-support');
+	if ( $openid_support ) {
+		$excludes[] = $openid_support->ID;
 	}
 
 	return $excludes;
@@ -113,102 +112,6 @@ add_filter('wp_redirect_status', create_function('$s', 'status_header($s); retur
 add_filter('avatar_size', create_function('$s', 'return 32;'));
 add_filter('extended_profile_first_name', create_function('$n', 'return "<span class=\"given-name\">William</span>";'));
 add_filter('extended_profile_adr', create_function('$s', 'return preg_replace("/Current (Address)/", "\\\1", $s);'));
-
-
-function willnorris_thematic_description($content) {
-	if ( is_home() || is_front_page() ) {
-		$content = "\t" . '<meta name="description" content="' . get_bloginfo('description') . '" />' . "\n\n";
-	}
-	return $content;
-}
-//add_filter('thematic_create_description', 'willnorris_thematic_description');
-
-
-function willnorris_thematic_doctitle($elements) {
-	if ( array_key_exists('separator', $elements) ) {
-		$elements['separator'] = '&#8212;';
-	}
-
-	if ( ! array_key_exists('site_name', $elements) ) {
-		$elements[] = '&#8212;';
-		$elements[] = get_bloginfo('name');
-	}
-
-	return $elements;
-}
-add_filter('thematic_doctitle', 'willnorris_thematic_doctitle');
-
-
-/**
- * Cleanup lots of hooks from WordPress, thematic, and plugins.
- */
-function willnorris_cleanup_hooks() {
-	// don't import hcard on account creation (I've had problems with this in the past)
-	remove_action('user_register', 'ext_profile_hcard_import');
-
-	if ( !is_front_page() ) {
-		remove_action('wp_head', 'actionstream_styles');
-		remove_action('wp_head', 'actionstream_ext_styles', 11);
-		remove_action('wp_head', 'actionstream_personal_styles', 11);
-		wp_deregister_style('ext-profile');
-	}
-
-	global $wp_scripts, $wp_styles;
-
-	$key = array_search('ext-profile', $wp_styles->queue);
-	$wp_styles->dequeue($key);
-
-	// move scripts to the footer
-	$wp_scripts->add_data('jquery', 'group', 1);
-	$wp_scripts->add_data('comment-reply', 'group', 1);
-	wp_enqueue_script('ga-external-tracking', plugins_url('/google-analyticator/external-tracking.js'), array('jquery'), false, true);
-
-
-	$wp_scripts->add_data('jquery.imagefit', 'group', 1);
-	remove_action('wp_head', 'wp_imagefit_js');
-
-	if ( is_front_page() ) {
-		// remove jquery plugin from front page
-		$key = array_search('jquery.imagefit', $wp_scripts->queue);
-		$wp_scripts->dequeue($key);
-	} else {
-		// add imagefit to footer on non-front page
-		add_action('wp_footer', 'wp_imagefit_js', 20);
-	}
-
-
-	// don't load mint on page previews
-	if ( is_preview() ) {
-		remove_action('wp_footer', 'add_mint_javascript');
-	}
-
-	// ensure comment related stuff is only included when it makes sense
-	$comments = false;
-	if (is_single() || is_page() || is_comments_popup()) {
-		global $post;
-		if ( 'open' == $post->comment_status ) {
-			$comments = true;
-		}
-	}
-
-	if ( $comments == false ) {
-		remove_action('wp_head', 'quoter_head');
-		wp_deregister_script('comment-reply');
-	}
-
-
-	// fix share this plugin
-	if (function_exists('st_widget')) {
-		if (is_single()) { 
-			add_filter('the_content', create_function('$c', 'return $c."<p>".st_widget()."</p>";'));
-		} else {
-			remove_action('wp_head', 'st_widget_head');
-		}
-	}
-
-	remove_filter('get_avatar', 'ext_profile_avatar');
-}
-add_filter('wp', 'willnorris_cleanup_hooks', 20);
 
 
 function willnorris_postfooter_postcategory($postcategory) {
@@ -300,15 +203,6 @@ function willnorris_profile_jabber($jabber, $user_id) {
 add_action('extended_profile_jabber', 'willnorris_profile_jabber', 10, 2);
 
 
-/**
- * Don't include thematics head scripts, which are primarily superfish and related jQuery plugins.
- */
-function willnorris_head_scripts($scripts) {
-	return '';
-}
-add_filter('thematic_head_scripts', 'willnorris_head_scripts');
-
-
 function willnorris_postfooter($content) {
 	//Add related pages to end of post
 	if ( function_exists('related_pages') ) {
@@ -320,18 +214,6 @@ function willnorris_postfooter($content) {
 	return $content;
 }
 add_filter('thematic_postfooter', 'willnorris_postfooter');
-
-
-
-function willnorris_admin_footer() {
-	// hide annoying box on wp-super-cache config page
-	if ($_REQUEST['page'] == 'wpsupercache') {
-		echo '<script type="text/javascript">
-			jQuery("h3:contains(\'Make WordPress Faster\')").closest("td").hide();
-		</script>';
-	}
-}
-add_filter('admin_footer', 'willnorris_admin_footer');
 
 
 function willnorris_openid_support_table($attrs, $content) {
