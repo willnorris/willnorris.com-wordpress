@@ -241,3 +241,21 @@ function willnorris_comment_form() {
 }
 add_action('comment_form', 'willnorris_comment_form', 1);
 
+
+/**
+ * Add the meta tags to verify this domain for various search engine webmaster tools.
+ */
+function willnorris_search_engine_validation() {
+	if ( is_front_page() ) {
+		?>
+
+		<!-- Webmaster Tools Verification -->
+		<meta name="verify-v1" content="HQ0dYpdfPaUOtTvnC1Aj13WpaGazCoseLMPXXEnqmhA=" >
+		<meta name="y_key" content="2a28a782c2529131" />
+		<meta name="msvalidate.01" content="7433086B59994DBAC6E36AE0D0955E5F" />
+
+		<?php
+	}
+}
+
+add_action('wp_head', 'willnorris_search_engine_validation');
