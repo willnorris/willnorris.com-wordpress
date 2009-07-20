@@ -257,5 +257,16 @@ function willnorris_search_engine_validation() {
 		<?php
 	}
 }
-
 add_action('wp_head', 'willnorris_search_engine_validation');
+
+
+/**
+ * Use CURL_CA_BUNDLE environment variable to update libcurl's cacert bundle.
+ */
+function willnorris_http_api_curl($handle) {
+	if ( getenv('CURL_CA_BUNDLE') ) {
+		curl_setopt($handle, CURLOPT_CAINFO, getenv('CURL_CA_BUNDLE'));
+	}
+}
+add_action('http_api_curl', 'willnorris_http_api_curl');
+
