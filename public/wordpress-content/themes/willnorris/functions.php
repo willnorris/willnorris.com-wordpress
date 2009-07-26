@@ -72,7 +72,7 @@ function willnorris_header() {
 		<?php echo thematic_create_stylesheet(); ?>
 
 		<!-- iPhone support -->
-		<meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+		<meta name = "viewport" content = "width = device-width, initial-scale = 1.0" />
 		<link media="only screen and (max-device-width: 480px)" href="<?php bloginfo('stylesheet_directory'); ?>/iphone.css" type="text/css" rel="stylesheet" />
 <?php
 }
@@ -235,7 +235,7 @@ add_shortcode('openid_support_table', 'willnorris_openid_support_table');
 function willnorris_comment_form() {
 ?>
 	<div id="form-markdown-allowed" class="form-section">
-		<p>You may use <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> syntax or basic <abbr title="<?php esc_attr_e(allowed_tags()); ?>">HTML</abbr>.
+		<p>You may use <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> syntax or basic <abbr title="<?php esc_attr_e(allowed_tags()); ?>">HTML</abbr>.</p>
 	</div>
 <?php
 }
@@ -251,6 +251,8 @@ function willnorris_search_engine_validation() {
 
 		<!-- Webmaster Tools Verification -->
 		<meta name="verify-v1" content="HQ0dYpdfPaUOtTvnC1Aj13WpaGazCoseLMPXXEnqmhA=" >
+		<meta name="verify-v1" content="H2qO+9/u0nX4DfYb71gnbTEtQ+Fn++f9gF5JD5iyoNs=" />
+		<meta name="verify-v1" content="6fT8csNQZqJDDCYAuxQ2gCd90XcYPgJF/hi3crcZHDQ=" />
 		<meta name="y_key" content="2a28a782c2529131" />
 		<meta name="msvalidate.01" content="7433086B59994DBAC6E36AE0D0955E5F" />
 

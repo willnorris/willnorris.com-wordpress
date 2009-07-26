@@ -16,25 +16,36 @@ function willnorris_cleanup_hooks() {
 
 	global $wp_scripts, $wp_styles;
 
+	if ( !is_a($wp_scripts, 'WP_Scripts') )
+		$wp_scripts = new WP_Scripts();
+
+	if ( !is_a($wp_styles, 'WP_Styles') )
+		$wp_styles = new WP_Styles();
+
+
 	$key = array_search('ext-profile', $wp_styles->queue);
 	$wp_styles->dequeue($key);
 
 	// move scripts to the footer
 	$wp_scripts->add_data('jquery', 'group', 1);
 	$wp_scripts->add_data('comment-reply', 'group', 1);
-	wp_enqueue_script('ga-external-tracking', plugins_url('/google-analyticator/external-tracking.js'), array('jquery'), false, true);
+	if ( wp_script_is('ga-external-tracking') ) {
+		wp_enqueue_script('ga-external-tracking', plugins_url('/google-analyticator/external-tracking.js'), array('jquery'), false, true);
+	}
 
 
-	$wp_scripts->add_data('jquery.imagefit', 'group', 1);
-	remove_action('wp_head', 'wp_imagefit_js');
+	if ( has_action('wp_head', 'wp_imagefit_js') ) {
+		$wp_scripts->add_data('jquery.imagefit', 'group', 1);
+		remove_action('wp_head', 'wp_imagefit_js');
 
-	if ( is_front_page() ) {
-		// remove jquery plugin from front page
-		$key = array_search('jquery.imagefit', $wp_scripts->queue);
-		$wp_scripts->dequeue($key);
-	} else {
-		// add imagefit to footer on non-front page
-		add_action('wp_footer', 'wp_imagefit_js', 20);
+		if ( is_front_page() ) {
+			// remove jquery plugin from front page
+			$key = array_search('jquery.imagefit', $wp_scripts->queue);
+			$wp_scripts->dequeue($key);
+		} else {
+			// add imagefit to footer on non-front page
+			add_action('wp_footer', 'wp_imagefit_js', 20);
+		}
 	}
 
 
@@ -73,15 +84,21 @@ add_filter('wp', 'willnorris_cleanup_hooks', 20);
 
 
 
-function willnorris_admin_footer_cleanup() {
-	// hide annoying box on wp-super-cache config page
-	if ($_REQUEST['page'] == 'wpsupercache') {
-		echo '<script type="text/javascript">
-			jQuery("h3:contains(\'Make WordPress Faster\')").closest("td").hide();
-		</script>';
+
+function willnorris_admin_init() {
+	$supercache_hook = get_plugin_page_hook('wpsupercache', 'options-general.php');
+	if ( $supercache_hook) {
+		add_filter('load-' . $supercache_hook, create_function('', 'add_filter("admin_footer", "willnorris_admin_footer_supercache");'));
 	}
 }
-add_filter('admin_footer', 'willnorris_admin_footer_cleanup');
+add_filter('admin_init', 'willnorris_admin_init');
+
+function willnorris_admin_footer_supercache() {
+	// hide annoying box on wp-super-cache config page
+	echo '<script type="text/javascript">
+		jQuery("h3:contains(\'Make WordPress Faster\')").closest("td").hide();
+	</script>';
+}
 
 
 /**
