@@ -232,6 +232,23 @@ function willnorris_openid_support_table($attrs, $content) {
 }
 add_shortcode('openid_support_table', 'willnorris_openid_support_table');
 
+
+/**
+ * Shortcode for displaying my age, in years.
+ */
+function willnorris_my_age() {
+	$now = getdate();
+	$age = $now['year'] - 1982;
+
+	if ($now['month'] < 7 && $now['mday'] < 30) {
+		$age -= 1;
+	}
+
+	return $age;
+}
+add_shortcode('my_age', 'willnorris_my_age');
+
+
 function willnorris_comment_form() {
 ?>
 	<div id="form-markdown-allowed" class="form-section">
