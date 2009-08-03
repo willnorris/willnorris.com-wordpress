@@ -240,7 +240,7 @@ function willnorris_my_age() {
 	$now = getdate();
 	$age = $now['year'] - 1982;
 
-	if ($now['month'] < 7 && $now['mday'] < 30) {
+	if ($now['mon'] < 7 && $now['mday'] < 30) {
 		$age -= 1;
 	}
 
