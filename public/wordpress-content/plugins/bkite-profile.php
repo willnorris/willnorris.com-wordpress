@@ -19,7 +19,7 @@ function brightkite_profile($userid) {
 	$sql = $wpdb->prepare('SELECT * FROM ' . $wpdb->prefix . 'actionstream_items WHERE user_id=%s AND service=%s AND setup_idx=%s ORDER BY created_on DESC', $userid, 'brightkite', 'checkins');
 	$last_checkin = $wpdb->get_row($sql);
 
-	if (empty($loc) || $last_checkin->identifier_hash != $loc['hash']) {
+	if ( empty($loc) || $last_checkin->identifier_hash != $loc['hash'] ) {
 
 		$checkin_data = unserialize($last_checkin->data);
 		$response = wp_remote_get($checkin_data['url'] . '.xml');
@@ -35,21 +35,40 @@ function brightkite_profile($userid) {
 				'lon' => "{$checkin_xml->place->longitude}",
 			);
 
+			// get additional place data
+			$place_xml = brightkite_place_data( $checkin_xml->place->id );
+			if ( $place_xml ) {
+				$loc['city'] = trim((string) $place_xml->city);
+				$loc['state'] = trim((string) $place_xml->state);
+				$loc['country'] = trim((string) $place_xml->country);
+			}
+
 			update_usermeta($userid, 'brightkite_profile_location', $loc);
 		}
 
 	}
 
 	if ($loc) {
+		$name = esc_html($loc['name']);
+		if ( $loc['city'] && $loc['state'] ) {
+			$name .= '<br />' . esc_html($loc['city']) . ', ' . esc_html($loc['state']);
+		}
+
 ?>
 	<dl class="geo">
 		<dt><abbr class="latitude" title="<?php _e($loc['lat']) ?>">Last</abbr> <abbr class="longitude" title="<?php _e($loc['lon']) ?>">Seen</abbr>:</dt>
-		<dd><a href="<?php _e($loc['url']) ?>"><?php _e($loc['name']) ?></a><br /> <em>(<?php echo human_time_diff($loc['timestamp'], time()); ?> ago)</em></dd>
+		<dd><a href="<?php _e($loc['url']) ?>"><?php echo $name ?></a><br /> <em>(<?php echo human_time_diff($loc['timestamp'], time()); ?> ago)</em></dd>
 	</dl>
 <?php
 	}
 		
 }
 
+function brightkite_place_data( $id ) {
+	$url = 'http://brightkite.com/places/' . $id . '.xml';
+	$response = wp_remote_get($url);
+	$place_xml = simplexml_load_string($response['body']);
+	return $place_xml;
+}
 
 ?>
