@@ -4,6 +4,7 @@ require_once dirname(__FILE__) . '/library/thematic.php';
 require_once dirname(__FILE__) . '/library/cleanup.php';
 require_once dirname(__FILE__) . '/library/search.php';
 require_once dirname(__FILE__) . '/library/widgets.php';
+require_once dirname(__FILE__) . '/library/short-urls.php';
 
 
 /**
