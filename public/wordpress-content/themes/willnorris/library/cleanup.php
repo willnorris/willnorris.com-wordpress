@@ -23,9 +23,6 @@ function willnorris_cleanup_hooks() {
 		$wp_styles = new WP_Styles();
 
 
-	$key = array_search('ext-profile', $wp_styles->queue);
-	$wp_styles->dequeue($key);
-
 	// move scripts to the footer
 	$wp_scripts->add_data('jquery', 'group', 1);
 	$wp_scripts->add_data('comment-reply', 'group', 1);

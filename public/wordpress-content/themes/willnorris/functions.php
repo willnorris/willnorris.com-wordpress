@@ -83,16 +83,16 @@ add_action('wp_head', 'willnorris_header', 5);
 /**
  * Add copyright at bottom of the page.
  */
-function willnorris_footer() { 
+function willnorris_abovefooter() { 
 ?>
-	<div id="copyright"> &copy; <?php echo date('Y'); ?>
+	<div id="copyright"> &copy; 2002 &mdash; <?php echo date('Y'); ?>
 		<address class="vcard author">
 			<a class="url fn" href="http://willnorris.com/">Will Norris</a>
 		</address>
 	</div>
 <?php
 }
-add_action('thematic_abovefooter', 'willnorris_footer');
+add_action('thematic_abovefooter', 'willnorris_abovefooter');
 
 
 /**
@@ -290,3 +290,30 @@ function willnorris_http_api_curl($handle) {
 }
 add_action('http_api_curl', 'willnorris_http_api_curl');
 
+function willnorris_toggle_trackbacks() {
+?>
+	<script type="text/javascript">
+		jQuery(function() {
+			jQuery('#trackbacks-list > h3').css('cursor', 'pointer').click(function() {
+				jQuery('#trackbacks-list > ol').toggle();
+				return false;
+			});
+		});
+	</script>
+<?php
+}
+add_action('wp_footer', 'willnorris_toggle_trackbacks');
+
+
+function willnorris_oembed($html, $url, $attr) {
+	if ( array_key_exists('link', $attr) && $attr['link'] ) { 
+		$html = '<a href="' . $url . '">' . $html . '</a>';
+	}   
+
+	if ( array_key_exists('class', $attr) && $attr['class'] ) { 
+		$html = '<span class="' . $attr['class'] . '">' . $html . '</span>';
+	}   
+
+	return $html;
+}
+add_action('embed_oembed_html', 'willnorris_oembed', 10, 3);

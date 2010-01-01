@@ -188,6 +188,7 @@ body.page .entry-title,
 
 
 /* Trackbacks */
+#trackbacks-list > ol					{ display: none; }
 .trackback, .pingback 					{ margin: 1em 0; }
 .trackback > .comment-author, 
 .pingback > .comment-author 			{ background: url('images/arrow_refresh.png') no-repeat 7px 4px; 
@@ -212,9 +213,9 @@ body.page .entry-title,
 
 /* Post Content */
 
-img.flickr								{ border: 1px solid #999; padding: 1px; margin: 0 1em; }
-img.left								{ float: left; }
-img.right								{ float: right; }
+#content .left							{ float: left; }
+#content .right							{ float: right; }
+.entry-content img						{ border: 1px solid #999; padding: 1px; margin: 0 1em; }
 
 #project-license						{ font-size: 0.8em; }
 
