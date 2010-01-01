@@ -76,6 +76,13 @@ function willnorris_cleanup_hooks() {
 	}
 
 	remove_filter('get_avatar', 'ext_profile_avatar');
+
+	if (is_front_page()) {
+		// move do_shortcode BEFORE wpautop
+		//remove_filter('the_content', 'wpautop');
+		//remove_filter('the_content', 'do_shortcode', 11);
+		//add_filter('the_content', 'do_shortcode', 9);
+	}
 }
 add_filter('wp', 'willnorris_cleanup_hooks', 20);
 

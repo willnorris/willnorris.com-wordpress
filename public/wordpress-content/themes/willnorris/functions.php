@@ -66,10 +66,12 @@ add_filter('stylesheet_uri', 'willnorris_stylesheet_uri');
  * Additional <head> stuff.
  */
 function willnorris_header() { 
-?>
+/*
 		<!-- frame buster -->
 		<script type="text/javascript">if (parent.frames.length > 0) top.location.replace(document.location);</script>
+ */
 
+?>
 		<?php echo thematic_create_stylesheet(); ?>
 
 		<!-- iPhone support -->
@@ -268,7 +270,7 @@ function willnorris_search_engine_validation() {
 		?>
 
 		<!-- Webmaster Tools Verification -->
-		<meta name="verify-v1" content="HQ0dYpdfPaUOtTvnC1Aj13WpaGazCoseLMPXXEnqmhA=" >
+		<meta name="verify-v1" content="HQ0dYpdfPaUOtTvnC1Aj13WpaGazCoseLMPXXEnqmhA=" />
 		<meta name="verify-v1" content="H2qO+9/u0nX4DfYb71gnbTEtQ+Fn++f9gF5JD5iyoNs=" />
 		<meta name="verify-v1" content="6fT8csNQZqJDDCYAuxQ2gCd90XcYPgJF/hi3crcZHDQ=" />
 		<meta name="y_key" content="2a28a782c2529131" />
@@ -289,6 +291,27 @@ function willnorris_http_api_curl($handle) {
 	}
 }
 add_action('http_api_curl', 'willnorris_http_api_curl');
+
+function willnorris_openid_rewrite_rules($wp_rewrite) {
+	$openid_rules = array(
+		'wordpress/openid/(.+)' => 'index.php?openid=$matches[1]',
+	);
+
+	$wp_rewrite->rules = $openid_rules + $wp_rewrite->rules;
+}
+#add_action('generate_rewrite_rules', 'willnorris_openid_rewrite_rules');
+
+
+/**
+ * Prevent HTTPS requests from being cached.
+ */
+function willnorris_prevent_https_cache() {
+	if ( is_ssl() ) {
+		define('DONOTCACHEPAGE', true);
+	}
+}
+add_action('wp', 'willnorris_prevent_https_cache');
+
 
 function willnorris_toggle_trackbacks() {
 ?>
