@@ -14,6 +14,23 @@ function actionstream_personal_googlecode($k, $value) {
 
 function actionstream_personal_services($services) {
 	// Google Code
+	$services['services']['google'] = array(
+		'name' => 'Google',
+		'url' => 'http://www.google.com/profiles/%s',
+	);
+
+	$services['streams']['google'] = array(
+		'commits' => array(
+			'name' => 'Buzz Posts',
+			'description' => 'Your Buzz Posts',
+			'html_form' => '[_1] posted [_3]',
+			'html_params' => array('url', 'title'),
+			'url' => 'http://buzz.googleapis.com/feeds/{{ident}}/public/posted',
+			'atom' => 1,
+		),
+	);
+
+	// Google Code
 	$services['services']['googlecode'] = array(
 		'name' => 'Google Code',
 		'url' => 'http://code.google.com/u/%s/',
@@ -30,7 +47,6 @@ function actionstream_personal_services($services) {
 			'callback' => 'actionstream_personal_googlecode',
 		),
 	);
-
 
 	// DiSo
 	$services['services']['diso'] = array(
