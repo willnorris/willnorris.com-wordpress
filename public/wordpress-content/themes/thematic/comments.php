@@ -62,7 +62,7 @@ foreach ( $comments as $comment )
 <?php endif /* if ( $ping_count ) */ ?>
 <?php endif /* if ( $comments ) */ ?>
 
-<?php if ( 'open' == $post->comment_status ) : ?>
+<?php if ( comments_open() ) : ?>
 				<div id="respond">
     				<h3><?php comment_form_title( __(thematic_postcomment_text(), 'thematic'), __(thematic_postreply_text(), 'thematic') ); ?></h3>
     				
