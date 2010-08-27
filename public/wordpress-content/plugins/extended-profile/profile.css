@@ -1,0 +1,29 @@
+.hcard-profile img.photo {
+	float: left;
+	margin-right: 10px;
+	padding: 5px;
+	background-color: lightgrey;
+}
+.hcard-profile h2 {
+	clear: none;
+	background: none;
+}
+.hcard-profile p.note {
+	margin-top: 2em;
+}
+.hcard-profile dl.contact dt {
+	clear: left;
+	float: left;
+	max-width: 25%;
+	overflow: hidden;
+}
+.hcard-profile dl.contact dd {
+	margin-left: 25%;
+	width: 75%;
+	overflow: hidden;
+}
+.hcard-profile dl.contact ul,
+.hcard-profile dl.contact ul li {
+	list-style-type: none;
+	padding: 0px;
+}
