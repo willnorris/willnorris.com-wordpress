@@ -1,0 +1,11 @@
+# wordpress
+public/wp-config.php
+public/wordpress-content/cache
+public/wordpress-content/advanced-cache.php
+public/wordpress-content/wp-cache-config.php
+public/sitemap.xml
+
+public/mint/config/db.php
+public/mint/pepper/ronaldheft/feedburner/cache/
+
+public/wedding/lib/local.php

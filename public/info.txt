@@ -5,10 +5,10 @@ url: willnorris.com
 site_owner: Will Norris
 address1: 
 address2: 
-city: San Francisco
+city: Half Moon Bay
 state: CA
 country: USA
-postal_code: 94103
+postal_code: 94019
 phone_number: 
 display_email: will@willnorris.com
 site_name: willnorris.com
