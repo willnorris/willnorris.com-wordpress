@@ -209,7 +209,7 @@ function xrds_admin_menu() {
  */
 function xrds_parse_request($wp) {
 	$accept = explode(',', $_SERVER['HTTP_ACCEPT']);
-	if(isset($_GET['xrds']) || in_array('application/xrds+xml', $accept)) {
+	if(array_key_exists('xrds', $_GET) || in_array('application/xrds+xml', $accept)) {
 		header('Content-type: application/xrds+xml');
 		echo xrds_write();
 		exit;
