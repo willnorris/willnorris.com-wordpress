@@ -14,7 +14,7 @@ function willnorris_page_menu_args($args) {
 	$args['depth'] = 1;
 	return $args;
 }
-add_filter('wp_page_menu_args', 'willnorris_page_menu_args');
+add_filter('wp_page_menu_args', 'willnorris_page_menu_args', 11);
 
 
 /**
