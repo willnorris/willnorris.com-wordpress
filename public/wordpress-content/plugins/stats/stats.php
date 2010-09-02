@@ -4,8 +4,9 @@ Plugin Name: WordPress.com Stats
 Plugin URI: http://wordpress.org/extend/plugins/stats/
 Description: Tracks views, post/page views, referrers, and clicks. Requires a WordPress.com API key.
 Author: Andy Skelton
-Version: 1.7.2
+Version: 1.7.3
 License: GPL v2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+Text Domain: stats
 
 Requires WordPress 2.7 or later. Not for use with WPMU.
 
@@ -138,11 +139,11 @@ function stats_admin_menu() {
 		}
 	}
 	if ( stats_get_option('blog_id') ) {
-		$hook = add_submenu_page('index.php', __('Site Stats'), __('Site Stats'), $role, 'stats', 'stats_reports_page');
+		$hook = add_submenu_page('index.php', __('Site Stats', 'stats'), __('Site Stats', 'stats'), $role, 'stats', 'stats_reports_page');
 		add_action("load-$hook", 'stats_reports_load');
 	}
 	$parent = stats_admin_parent();
-	$hook = add_submenu_page($parent, __('WordPress.com Stats Plugin'), __('WordPress.com Stats'), 'manage_options', 'wpstats', 'stats_admin_page');
+	$hook = add_submenu_page($parent, __('WordPress.com Stats Plugin', 'stats'), __('WordPress.com Stats', 'stats'), 'manage_options', 'wpstats', 'stats_admin_page');
 	add_action("load-$hook", 'stats_admin_load');
 	add_action("admin_head-$hook", 'stats_admin_head');
 	add_action('admin_notices', 'stats_admin_notices');
@@ -356,7 +357,7 @@ function stats_notice_blog_id() {
 	// Skip the notice if plugin activated network-wide.
 	if ( function_exists('is_plugin_active_for_network') && is_plugin_active_for_network(plugin_basename(__FILE__)) )
 		return;
-	echo "<div class='updated' style='background-color:#f66;'><p>" . sprintf(__('<a href="%s">WordPress.com Stats</a> needs attention: please enter an API key or disable the plugin.'), stats_admin_path()) . "</p></div>";
+	echo "<div class='updated' style='background-color:#f66;'><p>" . sprintf(__('<a href="%s">WordPress.com Stats</a> needs attention: please enter an API key or disable the plugin.', 'stats'), stats_admin_path()) . "</p></div>";
 }
 
 function stats_notice_footer() {
@@ -368,7 +369,7 @@ function stats_notice_footer() {
 		stats_set_option('footer', true);
 		return;
 	}
-	echo "<div class='updated' style='background-color:#f66;'><p>" . __('WordPress.com Stats is unable to work properly because your theme seems to lack the necessary footer code. Usually this can be fixed by adding the following code just before &lt;/body&gt; in footer.php:') . "</p><p><code>&lt;?php wp_footer(); ?&gt;</code></p></div>";
+	echo "<div class='updated' style='background-color:#f66;'><p>" . __('WordPress.com Stats is unable to work properly because your theme seems to lack the necessary footer code. Usually this can be fixed by adding the following code just before &lt;/body&gt; in footer.php:', 'stats') . "</p><p><code>&lt;?php wp_footer(); ?&gt;</code></p></div>";
 }
 
 function stats_admin_head() {
@@ -387,18 +388,18 @@ function stats_admin_page() {
 	$options = stats_get_options();
 	?>
 	<div class="wrap">
-		<h2><?php _e('WordPress.com Stats'); ?></h2>
+		<h2><?php _e('WordPress.com Stats', 'stats'); ?></h2>
 		<div class="narrow">
 <?php if ( !empty($options['error']) ) : ?>
 			<div id='statserror'>
-				<h3><?php _e('Error from last API Key attempt:'); ?></h3>
+				<h3><?php _e('Error from last API Key attempt:', 'stats'); ?></h3>
 				<p><?php echo $options['error']; ?></p>
 			</div>
 <?php $options['error'] = false; stats_set_options($options); endif; ?>
 
 <?php if ( empty($options['blog_id']) && !empty($options['key_check']) ) : ?>
-			<p><?php printf(__('The API key "%1$s" belongs to the WordPress.com account "%2$s". If you want to use a different account, please <a href="%3$s">enter the correct API key</a>.'), $options['key_check'][0], $options['key_check'][1], wp_nonce_url('?page=wpstats&action=reset', 'stats')); ?></p>
-			<p><?php _e('Note: the API key you use determines who will be registered as the "owner" of this blog in the WordPress.com database. Please choose your key accordingly. Do not use a temporary key.'); ?></p>
+			<p><?php printf(__('The API key "%1$s" belongs to the WordPress.com account "%2$s". If you want to use a different account, please <a href="%3$s">enter the correct API key</a>.', 'stats'), $options['key_check'][0], $options['key_check'][1], wp_nonce_url('?page=wpstats&action=reset', 'stats')); ?></p>
+			<p><?php _e('Note: the API key you use determines who will be registered as the "owner" of this blog in the WordPress.com database. Please choose your key accordingly. Do not use a temporary key.', 'stats'); ?></p>
 
 <?php	if ( !empty($options['key_check'][2]) ) : ?>
 			<form method="post">
@@ -414,26 +415,26 @@ function stats_admin_page() {
 		}
 ?>
 
-			<h3><?php _e('Recommended Action'); ?></h3>
+			<h3><?php _e('Recommended Action', 'stats'); ?></h3>
 <?php		if ( isset($blog) ) : ?>
 			<input type='hidden' name='recoverblog' value='<?php echo $blog['userblog_id']; ?>' />
-			<p><?php _e('It looks like you have installed Stats on a blog with this URL before. You can recover the stats history from that blog here.'); ?></p>
-			<p><input type="submit" name="recover" value="<?php echo js_escape(__('Recover stats')); ?>" /></p>
+			<p><?php _e('It looks like you have installed Stats on a blog with this URL before. You can recover the stats history from that blog here.', 'stats'); ?></p>
+			<p><input type="submit" name="recover" value="<?php echo js_escape(__('Recover stats', 'stats')); ?>" /></p>
 <?php		else : ?>
-			<p><?php _e('It looks like this blog has never had stats before. There is no record of its URL in the WordPress.com database.'); ?></p>
-			<p><input type="submit" name="add" value="<?php echo js_escape(__('Add this blog to my WordPress.com account')); ?>" /></p>
+			<p><?php _e('It looks like this blog has never had stats before. There is no record of its URL in the WordPress.com database.', 'stats'); ?></p>
+			<p><input type="submit" name="add" value="<?php echo js_escape(__('Add this blog to my WordPress.com account', 'stats')); ?>" /></p>
 <?php		endif; ?>
 
-			<h3><?php _e('Recover other stats'); ?></h3>
+			<h3><?php _e('Recover other stats', 'stats'); ?></h3>
 			<p><?php _e("Have you relocated this blog from a different URL? You may opt to have this blog take over the stats history from any other self-hosted blog associated with your WordPress.com account. This is appropriate if this blog had a different URL in the past. The WordPress.com database will rename its records to match this blog's URL.", 'stats'); ?></p>
 			<p>
 			<select name="blog_id">
-				<option selected="selected" value="0"><?php _e('Select a blog'); ?></option>
+				<option selected="selected" value="0"><?php _e('Select a blog', 'stats'); ?></option>
 <?php		foreach ( $options['key_check'][2] as $blog ) : ?>
 				<option value="<?php echo $blog['userblog_id']; ?>"><?php echo $blog['domain'] . $blog['path']; ?></option>
 <?php		endforeach; ?>
 			</select>
-			<input type="submit" name="replace" value="<?php echo js_escape(__('Take over stats history')); ?>" />
+			<input type="submit" name="replace" value="<?php echo js_escape(__('Take over stats history', 'stats')); ?>" />
 			</p>
 			</form>
 
@@ -441,45 +442,45 @@ function stats_admin_page() {
 			<form method="post">
 			<?php wp_nonce_field('stats'); ?>
 			<input type="hidden" name="action" value="add_or_replace" />
-			<h3><?php _e('Add blog to WordPress.com account'); ?></h3>
-			<p><?php _e("This blog will be added to your WordPress.com account. You will be able to allow other WordPress.com users to see your stats if you like."); ?></p>
-			<p><input type="submit" name="add" value="<?php echo js_escape(__('Add blog to WordPress.com')); ?>" /></p>
+			<h3><?php _e('Add blog to WordPress.com account', 'stats'); ?></h3>
+			<p><?php _e("This blog will be added to your WordPress.com account. You will be able to allow other WordPress.com users to see your stats if you like.", 'stats'); ?></p>
+			<p><input type="submit" name="add" value="<?php echo esc_attr(__('Add blog to WordPress.com', 'stats')); ?>" /></p>
 			</form>
 <?php	endif; ?>
 
 <?php elseif ( empty( $options['blog_id'] ) ) : ?>
-			<p><?php _e('The WordPress.com Stats Plugin is not working because it needs to be linked to a WordPress.com account.'); ?></p>
+			<p><?php _e('The WordPress.com Stats Plugin is not working because it needs to be linked to a WordPress.com account.', 'stats'); ?></p>
 
 			<form action="<?php echo stats_admin_path() ?>" method="post">
 				<?php wp_nonce_field('stats'); ?>
-				<p><?php _e('Enter your WordPress.com API key to link this blog to your WordPress.com account. Be sure to use your own API key! Using any other key will lock you out of your stats. (<a href="http://wordpress.com/profile/">Get your key here.</a>)'); ?></p>
-				<label for="api_key"><?php _e('API Key:'); ?> <input type="text" name="api_key" id="api_key" value="<?php echo $api_key; ?>" /></label>
+				<p><?php _e('Enter your WordPress.com API key to link this blog to your WordPress.com account. Be sure to use your own API key! Using any other key will lock you out of your stats. (<a href="http://wordpress.com/profile/">Get your key here.</a>)', 'stats'); ?></p>
+				<label for="api_key"><?php _e('API Key:', 'stats'); ?> <input type="text" name="api_key" id="api_key" value="" /></label>
 				<input type="hidden" name="action" value="enter_key" />
-				<p class="submit"><input type="submit" value="<?php _e('Save &raquo;'); ?>" /></p>
+				<p class="submit"><input type="submit" value="<?php _e('Save &raquo;', 'stats'); ?>" /></p>
 			</form>
 <?php else : ?>
-			<p><?php printf(__('Visit <a href="%s">your Dashboard</a> to see your site stats.'), 'index.php?page=stats'); ?></p>
-			<p><?php printf(__('You can also see your stats, plus grant access for others to see them, on <a href="https://dashboard.wordpress.com/wp-admin/index.php?page=stats&blog=%s">your WordPress.com dashboard</a>.'), $options['blog_id']); ?></p>
-			<h3><?php _e('Options'); ?></h3>
+			<p><?php printf(__('Visit <a href="%s">your Dashboard</a> to see your site stats.', 'stats'), 'index.php?page=stats'); ?></p>
+			<p><?php printf(__('You can also see your stats, plus grant access for others to see them, on <a href="https://dashboard.wordpress.com/wp-admin/index.php?page=stats&blog=%s">your WordPress.com dashboard</a>.', 'stats'), $options['blog_id']); ?></p>
+			<h3><?php _e('Options', 'stats'); ?></h3>
 			<form action="<?php echo stats_admin_path() ?>" method="post">
 			<input type='hidden' name='action' value='save_options' />
 			<?php wp_nonce_field('stats'); ?>
 			<table id="menu" class="form-table">
-			<tr valign="top"><th scope="row"><label for="wp_me"><?php _e( 'Registered users' ); ?></label></th>
-			<td><label><input type='checkbox'<?php checked($options['reg_users']); ?> name='reg_users' id='reg_users' /> <?php _e("Count the page views of registered users who are logged in."); ?></label></td>
-			<tr valign="top"><th scope="row"><label for="wp_me"><?php _e( 'Shortlinks' ); ?></label></th>
-			<td><label><input type='checkbox'<?php checked($options['wp_me']); ?> name='wp_me' id='wp_me' /> <?php _e("Publish WP.me <a href='http://wp.me/sf2B5-shorten'>shortlinks</a> as metadata. This is a free service from WordPress.com."); ?></label></td>
+			<tr valign="top"><th scope="row"><label for="wp_me"><?php _e( 'Registered users' , 'stats'); ?></label></th>
+			<td><label><input type='checkbox'<?php checked($options['reg_users']); ?> name='reg_users' id='reg_users' /> <?php _e("Count the page views of registered users who are logged in.", 'stats'); ?></label></td>
+			<tr valign="top"><th scope="row"><label for="wp_me"><?php _e( 'Shortlinks' , 'stats'); ?></label></th>
+			<td><label><input type='checkbox'<?php checked($options['wp_me']); ?> name='wp_me' id='wp_me' /> <?php _e("Publish WP.me <a href='http://wp.me/sf2B5-shorten'>shortlinks</a> as metadata. This is a free service from WordPress.com.", 'stats'); ?></label></td>
 			</tr>
-			<tr valign="top"><th scope="row"><?php _e( 'Report visibility' ); ?></th>
+			<tr valign="top"><th scope="row"><?php _e( 'Report visibility' , 'stats'); ?></th>
 			<td>
-				<?php _e('Select the roles that will be able to view stats reports.'); ?><br/>
+				<?php _e('Select the roles that will be able to view stats reports.', 'stats'); ?><br/>
 <?php	$stats_roles = stats_get_option('roles');
 	foreach ( get_editable_roles() as $role => $details ) : ?>
 				<label><input type='checkbox' <?php if ( $role == 'administrator' ) echo "disabled='disabled' "; ?>name='role_<?php echo $role; ?>'<?php checked($role == 'administrator' || in_array($role, $stats_roles)); ?> /> <?php echo translate_user_role($details['name']); ?></label><br/>
 <?php	endforeach; ?>
 			</tr>
 			</table>
-			<p class="submit"><input type='submit' class='button-primary' value='<?php echo esc_attr(__('Save options')); ?>' /></p>
+			<p class="submit"><input type='submit' class='button-primary' value='<?php echo esc_attr(__('Save options', 'stats')); ?>' /></p>
 			</form>
 <?php endif; ?>
 
@@ -524,7 +525,7 @@ function stats_get_blog( ) {
 		'gmt_offset' => get_option('gmt_offset'),
 		'version' => STATS_VERSION
 	);
-	return array_map('wp_specialchars', $blog);
+	return array_map('esc_html', $blog);
 }
 
 function stats_get_post( $post_id ) {
@@ -537,7 +538,7 @@ function stats_get_post( $post_id ) {
 		'title' => $post->post_title,
 		'type' => $post->post_type
 	);
-	return array_map('wp_specialchars', $_post);
+	return array_map('esc_html', $_post);
 }
 
 function stats_client() {
@@ -604,8 +605,8 @@ function stats_activity() {
 
 	if ( $options['blog_id'] ) {
 		?>
-		<h3><?php _e('WordPress.com Site Stats'); ?></h3>
-		<p><?php printf(__('Visit %s to see your site stats.'), '<a href="http://dashboard.wordpress.com/wp-admin/index.php?page=stats&blog=' . $options['blog_id'] . '">' . __('your Global Dashboard') . '</a>'); ?></p>
+		<h3><?php _e('WordPress.com Site Stats', 'stats'); ?></h3>
+		<p><?php printf(__('Visit <a href="%s">your Global Dashboard</a> to see your site stats.', 'stats'), 'https://dashboard.wordpress.com/wp-admin/index.php?page=stats&blog=' . $options['blog_id']); ?></p>
 		<?php
 	}
 }
@@ -621,7 +622,7 @@ function stats_check_key($api_key) {
 
 	if ( $client->isError() ) {
 		if ( $client->getErrorCode() == -32300 )
-			$options['error'] = __('Your blog was unable to connect to WordPress.com. Please ask your host for help. (' . $client->getErrorMessage() . ')');
+			$options['error'] = __('Your blog was unable to connect to WordPress.com. Please ask your host for help. (' . $client->getErrorMessage() . ')', 'stats');
 		else
 			$options['error'] = $client->getErrorMessage();
 		stats_set_options( $options );
@@ -654,7 +655,7 @@ function stats_get_blog_id($api_key) {
 
 	if ( $client->isError() ) {
 		if ( $client->getErrorCode() == -32300 )
-			$options['error'] = __('Your blog was unable to connect to WordPress.com. Please ask your host for help. (' . $client->getErrorMessage() . ')');
+			$options['error'] = __('Your blog was unable to connect to WordPress.com. Please ask your host for help. (' . $client->getErrorMessage() . ')', 'stats');
 		else
 			$options['error'] = $client->getErrorMessage();
 		stats_set_options( $options );
@@ -684,8 +685,8 @@ function stats_activate() {
 }
 
 function stats_deactivate() {
-	delete_option('stats_options');
-	delete_option('stats_dashboard_widget');
+	//delete_option('stats_options');
+	//delete_option('stats_dashboard_widget');
 }
 
 /* Dashboard Stuff: WP >= 2.5 */
@@ -695,10 +696,10 @@ function stats_register_dashboard_widget() {
 		return;
 
 	// wp_dashboard_empty: we load in the content after the page load via JS
-	wp_register_sidebar_widget( 'dashboard_stats', __( 'Stats' ), 'wp_dashboard_empty', array(
+	wp_register_sidebar_widget( 'dashboard_stats', __('Stats', 'stats'), 'wp_dashboard_empty', array(
 		'width' => 'full'
 	) );
-	wp_register_widget_control( 'dashboard_stats', __( 'Stats' ), 'stats_register_dashboard_widget_control', array(), array(
+	wp_register_widget_control( 'dashboard_stats', __('Stats', 'stats'), 'stats_register_dashboard_widget_control', array(), array(
 		'widget_id' => 'dashboard_stats',
 	) );
 
@@ -720,8 +721,8 @@ function stats_dashboard_widget_options() {
 }
 
 function stats_register_dashboard_widget_control() {
-	$periods   = array( '1' => __('day'), '7' => __('week'), '31' => __('month') );
-	$intervals = array( '1' => __('the past day'), '7' => __('the past week'), '31' => __('the past month'), '90' => __('the past quarter'), '365' => __('the past year') );
+	$periods   = array( '1' => __('day', 'stats'), '7' => __('week', 'stats'), '31' => __('month', 'stats') );
+	$intervals = array( '1' => __('the past day', 'stats'), '7' => __('the past week', 'stats'), '31' => __('the past month', 'stats'), '90' => __('the past quarter', 'stats'), '365' => __('the past year', 'stats') );
 	$options = stats_dashboard_widget_options();
 
 	$defaults = array(
@@ -743,37 +744,37 @@ function stats_register_dashboard_widget_control() {
 	}
 ?>
 	<p>
-		<label for="chart"><?php _e( 'Chart stats by' ); ?></label>
+		<label for="chart"><?php _e( 'Chart stats by' , 'stats'); ?></label>
 		<select id="chart" name="chart">
 <?php foreach ( $periods as $val => $label ) : ?>
-			<option value="<?php echo $val; ?>"<?php selected( $val, $options['chart'] ); ?>><?php echo wp_specialchars( $label ); ?></option>
+			<option value="<?php echo $val; ?>"<?php selected( $val, $options['chart'] ); ?>><?php echo esc_html( $label ); ?></option>
 <?php endforeach; ?>
 		</select>.
 	</p>
 
 	<p>
-		<label for="top"><?php _e( 'Show top posts over' ); ?></label>
+		<label for="top"><?php _e( 'Show top posts over' , 'stats'); ?></label>
 		<select id="top" name="top">
 <?php foreach ( $intervals as $val => $label ) : ?>
-			<option value="<?php echo $val; ?>"<?php selected( $val, $options['top'] ); ?>><?php echo wp_specialchars( $label ); ?></option>
+			<option value="<?php echo $val; ?>"<?php selected( $val, $options['top'] ); ?>><?php echo esc_html( $label ); ?></option>
 <?php endforeach; ?>
 		</select>.
 	</p>
 
 	<p>
-		<label for="search"><?php _e( 'Show top search terms over' ); ?></label>
+		<label for="search"><?php _e( 'Show top search terms over' , 'stats'); ?></label>
 		<select id="search" name="search">
 <?php foreach ( $intervals as $val => $label ) : ?>
-			<option value="<?php echo $val; ?>"<?php selected( $val, $options['search'] ); ?>><?php echo wp_specialchars( $label ); ?></option>
+			<option value="<?php echo $val; ?>"<?php selected( $val, $options['search'] ); ?>><?php echo esc_html( $label ); ?></option>
 <?php endforeach; ?>
 		</select>.
 	</p>
 
 	<p>
-		<label for="active"><?php _e( 'Show most active posts over' ); ?></label>
+		<label for="active"><?php _e( 'Show most active posts over' , 'stats'); ?></label>
 		<select id="active" name="active">
 <?php foreach ( $intervals as $val => $label ) : ?>
-			<option value="<?php echo $val; ?>"<?php selected( $val, $options['active'] ); ?>><?php echo wp_specialchars( $label ); ?></option>
+			<option value="<?php echo $val; ?>"<?php selected( $val, $options['active'] ); ?>><?php echo esc_html( $label ); ?></option>
 <?php endforeach; ?>
 		</select>.
 	</p>
@@ -1020,10 +1021,12 @@ function stats_dashboard_widget_content() {
 
 	if ( version_compare( '2.7-z', $GLOBALS['wp_version'], '<=' ) ) {
 		$csv_args = array( 'top' => '&limit=8', 'active' => '&limit=5', 'search' => '&limit=5' );
-		$printf = __( '%s %s Views' );
+		/* translators: Stats dashboard widget postviews list: "$post_title $views Views" */
+		$printf = __( '%1$s %2$s Views' , 'stats');
 	} else {
 		$csv_args = array( 'top' => '', 'active' => '', 'search' => '' );
-		$printf = __( '%s, %s views' );
+		/* translators: Stats dashboard widget postviews list: "$post_title, $views Views" */
+		$printf = __( '%1$s, %2$s views' , 'stats');
 	}
 
 	foreach ( $top_posts = stats_get_csv( 'postviews', "days=$options[top]$csv_args[top]" ) as $post )
@@ -1036,13 +1039,13 @@ function stats_dashboard_widget_content() {
 
 	$searches = array();
 	foreach ( $search_terms = stats_get_csv( 'searchterms', "days=$options[search]$csv_args[search]" ) as $search_term )
-		$searches[] = wp_specialchars($search_term['searchterm']);
+		$searches[] = esc_html($search_term['searchterm']);
 
 ?>
 <div id="stats-info">
 	<div id="top-posts" class='stats-section'>
 		<div class="stats-section-inner">
-		<h4 class="heading"><?php _e( 'Top Posts' ); ?></h4>
+		<h4 class="heading"><?php _e( 'Top Posts' , 'stats'); ?></h4>
 		<?php foreach ( $top_posts as $post ) : if ( !get_post( $post['post_id'] ) ) continue; ?>
 		<p><?php printf(
 			$printf,
@@ -1055,13 +1058,13 @@ function stats_dashboard_widget_content() {
 	</div>
 	<div id="top-search" class='stats-section'>
 		<div class="stats-section-inner">
-		<h4 class="heading"><?php _e( 'Top Searches' ); ?></h4>
+		<h4 class="heading"><?php _e( 'Top Searches' , 'stats'); ?></h4>
 		<p><?php echo join( ',&nbsp; ', $searches );?></p>
 		</div>
 	</div>
 	<div id="active" class='stats-section'>
 		<div class="stats-section-inner">
-		<h4 class="heading"><?php _e( 'Most Active' ); ?></h4>
+		<h4 class="heading"><?php _e( 'Most Active' , 'stats'); ?></h4>
 		<?php foreach ( $active_posts as $post ) : if ( !get_post( $post['post_id'] ) ) continue; ?>
 		<p><?php printf(
 			$printf,
@@ -1075,7 +1078,7 @@ function stats_dashboard_widget_content() {
 </div>
 <br class="clear" />
 <p class="textright">
-	<a class="button" href="index.php?page=stats"><?php _e( 'View All' ); ?></a>
+	<a class="button" href="index.php?page=stats"><?php _e( 'View All' , 'stats'); ?></a>
 </p>
 <?php
 	exit;
@@ -1176,7 +1179,7 @@ function wpme_shortlink_header() {
 
 function wpme_get_shortlink_html($html, $post_id) {
 	$url = wpme_get_shortlink($post_id);
-	$html .= '<input id="shortlink" type="hidden" value="' . $url . '" /><a href="#" class="button" onclick="prompt(&#39;URL:&#39;, jQuery(\'#shortlink\').val()); return false;">' . __('Get Shortlink') . '</a>';
+	$html .= '<input id="shortlink" type="hidden" value="' . $url . '" /><a href="#" class="button" onclick="prompt(&#39;URL:&#39;, jQuery(\'#shortlink\').val()); return false;">' . __('Get Shortlink', 'stats') . '</a>';
 	return $html;
 }
 
@@ -1198,6 +1201,16 @@ if ( stats_get_option('wp_me') ) {
 
 endif;
 
+if ( !function_exists( 'esc_html' ) ):
+	function esc_html( $string ) {
+		return wp_specialchars( $string );
+	}
+endif;
+
+function stats_load_translations() {
+	load_plugin_textdomain( 'stats', null, basename( dirname( __FILE__ ) ) . '/languages' );
+}
+
 add_action( 'wp_dashboard_setup', 'stats_register_dashboard_widget' );
 add_filter( 'wp_dashboard_widgets', 'stats_add_dashboard_widget' );
 
@@ -1207,6 +1220,7 @@ register_activation_hook(__FILE__, 'stats_activate');
 register_deactivation_hook(__FILE__, 'stats_deactivate');
 add_action( 'admin_menu', 'stats_admin_menu' );
 add_action( 'activity_box_end', 'stats_activity', 1 ); // WP < 2.5
+add_action( 'init', 'stats_load_translations' );
 
 // Plant the tracking code in the footer
 add_action( 'wp_footer', 'stats_footer', 101 );
