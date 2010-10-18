@@ -1,0 +1,102 @@
+@import "base";
+
+@import "compass/utilities/lists/horizontal-list";
+
+// additional reset for HTML5 elements
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, 
+menu, nav, section, summary, time, mark, audio, video {
+  @include blueprint-reset;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, 
+nav, section {
+  display:block;
+}
+
+nav ul {
+  list-style:none;
+}
+
+body {
+  @include blueprint-typography(true);
+  @include blueprint-utilities;
+  @include blueprint-debug;
+  @include blueprint-interaction; 
+}
+
+#wrapper {
+  @include container; 
+  @include showgrid;
+
+  min-width: 200px;
+  width: 950px;
+  padding: 0 10px;
+  background-position: 10px 0;
+}
+
+#header, #footer {
+  //@include column($blueprint-grid-columns, true); 
+}
+
+#content {
+  // Two thirds of the grid columns, rounding down.
+  // With 24 cols, this is 16.
+  $content-columns: ceil(3 * $blueprint-liquid-grid-columns / 4);
+  // true means it is the last column in the row
+  @include column($content-columns); 
+  //@include column(5); 
+} 
+
+.primary {
+  // One third of the grid columns, rounding up. With 24 cols, this is 8.
+  $sidebar-columns: floor(1 * $blueprint-liquid-grid-columns / 4);
+  @include column($sidebar-columns, true); 
+  //@include column(5, true); 
+}
+
+form.bp {
+  @include blueprint-form;
+}
+
+.skip-links { display: none; }
+
+#nav > ul {
+    @include horizontal-list;
+}
+
+.nav-previous {
+  float: left;
+}
+.nav-next {
+  float: right;
+}
+
+.post {
+  clear: both;
+}
+
+.avatar {
+  height: 2.5em;
+  width: auto;
+  margin: 0.2em 0;
+  vertical-align: text-bottom;
+}
+
+#comment {
+  height: 12em;
+  margin: 0.3em;
+  display: block;
+}
+
+#footer {
+  clear: both;
+}
+
+#container img {
+  vertical-align: middle;
+}
+
+body code {
+  /* todo */
+  font: 1.0em/1.4 "Inconsolata";
+}
