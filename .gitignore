@@ -9,3 +9,5 @@ public/mint/config/db.php
 public/mint/pepper/ronaldheft/feedburner/cache/
 
 public/wedding/lib/local.php
+
+.sass-cache

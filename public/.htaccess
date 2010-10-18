@@ -1,58 +1,58 @@
 Options +Multiviews
 
 <IfModule mod_expires.c>
-	ExpiresActive On
+  ExpiresActive On
 
-	ExpiresByType text/css "access plus 32 days"
+  ExpiresByType text/css "access plus 32 days"
 
-	ExpiresByType text/javascript "access plus 32 days"
-	ExpiresByType application/javascript "access plus 32 days"
-	ExpiresByType application/x-javascript "access plus 32 days"
+  ExpiresByType text/javascript "access plus 32 days"
+  ExpiresByType application/javascript "access plus 32 days"
+  ExpiresByType application/x-javascript "access plus 32 days"
 
-	ExpiresByType image/png "access plus 32 days"
-	ExpiresByType image/gif "access plus 32 days"
-	ExpiresByType image/jpg "access plus 32 days"
-	ExpiresByType image/jpeg "access plus 32 days"
+  ExpiresByType image/png "access plus 32 days"
+  ExpiresByType image/gif "access plus 32 days"
+  ExpiresByType image/jpg "access plus 32 days"
+  ExpiresByType image/jpeg "access plus 32 days"
 
-	ExpiresByType image/x-icon "access plus 32 days"
-	ExpiresByType application/x-icon "access plus 32 days"
+  ExpiresByType image/x-icon "access plus 32 days"
+  ExpiresByType application/x-icon "access plus 32 days"
 
-	FileETag none
+  FileETag none
 </IfModule>
- 
+
 <IfModule mod_rewrite.c>
-    RewriteEngine on
+  RewriteEngine on
 
-	# https should only really be used for 'system' stuff and maybe the home page
-	RewriteCond %{HTTPS} "on"
-	RewriteCond %{REQUEST_URI} !^/wordpress/
-	RewriteCond %{REQUEST_URI} !^/$
-	RewriteRule (.*) http://willnorris.com/$1 [L,R]
+  # https should only really be used for 'system' stuff and maybe the home page
+  RewriteCond %{HTTPS} "on"
+  RewriteCond %{REQUEST_URI} !^/wordpress/
+  RewriteCond %{REQUEST_URI} !^/$
+  RewriteRule (.*) http://willnorris.com/$1 [L,R]
 
 
-	RewriteRule ^photos/?(.*) http://www.flickr.com/photos/wnorris/$1 [L,R]
-    RewriteRule ^contact/?$ /about/ [L,R]
-	RewriteRule ^tags/?(.*) /tag/$1 [L,R]
-	RewriteRule ^svn/([a-z]+)/(.*) http://github.com/willnorris/$1/tree/master/$2 [L,R]
+  RewriteRule ^photos/?(.*) http://www.flickr.com/photos/wnorris/$1 [L,R]
+  RewriteRule ^contact/?$ /about/ [L,R]
+  RewriteRule ^tags/?(.*) /tag/$1 [L,R]
+  RewriteRule ^svn/([a-z]+)/(.*) http://github.com/willnorris/$1/tree/master/$2 [L,R]
 
-	# Old Pages
-	RewriteRule ^projects/wp-microid				http://wordpress.org/extend/plugins/microid/ [L,R]
-	RewriteRule ^projects/wpopenid					http://wordpress.org/extend/plugins/openid/ [L,R]
-	RewriteRule ^projects/wp-(openid|xrds|yadis)	http://wordpress.org/extend/plugins/openid/ [L,R]
-	RewriteRule ^projects(/.+|$) /about [L,R]
+  # Old Pages
+  RewriteRule ^projects/wp-microid        http://wordpress.org/extend/plugins/microid/ [L,R]
+  RewriteRule ^projects/wpopenid          http://wordpress.org/extend/plugins/openid/ [L,R]
+  RewriteRule ^projects/wp-(openid|xrds|yadis)  http://wordpress.org/extend/plugins/openid/ [L,R]
+  RewriteRule ^projects(/.+|$) /about [L,R]
 
-	RewriteRule ^about/thawte /about [L,R]
+  RewriteRule ^about/thawte /about [L,R]
 
-	RewriteRule ^author/will(/.*)?$					/author/willnorris$1 [L,R]
-	RewriteRule xrds.xml$							/?xrds [L]
+  RewriteRule ^author/will(/.*)?$          /author/willnorris$1 [L,R]
+  RewriteRule xrds.xml$              /?xrds [L]
 
-	RewriteRule ^wordpress/wp-content/(.*)$			wordpress-content/$1 [R=301,L]
+  RewriteRule ^wordpress/wp-content/(.*)$      wordpress-content/$1 [R=301,L]
 
-	RewriteCond %{SERVER_NAME} !^willnorris.com$ [NC]
-	RewriteRule (.*) http://willnorris.com/$1 [L,R=permanent]
+  #RewriteCond %{SERVER_NAME} !^willnorris.com$ [NC]
+  #RewriteRule (.*) http://willnorris.com/$1 [L,R=permanent]
 
-	# Short URLs
-	RewriteRule ^p/([a-z0-9]+)$	/?p=$1 [L,R=permanent]
+  # Short URLs
+  RewriteRule ^p/([a-z0-9]+)$  /?p=$1 [L,R=permanent]
 </IfModule>
 
 
