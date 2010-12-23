@@ -1,5 +1,7 @@
 <?php
 
+show_admin_bar( false );
+
 function two_body_class( $classes ) {
   $classes[] = 'bp';
   $classes[] = 'two-col';
@@ -62,3 +64,11 @@ function willnorris_resize_images() {
 <?php
 }
 add_action('wp_footer', 'willnorris_resize_images');
+
+function willnorris_emphasize_tagline($output, $show) {
+  if ( $show == 'description' ) {
+    $output = preg_replace('/(more|this)/', '<em>\\1</em>', $output);
+  }
+  return $output;
+}
+add_filter('bloginfo', 'willnorris_emphasize_tagline', 10, 2);
