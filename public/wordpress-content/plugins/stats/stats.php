@@ -3,8 +3,8 @@
 Plugin Name: WordPress.com Stats
 Plugin URI: http://wordpress.org/extend/plugins/stats/
 Description: Tracks views, post/page views, referrers, and clicks. Requires a WordPress.com API key.
-Author: Andy Skelton
-Version: 1.7.3
+Author: Automattic
+Version: 1.7.5
 License: GPL v2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 Text Domain: stats
 
@@ -453,7 +453,7 @@ function stats_admin_page() {
 
 			<form action="<?php echo stats_admin_path() ?>" method="post">
 				<?php wp_nonce_field('stats'); ?>
-				<p><?php _e('Enter your WordPress.com API key to link this blog to your WordPress.com account. Be sure to use your own API key! Using any other key will lock you out of your stats. (<a href="http://wordpress.com/profile/">Get your key here.</a>)', 'stats'); ?></p>
+				<p><?php printf(__('Enter your WordPress.com API key to link this blog to your WordPress.com account. Be sure to use your own API key! Using any other key will lock you out of your stats. (<a href="%s">Get your key here.</a>)', 'stats'), 'https://apikey.wordpress.com/'); ?></p>
 				<label for="api_key"><?php _e('API Key:', 'stats'); ?> <input type="text" name="api_key" id="api_key" value="" /></label>
 				<input type="hidden" name="action" value="enter_key" />
 				<p class="submit"><input type="submit" value="<?php _e('Save &raquo;', 'stats'); ?>" /></p>
@@ -558,7 +558,7 @@ function stats_add_call() {
 
 	$args = func_get_args();
 
-	call_user_method_array( 'addCall', $stats_xmlrpc_client, $args );
+	call_user_func_array( array( $stats_xmlrpc_client, 'addCall' ), $args );
 }
 
 function stats_multicall_query() {
@@ -684,9 +684,9 @@ function stats_activate() {
 	wp_remote_get(get_bloginfo('siteurl'));
 }
 
-function stats_deactivate() {
-	//delete_option('stats_options');
-	//delete_option('stats_dashboard_widget');
+function stats_uninstall() {
+	delete_option('stats_options');
+	delete_option('stats_dashboard_widget');
 }
 
 /* Dashboard Stuff: WP >= 2.5 */
@@ -1217,7 +1217,7 @@ add_filter( 'wp_dashboard_widgets', 'stats_add_dashboard_widget' );
 
 // Boooooooooooring init stuff
 register_activation_hook(__FILE__, 'stats_activate');
-register_deactivation_hook(__FILE__, 'stats_deactivate');
+register_uninstall_hook(__FILE__, 'stats_uninstall');
 add_action( 'admin_menu', 'stats_admin_menu' );
 add_action( 'activity_box_end', 'stats_activity', 1 ); // WP < 2.5
 add_action( 'init', 'stats_load_translations' );

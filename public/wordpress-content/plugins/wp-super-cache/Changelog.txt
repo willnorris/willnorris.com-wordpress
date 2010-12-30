@@ -1,3 +1,711 @@
+2010-11-23 13:38  donncha
+
+	* wp-cache-phase1.php: Check if there are any actions before
+	  processing a cacheaction(), see
+	  http://wordpress.org/support/topic/plugin-wp-super-cache-wp-admin-problem?replies=2
+
+2010-11-23 13:29  donncha
+
+	* wp-cache.php: Change preload limits and increase steps for
+	  smaller preloads -
+	  http://wordpress.org/support/topic/plugin-wp-super-cache-how-do-i-cache-the-newest?replies=3
+
+2010-11-23 13:03  donncha
+
+	* readme.txt: Minor changes to documentation
+
+2010-11-23 12:51  donncha
+
+	* readme.txt: Updated docs for MU/MS
+
+2010-11-23 12:43  donncha
+
+	* readme.txt: Added a link to Priv's credit for translation
+
+2010-11-23 12:41  donncha
+
+	* languages/wp-super-cache-zh_TW.mo,
+	  languages/wp-super-cache-zh_TW.po: Updated translation file by
+	  Priv (http://priv.tw/blog)
+
+2010-11-22 17:44  donncha
+
+	* readme.txt: Credit priv with updated Traditional Chinese
+	  translation.
+
+2010-11-22 17:41  donncha
+
+	* languages/wp-super-cache-zh_TW.mo,
+	  languages/wp-super-cache-zh_TW.po: Updated translation file by
+	  priv
+
+2010-11-22 17:32  donncha
+
+	* readme.txt: Add link to development version for translators
+
+2010-11-22 17:31  donncha
+
+	* wp-super-cache.pot: Updated pot file for translation
+
+2010-11-22 17:20  donncha
+
+	* wp-cache.php: Link to WPSCMin and GTMetrix
+
+2010-11-22 17:03  donncha
+
+	* ossdl-cdn.php: Updated CDN settings page docs
+
+2010-11-22 16:28  donncha
+
+	* wp-cache-phase2.php: Increase the gzip level so pages are
+	  slightly smaller
+
+2010-11-22 16:03  donncha
+
+	* readme.txt: Added CDN docs
+
+2010-11-20 15:31  donncha
+
+	* wp-super-cache.pot: Updated translation file.
+
+2010-11-16 18:14  donncha
+
+	* wp-cache.php: Added a "rate this plugin" reminder to the sidebar
+	  on the settings page.
+
+2010-11-16 15:18  donncha
+
+	* wp-cache-phase2.php, wp-cache.php: Don't make extra front page
+	  checks optional
+
+2010-11-15 09:41  donncha
+
+	* readme.txt: Updated uninstall instructions
+
+2010-11-15 08:53  donncha
+
+	* wp-cache.php: Remove cdn line from recommended plugins, and
+	  change pause between urls in preload from 2 seconds to 1 second
+
+2010-11-15 08:51  donncha
+
+	* uninstall.php: Replaced UNINSTALL.. constant with nonce in the
+	  uninstall form to make things easier.
+
+2010-11-15 08:28  donncha
+
+	* plugins/awaitingmoderation.php, plugins/badbehaviour.php,
+	  plugins/domain-mapping.php, plugins/searchengine.php: Updated the
+	  settings page on SC plugins
+
+2010-11-09 09:52  donncha
+
+	* ossdl-cdn.php: Before rewriting URL to CDN, make sure it's in the
+	  include directories
+
+2010-11-08 20:56  donncha
+
+	* ossdl-cdn.php, wp-cache.php: Initial import of OSSDL CDN
+	  off-linker, a plugin by W-Mark Kubacki (http://mark.ossdl.de/)
+
+2010-11-06 09:47  donncha
+
+	* wp-cache-phase2.php: Added "wp_cache_ob_callback_filter" to
+	  filter the output callback buffer every time
+
+2010-11-06 09:43  donncha
+
+	* wp-cache.php: Change copyright notice, as others have of course
+	  contributed code!
+
+2010-11-03 16:45  donncha
+
+	* readme.txt: Added troubleshooting point explaining why permalinks
+	  might break after uninstalling
+
+2010-11-02 12:30  donncha
+
+	* wp-cache.php: Don't show Supercache admin page to ordinary users
+	  on MS sites. Props Mark Bailey.
+
+2010-11-01 11:56  donncha
+
+	* readme.txt, uninstall.php: uninstall.php now runs from where
+	  Wordpress is installed instead of in the supercache plugin
+	  directory
+
+2010-10-22 09:32  donncha
+
+	* wp-cache-phase2.php: Check if current page is front page or home
+	  page if cache file to write is for the homepage
+
+2010-10-21 13:45  donncha
+
+	* wp-cache-phase2.php: First paranoid check - check if the front
+	  page is being cached correctly
+
+2010-10-21 13:42  donncha
+
+	* wp-cache.php: Added "extra paranoid checks" option on the
+	  settings page
+
+2010-10-21 11:35  donncha
+
+	* wp-cache.php: Only show advanced settings page if cache enabled.
+
+2010-10-20 13:08  donncha
+
+	* wp-cache-phase2.php: Don't try to write a cache file for another
+	  page to the front page cache location
+
+2010-10-20 12:54  donncha
+
+	* wp-cache.php: Added "late init" option to settings page
+
+2010-10-20 12:29  donncha
+
+	* readme.txt: Added docs for new dynamic cached content tag
+
+2010-10-20 12:28  donncha
+
+	* wp-cache-phase2.php: When in legacy mode, no need to check for
+	  supercache
+
+2010-10-20 12:10  donncha
+
+	* wp-cache-phase2.php: Show supercache footer message on Legacy
+	  cached pages. Fixes the cache tester for those using this cache.
+
+2010-10-20 10:58  donncha
+
+	* wp-cache-phase2.php: Added "dynamic-cached-content" tag, see
+	  http://wordpress.org/support/topic/plugin-wp-super-cache-proposed-replacement-to-mfuncmclude?replies=7
+
+2010-10-15 12:35  donncha
+
+	* wp-cache-phase2.php: Use the host from get_bloginfo( 'url' ) to
+	  figure out the supercache directory
+
+2010-10-11 17:18  donncha
+
+	* wp-cache.php: Fixed "Delete Cache" link on admin dropdown. See
+	  http://wordpress.org/support/topic/plugin-wp-super-cache-delete-cache-on-dashboard-drop-down-doesnt-seem-to-work?replies=2#post-1734185
+
+2010-10-08 13:04  donncha
+
+	* wp-cache.php: Added recommended links and plugins and update
+	  "rewrite rules detected" notice
+
+2010-10-07 16:03  donncha
+
+	* wp-cache.php: Make sure compression stays disabled if gzencode()
+	  not found. See
+	  http://wordpress.org/support/topic/plugin-wp-super-cache-check-for-gzencode?replies=2
+
+2010-09-30 11:43  donncha
+
+	* wp-cache.php: Only select posts, props liangzai,
+	  http://wordpress.org/support/topic/plugin-wp-super-cache-preload-files?replies=7#post-1716174
+
+2010-09-30 11:35  donncha
+
+	* wp-cache.php: Reduce preload pause to 2 seconds and added
+	  notification of currently cached post plus faster cancellation
+
+2010-09-29 16:46  donncha
+
+	* Changelog.txt: Updated changelog
+
+2010-09-29 16:43  donncha
+
+	* readme.txt, wp-cache.php: Bump to 0.9.9.6
+
+2010-09-29 16:36  donncha
+
+	* readme.txt: Minor updated to changelog
+
+2010-09-29 16:33  donncha
+
+	* readme.txt: Added new FAQ on editing the .htaccess file
+
+2010-09-29 16:09  donncha
+
+	* readme.txt: Added new FAQ, "How do I delete the WP_CACHE define
+	  from wp-config.php?"
+
+2010-09-29 16:06  donncha
+
+	* wp-cache.php: Added "need help?" section to yellow box
+
+2010-09-29 14:30  donncha
+
+	* wp-cache.php: Sleep for 4 seconds between preloads to reduce
+	  server load some more when preloading
+
+2010-09-29 14:08  donncha
+
+	* wp-cache-phase1.php, wp-cache-phase2.php, wp-cache.php: Fix
+	  variable warning messages
+
+2010-09-29 10:11  donncha
+
+	* wp-cache-phase1.php: Send Content-Length header if 304 support
+	  enabled
+
+2010-09-29 09:50  donncha
+
+	* wp-cache.php: Don't delete expired supercache files when preload
+	  mode is on
+
+2010-09-29 09:05  donncha
+
+	* wp-cache.php: Pause 2 seconds instead of 5 between preload urls
+
+2010-09-28 17:30  donncha
+
+	* readme.txt: Updated readme, changelog and credits for German
+	  translation
+
+2010-09-28 17:26  donncha
+
+	* languages/wp-super-cache-de_DE.mo,
+	  languages/wp-super-cache-de_DE.po: Added German translation,
+	  props Mathias Roth, (http://trade-service.eu/)
+
+2010-09-28 16:34  donncha
+
+	* readme.txt: Added French translation credit
+
+2010-09-28 16:32  donncha
+
+	* languages/wp-super-cache-fr_FR.mo,
+	  languages/wp-super-cache-fr_FR.po: Added French translation,
+	  props Maitre Mo (http://maitremo.fr/)
+
+2010-09-28 16:28  donncha
+
+	* languages/wp-super-cache-it_IT.mo,
+	  languages/wp-super-cache-it_IT.po: Updated Italian translation,
+	  props Gianni Diurno
+
+2010-09-28 16:14  donncha
+
+	* wp-cache.php: Only show styled tabs in WP 3.0.1 and higher
+
+2010-09-28 13:58  donncha
+
+	* wp-cache.php: Sleep 5 seconds between preloads
+
+2010-09-27 13:59  donncha
+
+	* wp-super-cache.pot: Updated translation file
+
+2010-09-27 13:57  donncha
+
+	* wp-cache.php: Gettext fixes, props Gianni Diurno for most of
+	  them.
+
+2010-09-27 12:09  donncha
+
+	* wp-cache-phase1.php: Added 304 not modified header check to
+	  legacy caching too. NOT for dynamic pages.
+
+2010-09-27 11:44  donncha
+
+	* wp-cache-phase1.php, wp-cache.php: Added 304 "File not modified"
+	  support in PHP mode, props qdinar,
+	  http://wordpress.org/support/topic/plugin-wp-super-cache-still-not-corrected-bug-about-unicode-range-letters-in-permalink?replies=24#post-1687175
+
+2010-09-27 11:41  donncha
+
+	* wp-cache-phase1.php, wp-cache-phase2.php: Revert $wpsc_settings
+	  changes.
+
+2010-09-27 06:43  donncha
+
+	* wp-cache-phase1.php: Forgot to init the slashcheck variable
+
+2010-09-24 11:33  donncha
+
+	* Changelog.txt: Updated changelog for 0.9.9.5
+
+2010-09-24 11:31  donncha
+
+	* readme.txt, wp-cache.php: Bump to 0.9.9.5 for minor bug fixes.
+
+2010-09-24 11:26  donncha
+
+	* wp-cache.php: Show the lockdown menu again.
+
+2010-09-24 07:00  donncha
+
+	* wp-cache.php: Disable compression when using easy page, and only
+	  warn of mod_rewrite rules if they're turned off
+
+2010-09-24 06:47  donncha
+
+	* wp-cache.php: Disable cache compression, still problems with the
+	  occasional host.
+
+2010-09-23 18:08  donncha
+
+	* wp-cache.php: The plugin works somewhat well in safemode so don't
+	  stop users using the settings page.
+
+2010-09-23 17:53  donncha
+
+	* wp-cache.php: No more hello world notices and don't delete
+	  mod_rewrite rules when caching is disabled
+
+2010-09-22 16:05  donncha
+
+	* Changelog.txt: Updated changelog
+
+2010-09-22 16:02  donncha
+
+	* readme.txt, wp-cache.php: Bump version to 0.9.9.4 and update some
+	  docs
+
+2010-09-22 15:20  donncha
+
+	* wp-cache.php: When supercache is disabled delete the mod_rewrite
+	  rules
+
+2010-09-22 15:16  donncha
+
+	* wp-cache.php: Don't check the mod_rewrite rules if caching
+	  disabled
+
+2010-09-22 14:54  donncha
+
+	* readme.txt: Updated changelog and added language credits
+
+2010-09-22 14:26  donncha
+
+	* wp-super-cache.pot: Updated translation file
+
+2010-09-22 14:18  donncha
+
+	* plugins/domain-mapping.php: Added code to check if domain mapping
+	  used and print a warning message
+
+2010-09-22 13:23  donncha
+
+	* wp-cache.php: Set "wp_cache_mod_rewrite" if it's not defined
+	  already, for those upgrading
+
+2010-09-22 11:50  donncha
+
+	* wp-cache.php: Fixed typo in rewrite rules notice
+
+2010-09-21 11:54  donncha
+
+	* wp-cache.php: Don't need this adminpage form any more
+
+2010-09-21 10:00  donncha
+
+	* wp-cache.php: Update the docs explaining garbage collection
+
+2010-09-21 09:58  donncha
+
+	* wp-cache.php: Show advanced settings page if legacy caching
+	  enabled too
+
+2010-09-21 09:44  donncha
+
+	* wp-cache.php: Show "advanced settings" page when mod_rewrite
+	  caching enabled.
+
+2010-09-21 09:34  donncha
+
+	* wp-cache.php: Disable .htaccess checks when not running on "main
+	  site" instead of disabling settings page completely
+
+2010-09-20 15:43  donncha
+
+	* plugins/domain-mapping.php, wp-cache-phase2.php: Added "gc_cache"
+	  action and domain mapping cache plugin to clear the cache of
+	  domain mapped multisite websites
+
+2010-09-20 12:58  donncha
+
+	* wp-cache.php: Added another check for the mod_rewrite config
+	  before displaying a warning about those rules
+
+2010-09-20 12:47  donncha
+
+	* wp-cache.php: Correctly check for the "main blog"
+
+2010-09-20 12:01  donncha
+
+	* wp-cache.php: * Tester tab added "& Contents" to make it clearer
+	  what's in this page.
+	  * Add back in "List Files" link. Oops.
+
+2010-09-20 11:59  donncha
+
+	* wp-cache-config-sample.php, wp-cache.php: No need for simple
+	  setup variable now
+
+2010-09-20 11:37  donncha
+
+	* plugins/awaitingmoderation.php: Added example plugin to remove
+	  "Awaiting moderation" message when comments left on posts.
+
+2010-09-20 11:36  donncha
+
+	* plugins/badbehaviour.php, plugins/searchengine.php: Make plugins
+	  listed in an ordered list
+
+2010-09-20 11:35  donncha
+
+	* wp-cache.php: * Added Plugins tab
+	  * Check if if PHP or Supercache mode before checking .htaccess
+	  file for rewrite rules.
+	  * Change "half-on" text to "legacy" to reflect new terminology
+	  * Split Settings page into Easy and Advanced tabs instead of
+	  form.
+
+2010-09-13 22:46  donncha
+
+	* wp-cache.php: Make tabs like those on the themes page
+
+2010-09-13 04:31  donncha
+
+	* wp-cache.php: Cast as an array to hide a warning about 2nd arg.
+
+2010-09-13 04:28  donncha
+
+	* wp-cache.php: Hopefully trap wp_errors generating from page
+	  requests to tester
+
+2010-09-07 16:16  donncha
+
+	* wp-cache.php: Enable "PHP Caching" from the easy setup page
+
+2010-09-07 16:07  donncha
+
+	* wp-cache.php: Minor tweaks to layout of admin page
+
+2010-09-07 16:06  donncha
+
+	* wp-cache-config-sample.php, wp-cache.php: Added "easy setup"
+	  configuration screen (WIP)
+
+2010-09-07 16:03  donncha
+
+	* wp-cache.php: Fixed check for "main site" on MU sites
+
+2010-09-07 12:31  donncha
+
+	* wp-cache.php: * Fixed check for "main site"
+	  * Updated error messages
+
+2010-09-07 12:09  donncha
+
+	* wp-cache.php: Added tabs to the Supercache admin page
+
+2010-09-06 07:33  donncha
+
+	* readme.txt: Added FAQ on writable directories and fixed a few
+	  typos
+
+2010-09-03 15:15  donncha
+
+	* readme.txt, wp-cache-phase1.php: Updated headers and docs for PHP
+	  served cache files
+
+2010-08-31 17:55  donncha
+
+	* wp-cache.php: Added "$wp_super_cache_lock_down" config variable
+	  to hide lockdown and directly cached pages admin menus
+
+2010-08-31 17:44  donncha
+
+	* readme.txt: Major updates to the docs, covering legacy mode.
+
+2010-08-31 15:34  donncha
+
+	* readme.txt: Updated docs on legacy caching
+
+2010-08-31 13:50  donncha
+
+	* readme.txt: Minor mod to caching mechanism list
+
+2010-08-31 13:48  donncha
+
+	* readme.txt: Added docs on legacy caching and the different
+	  caching mechanisms
+
+2010-08-31 12:45  donncha
+
+	* wp-cache-phase2.php: Added action on "wp_update_nav_menu" to
+	  clear cache, props
+	  http://www.webmasterbulletin.net/2010/07/wp-super-cache-and-wp3-0-menus/1270
+
+2010-08-30 16:50  donncha
+
+	* wp-cache.php: Admin page upgrades:
+	  * Separate out PHP and mod_rewrite supercaching.
+	  * Minor text changes
+
+2010-08-30 16:38  donncha
+
+	* wp-cache-phase2.php: Hide potential error messages
+
+2010-08-30 16:37  donncha
+
+	* wp-cache-phase2.php: Revert this settings change for now.
+
+2010-08-30 16:35  donncha
+
+	* wp-cache-phase2.php: If caching disabled, then don't run the
+	  second phase function
+
+2010-08-30 11:46  donncha
+
+	* wp-cache-phase1.php: Minor whitespace mod
+
+2010-08-30 11:46  donncha
+
+	* wp-cache-phase1.php: Serve a gzipped supercache file if the
+	  client supports it.
+
+2010-08-30 10:16  donncha
+
+	* wp-cache-phase2.php: Remove unused global variable
+
+2010-08-30 09:36  donncha
+
+	* wp-cache-phase2.php: Don't delete supercache files if supercache
+	  is disabled when posts change. Stops moderated comments deleting
+	  the front page.
+
+2010-08-29 10:17  donncha
+
+	* wp-cache-phase2.php: Check for empty tmp cache files and report
+	  them correctly.
+
+2010-08-27 15:40  donncha
+
+	* wp-cache.php: Change cache compression on/off into a checkbox and
+	  move into "Misc" section.
+
+2010-08-27 14:56  donncha
+
+	* wp-cache.php: Ignore case when checking mobile user agents in
+	  .htaccess
+
+2010-08-26 16:37  donncha
+
+	* wp-cache.php: Hide warnings from these unlinks, even though the
+	  plugin checks if they exist!
+
+2010-08-26 14:43  donncha
+
+	* wp-cache.php: Add a timestamp to the preload counter to catch
+	  when it stalls. Reschedule the preload job when that happens.
+
+2010-08-26 12:34  donncha
+
+	* wp-cache.php: Cache tester should probably send http requests for
+	  homepage if admin is secure
+
+2010-08-26 11:30  donncha
+
+	* wp-cache.php: Ony add mobile rules if mobile support is enabled
+
+2010-08-26 11:26  donncha
+
+	* wp-cache.php: Move code to handle updating the options into it's
+	  own function and move more error checking into it's own function
+
+2010-08-24 17:07  donncha
+
+	* wp-cache.php: First go at reorganising the admin page
+
+2010-08-23 17:27  donncha
+
+	* wp-cache-phase2.php: Starting to use $wpsc_settings
+
+2010-08-23 17:09  donncha
+
+	* wp-cache-phase1.php, wp-cache-phase2.php: Added
+	  "wp_cache_load_config()" and $wpsc_settings array
+
+2010-08-23 12:23  donncha
+
+	* readme.txt: Added new FAQ, "How do I delay serving the cache
+	  until the "init" action fires?"
+
+2010-08-23 12:07  donncha
+
+	* readme.txt: Include a simple mfunc example
+
+2010-08-23 12:06  donncha
+
+	* wp-cache-config-sample.php, wp-cache-phase2.php: Removed
+	  $wp_cache_gzip_first, if compression is enabled there's no reason
+	  it won't work for the cache generating visit
+
+2010-08-23 11:40  donncha
+
+	* wp-cache-phase2.php: Warn if late init not set on dynamic pages
+
+2010-08-23 10:45  donncha
+
+	* wp-cache-phase2.php: Added "wp_cache_append_tag()" to add the
+	  Supercache log message after filtering
+
+2010-08-06 17:09  donncha
+
+	* wp-cache.php: Added the function "wpsupercache_site_admin()" to
+	  support old versions of MU using is_site_admin()
+
+2010-08-06 16:10  donncha
+
+	* wp-cache-phase1.php, wp-cache.php: Removed lots of PHP variable
+	  warnings. Props Joel Hardi
+
+2010-08-06 15:30  donncha
+
+	* wp-cache.php: Fixed cache tester when WP is installed in a sub
+	  directory
+
+2010-08-03 12:17  donncha
+
+	* wp-cache-phase2.php: Check for closing "urlset" tag for xml
+	  sitemap generators
+	  (http://wordpress.org/support/topic/plugin-wp-super-cache-xml-sitemap-feed-not-cached?replies=11#post-1627457)
+
+2010-07-30 12:19  donncha
+
+	* wp-cache.php: Check the status of pages returned by the cache
+	  tester and report any problems.
+
+2010-07-01 15:30  donncha
+
+	* wp-cache.php: Removed donation blurb from admin page
+
+2010-07-01 15:27  donncha
+
+	* readme.txt: Removed donation link, updated min version and added
+	  automattic as contributor
+
+2010-06-28 10:25  donncha
+
+	* wp-cache-config-sample.php: Use WP_PLUGIN_DIR instead of
+	  WP_CONTENT_DIR, props Baris Unver
+
+2010-06-21 15:42  donncha
+
+	* wp-cache.php: On MU/WP 3.0 network sites only allow admin page on
+	  main site. http://wordpress.org/support/topic/412472?replies=2
+
+2010-06-16 10:34  donncha
+
+	* Changelog.txt, readme.txt: Updated changelogs
+
 2010-06-16 10:26  donncha
 
 	* wp-super-cache.pot: Updated translation file for 0.9.9.3

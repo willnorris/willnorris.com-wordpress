@@ -1,9 +1,9 @@
 === WordPress.com Stats ===
-Contributors: skeltoac, mdawaffe, automattic
+Contributors: automattic, skeltoac, mdawaffe
 Tags: stats, statistics
 Requires at least: 2.7
-Tested up to: 3.0
-Stable tag: 1.7.3
+Tested up to: 3.0.1
+Stable tag: 1.7.5
 
 You can have simple, concise stats with no additional load on your server by plugging into WordPress.com's stat system.
 
@@ -82,7 +82,15 @@ We opened our database for developers to retrieve stats. The API is at `http://s
 
 == Changelog ==
 
-= trunk =
+= 1.7.5 =
+* Fix deprecated function call_user_method_array (props Galeforce99)
+* Move data deletion to uninstall hook (props viper007bond)
+* Change "Get your key here" link to apikey.wordpress.com
+
+= 1.7.4 =
+* Reinstate deactivation hook
+
+= 1.7.3 =
 * Add domain to gettext calls and load_plugin_textdomain (props nbachiyski)
 * Add POT file and Text Domain
 * Change some escaping functions (props nbachiyski)
