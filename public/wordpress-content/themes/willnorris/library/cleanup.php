@@ -83,6 +83,11 @@ function willnorris_cleanup_hooks() {
 		//remove_filter('the_content', 'do_shortcode', 11);
 		//add_filter('the_content', 'do_shortcode', 9);
 	}
+
+  // remove the default styles that are packaged with the Recent Comments widget.
+  global $wp_widget_factory;
+  remove_action( 'wp_head',
+    array( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ) );
 }
 add_filter('wp', 'willnorris_cleanup_hooks', 20);
 

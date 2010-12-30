@@ -269,7 +269,9 @@ function willnorris_search_engine_validation() {
 	if ( is_front_page() ) {
 		?>
 
+    <meta property="fb:admins" content="625871840" />
 		<!-- Webmaster Tools Verification -->
+    <meta name="google-site-verification" content="jgAYNKuVSYXv6EQKtcbwFEdW72Wkp8n7z8-8LNPO0VU" />
 		<meta name="google-site-verification" content="RtjWa-bgrkaODyX7Zm4y_Co-99vLe1PDdQZ-GLyqdb4" />
 		<meta name="verify-v1" content="HQ0dYpdfPaUOtTvnC1Aj13WpaGazCoseLMPXXEnqmhA=" />
 		<meta name="verify-v1" content="H2qO+9/u0nX4DfYb71gnbTEtQ+Fn++f9gF5JD5iyoNs=" />

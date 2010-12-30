@@ -136,8 +136,9 @@ body.page .entry-title,
 .entry-content > p + p					{ margin-top: 1.3em; }
 .entry-content h3 + p					{ margin-top: 0em; }
 .entry-content a:visited				{ color: #bb4411; }
-.entry-content ul						{ margin: 1em 0 1em 3em; }
-.entry-content ul > li					{ list-style: disc; }
+.entry-content ul, .entry-content ol	{ margin: 1em 0 1em 3em; }
+.entry-content ul > li					{ list-style: disc; margin-bottom: 1em; }
+.entry-content ol > li					{ list-style: decimal; margin-bottom: 1em; }
 
 .entry-meta								{ margin-bottom: 1.5em; }
 
@@ -225,9 +226,9 @@ body.page .entry-title,
 #headshots > a > img					{ border: 1px solid #000; padding: 2px; }
 
 /* -- Front Page -- */
-#front-asides							{ width: 30%; float: right; }
+#front-asides							{ width: 35%; float: right; }
 #front-asides > .aside, #front-page-top	{ width: auto; margin-left: 0; }
-.home #container						{ width: 65%; clear: none; }
+.home #container						{ width: 60%; clear: none; }
 .home #content							{ width: 100%; float: none; }
 .home .entry-content a:visited			{ color: #2277DD; }
 
