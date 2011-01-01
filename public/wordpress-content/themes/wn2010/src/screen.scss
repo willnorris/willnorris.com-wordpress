@@ -25,6 +25,7 @@ body {
   @include blueprint-interaction;
   //@include fancy-type;
 
+  background: #EEE;
   ul, ol {
     padding-left: 1.5em;
   }
@@ -41,6 +42,10 @@ body {
   @include container;
   //@include showgrid;
 
+  // this should keep our actual content under 50em wide or so
+  max-width: 100em;
+  background: #FFF;
+
   padding: 0 10px;
   background-position: 10px 0;
 }
@@ -51,17 +56,17 @@ body {
 }
 
 #nav {
-  $content-columns: floor(2 / 24 * $blueprint-liquid-grid-columns);
+  $content-columns: (3 / 24 * $blueprint-liquid-grid-columns);
   @include column($content-columns);
 }
 
 #container {
-  $content-columns: ceil(14 / 24 * $blueprint-liquid-grid-columns);
+  $content-columns: (12 / 24 * $blueprint-liquid-grid-columns);
   @include column($content-columns);
 }
 
 .sidebar {
-  $sidebar-columns: floor(8 / 24 * $blueprint-liquid-grid-columns);
+  $sidebar-columns: (9 / 24 * $blueprint-liquid-grid-columns);
   // true means it is the last column in the row
   @include column($sidebar-columns, true);
 }
@@ -173,27 +178,32 @@ body {
 /* sidebar */
 .sidebar > section {
   float: left;
-  width: 50%;
-  padding-bottom: 1.5em;
+  width: 40%;
+  margin: 0 5%;
+  padding-bottom: 3.5em;
 
   ul {
     margin-bottom: 0;
   }
 }
+.sidebar > section:last-child {
+  margin-right: 0;
+}
 
-@media screen and (max-width: 1400px) {
+/* Responsive Layout */
+@media screen and (max-width: 1200px) {
   #nav {
-    $content-columns: floor(1.5 / 12 * $blueprint-liquid-grid-columns);
+    $content-columns: (3.5 / 24 * $blueprint-liquid-grid-columns);
     @include column($content-columns);
   }
 
   #container {
-    $content-columns: ceil(7 / 12 * $blueprint-liquid-grid-columns);
+    $content-columns: (13.5 / 24 * $blueprint-liquid-grid-columns);
     @include column($content-columns);
   }
 
   .sidebar {
-    $sidebar-columns: floor(3.5 / 12 * $blueprint-liquid-grid-columns);
+    $sidebar-columns: (7 / 24 * $blueprint-liquid-grid-columns);
     // true means it is the last column in the row
     @include column($sidebar-columns, true);
     @include push(0.5);
@@ -201,26 +211,23 @@ body {
 
   .sidebar > section {
     width: 95%;
+    margin: 0;
   }
 }
 
 @media screen and (max-width: 900px) {
-  #wrapper {
-    width: 95%;
-  }
-
   #nav {
-    $content-columns: floor(2 / 10 * $blueprint-liquid-grid-columns);
+    $content-columns: (2 / 10 * $blueprint-liquid-grid-columns);
     @include column($content-columns);
   }
 
   #container {
-    $content-columns: ceil(8 / 10 * $blueprint-liquid-grid-columns);
+    $content-columns: (8 / 10 * $blueprint-liquid-grid-columns);
     @include column($content-columns, true);
   }
 
   .sidebar {
-    $content-columns: ceil(8 / 10 * $blueprint-liquid-grid-columns);
+    $content-columns: (8 / 10 * $blueprint-liquid-grid-columns);
     @include column($content-columns, true);
     @include pull(-4);
   }
@@ -237,6 +244,10 @@ body {
 }
 
 @media screen and (max-width: 650px) {
+  #wrapper {
+    width: auto;
+  }
+
   #header {
     text-align: center;
     .site-description { display: none; }

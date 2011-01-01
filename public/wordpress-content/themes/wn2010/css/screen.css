@@ -118,6 +118,7 @@ body {
   font-family: "myriad-pro-1", "myriad-pro-2", sans-serif;
   color: #333333;
   font-size: 87.5%;
+  background: #EEE;
 }
 /* line 68, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.5/frameworks/blueprint/stylesheets/blueprint/_typography.scss */
 body h1, body h2, body h3, body h4, body h5, body h6 {
@@ -419,71 +420,73 @@ body .removed {
   background: #990000;
   color: white;
 }
-/* line 28, ../src/screen.scss */
+/* line 29, ../src/screen.scss */
 body ul, body ol {
   padding-left: 1.5em;
 }
-/* line 31, ../src/screen.scss */
+/* line 32, ../src/screen.scss */
 body kbd {
   font: 1em "Inconsolata", monospace;
   line-height: 1.5;
 }
 
-/* line 36, ../src/screen.scss */
+/* line 37, ../src/screen.scss */
 h1, h2, h3, h4, h5, h6 {
   clear: both;
 }
 
-/* line 40, ../src/screen.scss */
+/* line 41, ../src/screen.scss */
 #wrapper {
   min-width: 200px;
   width: 90%;
   margin: 0 auto;
   overflow: hidden;
   *zoom: 1;
+  max-width: 100em;
+  background: #FFF;
   padding: 0 10px;
   background-position: 10px 0;
 }
 
-/* line 48, ../src/screen.scss */
+/* line 53, ../src/screen.scss */
 .site-description > em {
   font-size: 70%;
   font-family: "bistro-script-web-1", "bistro-script-web-2", cursive;
 }
 
-/* line 53, ../src/screen.scss */
+/* line 58, ../src/screen.scss */
 #nav {
   display: inline;
   float: left;
   overflow: hidden;
-  width: 7.376%;
-  margin-right: 1.042%;
-}
-
-/* line 58, ../src/screen.scss */
-#container {
-  display: inline;
-  float: left;
-  overflow: hidden;
-  width: 57.884%;
+  width: 11.585%;
   margin-right: 1.042%;
 }
 
 /* line 63, ../src/screen.scss */
+#container {
+  display: inline;
+  float: left;
+  overflow: hidden;
+  width: 49.466%;
+  margin-right: 1.042%;
+}
+
+/* line 68, ../src/screen.scss */
 .sidebar {
   display: inline;
   float: left;
   overflow: hidden;
-  width: 32.63%;
+  width: 36.839%;
   margin-right: 0;
 }
 
-/* line 69, ../src/screen.scss */
+/* line 74, ../src/screen.scss */
 .alignleft, .alignright, .aligncenter {
   margin-bottom: 1.5em;
 }
 
-/* line 72, ../src/screen.scss */
+/* line 77, ../src/screen.scss */
 .alignleft, img.alignleft {
   margin-top: 4px;
   display: inline;
@@ -491,7 +494,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-right: 1em;
 }
 
-/* line 78, ../src/screen.scss */
+/* line 83, ../src/screen.scss */
 .alignright, img.alignright {
   margin-top: 4px;
   display: inline;
@@ -499,7 +502,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-left: 1em;
 }
 
-/* line 84, ../src/screen.scss */
+/* line 89, ../src/screen.scss */
 .aligncenter, img.aligncenter {
   clear: both;
   display: block;
@@ -507,22 +510,22 @@ h1, h2, h3, h4, h5, h6 {
   margin-right: auto;
 }
 
-/* line 91, ../src/screen.scss */
+/* line 96, ../src/screen.scss */
 .wp-caption {
   text-align: center;
 }
 
-/* line 95, ../src/screen.scss */
+/* line 100, ../src/screen.scss */
 .entry-title {
   margin-bottom: 0;
 }
 
-/* line 98, ../src/screen.scss */
+/* line 103, ../src/screen.scss */
 .entry-meta {
   margin-bottom: 1.5em;
 }
 
-/* line 101, ../src/screen.scss */
+/* line 106, ../src/screen.scss */
 .hentry + .hentry {
   margin-top: 3em;
 }
@@ -588,36 +591,36 @@ h1, h2, h3, h4, h5, h6 {
   width: 390px;
   height: 250px;
 }
-/* line 108, ../src/screen.scss */
+/* line 113, ../src/screen.scss */
 #main form textarea {
   max-width: 95%;
 }
-/* line 116, ../src/screen.scss */
+/* line 121, ../src/screen.scss */
 #main form input.text, #main form input.title, #main form input[type=email], #main form input[type=text], #main form input[type=password] {
   max-width: 90%;
 }
 
-/* line 120, ../src/screen.scss */
+/* line 125, ../src/screen.scss */
 .skip-links {
   display: none;
 }
 
-/* line 122, ../src/screen.scss */
+/* line 127, ../src/screen.scss */
 .nav-previous {
   float: left;
 }
 
-/* line 125, ../src/screen.scss */
+/* line 130, ../src/screen.scss */
 .nav-next {
   float: right;
 }
 
-/* line 129, ../src/screen.scss */
+/* line 134, ../src/screen.scss */
 .post {
   clear: both;
 }
 
-/* line 133, ../src/screen.scss */
+/* line 138, ../src/screen.scss */
 .avatar {
   height: 2.5em;
   width: auto;
@@ -625,75 +628,82 @@ h1, h2, h3, h4, h5, h6 {
   vertical-align: text-bottom;
 }
 
-/* line 140, ../src/screen.scss */
+/* line 145, ../src/screen.scss */
 #comments {
   margin-top: 1.5em;
 }
 
-/* line 143, ../src/screen.scss */
+/* line 148, ../src/screen.scss */
 #reply-title {
   line-height: 2;
   margin-bottom: 0;
 }
 
-/* line 147, ../src/screen.scss */
+/* line 152, ../src/screen.scss */
 #comment {
   height: 12em;
   margin: 0.3em;
   display: block;
 }
 
-/* line 153, ../src/screen.scss */
+/* line 158, ../src/screen.scss */
 #footer {
   clear: both;
   text-align: center;
 }
 
-/* line 159, ../src/screen.scss */
+/* line 164, ../src/screen.scss */
 #content img {
   vertical-align: baseline;
 }
-/* line 163, ../src/screen.scss */
+/* line 168, ../src/screen.scss */
 #content table {
   border: 1px solid #E7E7E7;
 }
-/* line 167, ../src/screen.scss */
+/* line 172, ../src/screen.scss */
 #content tr td {
   border-top: 1px solid #E7E7E7;
 }
 
 /* sidebar */
-/* line 174, ../src/screen.scss */
+/* line 179, ../src/screen.scss */
 .sidebar > section {
   float: left;
-  width: 50%;
-  padding-bottom: 1.5em;
+  width: 40%;
+  margin: 0 5%;
+  padding-bottom: 3.5em;
 }
-/* line 179, ../src/screen.scss */
+/* line 185, ../src/screen.scss */
 .sidebar > section ul {
   margin-bottom: 0;
 }
 
-@media screen and (max-width: 1400px) {
-  /* line 185, ../src/screen.scss */
+/* line 189, ../src/screen.scss */
+.sidebar > section:last-child {
+  margin-right: 0;
+}
+
+/* Responsive Layout */
+@media screen and (max-width: 1200px) {
+  /* line 195, ../src/screen.scss */
   #nav {
     display: inline;
     float: left;
     overflow: hidden;
-    width: 11.585%;
+    width: 13.689%;
     margin-right: 1.042%;
   }
 
-  /* line 190, ../src/screen.scss */
+  /* line 200, ../src/screen.scss */
   #container {
     display: inline;
     float: left;
     overflow: hidden;
-    width: 57.884%;
+    width: 55.78%;
     margin-right: 1.042%;
   }
 
-  /* line 195, ../src/screen.scss */
+  /* line 205, ../src/screen.scss */
   .sidebar {
     display: inline;
     float: left;
@@ -708,53 +718,49 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0;
   }
 
-  /* line 202, ../src/screen.scss */
+  /* line 212, ../src/screen.scss */
   .sidebar > section {
     width: 95%;
+    margin: 0;
   }
 }
 
 @media screen and (max-width: 900px) {
-  /* line 208, ../src/screen.scss */
-  #wrapper {
-    width: 95%;
-  }
-
-  /* line 212, ../src/screen.scss */
+  /* line 219, ../src/screen.scss */
   #nav {
     display: inline;
     float: left;
     overflow: hidden;
-    width: 15.794%;
+    width: 19.161%;
     margin-right: 1.042%;
   }
 
-  /* line 217, ../src/screen.scss */
+  /* line 224, ../src/screen.scss */
   #container {
     display: inline;
     float: left;
     overflow: hidden;
-    width: 83.138%;
+    width: 79.771%;
     margin-right: 0;
   }
 
-  /* line 222, ../src/screen.scss */
+  /* line 229, ../src/screen.scss */
   .sidebar {
     display: inline;
     float: left;
     overflow: hidden;
-    width: 83.138%;
+    width: 79.771%;
     margin-right: 0;
     margin-left: 16.836%;
   }
 
-  /* line 228, ../src/screen.scss */
+  /* line 235, ../src/screen.scss */
   .sidebar > section {
     width: 50%;
     float: left;
   }
 
-  /* line 233, ../src/screen.scss */
+  /* line 240, ../src/screen.scss */
   #main form textarea {
     height: 8em;
     max-width: 97%;
@@ -762,16 +768,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media screen and (max-width: 650px) {
-  /* line 240, ../src/screen.scss */
+  /* line 247, ../src/screen.scss */
+  #wrapper {
+    width: auto;
+  }
+
+  /* line 251, ../src/screen.scss */
   #header {
     text-align: center;
   }
-  /* line 242, ../src/screen.scss */
+  /* line 253, ../src/screen.scss */
   #header .site-description {
     display: none;
   }
 
-  /* line 245, ../src/screen.scss */
+  /* line 256, ../src/screen.scss */
   #nav, #container, .sidebar {
     display: inline;
     float: left;
@@ -781,7 +792,7 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
   }
 
-  /* line 251, ../src/screen.scss */
+  /* line 262, ../src/screen.scss */
   #nav > ul {
     margin: 0;
     padding: 0;
@@ -810,14 +821,14 @@ h1, h2, h3, h4, h5, h6 {
   #nav > ul li:last-child, #nav > ul li.last {
     padding-right: 0px;
   }
-  /* line 255, ../src/screen.scss */
+  /* line 266, ../src/screen.scss */
   #nav > ul li {
     float: none;
   }
 }
 
 @media screen and (max-width: 500px) {
-  /* line 260, ../src/screen.scss */
+  /* line 271, ../src/screen.scss */
   .sidebar > section {
     width: auto;
     float: none;
