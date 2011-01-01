@@ -42,13 +42,13 @@ body {
   @include column($content-columns);
 }
 
-#content {
+#container {
   $content-columns: ceil(14 / 24 * $blueprint-liquid-grid-columns);
   @include column($content-columns);
 }
 
 .sidebar {
-  $sidebar-columns: floor(7 / 24 * $blueprint-liquid-grid-columns);
+  $sidebar-columns: floor(8 / 24 * $blueprint-liquid-grid-columns);
   // true means it is the last column in the row
   @include column($sidebar-columns, true);
   @include push(0);
@@ -103,25 +103,27 @@ code {
 
 /* sidebar */
 .sidebar > section {
-  width: 50%;
   float: left;
+  width: 50%;
+  padding-bottom: 1.5em;
+
+  ul {
+    margin-bottom: 0;
+  }
 }
 
 @media screen and (max-width: 1400px) {
   #nav {
-    // 1/8 of the grid columns
     $content-columns: floor(1.5 / 12 * $blueprint-liquid-grid-columns);
     @include column($content-columns);
   }
 
-  #content {
-    // of the grid columns
+  #container {
     $content-columns: ceil(7 / 12 * $blueprint-liquid-grid-columns);
     @include column($content-columns);
   }
 
   .sidebar {
-    // One fourth of the grid columns
     $sidebar-columns: floor(3.5 / 12 * $blueprint-liquid-grid-columns);
     // true means it is the last column in the row
     @include column($sidebar-columns, true);
@@ -129,8 +131,7 @@ code {
   }
 
   .sidebar > section {
-    width: auto;
-    float: none;
+    width: 95%;
   }
 }
 
@@ -144,16 +145,15 @@ code {
     @include column($content-columns);
   }
 
-  #content {
-    $content-columns: floor(8 / 10 * $blueprint-liquid-grid-columns);
-    @include column($content-columns);
+  #container {
+    $content-columns: ceil(8 / 10 * $blueprint-liquid-grid-columns);
+    @include column($content-columns, true);
   }
 
   .sidebar {
-    width: auto;
-    float:none;
-    display: block;
-    @include prepend(3);
+    $content-columns: ceil(8 / 10 * $blueprint-liquid-grid-columns);
+    @include column($content-columns, true);
+    @include pull(-4);
   }
 
   .sidebar > section {
@@ -173,18 +173,21 @@ code {
     .site-description { display: none; }
   }
 
-  #nav, #content, .sidebar {
-    width: auto;
-    float: none;
-    padding: 0;
+  #nav, #container, .sidebar {
+    $content-columns: $blueprint-liquid-grid-columns;
+    @include column($content-columns);
+    margin: 0;
   }
+
   #nav > ul {
     @include horizontal-list;
     text-align: center;
     // float is unnecessary really, and interferes with centering the text
     li { float: none; }
   }
+}
 
+@media screen and (max-width: 500px) {
   .sidebar > section {
     width: auto;
     float: none;

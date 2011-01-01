@@ -37,6 +37,8 @@ add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
 
 function willnorris_wp( $wp ) {
   wp_enqueue_script('jquery');
+  wp_enqueue_script('jquery.masonry',
+    get_stylesheet_directory_uri() . '/js/jquery.masonry.min.js', array('jquery'), '1.3.2', true);
   wp_enqueue_script('typekit', 'http://use.typekit.com/fmx0rji.js');
 }
 add_action('wp', 'willnorris_wp');
@@ -46,15 +48,16 @@ function willnorris_typekit_load() {
 }
 add_action('wp_head', 'willnorris_typekit_load');
 
-function willnorris_resize_images() {
+function willnorris_footer_js() {
 ?>
   <script>
-  jQuery(function() {
-    var $p = jQuery('<p>A</p>').hide().appendTo('body');
+  jQuery(function($) {
+    // resize images
+    var $p = $('<p>A</p>').hide().appendTo('body');
     var lineHeight = $p.height();
     $p.remove();
 
-    jQuery('#container img').each( function(index, img) {
+    $('#container img').each( function(index, img) {
       var $img = $(img);
       //console.log( $img.height() );
       if ( $img.height() % lineHeight != 0 ) {
@@ -64,10 +67,24 @@ function willnorris_resize_images() {
       }
     });
   });
+
+  // masonry
+  jQuery(function($) {
+    $('.sidebar').masonry({
+      singleMode: true,
+      itemSelector: 'section',
+      resizeable: false,
+    });
+    $(window).resize(function() {
+      $('.sidebar').masonry({
+        columnWidth: $('.sidebar section').outerWidth(true)
+      });
+    });
+  });
   </script>
 <?php
 }
-add_action('wp_footer', 'willnorris_resize_images');
+add_action('wp_footer', 'willnorris_footer_js');
 
 function willnorris_emphasize_tagline($output, $show) {
   if ( $show == 'description' ) {
