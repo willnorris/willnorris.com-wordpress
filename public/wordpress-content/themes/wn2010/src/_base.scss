@@ -1,13 +1,11 @@
-//$blueprint-grid-columns: 24;
-//$blueprint-container-size: 950px;
-//$blueprint-grid-margin: 10px;
+// typography settings
+$blueprint-font-family: "myriad-pro-1","myriad-pro-2", sans-serif;
+//$blueprint-font-family: "museo-sans-1","museo-sans-2";
+$alternate-text-font: "bistro-script-web-1","bistro-script-web-2",cursive;
+$blueprint-fixed-font-family: "Inconsolata", monospace;
+$blueprint-font-size: 14px;
 
-// Use this to calculate the width based on the total width.
-// Or you can set !blueprint_grid_width to a fixed value and unset !blueprint_container_size -- it will be calculated for you.
-//$blueprint-grid-width: ($blueprint-container-size + $blueprint-grid-margin) / $blueprint-grid-columns - $blueprint-grid-margin;
-
-//$margin-percent: $blueprint-grid-margin / (($blueprint-container-size + $blueprint-grid-margin) / $blueprint-grid-columns);
-
+// blueprint liquid grid settings
 $blueprint-liquid-container-width: 90%;
 $blueprint-liquid-container-min-width: 200px;
 

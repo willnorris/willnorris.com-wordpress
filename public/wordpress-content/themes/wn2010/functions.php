@@ -2,39 +2,6 @@
 
 show_admin_bar( false );
 
-/**
- * Additional arguments to use when building the main menu.  
- */
-function willnorris_page_menu_args($args) {
-  // only go one level deep
-	$args['depth'] = 1;
-
-  // don't show link to home page
-  $args['show_home'] = false;
-	return $args;
-}
-add_filter('wp_page_menu_args', 'willnorris_page_menu_args', 11);
-
-
-/**
- * Exclude front page from menu, since the <h1> links there already.
- */
-function willnorris_list_pages_exludes($excludes) {
-  // don't show front page
-	if (get_option('show_on_front') == 'page') {
-		$excludes[] = get_option('page_on_front');
-	}
-
-  // don't show /openid-support page
-	$openid_support = get_page_by_path('openid-support');
-	if ( $openid_support ) {
-		$excludes[] = $openid_support->ID;
-	}
-
-	return $excludes;
-}
-add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
-
 function willnorris_wp( $wp ) {
   wp_enqueue_script('jquery');
   wp_enqueue_script('jquery.masonry',
@@ -59,10 +26,10 @@ function willnorris_footer_js() {
 
     $('#container img').each( function(index, img) {
       var $img = $(img);
-      //console.log( $img.height() );
-      if ( $img.height() % lineHeight != 0 ) {
-        var h = $img.height() - ( $img.height() % lineHeight );
-        var w = h * $img.width() / $img.height();
+      var height = $img.outerHeight();
+      if ( height % lineHeight != 0 ) {
+        var h = height - ( height % lineHeight );
+        var w = h * $img.outerWidth() / height;
         $img.height(h).width(w);
       }
     });
@@ -105,4 +72,20 @@ function willnorris_comment_form_defaults($defaults) {
   return $defaults;
 }
 add_action('comment_form_defaults', 'willnorris_comment_form_defaults');
+
+
+/**
+ * Shortcode for displaying my age, in years.
+ */
+function willnorris_my_age() {
+  $now = getdate();
+  $age = $now['year'] - 1982;
+
+  if ($now['mon'] < 7 && $now['mday'] < 30) {
+    $age -= 1;
+  }
+
+  return $age;
+}
+add_shortcode('my_age', 'willnorris_my_age');
 

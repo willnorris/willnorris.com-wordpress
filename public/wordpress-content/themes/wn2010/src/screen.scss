@@ -23,6 +23,18 @@ body {
   @include blueprint-utilities;
   @include blueprint-debug;
   @include blueprint-interaction;
+  //@include fancy-type;
+
+  ul, ol {
+    padding-left: 1.5em;
+  }
+  kbd {
+    @include fixed-width-text;
+  }
+}
+
+#{headers(all)} {
+  clear: both;
 }
 
 #wrapper {
@@ -34,7 +46,8 @@ body {
 }
 
 .site-description > em {
-  font-size: 130%;
+  font-size: 70%;
+  font-family: $alternate-text-font;
 }
 
 #nav {
@@ -51,7 +64,42 @@ body {
   $sidebar-columns: floor(8 / 24 * $blueprint-liquid-grid-columns);
   // true means it is the last column in the row
   @include column($sidebar-columns, true);
-  @include push(0);
+}
+
+.alignleft, .alignright, .aligncenter {
+  margin-bottom: 1.5em;
+}
+.alignleft, img.alignleft {
+  margin-top: 4px;
+  display: inline;
+  float: left;
+  margin-right: 1em;
+}
+.alignright, img.alignright {
+  margin-top: 4px;
+  display:inline;
+  float: right;
+  margin-left: 1em;
+}
+.aligncenter, img.aligncenter {
+  clear: both;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wp-caption {
+  text-align: center;
+}
+
+.entry-title {
+  margin-bottom: 0;
+}
+.entry-meta {
+  margin-bottom: 1.5em;
+}
+.hentry + .hentry {
+  margin-top: 3em;
 }
 
 #main form {
@@ -59,6 +107,13 @@ body {
 
   textarea {
     max-width: 95%;
+  }
+  input {
+    &.text,
+    &.title,
+    &[type=email],
+    &[type=text],
+    &[type=password] { max-width: 90%; }
   }
 }
 
@@ -82,6 +137,13 @@ body {
   vertical-align: text-bottom;
 }
 
+#comments{
+  margin-top: 1.5em;
+}
+#reply-title {
+  line-height: 2;
+  margin-bottom: 0;
+}
 #comment {
   height: 12em;
   margin: 0.3em;
@@ -90,16 +152,23 @@ body {
 
 #footer {
   clear: both;
+  text-align: center;
 }
 
-#container img {
-  vertical-align: middle;
+#content {
+  img {
+    vertical-align: baseline;
+  }
+
+  table {
+    border: 1px solid #E7E7E7;
+  }
+
+  tr td {
+    border-top: 1px solid #E7E7E7;
+  }
 }
 
-code {
-  /* todo */
-  font: 1.0em/1.4 "Inconsolata";
-}
 
 /* sidebar */
 .sidebar > section {
