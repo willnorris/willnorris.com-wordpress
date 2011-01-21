@@ -1,19 +1,19 @@
 === WordPress.com Stats ===
 Contributors: automattic, skeltoac, mdawaffe
-Tags: stats, statistics
-Requires at least: 2.7
-Tested up to: 3.0.1
-Stable tag: 1.7.5
+Tags: stats, statistics, views
+Requires at least: 2.8
+Tested up to: 3.1
+Stable tag: 1.8.1
 
 You can have simple, concise stats with no additional load on your server by plugging into WordPress.com's stat system.
 
 == Description ==
 
-There are hundreds of plugins and services which can provide statistics about your visitors. However I found that even though something like Google Analytics provides an incredible depth of information, it can be overwhelming and doesn't really highlight what's most interesting to me as a writer. That's why Automattic created its own stats system, to focus on just the most popular metrics a blogger wants to track and provide them in a clear and concise interface. 
+There are hundreds of plugins and services which can provide statistics about your visitors. However I found that even though something like Google Analytics provides an incredible depth of information, it can be overwhelming and doesn't really highlight what's most interesting to me as a writer. That's why Automattic created its own stats system, to focus on just the most popular metrics a blogger wants to track and provide them in a clear and concise interface.
 
 Installing this stats plugin is much like installing Akismet, all you need is to put in your [API Key](http://wordpress.com/api-keys/ "You can get a free API key from WordPress.com") and the rest is automatic.
 
-Once it's running it'll begin collecting information about your pageviews, which posts and pages are the most popular, where your traffic is coming from, and what people click on when they leave. It'll also add a link to your dashboard which allows you to see all your stats on a single page. Less is more.
+Once it's running it'll begin collecting information about your pageviews, which posts and pages are the most popular, where your traffic is coming from, and what people click on when they leave. It'll also add a link to your dashboard which allows you to see all your stats on a single page. A small chart will appear in your admin bar if you are running WordPress 3.1 or later. And that's it. Less is more.
 
 Finally, because all of the processing and collection runs on our servers and not yours, it doesn't cause any additional load on your hosting account. In fact, it's one of the fastest stats system, hosted or not hosted, that you can use.
 
@@ -30,9 +30,9 @@ Finally, because all of the processing and collection runs on our servers and no
 The automatic plugin installer should work for most people. Manual installation is easy and takes fewer than five minutes.
 
 1. Create a `stats` directory in your `plugins` directory. Typically that's `wp-content/plugins/stats/`.
-2. Into this new directory upload `stats.php` and `open-flash-chart.swf`.
+2. Into this new directory upload the plugin files (`stats.php`, etc.)
 3. Activate the plugin through the 'Plugins' menu in WordPress.
-4. It will ask you to enter your WordPress.com API key, do so.
+4. It will ask you to enter your WordPress.com API key. Don't use somebody else's key!
 5. Sit back and wait a few minutes for your stats to come rolling in.
 
 == Frequently Asked Questions ==
@@ -47,15 +47,15 @@ It may take as long as 20 minutes the first time you use it. After that they sho
 
 = Does it count my own hits? =
 
-It does not count the hits of logged in users.
+There is an option to disable counting the hits of logged-in users.
 
 = What if the stats don't start showing up? Do I need anything special in my theme? =
 
-Yes, your theme must have a call to `<?php wp_footer(); ?>` at the very bottom right before the `</body>` tag.
+Yes, your theme must have a call to `<?php wp_footer(); ?>` at the very bottom right before the `</body>` tag. (Typically in your theme's footer.php, but some themes put this in more than one place.)
 
 = Can I hide the smiley? =
 
-Sure, just use `display:none`. Try this code in your stylesheet:
+Sure, just use `display:none`. Try this code in your stylesheet (style.css in your theme):
 
 `img#wpstats{display:none}`
 
@@ -65,7 +65,7 @@ The plugin collects stats via a javascript call, so as long as the JS call is on
 
 = Can I use the same API key on multiple blogs? =
 
-Just like with Akismet, you're welcome to use the same API key on multiple blogs. If you view your stats directly on WordPress.com, you can easily switch between all of your blogs' stats reports.
+You're welcome to use the same API key on multiple blogs. If you view your stats directly on WordPress.com, you can easily switch between all of your blogs' stats reports.
 
 = How do I add a Top Posts widget to my blog? =
 
@@ -81,6 +81,16 @@ We opened our database for developers to retrieve stats. The API is at `http://s
 <?php endif; ?>`
 
 == Changelog ==
+
+= 1.8.1 =
+* Drop SSL from server-to-server requests for stats reports
+* Prepare dashboard widget for upgrade to flot charts
+
+= 1.8 =
+* Fix Notice: Undefined index: HTTPS (props teetilldeath)
+* Add chart to admin bar with 48-hour views sparkline
+* Add color and ssl parameters to proxy calls
+* Update FAQ
 
 = 1.7.5 =
 * Fix deprecated function call_user_method_array (props Galeforce99)

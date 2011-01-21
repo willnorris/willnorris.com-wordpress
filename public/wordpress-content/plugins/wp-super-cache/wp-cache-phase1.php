@@ -46,7 +46,7 @@ $gzipped = 0;
 $gzsize = 0;
 
 function gzip_accepted(){
-	if( ini_get( 'zlib.output_compression' ) ) // don't compress WP-Cache data files when PHP is already doing it
+	if ( 1 == ini_get( 'zlib.output_compression' ) || "on" == strtolower( ini_get( 'zlib.output_compression' ) ) ) // don't compress WP-Cache data files when PHP is already doing it
 		return false;
 
 	if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') === false) return false;
@@ -147,13 +147,20 @@ function wp_cache_serve_cache_file() {
 	} else {
 		// last chance, check if a supercache file exists. Just in case .htaccess rules don't work on this host
 		$file = get_current_url_supercache_dir() . "index.html";
+		$phpfile = get_current_url_supercache_dir() . "index.html.php";
+		$serving_supercache = false;
+		if ( file_exists( $file ) ) {
+			$serving_supercache = 'html';
+		} elseif ( file_exists( $phpfile ) ) {
+			$serving_supercache = 'php';
+		}
 		if ( 
 			( 
 				$wp_cache_request_uri == '/' || 
 				( $wp_cache_slash_check && substr( $wp_cache_request_uri, -1 ) == '/' ) || 
 				( $wp_cache_slash_check == 0 && substr( $wp_cache_request_uri, -1 ) != '/' ) 
 			) && 
-			( wp_cache_get_cookies_values() == '' && empty( $_GET ) && file_exists( $file ) ) ) 
+			( wp_cache_get_cookies_values() == '' && empty( $_GET ) && $serving_supercache ) )
 		{
 			header( "Content-type: text/html; charset=UTF-8" ); // UTF-8 hard coded is bad but we don't know what it is this early in the process
 			header( "Vary: Accept-Encoding, Cookie" );
@@ -163,11 +170,11 @@ function wp_cache_serve_cache_file() {
 				$file = $file . '.gz';
 				header( 'Content-Encoding: ' . $wp_cache_gzip_encoding );
 				header( 'Content-Length: ' . filesize( $file ) );
-			} elseif ( $wp_supercache_304 ) {
+			} elseif ( $serving_supercache == 'html' && $wp_supercache_304 ) {
 				header( 'Content-Length: ' . filesize( $file ) );
 			}
 
-			if ( $wp_supercache_304 ) {
+			if ( $serving_supercache == 'html' && $wp_supercache_304 ) {
 				if ( function_exists( 'apache_request_headers' ) ) {
 					$request = apache_request_headers();
 					$remote_mod_time = $request[ 'If-Modified-Since' ];
@@ -181,9 +188,24 @@ function wp_cache_serve_cache_file() {
 				}
 				header( 'Last-Modified: ' . $local_mod_time );
 			}
-			readfile( $file );
-			if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug ) wp_cache_debug( "Served page from supercache file using PHP.", 5 );
-			exit();
+			if ( $serving_supercache == 'html' ) {
+				readfile( $file );
+				if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug ) wp_cache_debug( "Served page from supercache file using PHP.", 5 );
+				exit();
+			} elseif ( $serving_supercache == 'php' ) {
+				$cachefiledata = file_get_contents($phpfile); 
+				if ( $cache_compression and $wp_cache_gzip_encoding ) {
+					ob_start("ob_gzhandler");
+					eval( '?>' . $cachefiledata . '<?php ' ); 
+					echo "\n<!-- Compression = gzip -->\n";
+					ob_end_flush();
+					if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug ) wp_cache_debug( "Served compressed dynamic page from supercache file using PHP. File: $file", 5 ); 
+				} else {
+					eval( '?>' . $cachefiledata . '<?php ' ); 
+					if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug ) wp_cache_debug( "Served dynamic page from supercache file using PHP. File: $file", 5 ); 
+				}
+				exit();
+			}
 		} else {
 			if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug ) wp_cache_debug( "No wp-cache file exists. Must generate a new one.", 5 );
 			return false;
@@ -334,7 +356,11 @@ function do_cacheaction( $action, $value = '' ) {
 	if( array_key_exists($action, $wp_supercache_actions) && is_array( $wp_supercache_actions[ $action ] ) ) {
 		$actions = $wp_supercache_actions[ $action ];
 		foreach( $actions as $func ) {
-			$value = $func( $value );
+			if ( is_array( $func ) ) {
+				$value = $func[0]->{$func[1]}( $value );
+			} else {
+				$value = $func( $value ); 
+			}
 		}
 	}
 
@@ -398,12 +424,12 @@ function wp_cache_check_mobile( $cache_key ) {
 }
 
 function wp_cache_debug( $message, $level = 1 ) {
-	global $wp_cache_debug_level, $wp_cache_debug_log, $wp_cache_debug_email, $cache_path, $wp_cache_debug_ip, $wp_super_cache_debug;
+	global $wp_cache_debug_level, $wp_cache_debug_log, $cache_path, $wp_cache_debug_ip, $wp_super_cache_debug;
 
 	if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug == false )
 		return false;
 
-	if ( isset( $wp_cache_debug_email ) == false && isset( $wp_cache_debug_log ) == false )
+	if ( isset( $wp_cache_debug_log ) == false )
 		return false;
 
 	if ( isset( $wp_cache_debug_level ) == false )
@@ -416,11 +442,6 @@ function wp_cache_debug( $message, $level = 1 ) {
 
 	if ( isset( $wp_cache_debug_log ) && $wp_cache_debug_log != '' ) {
 		error_log( date( 'H:i:s' ) . " " . $_SERVER[ 'REQUEST_URI' ] . " " . $message . "\n", 3, $cache_path . str_replace( '/', '', str_replace( '..', '', $wp_cache_debug_log ) ) );
-	}
-
-	if ( isset( $wp_cache_debug_email ) && $wp_cache_debug_email != ''  ) {
-		$message .= "\n\nDisable these emails by commenting out or deleting the line containing\n\$wp_cache_debug_email in wp-content/wp-cache-config.php on your server.\n";
-		mail( $wp_cache_debug_email, '[' . addslashes( $_SERVER[ 'HTTP_HOST' ] ) . "] WP Super Cache Debug", $message );
 	}
 }
 
