@@ -4,3 +4,6 @@
 [submodule "public/wordpress-content/themes/pdx"]
 	path = public/wordpress-content/themes/pdx
 	url = https://github.com/willnorris/pdx-theme.git
+[submodule "public/wordpress-content/plugins/hum"]
+	path = public/wordpress-content/plugins/hum
+	url = git@github.com:willnorris/wordpress-hum.git
