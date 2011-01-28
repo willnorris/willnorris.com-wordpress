@@ -1,5 +1,5 @@
 # wordpress
-public/wp-config.php
+wp-local-config.php
 public/wordpress-content/cache
 public/wordpress-content/advanced-cache.php
 public/wordpress-content/wp-cache-config.php
