@@ -7,3 +7,6 @@
 [submodule "public/wordpress-content/plugins/hum"]
 	path = public/wordpress-content/plugins/hum
 	url = git@github.com:willnorris/wordpress-hum.git
+[submodule "public/wordpress-content/plugins/openid"]
+	path = public/wordpress-content/plugins/openid
+	url = git@github.com:diso/wordpress-openid.git
