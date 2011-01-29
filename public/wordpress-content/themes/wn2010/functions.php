@@ -1,6 +1,6 @@
 <?php
 
-show_admin_bar( false );
+//show_admin_bar( false );
 
 function willnorris_wp( $wp ) {
   wp_enqueue_script('jquery');
@@ -89,3 +89,4 @@ function willnorris_my_age() {
 }
 add_shortcode('my_age', 'willnorris_my_age');
 
+add_filter('hum_shortlink_base', create_function('', 'return "http://wjn.me/";'));
