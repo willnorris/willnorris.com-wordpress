@@ -343,3 +343,5 @@ function willnorris_oembed($html, $url, $attr) {
 	return $html;
 }
 add_action('embed_oembed_html', 'willnorris_oembed', 10, 3);
+
+add_filter('hum_shortlink_base', create_function('', 'return "http://wjn.me/";'));
