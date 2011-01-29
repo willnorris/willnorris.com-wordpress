@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+if ( !is_readable("{$_SERVER['HOME']}/.my.cnf") ) {
+  die("must setup mysql connection information in ~/.my.cnf\n");
+}
+$local_config = dirname( dirname( dirname( __FILE__ ) ) ) . '/wp-local-config.php';
+require_once( $local_config );
+
+$backup_file = dirname( dirname( __FILE__ ) ) . '/var/database.sql';
+$mysql = 'mysql ' . DB_NAME . ' < "' . $backup_file .'"';
+
+system($mysql);
+?>

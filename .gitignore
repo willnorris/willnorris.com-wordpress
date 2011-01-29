@@ -1,3 +1,6 @@
+# backups
+backup/var/*
+
 # wordpress
 wp-local-config.php
 public/wordpress-content/cache
@@ -5,6 +8,7 @@ public/wordpress-content/advanced-cache.php
 public/wordpress-content/wp-cache-config.php
 public/sitemap.xml
 
+# mint
 public/mint/config/db.php
 public/mint/pepper/ronaldheft/feedburner/cache/
 
