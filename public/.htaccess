@@ -26,6 +26,7 @@ Options +Multiviews
   # https should only really be used for 'system' stuff and maybe the home page
   RewriteCond %{HTTPS} "on"
   RewriteCond %{REQUEST_URI} !^/wordpress/
+  RewriteCond %{REQUEST_URI} !^/wordpress-content/
   RewriteCond %{REQUEST_URI} !^/$
   RewriteRule (.*) http://willnorris.com/$1 [L,R]
 
@@ -86,6 +87,7 @@ RewriteRule ^(.*) /wordpress-content/cache/supercache/%{HTTP_HOST}/$1/index.html
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
+RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
