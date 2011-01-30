@@ -33,9 +33,16 @@
 	        
 	            ?>
 	            
-				<div id="post-<?php the_ID(); ?>" class="<?php thematic_post_class() ?>">
-	            
-	                <?php 
+				<div id="post-<?php the_ID();
+					echo '" ';
+					if (!(THEMATIC_COMPATIBLE_POST_CLASS)) {
+						post_class();
+						echo '>';
+					} else {
+						echo 'class="';
+						thematic_post_class();
+						echo '">';
+					}
 	                
 	                // creating the post header
 	                thematic_postheader();

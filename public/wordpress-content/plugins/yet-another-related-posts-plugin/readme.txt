@@ -5,11 +5,11 @@ Author URI: http://mitcho.com/
 Plugin URI: http://mitcho.com/code/yarpp/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=66G4DATK4999L&item_name=mitcho%2ecom%2fcode%3a%20donate%20to%20Michael%20Yoshitaka%20Erlewine&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&charset=UTF%2d8
 Tags: related, posts, post, pages, page, RSS, feed, feeds
-Requires at least: 2.8
-Tested up to: 3.0
-Stable tag: 3.1.9
+Requires at least: 3.0
+Tested up to: 3.1
+Stable tag: 3.2
 
-Returns a list of related entries based on a unique algorithm for display on your blog and RSS feeds. A templating feature allows customization of the display.
+Display a list of related entries on your site and feeds based on a unique algorithm. Templating allows customization of the display.
 
 == Description ==
 
@@ -54,7 +54,7 @@ Make sure the "display related posts in feeds" option is turned on if you would 
 
 Related posts can also be displayed as a widget. Go to the Design > Widgets options page and add the Related Posts widget. The widget will only be displayed on single entry (permalink) pages. The widget can be used even if the "auto display" option is turned off.
 
-= Custom display through templates = 
+= Custom display through templates =
 
 New in version 3.0, YARPP allows the advanced user with knowledge of PHP to customize the display of related posts using a templating mechanism. More information is available [in this tutorial](http://mitcho.com/blog/projects/yarpp-3-templates/).
 
@@ -72,7 +72,7 @@ If you do not want to show the Related Posts display in its default position (ri
 
 If you would like to add the Related Posts display elsewhere, follow these directions: (*Knowledge of PHP and familiarity with editing your WordPress theme files is required.*)
 
-Edit your relevant theme file (most likely something like `single.php`) and add the PHP code `related_posts();` within [The Loop](http://codex.wordpress.org/The_Loop) where you want to display the related posts. 
+Edit your relevant theme file (most likely something like `single.php`) and add the PHP code `related_posts();` within [The Loop](http://codex.wordpress.org/The_Loop) where you want to display the related posts.
 
 This method can also be used to display YARPP on pages other than single-post displays, such as on archive pages. There is a little more information on the [advanced manual installation page](http://mitcho.com/code/yarpp/manual-installation/).
 
@@ -135,49 +135,74 @@ However, YARPP does have difficulty with languages that don't place spaces betwe
 
 I highly recommend you disactivate YARPP, replace it with the new one, and then reactivate it.
 
+= Can I clear my cache? =
+
+Yes, you can clear the cache by going to your YARPP settings page ("Related Posts (YARPP)") in your admin interface, and adding `&action=flush` to the URL and reloading the page. YARPP will begin the process of organically rebuilding your cache.
+
 == Localizations ==
 
 YARPP is currently localized in the following languages:
 
-	* Egyptian Arabic (`ar_EG`) by Bishoy Antoun (yarpp-ar at mitcho dot com) of [cdmazika.com](http://www.cdmazika.com).
-	* Standard Arabic (`ar`) by [led](http://led24.de) (yarpp-ar at mitcho dot com)
-  * Belarussian (`by_BY`) by [Fat Cow](http://www.fatcow.com)
-  * Simplified Chinese (`zh_CN`) by Jor Wang (mail at jorwang dot com) of [jorwang.com](http://jorwang.com)
-  * Cypriot Greek (`el_CY`) by Aristidis Tonikidis (yarpp-el at mitcho dot com) of [akouseto.gr](http://www.akouseto.gr)
-  * Dutch (`nl_NL`) by Sybrand van der Werf (yarpp-nl at mitcho dot com)
-  * French (`fr_FR`) by Lionel Chollet (yarpp-fr at mitcho dot com)
-  * German (`de_DE`) by Michael Kalina (yarpp-de at mitcho dot com) of [3th.be](http://3th.be) - **we are now looking for a new German translator**
-  * Greek (`el_EL`) by Aristidis Tonikidis (yarpp-el at mitcho dot com) of [akouseto.gr](http://www.akouseto.gr)
-  * Hebrew (`he_IL`) by Mickey Zelansky (yarpp-he at mitcho dot com) of [simpleidea.us](http://simpleidea.us)
-  * Hindi (`hi_IN`) by [Outshine Solutions](http://outshinesolutions.com/) (yarpp-hi at mitcho dot com)
-  * Italian (`it_IT`) by Gianni Diurno (yarpp-it at mitcho dot com) of [gidibao.net](http://gidibao.net)
-  * Japanese (`ja`) by myself (yarpp at mitcho dot com)
-  * Korean (`ko_KR`) by [Jong-In Kim](http://incommunity.codex.kr) (yarpp-ko at mitcho dot com)
-  * Latvian (`lv_LV`) by [Mike](http://antsar.info) (yarpp-lv at mitcho dot com)
-  * Lithuanian (`lt_LT`) by [Karolis Vyčius](http://vycius.co.cc) (yarpp-lt at mitcho dot com)
-  * Polish (`pl_PL`) by [Perfecta](http://perfecta.pro/wp-pl/)
-  * Brazilian Portuguese (`pt_BR`) by Rafael Fischmann (yarpp-ptBR at mitcho.com) of [macmagazine.br](http://macmagazine.com.br/)
-  * Russian (`ru_RU`) by Marat Latypov (yarpp-ru at mitcho.com) of [blogocms.ru](http://blogocms.ru)
-  * Swedish (`sv_SE`) by Max Elander (yarpp-sv at mitcho dot com)
-  * Turkish (`tr_TR`) by Nurullah (yarpp-tr at mitcho.com) of [ndemir.com](http://www.ndemir.com)
-  * Vietnamese (`vi_VN`) by Vu Nguyen (yarpp-vi at mitcho dot com) of [Rubik Integration](http://rubikintegration.com/)
-  * Ukrainian (`uk_UA`) by [Onore](http://Onore.kiev.ua) (Alexander Musevich) (yarpp-uk at mitcho dot com)
-  * Uzbek (`uz_UZ`) by Ali Safarov (yarpp-uz at mitcho dot com) of [comfi.com](http://www.comfi.com/)
-	
-We already have localizers lined up for the following languages:
+* Egyptian Arabic (`ar_EG`) by Bishoy Antoun (yarpp-ar at mitcho dot com) of [cdmazika.com](http://www.cdmazika.com).
+* Standard Arabic (`ar`) by [led](http://led24.de) (yarpp-ar at mitcho dot com)
+* Belarussian (`by_BY`) by [Fat Cow](http://www.fatcow.com)
+* Bulgarian (`bg_BG`) by [Flash Gallery](www.flashgallery.org)
+* Simplified Chinese (`zh_CN`) by Jor Wang (mail at jorwang dot com) of [jorwang.com](http://jorwang.com)
+* Cypriot Greek (`el_CY`) by Aristidis Tonikidis (yarpp-el at mitcho dot com) of [akouseto.gr](http://www.akouseto.gr)
+* Dutch (`nl_NL`) by Sybrand van der Werf (yarpp-nl at mitcho dot com)
+* Farsi/Persian (`fa_IR`) by [Moshen Derakhshan](http://webdesigner.downloadkar.com/) (yarpp-fa at mitcho dot com)
+* French (`fr_FR`) by Lionel Chollet (yarpp-fr at mitcho dot com)
+* German (`de_DE`) by Michael Kalina (yarpp-de at mitcho dot com) of [3th.be](http://3th.be) - **we are now looking for a new German translator**
+* Greek (`el_EL`) by Aristidis Tonikidis (yarpp-el at mitcho dot com) of [akouseto.gr](http://www.akouseto.gr)
+* Hebrew (`he_IL`) by Mickey Zelansky (yarpp-he at mitcho dot com) of [simpleidea.us](http://simpleidea.us)
+* Hindi (`hi_IN`) by [Outshine Solutions](http://outshinesolutions.com/) (yarpp-hi at mitcho dot com)
+* Italian (`it_IT`) by Gianni Diurno (yarpp-it at mitcho dot com) of [gidibao.net](http://gidibao.net)
+* Bahasa Indonesia (`id_ID`) by [Hendry Lee](http://hendrylee.com/) (yarpp-id at mitcho dot com) of [Kelayang](http://kelayang.com/)
+* Japanese (`ja`) by myself (yarpp at mitcho dot com)
+* Korean (`ko_KR`) by [Jong-In Kim](http://incommunity.codex.kr) (yarpp-ko at mitcho dot com)
+* Latvian (`lv_LV`) by [Mike](http://antsar.info) (yarpp-lv at mitcho dot com)
+* Lithuanian (`lt_LT`) by [Karolis Vyčius](http://vycius.co.cc) and [Mantas Malcius](http://mantas.malcius.lt) (yarpp-lt at mitcho dot com)
+* Norwegian (`nb_NO`) by [Tom Arne Sundtjønn](www.datanerden.no) (yarpp-nb at mitcho dot com)
+* Polish (`pl_PL`) by [Perfecta](http://perfecta.pro/wp-pl/)
+* (European) Portuguese (`pt_PT`) by Stefan Mueller (yarpp-pt at mitcho.com) of [fernstadium-net](www.fernstudium-net.de)
+* Brazilian Portuguese (`pt_BR`) by Rafael Fischmann (yarpp-ptBR at mitcho.com) of [macmagazine.br](http://macmagazine.com.br/)
+* Russian (`ru_RU`) by Marat Latypov (yarpp-ru at mitcho.com) of [blogocms.ru](http://blogocms.ru)
+* Swedish (`sv_SE`) by Max Elander (yarpp-sv at mitcho dot com)
+* Turkish (`tr_TR`) by [Nurullah](http://www.ndemir.com) (yarpp-tr at mitcho.com)
+* Vietnamese (`vi_VN`) by Vu Nguyen (yarpp-vi at mitcho dot com) of [Rubik Integration](http://rubikintegration.com/)
+* Ukrainian (`uk_UA`) by [Onore](http://Onore.kiev.ua) (Alexander Musevich) (yarpp-uk at mitcho dot com)
+* Uzbek (`uz_UZ`) by Ali Safarov (yarpp-uz at mitcho dot com) of [comfi.com](http://www.comfi.com/)
 
-  * Danish
-  * Spanish
-  * Catalan
-  * Indonesian
-  * Hungarian
-  * Romanian
-  * Thai
+<!--We already have localizers lined up for the following languages:
+* Danish
+* Spanish
+* Catalan
+* Indonesian
+* Hungarian
+* Romanian
+* Thai
+-->
 
 If you are a bilingual speaker of English and another language and an avid user of YARPP, I would love to talk to you about localizing YARPP! Localizing YARPP can be pretty easy using [the Codestyling Localization plugin](http://www.code-styling.de/english/development/wordpress-plugin-codestyling-localization-en). Please [contact me](mailto:yarpp@mitcho.com) *first* before translating to make sure noone else is working on your language. Thanks!
 
 == Changelog ==
 
+= 3.2 =
+* Better caching performance:
+  * Previously, the cache would never actually build up properly. This is now fixed. Thanks to Artefact for pointing this out.
+  * The appropriate caches are cleared after posts are deleted ([#1245](http://plugins.trac.wordpress.org/ticket/1245)).
+  * Caching is no longer performed while batch-importing posts.
+* A new object-based abstraction for the caching system. YARPP by default uses custom database tables (same behavior as 3.1.x), but you now have an option to use the `postmeta` table instead. To use `postmeta` caching, add `define('YARPP_CACHE_TYPE', 'postmeta');` to your `wp-config.php` file.<!--YARPP no longer uses custom tables! Both custom tables (`yarpp_related_cache` and `yarpp_keywords_cache`) are automatically removed if you have them. WordPress Post Meta is used instead for caching.-->
+* Localizations:
+	* added Bulgarian (`bg_BG`) by [Flash Gallery](www.flashgallery.org);
+	* added Farsi/Persian (`fa_IR`) by [Moshen Derakhshan](http://webdesigner.downloadkar.com/);
+	* added Bahasa Indonesia (`id_ID`) by [Hendry Lee](http://hendrylee.com/) of [Kelayang](http://kelayang.com/)
+	* added Norwegian (`nb_NO`) by [Tom Arne Sundtjønn](www.datanerden.no);
+	* added Portuguese (`pt_PT`) by [Stefan Mueller](www.fernstudium-net.de).
+	* updated Lithuanian (`lt_LT`) by [Mantas Malcius](http://mantas.malcius.lt/)
+* Added [WordPress HelpCenter](http://wphelpcenter.com/) widget for quick access to professional support.
+* Some code cleanup (bug [#1246](http://plugins.trac.wordpress.org/ticket/1246))
+* No longer supporting WordPress versions before 3.0, not because I suddenly started using something that requires 3.0, but in order to simplify testing.
 = 3.1.9 =
 * Added Standard Arabic localization (`ar`) by [led](http://led24.de)
 * The Related Posts Widget now can also use custom templates. ([#1143](http://plugins.trac.wordpress.org/ticket/1143))
@@ -329,7 +354,7 @@ If you are a bilingual speaker of English and another language and an avid user 
 * The "show excerpt" option now shows the first `n` words of the excerpt, rather than the content ([by request](http://wordpress.org/support/topic/212577))
 * Added an `echo` parameter to the `related_*()` functions, with default value of `true`. If `false`, the function will simply return the output.
 * Added support for the [AllWebMenus Pro](http://wordpress.org/extend/plugins/allwebmenus-wordpress-menu-plugin/) plugin
-* Further internationalization: 
+* Further internationalization:
 	* the donate button! ^^
 	* overused words lists ([by request](http://wordpress.org/support/topic/159359))), with a German word list.
 = 2.1.3 =

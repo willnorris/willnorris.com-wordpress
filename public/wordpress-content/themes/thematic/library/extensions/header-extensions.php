@@ -499,7 +499,7 @@ function thematic_header() {
 	    		
 	    	<?php 
 	    		
-	    	if ((function_exists(has_nav_menu)) && (has_nav_menu(apply_filters('thematic_primary_menu_id', 'primary-menu')))) {
+	    	if ((function_exists("has_nav_menu")) && (has_nav_menu(apply_filters('thematic_primary_menu_id', 'primary-menu')))) {
 	    		echo  wp_nav_menu(thematic_nav_menu_args());
     		} else {
     			echo  thematic_add_menuclass(wp_page_menu(thematic_page_menu_args()));	
@@ -510,9 +510,10 @@ function thematic_header() {
 		</div><!-- #access -->
 		
 		<?php }
-	    add_action('thematic_header','thematic_access',9);
 	}
 
+    add_action('thematic_header','thematic_access',9);
+    
 // End of functions that hook into thematic_header()
 
 		

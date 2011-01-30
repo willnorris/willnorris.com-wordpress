@@ -27,7 +27,7 @@
     // Loading the stylesheet
     thematic_create_stylesheet();
 
-	if (!function_exists('wp_login_form')) {    
+	if (THEMATIC_COMPATIBLE_FEEDLINKS) {    
     	// Creating the internal RSS links
     	thematic_show_rss();
     
@@ -50,13 +50,7 @@
 
 <?php 
 
-if (apply_filters('thematic_show_bodyclass',TRUE)) { 
-    // Creating the body class
-    ?>
-
-<body class="<?php thematic_body_class() ?>">
-    
-<?php }
+thematic_body();
 
 // action hook for placing content before opening #wrapper
 thematic_before(); 

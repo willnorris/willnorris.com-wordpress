@@ -298,8 +298,17 @@ if (function_exists('childtheme_override_archive_loop'))  {
 		
 				thematic_abovepost(); ?>
 
-				<div id="post-<?php the_ID() ?>" class="<?php thematic_post_class() ?>">
-    				<?php thematic_postheader(); ?>
+				<div id="post-<?php the_ID();
+					echo '" ';
+					if (!(THEMATIC_COMPATIBLE_POST_CLASS)) {
+						post_class();
+						echo '>';
+					} else {
+						echo 'class="';
+						thematic_post_class();
+						echo '">';
+					}
+     				thematic_postheader(); ?>
 					<div class="entry-content">
 <?php thematic_content(); ?>
 
@@ -330,8 +339,17 @@ if (function_exists('childtheme_override_author_loop'))  {
 		
 				thematic_abovepost(); ?>
 
-				<div id="post-<?php the_ID(); ?>" class="<?php thematic_post_class(); ?>">
-	    			<?php thematic_postheader(); ?>
+				<div id="post-<?php the_ID();
+					echo '" ';
+					if (!(THEMATIC_COMPATIBLE_POST_CLASS)) {
+						post_class();
+						echo '>';
+					} else {
+						echo 'class="';
+						thematic_post_class();
+						echo '">';
+					}
+     				thematic_postheader(); ?>
 					<div class="entry-content ">
 <?php thematic_content(); ?>
 
@@ -361,8 +379,17 @@ if (function_exists('childtheme_override_category_loop'))  {
 		
 				thematic_abovepost(); ?>
 	
-				<div id="post-<?php the_ID(); ?>" class="<?php thematic_post_class(); ?>">
-	    			<?php thematic_postheader(); ?>
+				<div id="post-<?php the_ID();
+					echo '" ';
+					if (!(THEMATIC_COMPATIBLE_POST_CLASS)) {
+						post_class();
+						echo '>';
+					} else {
+						echo 'class="';
+						thematic_post_class();
+						echo '">';
+					}
+     				thematic_postheader(); ?>
 					<div class="entry-content">
 <?php thematic_content(); ?>
 	
@@ -411,8 +438,17 @@ if (function_exists('childtheme_override_index_loop'))  {
 		
 				thematic_abovepost(); ?>
 
-				<div id="post-<?php the_ID() ?>" class="<?php thematic_post_class() ?>">
-    				<?php thematic_postheader(); ?>
+				<div id="post-<?php the_ID();
+					echo '" ';
+					if (!(THEMATIC_COMPATIBLE_POST_CLASS)) {
+						post_class();
+						echo '>';
+					} else {
+						echo 'class="';
+						thematic_post_class();
+						echo '">';
+					}
+     				thematic_postheader(); ?>
 					<div class="entry-content">
 <?php thematic_content(); ?>
 
@@ -448,8 +484,17 @@ if (function_exists('childtheme_override_single_post'))  {
 		
 				thematic_abovepost(); ?>
 			
-				<div id="post-<?php the_ID(); ?>" class="<?php thematic_post_class(); ?>">
-    				<?php thematic_postheader(); ?>
+				<div id="post-<?php the_ID();
+					echo '" ';
+					if (!(THEMATIC_COMPATIBLE_POST_CLASS)) {
+						post_class();
+						echo '>';
+					} else {
+						echo 'class="';
+						thematic_post_class();
+						echo '">';
+					}
+     				thematic_postheader(); ?>
 					<div class="entry-content">
 <?php thematic_content(); ?>
 
@@ -477,8 +522,17 @@ if (function_exists('childtheme_override_search_loop'))  {
 		
 				thematic_abovepost(); ?>
 
-				<div id="post-<?php the_ID() ?>" class="<?php thematic_post_class() ?>">
-    				<?php thematic_postheader(); ?>
+				<div id="post-<?php the_ID();
+					echo '" ';
+					if (!(THEMATIC_COMPATIBLE_POST_CLASS)) {
+						post_class();
+						echo '>';
+					} else {
+						echo 'class="';
+						thematic_post_class();
+						echo '">';
+					}
+     				thematic_postheader(); ?>
 					<div class="entry-content">
 <?php thematic_content(); ?>
 
@@ -508,8 +562,17 @@ if (function_exists('childtheme_override_tag_loop'))  {
 		
 				thematic_abovepost(); ?>
 
-				<div id="post-<?php the_ID(); ?>" class="<?php thematic_post_class(); ?>">
-    				<?php thematic_postheader(); ?>
+				<div id="post-<?php the_ID();
+					echo '" ';
+					if (!(THEMATIC_COMPATIBLE_POST_CLASS)) {
+						post_class();
+						echo '>';
+					} else {
+						echo 'class="';
+						thematic_post_class();
+						echo '">';
+					}
+     				thematic_postheader(); ?>
 					<div class="entry-content">
 <?php thematic_content() ?>
 
@@ -753,16 +816,16 @@ if (function_exists('childtheme_override_content'))  {
 			$post = str_replace(']]>', ']]&gt;', $post);
 		} elseif ( strtolower($thematic_content_length) == 'excerpt') {
 			$post = '';
+			$post .= get_the_excerpt();
+			$post = apply_filters('the_excerpt',$post);
 			if ( apply_filters( 'thematic_post_thumbs', TRUE) ) {
 				$post_title = get_the_title();
 				$size = apply_filters( 'thematic_post_thumb_size' , array(100,100) );
 				$attr = apply_filters( 'thematic_post_thumb_attr', array('title'	=> 'Permalink to ' . $post_title) );
 				if ( has_post_thumbnail() ) {
-					$post .= '<a class="entry-thumb" href="' . get_permalink() . '" title="Permalink to ' . get_the_title() . '" >' . get_the_post_thumbnail(get_the_ID(), $size, $attr) . '</a>';
+					$post = '<a class="entry-thumb" href="' . get_permalink() . '" title="Permalink to ' . get_the_title() . '" >' . get_the_post_thumbnail(get_the_ID(), $size, $attr) . '</a>' . $post;
 					}
 			}
-			$post .= get_the_excerpt();
-			$post = apply_filters('the_excerpt',$post);
 		} elseif ( strtolower($thematic_content_length) == 'none') {
 		} else {
 			$post = get_the_content(more_text());
@@ -865,7 +928,7 @@ function thematic_404() {
 					<p><?php _e('Apologies, but we were unable to find what you were looking for. Perhaps  searching will help.', 'thematic') ?></p>
 				</div><!-- .entry-content -->
 				
-				<form id="error404-searchform" method="get" action="<?php bloginfo( 'url' ) ?>">
+				<form id="error404-searchform" method="get" action="<?php bloginfo('url') ?>/">
 					<div>
 						<input id="error404-s" name="s" type="text" value="<?php echo esc_html(stripslashes(get_query_var('s'))) ?>" size="40" />
 						<input id="error404-searchsubmit" name="searchsubmit" type="submit" value="<?php _e('Find', 'thematic') ?>" />
