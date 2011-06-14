@@ -1,6 +1,3 @@
-[submodule "public/wordpress"]
-	path = public/wordpress
-	url = https://github.com/dxw/wordpress.git
 [submodule "public/wordpress-content/themes/pdx"]
 	path = public/wordpress-content/themes/pdx
 	url = https://github.com/willnorris/pdx-theme.git
