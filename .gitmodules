@@ -7,3 +7,6 @@
 [submodule "public/wordpress-content/plugins/openid"]
 	path = public/wordpress-content/plugins/openid
 	url = git@github.com:diso/wordpress-openid.git
+[submodule "public/wordpress"]
+	path = public/wordpress
+	url = https://github.com/markjaquith/WordPress.git
