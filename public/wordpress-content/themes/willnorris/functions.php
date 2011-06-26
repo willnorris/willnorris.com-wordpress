@@ -7,6 +7,12 @@ require_once dirname(__FILE__) . '/library/widgets.php';
 require_once dirname(__FILE__) . '/library/short-urls.php';
 
 
+function willnorris_setup() {
+	add_theme_support( 'post-formats', array( 'aside', 'link', 'status' ) );
+}
+add_action('after_setup_theme', 'willnorris_setup');
+
+
 /**
  * Additional arguments to use when building the main menu.  
  */
