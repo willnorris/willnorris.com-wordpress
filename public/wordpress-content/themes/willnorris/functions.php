@@ -351,3 +351,4 @@ function willnorris_oembed($html, $url, $attr) {
 add_action('embed_oembed_html', 'willnorris_oembed', 10, 3);
 
 add_filter('hum_shortlink_base', create_function('', 'return "http://wjn.me/";'));
+add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));
