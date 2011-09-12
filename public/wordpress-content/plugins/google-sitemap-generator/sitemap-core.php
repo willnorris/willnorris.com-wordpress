@@ -1,7 +1,7 @@
 <?php
 /*
  
- $Id: sitemap-core.php 246875 2010-05-29 07:22:02Z arnee $
+ $Id: sitemap-core.php 412231 2011-07-19 21:35:16Z arnee $
 
 */
 
@@ -746,7 +746,7 @@ class GoogleSitemapGenerator {
 	/**
 	 * @var Version of the generator in SVN
 	*/
-	var $_svnVersion = '$Id: sitemap-core.php 246875 2010-05-29 07:22:02Z arnee $';
+	var $_svnVersion = '$Id: sitemap-core.php 412231 2011-07-19 21:35:16Z arnee $';
 	
 	/**
 	 * @var array The unserialized array with the stored options
@@ -940,6 +940,7 @@ class GoogleSitemapGenerator {
 		$this->_options["sm_in_auth"]=false;				//Include author pages
 		$this->_options["sm_in_tags"]=false;				//Include tag pages
 		$this->_options["sm_in_tax"]=array();				//Include additional taxonomies
+		$this->_options["sm_in_customtypes"]=array();		//Include custom post types
 		$this->_options["sm_in_lastmod"]=true;				//Include the last modification date
 
 		$this->_options["sm_cf_home"]="daily";				//Change frequency of the homepage
@@ -1159,6 +1160,18 @@ class GoogleSitemapGenerator {
 	function IsTaxonomySupported() {
 		return (function_exists("get_taxonomy") && function_exists("get_terms"));
 	}
+
+	/**
+	 * Returns if this version of WordPress supports custom post types
+	 *
+	 * @since 3.2.5
+	 * @access private
+	 * @author Lee Willis
+	 * @return true if supported
+	 */
+	function IsCustomPostTypesSupported() {
+		return (function_exists("get_post_types") && function_exists("register_post_type"));
+	}
 	
 	/**
 	 * Returns the list of custom taxonies. These are basically all taxonomies without categories and post tags
@@ -1169,6 +1182,20 @@ class GoogleSitemapGenerator {
 	function GetCustomTaxonomies() {
 		$taxonomies = get_object_taxonomies('post');
 		return array_diff($taxonomies,array("category","post_tag"));
+	}
+
+	/**
+	 * Returns the list of custom post types. These are all custome post types except post, page and attachment
+	 * 
+	 * @since 3.2.5
+	 * @author Lee Willis
+	 * @return array Array of custom post types as per get_post_types
+	 */
+	function GetCustomPostTypes() {
+		$post_types = get_post_types(array("public"=>1));
+
+		$post_types = array_diff($post_types,array("post","page","attachment"));
+		return $post_types;
 	}
 	
 	/**
@@ -1744,7 +1771,15 @@ class GoogleSitemapGenerator {
 				//WP < 2.1: posts are post_status = publish
 				//WP >= 2.1: post_type must be 'post', no date check required because future posts are post_status='future'
 				if($wpCompat) $where.="(post_status = 'publish' AND post_date_gmt <= '" . gmdate('Y-m-d H:i:59') . "')";
-				else $where.=" (post_status = 'publish' AND (post_type = 'post' OR post_type = '')) ";
+				else if ($this->IsCustomPostTypesSupported() && count($this->GetOption('in_customtypes'))>0) {
+					$where.=" (post_status = 'publish' AND (post_type in ('','post'";
+					foreach ($this->GetOption('in_customtypes') as $customType) {
+						$where.= ",'$customType'";
+					}
+					$where .= "))) ";
+				} else {
+					$where.=" (post_status = 'publish' AND (post_type = 'post' OR post_type = '')) ";
+				}
 			}
 			
 			if($this->GetOption('in_pages')) {
@@ -2229,8 +2264,8 @@ class GoogleSitemapGenerator {
 			$sPingUrl="http://www.bing.com/webmaster/ping.aspx?siteMap=" . urlencode($pingUrl);
 			$status->StartMsnPing($sPingUrl);
 			$pingres=$this->RemoteOpen($sPingUrl);
-									  
-			if($pingres==NULL || $pingres===false || strpos($pingres,"Thanks for submitting your sitemap")===false) {
+			//Bing returns ip/country-based success messages, so there is no way to check the content. Rely on HTTP 500 only then...
+			if($pingres==NULL || $pingres===false || strpos($pingres," ")===false) {
 				trigger_error("Failed to ping Bing: " . htmlspecialchars(strip_tags($pingres)),E_USER_NOTICE);
 				$status->EndMsnPing(false,$this->_lastError);
 			} else {
@@ -2514,9 +2549,9 @@ class GoogleSitemapGenerator {
 	 * @return int The time in seconds
 	 */
 	function GetTimestampFromMySql($mysqlDateTime) {
-		list($date, $hours) = split(' ', $mysqlDateTime);
-		list($year,$month,$day) = split('-',$date);
-		list($hour,$min,$sec) = split(':',$hours);
+		list($date, $hours) = explode(' ', $mysqlDateTime);
+		list($year,$month,$day) = explode('-',$date);
+		list($hour,$min,$sec) = explode(':',$hours);
 		return mktime(intval($hour), intval($min), intval($sec), intval($month), intval($day), intval($year));
 	}
 	

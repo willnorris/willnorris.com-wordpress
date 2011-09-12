@@ -1,8 +1,8 @@
 === WP Super Cache ===
 Contributors: donncha, automattic
 Tags: performance,caching,wp-cache,wp-super-cache,cache
-Tested up to: 3.0.4
-Stable tag: 0.9.9.8
+Tested up to: 3.2
+Stable tag: 0.9.9.9
 Requires at least: 2.9.2
 
 A very fast caching engine for WordPress that produces static html files.
@@ -54,10 +54,19 @@ Interested in translating WP Super Cache to your language? Grab the [development
 
 == Upgrade Notice ==
 
-= 0.9.9.8 =
-CDN code can be switched off, better uninstall process, compress dynamic pages, 1and1 webhosting fix, use Supercache files for dynamic pages
+= 0.9.9.9 =
+Serve repeated static files from the same CDN hostname, translations, lots of bug fixes
 
 == Changelog ==
+
+= 0.9.9.9 =
+* Fixed typo, is_front_page.
+* Serve repeated static files from the same CDN hostname.
+* Updated translations.
+* Make supercache dir lowercase to avoid problems with unicode URLs.
+* Add option to skip https loaded static content. 
+* Remove 5 second check on age of existing cache files. Should help with posts that get lots of comments and traffic.
+* Lots of bugs fixed.
 
 = 0.9.9.8 =
 * CDN updates: can be switched off, multiple CNAMEs.
@@ -235,11 +244,11 @@ CDN code can be switched off, better uninstall process, compress dynamic pages, 
 	`  SetEnvIfNoCase Request_URI \.gz$ no-gzip`
 	`</IfModule>`
 	`<IfModule mod_headers.c>`
-	`  Header set Cache-Control 'max-age=300, must-revalidate'`
+	`  Header set Cache-Control 'max-age=3, must-revalidate'`
 	`</IfModule>`
 	`<IfModule mod_expires.c>`
 	`  ExpiresActive On`
-	`  ExpiresByType text/html A300`
+	`  ExpiresByType text/html A3`
 	`</IfModule>`
 	``
 	`# END supercache`
@@ -387,6 +396,15 @@ Load your desktop ftp client and connect to your site. Navigate to the root (or 
 
 Load your desktop ftp client and connect to your site. You may need to enable "Show hidden files" in the preferences of the ftp client. Navigate to the root of your site where you'll find the .htaccess file. Download that file and edit it in a text editor. Delete the lines between "# BEGIN WPSuperCache" and "# END WPSuperCache" and save the file. Now upload it, overwriting the .htaccess file on your server.
 
+= How do I change file permissions? =
+
+This [page](http://codex.wordpress.org/Changing_File_Permissions) on the WordPress Codex explains everything you need to know about file permissions on your server and various ways of changing them.
+
+= Why do I get load spikes when new posts are made? =
+
+You may have the "clear all cached files when new posts are made" option set. Clearing those files can take time plus your visitors will now be visiting uncached pages. Are you using Google Analytics campaign tracking with utm_source in the url? Those pages aren't cached. See the question, "How should I best use the utm_source tracking tools in Google Analytics with this plugin" above for how to use them properly.
+Cached pages have to be refreshed when posts are made. Perhaps your server just isn't up to the job of serving the amount of traffic you get. Enable the "cache rebuild" feature as that may help.
+
 = Troubleshooting =
 
 If things don't work when you installed the plugin here are a few things to check:
@@ -472,3 +490,6 @@ Translators who did a great job converting the text of the plugin to their nativ
 * [Pseric](http://pseric.com/) and [Priv](http://priv.tw/blog) (Traditional Chinese)
 * [Maître Mô](http://maitremo.fr/) (French)
 * [Mathias Roth](http://trade-service.eu/) (German)
+* Bar¿¿ Ünver (Turkish)
+* [Elvis Fweb](http://fweb.org.ru/blog/super-cache-rus) (Russian)
+* Fredrik Forséll (Swedish)

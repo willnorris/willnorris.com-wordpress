@@ -1,7 +1,7 @@
 <?php
 
 /*
- $Id: sitemap.php 246883 2010-05-29 07:28:03Z arnee $
+ $Id: sitemap.php 412231 2011-07-19 21:35:16Z arnee $
 
  Google XML Sitemaps Generator for WordPress
  ==============================================================================
@@ -25,7 +25,7 @@
  Plugin Name: Google XML Sitemaps
  Plugin URI: http://www.arnebrachhold.de/redir/sitemap-home/
  Description: This plugin will generate a special XML sitemap which will help search engines like Google, Yahoo, Bing and Ask.com to better index your blog.
- Version: 3.2.4
+ Version: 3.2.5
  Author: Arne Brachhold
  Author URI: http://www.arnebrachhold.de/
  Text Domain: sitemap
@@ -102,7 +102,7 @@ class GoogleSitemapGeneratorLoader {
 	 * Outputs the warning bar if multisite mode is activated
 	 */
 	function AddMultisiteWarning() {
-		echo "<div id='sm-multisite-warning' class='error fade'><p><strong>".__('Google XML Sitemaps is not multisite compatible.','sitemap')."</strong><br /> ".sprintf(__('Unfortunately the Google XML Sitemaps plugin was not tested with the multisite feature of WordPress 3.0 yet. The plugin will not be active until you disable the multisite mode. Otherwise go to <a href="%1$s">active plugins</a> and deactivate the Google XML Sitemaps plugin to make this message disappear.','sitemap'), "plugins.php?plugin_status=active")."</p></div>";
+		echo "<div id='sm-multisite-warning' class='error fade'><p><strong>".__('This version of Google XML Sitemaps is not multisite compatible.','sitemap')."</strong><br /> ".sprintf(__('Unfortunately this version of the Google XML Sitemaps plugin was not tested with the multisite feature of WordPress 3.0 yet. <br />The plugin will not be active until you disable the multisite mode. <br />Or you can <a href="%1$s">try the new beta</a> which supports all the new WordPress features!','sitemap'), "http://www.arnebrachhold.de/redir/sitemap-info-beta/")."</p></div>";
 	}
 
 	/**

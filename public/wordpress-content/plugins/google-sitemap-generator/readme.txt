@@ -3,8 +3,8 @@ Contributors: arnee
 Donate link: http://www.arnebrachhold.de/redir/sitemap-paypal
 Tags: seo, google, sitemaps, google sitemaps, yahoo, msn, ask, live, xml sitemap, xml
 Requires at least: 2.1
-Tested up to: 3.0
-Stable tag: 3.2.3
+Tested up to: 3.3
+Stable tag: 3.2.4
 
 This plugin will generate a special XML sitemap which will help search engines to better index your blog.
 
@@ -19,7 +19,7 @@ Related Links:
 * <a href="http://www.arnebrachhold.de/2006/04/07/google-sitemaps-faq-sitemap-issues-errors-and-problems/" title="Google Sitemaps FAQ">Plugin and sitemaps FAQ</a>
 * <a href="http://wordpress.org/tags/google-sitemap-generator?forum_id=10">Support Forum</a>
 
-*This release is not compatible with the new multisite feature of WordPress 3.0 yet. The plugin will remain inactive as long as this feature is enabled.*
+*This release is not compatible with the new multisite feature of WordPress 3.0 yet. The plugin will remain inactive as long as this feature is enabled. If you are using this feature, try out the new <a href="http://www.arnebrachhold.de/redir/sitemap-dl-beta/">Beta version</a> which fully supports multisite mode as well as network activation!*
 
 *This release is compatible with all WordPress versions since 2.1. If you are still using an older one, use <a href="http://downloads.wordpress.org/plugin/google-sitemap-generator.2.7.1.zip">version 2.7.1</a> instead.*
 

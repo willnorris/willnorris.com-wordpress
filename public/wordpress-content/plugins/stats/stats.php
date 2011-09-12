@@ -2,9 +2,9 @@
 /*
 Plugin Name: WordPress.com Stats
 Plugin URI: http://wordpress.org/extend/plugins/stats/
-Description: Tracks views, post/page views, referrers, and clicks. Requires a WordPress.com API key.
+Description: Future upgrades to WordPress.com Stats will only be available in Jetpack.
 Author: Automattic
-Version: 1.8.1
+Version: 1.8.5
 License: GPL v2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 Text Domain: stats
 
@@ -15,7 +15,63 @@ img#wpstats{display:none}
 
 */
 
-define( 'STATS_VERSION', '6' );
+define( 'STATS_VERSION', '8' );
+
+function stats_display_nag_on_plugin_page() {
+	if ( 8 <= STATS_VERSION && strpos( $_SERVER['REQUEST_URI'], 'plugins.php' ) )
+		stats_display_jetpack_nag();
+}
+
+function stats_fetch_autoinstall_url() {
+	if ( function_exists( 'is_multisite' ) && is_multisite() )
+		$auto_url = get_bloginfo( 'url' ) . "/wp-admin/network/plugin-install.php?tab=search&type=term&s=jetpack&plugin-search-input=Search+Plugins";
+	else
+		$auto_url = get_bloginfo( 'url' ) . "/wp-admin/plugin-install.php?tab=search&type=term&s=jetpack&plugin-search-input=Search+Plugins";
+
+	return esc_url( $auto_url );
+}
+
+function stats_link_plugin_meta( $links, $file ) {
+	$plugin = plugin_basename( __FILE__ );
+
+	// create link
+	if ( $file == $plugin ) {
+		return array_merge(
+							$links,
+							array( sprintf( '<a href="%1$s">%2$s</a>', stats_fetch_autoinstall_url(), __( 'Get Jetpack Now!' ) ) )
+						);
+	}
+
+	return $links;
+}
+
+function stats_admin_styles() {
+	wp_enqueue_style( 'jetpack', plugins_url( '_inc/jetpack.css', __FILE__ ), false, '20110824' );
+}
+
+function stats_display_jetpack_nag() {
+	static $shown = false;
+	if ( $shown ) {
+		return;
+	}
+
+	$options = stats_get_options();
+
+	if ( ! $options['dismiss_jetpack_nag'] && ! class_exists( 'Jetpack' ) ) {
+		$shown = true;
+		?>
+					<div id="message" class="updated jetpack-message jp-connect">
+						<div class="squeezer">
+							<h4>
+								<?php printf( __( 'Future upgrades to WordPress.com Stats will only be available in <a href="%1$s" target="_blank">Jetpack</a>. Jetpack connects your blog to the WordPress.com cloud, <a href="%2$s" target="_blank">enabling awesome features</a>.' ), 'http://jetpack.me/', 'http://jetpack.me/faq/' ); ?>
+							</h4>
+
+							<p class="submit"><a href="<?php echo stats_fetch_autoinstall_url(); ?>" class="button-primary" id="wpcom-connect">Get Jetpack now!</a></p>
+						</div>
+					</div>
+		<?php
+	}
+}
 
 function stats_get_api_key() {
 	return stats_get_option('api_key');
@@ -57,14 +113,15 @@ function stats_set_options($options) {
 
 function stats_upgrade_options( $options ) {
 	$defaults = array(
-		'host'         => '',
-		'path'         => '',
-		'blog_id'      => false,
-		'admin_bar'    => true,
-		'wp_me'        => true,
-		'roles'        => array('administrator','editor','author'),
-		'reg_users'    => false,
-		'footer'       => false,
+		'host'         			=> '',
+		'path'         			=> '',
+		'blog_id'      			=> false,
+		'admin_bar'    			=> true,
+		'wp_me'        			=> true,
+		'roles'        			=> array('administrator','editor','author'),
+		'reg_users'    			=> false,
+		'footer'      			=> false,
+		'dismiss_jetpack_nag'	=> false,
 	);
 
 	if ( is_array( $options ) && !empty( $options ) )
@@ -148,10 +205,16 @@ function stats_admin_menu() {
 	add_action("load-$hook", 'stats_admin_load');
 	add_action("admin_head-$hook", 'stats_admin_head');
 	add_action('admin_notices', 'stats_admin_notices');
+
+	if ( ! class_exists( 'Jetpack' ) ) {
+		add_action( "admin_print_styles", 'stats_admin_styles' );
+		add_action( 'admin_head', 'stats_display_nag_on_plugin_page' );
+		add_filter( 'plugin_row_meta', 'stats_link_plugin_meta', 10, 2 );
+	}
 }
 
 function stats_admin_parent() {
-	if ( function_exists('is_multisite') && is_multisite() ) {
+	if ( function_exists( 'is_multisite' ) && is_multisite() ) {
 		$menus = get_site_option( 'menu_items' );
 		if ( isset($menus['plugins']) && $menus['plugins'] )
 			return 'plugins.php';
@@ -183,8 +246,13 @@ function stats_reports_head() {
 }
 
 function stats_reports_page() {
+	// display Jetpack nag on 20% of page loads
+	if ( 20 >= mt_rand( 0, 100 ) )
+		stats_display_jetpack_nag();
+
 	if ( isset( $_GET['dashboard'] ) )
 		return stats_dashboard_widget_content();
+
 	$blog_id = stats_get_option('blog_id');
 	$key = stats_get_api_key();
 	$day = isset( $_GET['day'] ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $_GET['day'] ) ? $_GET['day'] : false;
@@ -311,8 +379,8 @@ function stats_convert_post_title($matches) {
 }
 
 function stats_admin_load() {
-	if ( ! empty( $_POST['action'] ) && $_POST['_wpnonce'] == wp_create_nonce('stats') ) {
-		switch( $_POST['action'] ) {
+	if ( ! empty( $_REQUEST['action'] ) && $_REQUEST['_wpnonce'] == wp_create_nonce('stats') ) {
+		switch( $_REQUEST['action'] ) {
 			case 'reset' :
 				stats_set_options(array());
 				wp_redirect( stats_admin_path() );
@@ -351,10 +419,10 @@ function stats_admin_load() {
 
 			case 'save_options' :
 				$options = stats_get_options();
-				if ( isset($_POST['admin_bar']) )
-					$options['admin_bar'] = (bool) $_POST['admin_bar'];
+				$options['admin_bar'] = isset($_POST['admin_bar']) && $_POST['admin_bar'];
 				$options['wp_me'] = isset($_POST['wp_me']) && $_POST['wp_me'];
 				$options['reg_users'] = isset($_POST['reg_users']) && $_POST['reg_users'];
+				$options['dismiss_jetpack_nag'] = isset( $_POST['dismiss_jetpack_nag'] ) && $_POST['dismiss_jetpack_nag'];
 
 				$options['roles'] = array('administrator');
 				foreach ( get_editable_roles() as $role => $details )
@@ -380,9 +448,11 @@ function stats_admin_notices() {
 function stats_notice_blog_id() {
 	if ( stats_get_api_key() || isset($_GET['page']) && $_GET['page'] == 'wpstats' )
 		return;
+
 	// Skip the notice if plugin activated network-wide.
 	if ( function_exists('is_plugin_active_for_network') && is_plugin_active_for_network(plugin_basename(__FILE__)) )
 		return;
+
 	echo "<div class='updated' style='background-color:#f66;'><p>" . sprintf(__('<a href="%s">WordPress.com Stats</a> needs attention: please enter an API key or disable the plugin.', 'stats'), stats_admin_path()) . "</p></div>";
 }
 
@@ -412,6 +482,7 @@ function stats_admin_head() {
 
 function stats_admin_page() {
 	$options = stats_get_options();
+	stats_display_jetpack_nag(); // DISPLAY JETPACK NAG
 	?>
 	<div class="wrap">
 		<h2><?php _e('WordPress.com Stats', 'stats'); ?></h2>
@@ -498,6 +569,8 @@ function stats_admin_page() {
 			<td><label><input type='checkbox'<?php checked($options['reg_users']); ?> name='reg_users' id='reg_users' /> <?php _e("Count the page views of registered users who are logged in.", 'stats'); ?></label></td>
 			<tr valign="top"><th scope="row"><label for="wp_me"><?php _e( 'Shortlinks' , 'stats'); ?></label></th>
 			<td><label><input type='checkbox'<?php checked($options['wp_me']); ?> name='wp_me' id='wp_me' /> <?php _e("Publish WP.me <a href='http://wp.me/sf2B5-shorten'>shortlinks</a> as metadata. This is a free service from WordPress.com.", 'stats'); ?></label></td>
+			<tr valign="top"><th scope="row"><label for="dismiss_jetpack_nag"><?php _e( 'Jetpack Notice' , 'stats'); ?></label></th>
+			<td><label><input type='checkbox'<?php checked( $options['dismiss_jetpack_nag'] ); ?> name='dismiss_jetpack_nag' id='dismiss_jetpack_nage' /> <?php _e( 'Dismiss the Jetpack upgrade notice.' ); ?></label></td>
 			</tr>
 			<tr valign="top"><th scope="row"><?php _e( 'Report visibility' , 'stats'); ?></th>
 			<td>
@@ -530,43 +603,50 @@ function stats_xmlrpc_methods( $methods ) {
 
 function stats_get_posts( $args ) {
 	list( $post_ids ) = $args;
-	
 	$post_ids = array_map( 'intval', (array) $post_ids );
-	$r = 'include=' . join(',', $post_ids);
+	$r = array(
+		'include' => $post_ids,
+		'post_type' => 'any',
+		'post_status' => 'any',
+	);
 	$posts = get_posts( $r );
-	$_posts = array();
-
-	foreach ( $post_ids as $post_id )
-		$_posts[$post_id] = stats_get_post($post_id);
-
-	return $_posts;
+	foreach ( $posts as $i => $post )
+		$posts[$i] = stats_get_post( $post );
+	return $posts;
 }
 
-function stats_get_blog( ) {
-	$home = parse_url( get_option('home') );
+function stats_get_blog() {
+	$home = parse_url( trailingslashit( get_option( 'home' ) ) );
 	$blog = array(
-		'host' => $home['host'],
-		'path' => $home['path'],
-		'name' => get_option('blogname'),
-		'description' => get_option('blogdescription'),
-		'siteurl' => get_option('siteurl'),
-		'gmt_offset' => get_option('gmt_offset'),
-		'version' => STATS_VERSION
+		'host'                => $home['host'],
+		'path'                => $home['path'],
+		'blogname'            => get_option( 'blogname' ),
+		'blogdescription'     => get_option( 'blogdescription' ),
+		'siteurl'             => get_option( 'siteurl' ),
+		'gmt_offset'          => get_option( 'gmt_offset' ),
+		'timezone_string'     => get_option( 'timezone_string' ),
+		'stats_version'       => STATS_VERSION,
+		'stats_api'           => 'jetpack',
+		'page_on_front'       => get_option( 'page_on_front' ),
+		'permalink_structure' => get_option( 'permalink_structure' ),
+		'category_base'       => get_option( 'category_base' ),
+		'tag_base'            => get_option( 'tag_base' ),
 	);
-	return array_map('esc_html', $blog);
+	$blog = array_merge( stats_get_options(), $blog );
+	unset( $blog['roles'], $blog['blog_id'] );
+	return array_map( 'esc_html', $blog );
 }
 
-function stats_get_post( $post_id ) {
-	$post = get_post( $post_id );
-	if ( empty( $post ) )
-		$post = get_page( $post_id );
-	$_post = array(
-		'id' => $post->ID,
-		'permalink' => get_permalink($post->ID),
-		'title' => $post->post_title,
-		'type' => $post->post_type
-	);
-	return array_map('esc_html', $_post);
+function stats_get_post( $post ) {
+	$post = get_post( $post );
+	if ( $post ) {
+		$post->permalink = get_permalink( $post );
+		$post->post_content = '';
+		$post->post_excerpt = '';
+		$post->post_content_filtered = '';
+		$post->post_password = '';
+	}
+	return $post;
 }
 
 function stats_client() {
@@ -1008,9 +1088,9 @@ function stats_str_getcsv( $csv ) {
 
 function stats_dashboard_widget_content() {
 	$blog_id = stats_get_option('blog_id');
-	if ( ( !$width  = (int) ( $_GET['width'] / 2 ) ) || $width  < 250 )
+	if ( !isset( $_GET['width'] ) || ( !$width  = (int) ( $_GET['width'] / 2 ) ) || $width  < 250 )
 		$width  = 370;
-	if ( ( !$height = (int) $_GET['height'] - 36 )   || $height < 230 )
+	if ( !isset( $_GET['height'] ) || ( !$height = (int) $_GET['height'] - 36 )   || $height < 230 )
 		$height = 230;
 
 	$_width  = $width  - 5;
@@ -1316,4 +1396,3 @@ add_action( 'update_option_permalink_structure', 'stats_flush_posts' );
 add_filter( 'xmlrpc_methods', 'stats_xmlrpc_methods' );
 
 define( 'STATS_XMLRPC_SERVER', 'http://wordpress.com/xmlrpc.php' );
-

@@ -3,8 +3,8 @@ Contributors: cavemonkey50
 Donate link: http://ronaldheft.com/code/donate/
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
-Tested up to: 3.0
-Stable tag: 6.1.1
+Tested up to: 3.2
+Stable tag: 6.2
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
@@ -16,12 +16,13 @@ Google Analyticator adds the necessary JavaScript code to enable Google Analytic
 
 Google Analyticator Has the Following Features:
 
-- **NEW!** Supports standard Google Analytics tracking via the latest async tracking methods (faster and more reliable than the older ga.js tracking method)
+- Supports standard Google Analytics tracking via the latest async tracking methods (faster and more reliable than the older ga.js tracking method)
 - Includes an admin dashboard widget that displays a graph of the last 30 days of visitors, a summary of site usage, the top pages, the top referrers, and the top searches
 - Includes a widget that can be used to display visitor stat information on the front-end
 - Supports outbound link tracking of all links on the page, including links not managed by WordPress
 - Supports download link tracking
 - Supports event tracking with outbound links / downloads instead of the old pageview tracking method
+- **NEW!** Support site speed tracking
 - Allows hiding of Administrator visits without affecting Google Analytics' site overlay feature
 - Supports any advanced tracking code Google provides
 - Installs easily - unlike other plugins, the user doesn't even have to know their Analytics UID
@@ -48,6 +49,22 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 6. An example of a front-end widget configuration.
 
 == Changelog ==
+
+= 6.2 =
+* Adds a new option for site speed tracking (enabled by default).
+* Replaces deprecated tracking code _setVar with _setCustomVar.
+* Improves the account select dropdown by organizing the accounts. Props bluntly.
+* Prevents post preview pages from being tracked and skewing stats.
+
+= 6.1.3 =
+* Fixes a Javascript error on the WordPress login page.
+* Improves profile id logic to hopefully fix dashboard errors for the people that experience them.
+* Fixes PHP warnings on the dashboard widget with really old Analytics accounts.
+
+= 6.1.2 =
+* Fixes deprecated warnings when wp_debug is enabled.
+* Fixes tracking code issues when trying to disabled certain user roles.
+* Improves plugin security.
 
 = 6.1.1 =
 * Due to many questions about tracking code placement, [an FAQ article](http://forums.ronaldheft.com/viewtopic.php?f=5&t=967) has been written to address these placement questions. If you have any questions, this is a recommended read.

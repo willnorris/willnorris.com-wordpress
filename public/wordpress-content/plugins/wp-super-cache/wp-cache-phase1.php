@@ -164,7 +164,7 @@ function wp_cache_serve_cache_file() {
 		{
 			header( "Content-type: text/html; charset=UTF-8" ); // UTF-8 hard coded is bad but we don't know what it is this early in the process
 			header( "Vary: Accept-Encoding, Cookie" );
-			header( "Cache-Control: max-age=300, must-revalidate" );
+			header( "Cache-Control: max-age=3, must-revalidate" );
 			header( "WP-Super-Cache: Served supercache file from PHP" );
 			if ( file_exists( $file . '.gz' ) && $wp_cache_gzip_encoding ) {
 				$file = $file . '.gz';
@@ -250,7 +250,7 @@ function wp_cache_serve_cache_file() {
 			if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug ) wp_cache_debug( "Serving wp-cache dynamic file", 5 );
 			if ( $ungzip ) {
 				$cache = file_get_contents( $cache_file );
-				$uncompressed = gzuncompress( $cache );
+				$uncompressed = @gzuncompress( $cache );
 				if ( $uncompressed ) {
 					if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug ) wp_cache_debug( "Uncompressed gzipped cache file from wp-cache", 1 );
 					unset( $cache );
@@ -263,20 +263,6 @@ function wp_cache_serve_cache_file() {
 			}
 		} else {
 			if ( isset( $wp_super_cache_debug ) && $wp_super_cache_debug ) wp_cache_debug( "Serving wp-cache static file", 5 );
-			if ( $wp_supercache_304 ) {
-				if ( function_exists( 'apache_request_headers' ) ) {
-					$request = apache_request_headers();
-					$remote_mod_time = $request[ 'If-Modified-Since' ];
-				} else {
-					$remote_mod_time = $_SERVER[ 'HTTP_IF_MODIFIED_SINCE' ];
-				}
-				$local_mod_time = gmdate("D, d M Y H:i:s",filemtime( $cache_file )).' GMT';
-				if ( $remote_mod_time == $local_mod_time ) {
-					header("HTTP/1.0 304 Not Modified");
-					exit();
-				}
-				header( 'Last-Modified: ' . $local_mod_time );
-			}
 			if ( $ungzip ) {
 				$cache = file_get_contents( $cache_file );
 				$uncompressed = gzuncompress( $cache );
@@ -460,15 +446,20 @@ function wp_cache_user_agent_is_rejected() {
 
 function get_current_url_supercache_dir( $post_id = 0 ) {
 	global $cached_direct_pages, $cache_path, $wp_cache_request_uri;
+	static $saved_supercache_dir = array();
+
+	if ( isset( $saved_supercache_dir[ $post_id ] ) ) {
+		return $saved_supercache_dir[ $post_id ];
+	}
 
 	if ( $post_id != 0 ) {
 		$uri = str_replace( site_url(), '', get_permalink( $post_id ) );
 	} else {
-		$uri = $wp_cache_request_uri;
+		$uri = strtolower( $wp_cache_request_uri );
 	}
 	$uri = preg_replace('/[ <>\'\"\r\n\t\(\)]/', '', str_replace( '/index.php', '/', str_replace( '..', '', preg_replace("/(\?.*)?$/", '', $uri ) ) ) );
 	$uri = str_replace( '\\', '', $uri );
-	$dir = strtolower(preg_replace('/:.*$/', '',  $_SERVER["HTTP_HOST"])) . $uri; // To avoid XSS attacks
+	$dir = preg_replace( '/:.*$/', '',  $_SERVER["HTTP_HOST"] ) . $uri; // To avoid XSS attacks
 	if ( function_exists( "apply_filters" ) )
 		$dir = apply_filters( 'supercache_dir', $dir );
 	$dir = $cache_path . 'supercache/' . $dir . '/';
@@ -477,6 +468,7 @@ function get_current_url_supercache_dir( $post_id = 0 ) {
 	}
 	$dir = str_replace( '//', '/', $dir );
 	if ( isset( $GLOBALS[ 'wp_super_cache_debug' ] ) && $GLOBALS[ 'wp_super_cache_debug' ] ) wp_cache_debug( "supercache dir: $dir", 5 );
+	$saved_supercache_dir[ $post_id ] = $dir;
 	return $dir;
 }
 

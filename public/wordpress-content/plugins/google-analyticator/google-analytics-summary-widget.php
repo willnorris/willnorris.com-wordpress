@@ -101,14 +101,21 @@ class GoogleAnalyticsSummary
 		check_ajax_referer('google-analyticator-statsWidget_get');
 		
 		# Attempt to login and get the current account
-		$this->id = $this->getAnalyticsAccount();
+		$account = $this->getAnalyticsAccount();
 		$profile_id = get_option('ga_profileid');
-		if ( trim($profile_id) != '' )
-			$this->id = 'ga:' . $profile_id;
+		if ( trim($profile_id) != '' ) {
+			if ( substr($profile_id, 0, 3) == 'ga:' ) {
+				$this->id = $profile_id;
+			} else {
+				$this->id = 'ga:' . $profile_id;
+			}
+		} else {
+			$this->id = $account;
+		}
 		$this->api->setAccount($this->id);
 		
 		# Check that we can display the widget before continuing
-		if ( $this->id == false ) {
+		if ( $account == false || $this->id == false ) {
 			# Output error message
 			echo '<p style="margin: 0;">' . __('No Analytics account selected. Double check you are authenticated with Google on Google Analyticator\'s settings page and make sure an account is selected.', 'google-analyticator') . '</p>';
 
@@ -302,6 +309,7 @@ class GoogleAnalyticsSummary
 		}
 		
 		# Create the site usage table
+		if ( isset($stats[0]) ) {
 		?>
 		<table width="100%">
 			<tr>
@@ -340,6 +348,7 @@ class GoogleAnalyticsSummary
 			</tr>
 		</table>
 		<?php
+		}
 	}
 	
 	/**
