@@ -1,6 +1,6 @@
 <?php
   $googleplus_url = get_post_meta($post->ID, '_googleplus_url', true);
-  if ($googleplus_url) {
+  if ($post->post_type == 'post' && $googleplus_url) {
 ?>
   <p>
     I no longer have comments on my blog.  Instead, I encourage you to 
