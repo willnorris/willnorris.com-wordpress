@@ -2,6 +2,9 @@
   $googleplus_url = get_post_meta($post->ID, '_googleplus_url', true);
   if ($post->post_type == 'post' && $googleplus_url) {
 ?>
+  <hr />
+  <h4><a href="<?php echo $googleplus_url; ?>">Discuss on Google+</a></h4>
+
   <p>
     I no longer have comments on my blog.  Instead, I encourage you to 
     <a href="<?php echo $googleplus_url; ?>">comment here on Google+</a>.  

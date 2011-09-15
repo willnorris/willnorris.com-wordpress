@@ -272,4 +272,5 @@ a#actionstream_feed						{ display: none; }
 .openid_service									{ display: block; width: 10em; }
 
 
+.plusone-button { display:inline-block; height:15px; margin-left: 0px; position:relative; top:2px; }
 /* vim: set sw=4 ts=4 */

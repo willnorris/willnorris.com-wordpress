@@ -352,3 +352,50 @@ add_action('embed_oembed_html', 'willnorris_oembed', 10, 3);
 
 add_filter('hum_shortlink_base', create_function('', 'return "http://wjn.me/";'));
 add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));
+
+
+function willnorris_plusone_script() {
+?>
+  <script>
+    (function() {
+      jQuery('<script>', {async:true, src:'https://apis.google.com/js/plusone.js'}).prependTo('script:first');
+    })();
+  </script>
+<?php
+}
+add_action('wp_footer', 'willnorris_plusone_script');
+
+
+function willnorris_plusone_button($post) {
+  return '<div class="plusone-button"><g:plusone size="small" href="' . get_permalink($post) . '"></g:plusone></div>';
+}
+
+function willnorris_googleplus_links($post) {
+  $links = '';
+
+  $googleplus_url = get_post_meta($post->ID, '_googleplus_url', true);
+  if ($post->post_type == 'post' && $googleplus_url) {
+    $links .= ' <a href="' . $googleplus_url . '">Discuss on Google+</a>';
+    $links .= '<span class="meta-sep"> | </span>';
+  }
+  $links .= ' ' . willnorris_plusone_button($post);
+
+  return $links;
+}
+
+
+function willnorris_postfooter_postcomments($postmeta) {
+  global $post;
+  $postmeta = willnorris_googleplus_links($post);
+  return $postmeta;
+}
+
+function willnorris_postfooter_postconnect($postmeta) {
+  global $post;
+  $postmeta .= ' ' . willnorris_plusone_button($post);
+  return $postmeta;
+}
+
+//add_filter('thematic_postheader_postmeta', 'willnorris_postheader_postmeta');
+add_filter('thematic_postfooter_postcomments', 'willnorris_postfooter_postcomments');
+add_filter('thematic_postfooter_postconnect', 'willnorris_postfooter_postconnect');
