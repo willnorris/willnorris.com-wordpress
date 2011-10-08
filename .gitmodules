@@ -13,3 +13,6 @@
 [submodule "public/wordpress-content/plugins/snowflake"]
 	path = public/wordpress-content/plugins/snowflake
 	url = git@github.com:willnorris/wordpress-snowflake.git
+[submodule "public/mint"]
+	path = public/mint
+	url = git@bitbucket.org:willnorris/mint.git
