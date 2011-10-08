@@ -48,6 +48,14 @@ function willnorris_footer_js() {
       });
     });
   });
+
+  jQuery(function($) {
+    var title = $('.site-title a').html();
+    title = title.replace(/(Will)/, '<span class="will">$1</span>');
+    title = title.replace(/(Norris)/, '<span class="norris">$1</span>');
+    $('.site-title a').html(title);
+    //console.log(title);
+  });
   </script>
 <?php
 }
@@ -55,7 +63,7 @@ add_action('wp_footer', 'willnorris_footer_js');
 
 function willnorris_emphasize_tagline($output, $show) {
   if ( $show == 'description' ) {
-    $output = preg_replace('/(more|this)/', '<em>\\1</em>', $output);
+    //$output = preg_replace('/(more|this)/', '<em>\\1</em>', $output);
   }
   return $output;
 }

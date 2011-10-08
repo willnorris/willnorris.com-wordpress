@@ -1,3 +1,6 @@
+/**
+* This should be left intact
+*/
 @import "base";
 
 @import "compass/utilities/lists/horizontal-list";
@@ -25,7 +28,6 @@ body {
   @include blueprint-interaction;
   //@include fancy-type;
 
-  background: #EEE;
   ul, ol {
     padding-left: 1.5em;
   }
@@ -47,15 +49,62 @@ body {
   background: #FFF;
 
   padding: 0 10px;
-  background-position: 10px 0;
+  margin-top: 8em;
+
+  z-index: 10;
 }
 
-.site-description > em {
-  font-size: 70%;
-  font-family: $alternate-text-font;
+#header {
+  background: #EEE;
+  position: absolute; top: 0; left: 0;
+  width: 100%;
+  overflow: auto;
+  z-index: 5;
+
+  -webkit-box-shadow: 0px 3px 5px #999;
+  box-shadow: 0px 3px 5px #999;
+
+  hgroup {
+    padding: 0 10px;
+    @include container;
+    max-width: 100em;
+  }
+}
+.site-title {
+  display: block;
+  float: left;
+  margin: 0;
+  text-shadow: 1px 1px 3px #999;
+}
+.site-title a, .site-title a:visited {
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 60%;
+  color: #000;
+  display: block;
+  line-height: 90px;
+}
+.site-title span.norris {
+  margin-left: 5px;
+  padding: 15px 0 10px 50px;
+  background: url('../images/flame-red-50.png') center left no-repeat;
+}
+
+.site-description {
+  background: url('../images/flame-black30-150.png') no-repeat;
+  background-position: right -30px;
+
+  clear: none;
+  float: right;
+  font-size: 120%;
+  color: #777;
+  padding: 60px 150px 10px 0;
+  margin: 0 5% 0 0;
+  text-shadow: 0px 0px 1px #999;
 }
 
 #nav {
+  clear: both;
   $content-columns: (3 / 24 * $blueprint-liquid-grid-columns);
   @include column($content-columns);
 }
@@ -103,10 +152,17 @@ body {
 .entry-meta {
   margin-bottom: 1.5em;
 }
+.entry-utility {
+  clear: both;
+}
 .hentry + .hentry {
   margin-top: 3em;
 }
 
+#main {
+  border: 1px dotted #f00;
+  overflow: auto;
+}
 #main form {
   @include blueprint-form;
 
@@ -118,7 +174,7 @@ body {
     &.title,
     &[type=email],
     &[type=text],
-    &[type=password] { max-width: 90%; }
+    &[type=password] { max-width: 90%; margin-left: 1em; }
   }
 }
 
@@ -156,11 +212,14 @@ body {
 }
 
 #footer {
+  border-top: 1px solid #CCC;
+  margin-top: 1em;
   clear: both;
   text-align: center;
 }
 
 #content {
+  background: #eee;
   img {
     vertical-align: baseline;
   }
@@ -174,12 +233,16 @@ body {
   }
 }
 
+.sidebar {
+  background: #999;
+}
 
 /* sidebar */
 .sidebar > section {
   float: left;
   width: 40%;
-  margin: 0 5%;
+  margin: 0 2%;
+  padding: 0 3%;
   padding-bottom: 3.5em;
 
   ul {
@@ -250,6 +313,7 @@ body {
 
   #header {
     text-align: center;
+    .site-title { margin: 0 auto; float: none; }
     .site-description { display: none; }
   }
 
@@ -273,3 +337,4 @@ body {
     float: none;
   }
 }
+
