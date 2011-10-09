@@ -26,9 +26,11 @@ body {
   @include blueprint-interaction;
 
   // debug grid
-  $show-column-grid-backgrounds: false;
-  $grid-background-baseline-color: rgba(0, 0, 0, 0.1);
-  //@include showgrid();
+  &.showgrid {
+    $show-column-grid-backgrounds: false;
+    $grid-background-baseline-color: rgba(0, 0, 0, 0.1);
+    @include showgrid();
+  }
 
   ul, ol {
     padding-left: 1.5em;
@@ -57,9 +59,10 @@ body {
     }
 
     > .site-description {
-      font-size: 1.5em;
-      line-height: 1;
-      margin-bottom: 1em;
+      font-size: 1.2em;
+      font-style: italic;
+      line-height: 1.25;
+      margin-bottom: 1.25em;
     }
   }
 }
