@@ -1,0 +1,123 @@
+@import "compass/typography/lists/bullets";
+@import "compass/typography/lists/horizontal-list";
+
+@import "base";
+
+// additional reset for HTML5 elements
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup,
+menu, nav, section, summary, time, mark, audio, video {
+  @include blueprint-reset;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu,
+nav, section {
+  display:block;
+}
+
+#nav > ul {
+  @include no-bullets;
+  padding-left: 0em;
+}
+
+body {
+  @include blueprint-typography(true);
+  @include blueprint-utilities;
+  @include blueprint-debug;
+  @include blueprint-interaction;
+  //@include fancy-type;
+
+  ul, ol {
+    padding-left: 1.5em;
+  }
+  kbd {
+    @include fixed-width-text;
+  }
+}
+
+#{headers(all)} {
+  clear: both;
+}
+
+.skip-links { display: none; }
+
+#wrapper {
+  margin: 1em;
+}
+
+.site-description {
+  font-size: 1.5em;
+}
+
+#nav > ul {
+  @include horizontal-list;
+  //text-align: center;
+  // float is unnecessary really, and interferes with centering the text
+  li { float: none; }
+}
+
+.alignleft, .alignright, .aligncenter {
+  margin-bottom: 1.5em;
+}
+.alignleft, img.alignleft {
+  margin-top: 4px;
+  display: inline;
+  float: left;
+  margin-right: 1em;
+}
+.alignright, img.alignright {
+  margin-top: 4px;
+  display:inline;
+  float: right;
+  margin-left: 1em;
+}
+.aligncenter, img.aligncenter {
+  clear: both;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wp-caption {
+  text-align: center;
+}
+
+.entry-title {
+  margin-bottom: 0;
+}
+.entry-meta {
+  margin-bottom: 1.5em;
+}
+.entry-utility {
+  clear: both;
+}
+.hentry + .hentry {
+  margin-top: 3em;
+}
+.plusone-button { 
+  display: inline-block; 
+  margin-left: 5px; 
+}
+
+.navigation {
+  margin: 1em 0;
+  overflow: auto;
+
+  > .nav-previous {
+    float: left;
+  }
+
+  > .nav-next {
+    float: right;
+  }
+}
+
+.post {
+  clear: both;
+}
+
+#content {
+  img {
+    vertical-align: baseline;
+  }
+}
+
