@@ -6,7 +6,7 @@
 // additional reset for HTML5 elements
 article, aside, canvas, details, figcaption, figure, footer, header, hgroup,
 menu, nav, section, summary, time, mark, audio, video {
-  @include blueprint-reset;
+  @include blueprint-basic-reset;
 }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, menu,
