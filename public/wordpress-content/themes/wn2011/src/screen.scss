@@ -22,7 +22,7 @@ nav, section {
 body {
   @include blueprint-typography(true);
   @include blueprint-utilities;
-  @include blueprint-debug;
+  //@include blueprint-debug;
   @include blueprint-interaction;
   //@include fancy-type;
 
