@@ -21,6 +21,26 @@ add_action('wp', 'willnorris_wp');
 
 
 /**
+ * Cleanup actions registered by plugins.
+ */
+function willnorris_wp_cleanup( $wp ) {
+  wp_deregister_style('openid');
+}
+add_action('wp', 'willnorris_wp_cleanup', 999);
+
+
+/**
+ * Return {theme_dir}/css/screen.css as the stylesheet_uri.
+ */
+function willnorris_stylesheet_uri( $stylesheet_uri ) {
+  $stylesheet_dir_uri = get_stylesheet_directory_uri();
+  $stylesheet_uri = $stylesheet_dir_uri . '/css/screen.css';
+  return $stylesheet_uri;
+}
+add_filter('stylesheet_uri', 'willnorris_stylesheet_uri');
+
+
+/**
  * Additional arguments to use when building the main menu.  
  */
 function willnorris_page_menu_args($args) {
