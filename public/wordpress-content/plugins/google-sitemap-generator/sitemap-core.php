@@ -1,7 +1,7 @@
 <?php
 /*
  
- $Id: sitemap-core.php 412231 2011-07-19 21:35:16Z arnee $
+ $Id: sitemap-core.php 440117 2011-09-19 13:24:49Z arnee $
 
 */
 
@@ -186,31 +186,6 @@ class GoogleSitemapGeneratorStatus {
 	
 	function GetGoogleTime() {
 		return round($this->_googleEndTime - $this->_googleStartTime,2);
-	}
-	
-	var $_usedYahoo = false;
-	var $_yahooUrl = '';
-	var $_yahooSuccess = false;
-	var $_yahooStartTime = 0;
-	var $_yahooEndTime = 0;
-	
-	function StartYahooPing($url) {
-		$this->_yahooUrl = $url;
-		$this->_usedYahoo = true;
-		$this->_yahooStartTime = $this->GetMicrotimeFloat();
-		
-		$this->Save();
-	}
-	
-	function EndYahooPing($success) {
-		$this->_yahooEndTime = $this->GetMicrotimeFloat();
-		$this->_yahooSuccess = $success;
-		
-		$this->Save();
-	}
-	
-	function GetYahooTime() {
-		return round($this->_yahooEndTime - $this->_yahooStartTime,2);
 	}
 	
 	var $_usedAsk = false;
@@ -746,7 +721,7 @@ class GoogleSitemapGenerator {
 	/**
 	 * @var Version of the generator in SVN
 	*/
-	var $_svnVersion = '$Id: sitemap-core.php 412231 2011-07-19 21:35:16Z arnee $';
+	var $_svnVersion = '$Id: sitemap-core.php 440117 2011-09-19 13:24:49Z arnee $';
 	
 	/**
 	 * @var array The unserialized array with the stored options
@@ -910,8 +885,6 @@ class GoogleSitemapGenerator {
 		$this->_options["sm_b_xml"]=true;					//Create a .xml file
 		$this->_options["sm_b_gzip"]=true;					//Create a gzipped .xml file(.gz) file
 		$this->_options["sm_b_ping"]=true;					//Auto ping Google
-		$this->_options["sm_b_pingyahoo"]=false;			//Auto ping YAHOO
-		$this->_options["sm_b_yahookey"]='';				//YAHOO Application Key
 		$this->_options["sm_b_pingask"]=true;				//Auto ping Ask.com
 		$this->_options["sm_b_pingmsn"]=true;				//Auto ping MSN
 		$this->_options["sm_b_manual_enabled"]=false;		//Allow manual creation of the sitemap via GET request
@@ -2245,20 +2218,6 @@ class GoogleSitemapGenerator {
 			}
 		}
 		
-		//Ping YAHOO
-		if($this->GetOption("b_pingyahoo")===true && $this->GetOption("b_yahookey")!="" && !empty($pingUrl)) {
-			$sPingUrl="http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=" . $this->GetOption("b_yahookey") . "&url=" . urlencode($pingUrl);
-			$status->StartYahooPing($sPingUrl);
-			$pingres=$this->RemoteOpen($sPingUrl);
-
-			if($pingres==NULL || $pingres===false || strpos(strtolower($pingres),"success")===false) {
-				trigger_error("Failed to ping YAHOO: " . htmlspecialchars(strip_tags($pingres)),E_USER_NOTICE);
-				$status->EndYahooPing(false,$this->_lastError);
-			} else {
-				$status->EndYahooPing(true);
-			}
-		}
-		
 		//Ping Bing
 		if($this->GetOption("b_pingmsn") && !empty($pingUrl)) {
 			$sPingUrl="http://www.bing.com/webmaster/ping.aspx?siteMap=" . urlencode($pingUrl);
@@ -2307,9 +2266,6 @@ class GoogleSitemapGenerator {
 		switch($service) {
 			case "google":
 				$url = $status->_googleUrl;
-				break;
-			case "yahoo":
-				$url = $status->_yahooUrl;
 				break;
 			case "msn":
 				$url = $status->_msnUrl;

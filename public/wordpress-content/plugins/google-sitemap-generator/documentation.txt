@@ -231,6 +231,10 @@
                         Changed get_bloginfo('siteurl') to get_bloginfo('url') to avoid deprecation warning
                         Changed has_cap(10) to has_cap('level_10') to avoid deprecation warning
                         Fixed wrong SQL statement for author pages (Ticket #1108), thanks to twoenough
+ 2010-07-11     3.2.5   Backported Bing ping success fix from beta
+                        Added friendly hint to try out the new beta
+ 2010-09-19     3.2.6   Removed YAHOO ping since YAHOO uses bing now
+                        Removed deprecated function call
 
  Maybe Todo:
  ==============================================================================

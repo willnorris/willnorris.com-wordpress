@@ -1,7 +1,7 @@
 <?php
 /*
  
- $Id: sitemap-ui.php 412231 2011-07-19 21:35:16Z arnee $
+ $Id: sitemap-ui.php 440117 2011-09-19 13:24:49Z arnee $
 
 */
 
@@ -183,7 +183,7 @@ class GoogleSitemapGeneratorUI {
 				
 				//Options of the category "Basic Settings" are boolean, except the filename and the autoprio provider
 				if(substr($k,0,5)=="sm_b_") {
-					if($k=="sm_b_filename" || $k=="sm_b_fileurl_manual" || $k=="sm_b_filename_manual" || $k=="sm_b_prio_provider" || $k=="sm_b_manual_key" || $k == "sm_b_yahookey" || $k == "sm_b_style" || $k == "sm_b_memory") {
+					if($k=="sm_b_filename" || $k=="sm_b_fileurl_manual" || $k=="sm_b_filename_manual" || $k=="sm_b_prio_provider" || $k=="sm_b_manual_key" || $k == "sm_b_style" || $k == "sm_b_memory") {
 						if($k=="sm_b_filename_manual" && strpos($_POST[$k],"\\")!==false){
 							$_POST[$k]=stripslashes($_POST[$k]);
 						}
@@ -418,10 +418,6 @@ class GoogleSitemapGeneratorUI {
 			background-image:url(<?php echo $this->sg->GetPluginUrl(); ?>img/icon-google.gif);
 		}
 		
-		a.sm_resYahoo {
-			background-image:url(<?php echo $this->sg->GetPluginUrl(); ?>img/icon-yahoo.gif);
-		}
-		
 		a.sm_resBing {
 			background-image:url(<?php echo $this->sg->GetPluginUrl(); ?>img/icon-bing.gif);
 		}
@@ -607,10 +603,7 @@ class GoogleSitemapGeneratorUI {
 							<?php $this->HtmlPrintBoxHeader('sm_smres',__('Sitemap Resources:','sitemap'),true); ?>
 								<a class="sm_button sm_resGoogle"    href="<?php echo $this->sg->GetRedirectLink('sitemap-gwt'); ?>"><?php _e('Webmaster Tools','sitemap'); ?></a>
 								<a class="sm_button sm_resGoogle"    href="<?php echo $this->sg->GetRedirectLink('sitemap-gwb'); ?>"><?php _e('Webmaster Blog','sitemap'); ?></a>
-								
-								<a class="sm_button sm_resYahoo"     href="<?php echo $this->sg->GetRedirectLink('sitemap-yse'); ?>"><?php _e('Site Explorer','sitemap'); ?></a>
-								<a class="sm_button sm_resYahoo"     href="<?php echo $this->sg->GetRedirectLink('sitemap-ywb'); ?>"><?php _e('Search Blog','sitemap'); ?></a>
-								
+
 								<a class="sm_button sm_resBing"      href="<?php echo $this->sg->GetRedirectLink('sitemap-lwt'); ?>"><?php _e('Webmaster Tools','sitemap'); ?></a>
 								<a class="sm_button sm_resBing"      href="<?php echo $this->sg->GetRedirectLink('sitemap-lswcb'); ?>"><?php _e('Webmaster Center Blog','sitemap'); ?></a>
 								<br />
@@ -695,19 +688,7 @@ class GoogleSitemapGeneratorUI {
 											echo "<li class=\"sm_error\">" . str_replace("%s",wp_nonce_url($this->sg->GetBackLink() . "&sm_ping_service=google&noheader=true",'sitemap'),__('There was a problem while notifying Google. <a href="%s">View result</a>','sitemap')) . "</li>";
 										}
 									}
-									
-									if($status->_usedYahoo) {
-										if($status->_yahooSuccess) {
-											echo "<li>" .__("YAHOO was <b>successfully notified</b> about changes.",'sitemap'). "</li>";
-											$yt = $status->GetYahooTime();
-											if($yt>4) {
-												echo "<li class=\sm_optimize\">" . str_replace("%time%",$yt,__("It took %time% seconds to notify YAHOO, maybe you want to disable this feature to reduce the building time.",'sitemap')) . "</li>";
-											}
-										} else {
-											echo "<li class=\"sm_error\">" . str_replace("%s",wp_nonce_url($this->sg->GetBackLink() . "&sm_ping_service=yahoo&noheader=true",'sitemap'),__('There was a problem while notifying YAHOO. <a href="%s">View result</a>','sitemap')) . "</li>";
-										}
-									}
-									
+
 									if($status->_usedMsn) {
 										if($status->_msnSuccess) {
 											echo "<li>" .__("Bing was <b>successfully notified</b> about changes.",'sitemap'). "</li>";
@@ -832,12 +813,6 @@ class GoogleSitemapGeneratorUI {
 								<input type="checkbox" id="sm_b_pingask" name="sm_b_pingask" <?php echo ($this->sg->GetOption("b_pingask")==true?"checked=\"checked\"":"") ?> />
 								<label for="sm_b_pingask"><?php _e('Notify Ask.com about updates of your Blog', 'sitemap') ?></label><br />
 								<small><?php _e('No registration required.','sitemap'); ?></small>
-							</li>
-							<li>
-								<input type="checkbox" id="sm_b_pingyahoo" name="sm_b_pingyahoo" <?php echo ($this->sg->GetOption("b_pingyahoo")==true?"checked=\"checked\"":"") ?> />
-								<label for="sm_b_pingyahoo"><?php _e('Notify YAHOO about updates of your Blog', 'sitemap') ?></label><br />
-								<label for="sm_b_yahookey"><?php _e('Your Application ID:', 'sitemap') ?> <input type="text" name="sm_b_yahookey" id="sm_b_yahookey" value="<?php echo $this->sg->GetOption("b_yahookey"); ?>" /></label><br />
-								<small><?php echo str_replace(array("%s1","%s2"),array($this->sg->GetRedirectLink('sitemap-ykr'),' (<a href="http://developer.yahoo.net/about/">Web Services by Yahoo!</a>)'),__('Don\'t you have such a key? <a href="%s1">Request one here</a>! %s2','sitemap')); ?></small>
 							</li>
 							<li>
 								<label for="sm_b_robots">
@@ -1315,14 +1290,14 @@ class GoogleSitemapGeneratorUI {
 				<input type="hidden" name="business" value="<?php echo "donate" /* N O S P A M */ . "@" . "arnebra" . "chhold.de"; ?>" />
 				<input type="hidden" name="item_name" value="Sitemap Generator for WordPress. Please tell me if if you don't want to be listed on the donator list." />
 				<input type="hidden" name="no_shipping" value="1" />
-				<input type="hidden" name="return" value="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . $this->sg->GetBackLink(); ?>&amp;sm_donated=true" />
+				<input type="hidden" name="return" value="<?php echo $this->sg->GetBackLink(); ?>&amp;sm_donated=true" />
 				<input type="hidden" name="item_number" value="0001" />
 				<input type="hidden" name="currency_code" value="<?php echo $myLc["cc"]; ?>" />
 				<input type="hidden" name="bn" value="PP-BuyNowBF" />
 				<input type="hidden" name="lc" value="<?php echo $myLc["lc"]; ?>" />
 				<input type="hidden" name="rm" value="2" />
 				<input type="hidden" name="on0" value="Your Website" />
-				<input type="hidden" name="os0" value="<?php echo get_bloginfo("home"); ?>"/>
+				<input type="hidden" name="os0" value="<?php echo get_bloginfo("url"); ?>"/>
 			</form>
 		</div>
 		<?php
