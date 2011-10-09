@@ -28,7 +28,7 @@ body {
   // debug grid
   $show-column-grid-backgrounds: false;
   $grid-background-baseline-color: rgba(0, 0, 0, 0.1);
-  @include showgrid();
+  //@include showgrid();
 
   ul, ol {
     padding-left: 1.5em;
@@ -142,6 +142,10 @@ body {
 #content {
   img {
     vertical-align: baseline;
+  }
+
+  hr {
+    margin: 0.75em 0;
   }
 }
 
