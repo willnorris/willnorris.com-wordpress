@@ -1,7 +1,13 @@
+@import "blueprint";
+@import "blueprint/debug";
+@import "blueprint/fancy-type";
 @import "compass/typography/lists/bullets";
 @import "compass/typography/lists/horizontal-list";
 
-@import "base";
+@import "config";
+
+// reset
+@import "blueprint/reset";
 
 // additional reset for HTML5 elements
 article, aside, canvas, details, figcaption, figure, footer, header, hgroup,
@@ -14,17 +20,15 @@ nav, section {
   display:block;
 }
 
-#nav > ul {
-  @include no-bullets;
-  padding-left: 0em;
-}
-
 body {
   @include blueprint-typography(true);
   @include blueprint-utilities;
-  //@include blueprint-debug;
   @include blueprint-interaction;
-  //@include fancy-type;
+
+  // debug grid
+  $show-column-grid-backgrounds: false;
+  $grid-background-baseline-color: rgba(0, 0, 0, 0.1);
+  @include showgrid();
 
   ul, ol {
     padding-left: 1.5em;
@@ -41,19 +45,37 @@ body {
 .skip-links { display: none; }
 
 #wrapper {
-  margin: 1em;
+  margin: 1.5em;
 }
 
-.site-description {
-  font-size: 1.5em;
+#header {
+  > hgroup {
+    > .site-title {
+      font-size: 2.4em;
+      line-height: 1.25;
+      margin-bottom: 0;
+    }
+
+    > .site-description {
+      font-size: 1.5em;
+      line-height: 1;
+      margin-bottom: 1em;
+    }
+  }
 }
 
-#nav > ul {
-  @include horizontal-list;
-  //text-align: center;
-  // float is unnecessary really, and interferes with centering the text
-  li { float: none; }
+#nav {
+  clear: both;
+  margin-bottom: 1.5em;
+
+  > ul {
+    @include horizontal-list;
+    //text-align: center;
+    // float is unnecessary really, and interferes with centering the text
+    li { float: none; }
+  }
 }
+
 
 .alignleft, .alignright, .aligncenter {
   margin-bottom: 1.5em;
@@ -99,8 +121,10 @@ body {
 }
 
 .navigation {
-  margin: 1em 0;
+  margin: 1.5em 0;
   overflow: auto;
+
+  &#nav-above { display: none; }
 
   > .nav-previous {
     float: left;
