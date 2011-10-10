@@ -36,7 +36,6 @@ Options +Multiviews
   RewriteRule ^photos/?(.*) http://www.flickr.com/photos/wnorris/$1 [L,R]
   RewriteRule ^contact/?$ /about/ [L,R]
   RewriteRule ^tags/?(.*) /tag/$1 [L,R]
-  RewriteRule ^svn/([a-z]+)/(.*) http://github.com/willnorris/$1/tree/master/$2 [L,R]
 
   # Old Pages
   RewriteRule ^projects/wp-microid        http://wordpress.org/extend/plugins/microid/ [L,R]
@@ -46,43 +45,13 @@ Options +Multiviews
 
   RewriteRule ^about/thawte /about [L,R]
 
-  RewriteRule ^author/will(/.*)?$          /author/willnorris$1 [L,R]
   RewriteRule xrds.xml$              /?xrds [L]
 
   RewriteRule ^wordpress/wp-content/(.*)$      wordpress-content/$1 [R=301,L]
 
-  #RewriteCond %{SERVER_NAME} !^willnorris.com$ [NC]
-  #RewriteRule (.*) http://willnorris.com/$1 [L,R=permanent]
-
   # Short URLs
   RewriteRule ^p/([a-z0-9]+)$  /?p=$1 [L,R=permanent]
 </IfModule>
-
-
-# BEGIN WPSuperCache
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /
-AddDefaultCharset UTF-8
-
-RewriteCond %{HTTPS} "off"
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteCond %{QUERY_STRING} !.+
-#RewriteCond %{QUERY_STRING} !.*=.*
-RewriteCond %{HTTP:Cookie} !^.*(comment_author_|wordpress_logged_in|wp-postpass_).*$
-RewriteCond %{HTTP:Accept-Encoding} gzip
-RewriteCond %{DOCUMENT_ROOT}/wordpress-content/cache/supercache/%{HTTP_HOST}/$1/index.html.gz -f
-RewriteRule ^(.*) /wordpress-content/cache/supercache/%{HTTP_HOST}/$1/index.html.gz [L]
-
-RewriteCond %{HTTPS} "off"
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteCond %{QUERY_STRING} !.+
-#RewriteCond %{QUERY_STRING} !.*=.*
-RewriteCond %{HTTP:Cookie} !^.*(comment_author_|wordpress_logged_in|wp-postpass_).*$
-RewriteCond %{DOCUMENT_ROOT}/wordpress-content/cache/supercache/%{HTTP_HOST}/$1/index.html -f
-RewriteRule ^(.*) /wordpress-content/cache/supercache/%{HTTP_HOST}/$1/index.html [L]
-</IfModule>
-# END WPSuperCache
 
 
 # BEGIN WordPress
