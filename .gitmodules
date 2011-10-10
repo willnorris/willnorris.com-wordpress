@@ -13,3 +13,6 @@
 [submodule "public/mint"]
 	path = public/mint
 	url = git@bitbucket.org:willnorris/mint.git
+[submodule "public/wordpress-content/themes/pdx"]
+	path = public/wordpress-content/themes/pdx
+	url = git@github.com:willnorris/pdx-theme.git
