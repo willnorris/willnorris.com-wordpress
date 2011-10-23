@@ -41,6 +41,18 @@ add_filter('stylesheet_uri', 'willnorris_stylesheet_uri');
 
 
 /**
+ * Additional <head> stuff.
+ */
+function willnorris_header() {
+?>
+    <!-- mobile support -->
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0" />
+<?php
+}
+add_action('wp_head', 'willnorris_header', 5);
+
+
+/**
  * Additional arguments to use when building the main menu.  
  */
 function willnorris_page_menu_args($args) {
