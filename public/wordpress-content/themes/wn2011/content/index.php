@@ -4,6 +4,8 @@
     if ( sizeof($authors) == 1 ):
       $bio = get_user_meta($authors[0]->ID, 'description', true);
       $bio = apply_filters('the_content', $bio);
+      $bio = trim($bio);
+      if ($bio):
 ?>
 
   <section id="about">
@@ -13,6 +15,7 @@
   </section>
 
 <?php 
+      endif;
     endif; 
   endif; 
 ?>
