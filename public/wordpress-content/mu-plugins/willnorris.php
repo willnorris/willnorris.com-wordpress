@@ -18,6 +18,18 @@ add_filter('robots_txt', 'willnorris_robots_txt', 99);
 
 
 /**
+ * Prevent plugins from modifying robots.txt for SSL traffic.
+ */
+function willnorris_do_robots() {
+  if ( is_ssl() ) {
+    do_robots();
+    exit();
+  }
+}
+add_filter('do_robots', 'willnorris_do_robots', 1);
+
+
+/**
  * Prevent HTTPS requests from being cached.
  */
 function willnorris_prevent_https_cache() {
