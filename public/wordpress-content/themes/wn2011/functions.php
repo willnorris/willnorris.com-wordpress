@@ -101,22 +101,6 @@ add_shortcode('openid_support_table', 'willnorris_openid_support_table');
 
 
 /**
- * Shortcode for displaying my age, in years.
- */
-function willnorris_my_age() {
-  $now = getdate();
-  $age = $now['year'] - 1982;
-
-  if ($now['mon'] < 7 && $now['mday'] < 30) {
-    $age -= 1;
-  }
-
-  return $age;
-}
-add_shortcode('my_age', 'willnorris_my_age');
-
-
-/**
  * Add the meta tags to verify this domain for various search engine webmaster tools.
  */
 function willnorris_search_engine_validation() {
@@ -128,28 +112,6 @@ function willnorris_search_engine_validation() {
   }
 }
 add_action('wp_head', 'willnorris_search_engine_validation');
-
-
-/**
- * Use CURL_CA_BUNDLE environment variable to update libcurl's cacert bundle.
- */
-function willnorris_http_api_curl($handle) {
-  if ( getenv('CURL_CA_BUNDLE') ) {
-    curl_setopt($handle, CURLOPT_CAINFO, getenv('CURL_CA_BUNDLE'));
-  }
-}
-add_action('http_api_curl', 'willnorris_http_api_curl');
-
-
-/**
- * Prevent HTTPS requests from being cached.
- */
-function willnorris_prevent_https_cache() {
-  if ( is_ssl() ) {
-    define('DONOTCACHEPAGE', true);
-  }
-}
-add_action('wp', 'willnorris_prevent_https_cache');
 
 
 /**

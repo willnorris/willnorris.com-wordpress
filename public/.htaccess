@@ -23,13 +23,6 @@ Options +Multiviews
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
-  # https should only really be used for 'system' stuff and maybe the home page
-  RewriteCond %{HTTPS} "on"
-  RewriteCond %{REQUEST_URI} !^/wordpress/
-  RewriteCond %{REQUEST_URI} !^/wordpress-content/
-  RewriteCond %{REQUEST_URI} !^/$
-  RewriteRule (.*) http://willnorris.com/$1 [L,R]
-
   # Google+ Redirect
   RewriteRule ^(plus|\+)/?(.*) http://profiles.google.com/wnorris/$2 [L,R]
 
@@ -38,18 +31,19 @@ Options +Multiviews
   RewriteRule ^tags/?(.*) /tag/$1 [L,R]
 
   # Old Pages
-  RewriteRule ^projects/wp-microid        http://wordpress.org/extend/plugins/microid/ [L,R]
-  RewriteRule ^projects/wpopenid          http://wordpress.org/extend/plugins/openid/ [L,R]
+  RewriteRule ^projects/wp-microid              http://wordpress.org/extend/plugins/microid/ [L,R]
+  RewriteRule ^projects/wpopenid                http://wordpress.org/extend/plugins/openid/ [L,R]
   RewriteRule ^projects/wp-(openid|xrds|yadis)  http://wordpress.org/extend/plugins/openid/ [L,R]
   RewriteRule ^projects(/.+|$) /about [L,R]
 
-  RewriteRule ^about/thawte /about [L,R]
+  RewriteRule ^about/thawte  /about [L,R]
 
-  RewriteRule xrds.xml$              /?xrds [L]
+  RewriteRule xrds.xml$  /?xrds [L]
 
-  RewriteRule ^wordpress/wp-content/(.*)$      wordpress-content/$1 [R=301,L]
+  # Many WordPress plugins still assume the location of wp-content
+  RewriteRule ^wordpress/wp-content/(.*)$  wordpress-content/$1 [R=301,L]
 
-  # Short URLs
+  # Short URLs (before I had Hum installed)
   RewriteRule ^p/([a-z0-9]+)$  /?p=$1 [L,R=permanent]
 </IfModule>
 
