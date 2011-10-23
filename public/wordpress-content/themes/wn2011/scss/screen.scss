@@ -1,10 +1,13 @@
 @import "blueprint";
 @import "blueprint/debug";
 @import "blueprint/fancy-type";
+@import "compass/css3/transition";
 @import "compass/typography/lists/bullets";
 @import "compass/typography/lists/horizontal-list";
 
 @import "config";
+
+@import url('//fonts.googleapis.com/css?family=Open+Sans');
 
 // reset
 @import "blueprint/reset";
@@ -47,7 +50,7 @@ body {
 .skip-links { display: none; }
 
 #wrapper {
-  margin: 1.5em;
+  margin: 0 0.5em;
 }
 
 #header {
@@ -59,7 +62,7 @@ body {
     }
 
     > .site-description {
-      font-size: 1.2em;
+      font-size: 1.25em;
       font-style: italic;
       line-height: 1.25;
       margin-bottom: 1.25em;
@@ -152,3 +155,22 @@ body {
   }
 }
 
+
+// Responsive Design
+
+#wrapper {
+  @include transition-property("margin");
+  @include transition-duration(0.3s);
+}
+
+@media (min-width: 480px) {
+}
+@media (min-width: 592px) {
+}
+@media (min-width: 770px) and (min-height: 480px) {
+  #wrapper {
+    margin: 1.5em;
+  }
+}
+@media (min-width: 1024px) {
+}
