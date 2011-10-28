@@ -81,26 +81,6 @@ add_filter('wp_list_pages_excludes', 'willnorris_list_pages_exludes');
 
 
 /**
- * Add openid-support shortcode.
- */
-function willnorris_openid_support_table($attrs, $content) {
-  $table_file = dirname(__FILE__) . '/openid-support-table.html';
-
-  $support_table = '
-    <div id="openid-support">
-      ' . file_get_contents( $table_file ) . '
-    </div>
-
-    <p id="last-modified">Table Last Updated: ' . date('r', filemtime($table_file) ) . '</p>
-    ';
-
-  return $support_table;
-
-}
-add_shortcode('openid_support_table', 'willnorris_openid_support_table');
-
-
-/**
  * Add the meta tags to verify this domain for various search engine webmaster tools.
  */
 function willnorris_search_engine_validation() {
@@ -148,11 +128,3 @@ function willnorris_plusone_button($post) {
   return '<div class="plusone-button"><g:plusone size="small" href="' . get_permalink($post) . '"></g:plusone></div>';
 }
 
-
-// ensure proper redirect status code is returned
-add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
-
-// hum extensions
-add_filter('hum_shortlink_base', create_function('', 'return "http://wjn.me/";'));
-add_filter('hum_redirect_base_w', create_function('', 'return "http://wiki.willnorris.com/";'));
-add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));
