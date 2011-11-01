@@ -6,6 +6,8 @@
 
 /**
  * Instruct search engines not to index the secure version of the site.
+ *
+ * @see http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=35302
  */
 function willnorris_robots_txt($output) {
   if ( is_ssl() ) {

@@ -7,7 +7,7 @@
 
 @import "config";
 
-@import url('//fonts.googleapis.com/css?family=Open+Sans');
+@import url('//fonts.googleapis.com/css?family=Alice|Open+Sans');
 
 // reset
 @import "blueprint/reset";
@@ -44,6 +44,7 @@ body {
 }
 
 #{headers(all)} {
+  font-family: "Alice";
   clear: both;
 }
 
