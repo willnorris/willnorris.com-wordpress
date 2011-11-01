@@ -38,10 +38,19 @@ body {
   ul, ol {
     padding-left: 1.5em;
   }
+
   kbd {
     @include fixed-width-text;
   }
+
+  a {
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
+
 
 #{headers(all)} {
   font-family: "Alice";
