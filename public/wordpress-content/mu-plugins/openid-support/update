@@ -80,11 +80,6 @@ $providers = array(
 		'url' => 'http://wordpress.com/',
 		'example' => 'http://willnorris.wordpress.com/',
 	),
-	'technorati' => array(
-		'name' => 'Technorati',
-		'url' => 'http://technorati.com/',
-		'example' => 'http://technorati.com/people/technorati/willnorris',
-	),
 	'myid' => array(
 		'name' => 'MyID',
 		'url' => 'http://myid.net/',
@@ -114,11 +109,6 @@ $providers = array(
 		'name' => 'Linksafe',
 		'url' => 'http://www.linksafe.name/',
 		'example' => 'http://xri.net/=mike',
-	),
-	'sxipper' => array(
-		'name' => 'Sxipper',
-		'url' => 'http://www.sxipper.com/',
-		'example' => 'http://johnny.sxipper.com/',
 	),
 	'yahoo' => array(
 		'name' => 'Yahoo!',

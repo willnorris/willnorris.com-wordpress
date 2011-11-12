@@ -166,15 +166,19 @@ body {
 }
 
 #openid-support {
-  border: 1px solid #ddd;
-  border-collapse: collapse;
+  table {
+    $border-color: #ddd;
 
-  th,td {
-    border: 1px solid #ddd;
+    border: 1px solid $border-color;
+    border-collapse: collapse;
 
-    &.openid_supported {
-      background: #3c3;
-      text-indent: -9999em;
+    th,td {
+      border: 1px solid $border-color;
+
+      &.openid_supported {
+        background: #3c3;
+        text-indent: -9999em;
+      }
     }
   }
 }
