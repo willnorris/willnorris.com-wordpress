@@ -22,14 +22,14 @@ $discovery_specs = array(
 );
 
 $openid_specs = array(
-	'signon-10' => 'http://openid.net/signon/1.0',	
-	'signon-11' => 'http://openid.net/signon/1.1',	
+	'signon-10' => 'http://openid.net/signon/1.0',
+	'signon-11' => 'http://openid.net/signon/1.1',
 	'signon-20' => 'http://specs.openid.net/auth/2.0/signon',
 	'sreg-10' => 'http://openid.net/sreg/1.0',
-	'sreg-11' => 'http://openid.net/extensions/sreg/1.1', 
+	'sreg-11' => 'http://openid.net/extensions/sreg/1.1',
 	'ax-10' => 'http://openid.net/srv/ax/1.0',
-	'pape-phishing' => 'http://schemas.openid.net/pape/policies/2007/06/phishing-resistant', 
-	'pape-multi' => 'http://schemas.openid.net/pape/policies/2007/06/multi-factor', 
+	'pape-phishing' => 'http://schemas.openid.net/pape/policies/2007/06/phishing-resistant',
+	'pape-multi' => 'http://schemas.openid.net/pape/policies/2007/06/multi-factor',
 	'pape-physical' => 'http://schemas.openid.net/pape/policies/2007/06/multi-factor-physical',
 );
 
@@ -100,20 +100,10 @@ $providers = array(
 		'url' => 'http://typekey.com/',
 		'example' => 'http://profile.typekey.com/wnorris/',
 	),
-	'sun' => array(
-		'name' => 'SUN',
-		'url' => 'http://openid.sun.com/',
-		'example' => 'http://openid.sun.com/bblfish/',
-	),
 	'signon' => array(
 		'name' => 'SignOn',
 		'url' => 'http://signon.com/',
 		'example' => 'http://willnorris.signon.com/',
-	),
-	'identt' => array(
-		'name' => 'Iden.tt',
-		'url' => 'http://www.iden.tt/',
-		'example' => 'https://iden.tt/identt',
 	),
 	'idtail' => array(
 		'name' => 'IDtail',
@@ -125,15 +115,25 @@ $providers = array(
 		'url' => 'http://www.linksafe.name/',
 		'example' => 'http://xri.net/=mike',
 	),
-	'2idi' => array(
-		'name' => '2idi',
-		'url' => 'http://www.2idi.com/',
-		'example' => 'http://xri.net/=will.norris',
-	),
 	'sxipper' => array(
 		'name' => 'Sxipper',
 		'url' => 'http://www.sxipper.com/',
-		'example' => 'http://johnny.sxipper.com/', 
+		'example' => 'http://johnny.sxipper.com/',
+	),
+	'yahoo' => array(
+		'name' => 'Yahoo!',
+		'url' => 'http://www.yahoo.com/',
+		'example' => 'https://me.yahoo.com/a/YN.TrVBnuIAvmAk7teEzbLW_MQ--',
+	),
+	'google' => array(
+		'name' => 'Google',
+		'url' => 'http://www.google.com/',
+		'example' => 'https://www.google.com/accounts/o8/id?id=AItOawm_iMiOUCF3fFtIYjRMsA_3Pjeq50QMEJg',
+	),
+	'blogger' => array(
+		'name' => 'Blogger',
+		'url' => 'http://www.blogger.com/',
+		'example' => 'http://openid-test.blogspot.com/',
 	),
 );
 usort($providers, create_function('$a,$b', 'return strcmp($a["name"], $b["name"]);'));
@@ -180,8 +180,8 @@ foreach ($providers as $p) {
 				<td'.(in_array($k, $support['discovery']) ? ' class="openid_supported">x' : '>&nbsp;').'</td>';
 	}
 	foreach ($openid_specs as $k => $v) {
-		if ($p['name'] == 'wp-yadis') { 
-			echo '<td>-</td>'; 
+		if ($p['name'] == 'wp-yadis') {
+			echo '<td>-</td>';
 		} else {
 			echo '
 				<td'.(in_array($v, $support['openid']) ? ' class="openid_supported">x' : '>&nbsp;').'</td>';
