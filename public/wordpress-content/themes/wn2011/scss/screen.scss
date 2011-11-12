@@ -165,6 +165,20 @@ body {
   }
 }
 
+#openid-support {
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+
+  th,td {
+    border: 1px solid #ddd;
+
+    &.openid_supported {
+      background: #3c3;
+      text-indent: -9999em;
+    }
+  }
+}
+
 
 // Responsive Design
 

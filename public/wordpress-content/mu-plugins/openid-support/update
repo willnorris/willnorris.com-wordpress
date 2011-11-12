@@ -1,0 +1,325 @@
+#!/usr/bin/env php
+<?php
+ini_set('display_errors', false);
+error_reporting(E_ALL);
+
+$openid_path = dirname(dirname(dirname(__FILE__))) . '/plugins/openid/';
+set_include_path( $openid_path . PATH_SEPARATOR . get_include_path() );
+
+require_once 'Auth/Yadis/Yadis.php';
+require_once 'Auth/OpenID/Discover.php';
+require_once 'Auth/OpenID/Parse.php';
+
+
+// specs we are testing for
+$discovery_specs = array(
+	'content-type' => 'Accept: application/xrds+xml',
+	'xrds-header' => 'X-XRDS-Location',
+	'xrds-html' => '<meta http-equiv="X-XRDS-Location" />',
+	'yadis-html' => '<meta http-equiv="X-YADIS-Location" />',
+	'openid-html' => '<link rel="openid.server" />',
+	'openid2-html' => '<link rel="openid2.provider" />',
+);
+
+$openid_specs = array(
+	'signon-10' => 'http://openid.net/signon/1.0',	
+	'signon-11' => 'http://openid.net/signon/1.1',	
+	'signon-20' => 'http://specs.openid.net/auth/2.0/signon',
+	'sreg-10' => 'http://openid.net/sreg/1.0',
+	'sreg-11' => 'http://openid.net/extensions/sreg/1.1', 
+	'ax-10' => 'http://openid.net/srv/ax/1.0',
+	'pape-phishing' => 'http://schemas.openid.net/pape/policies/2007/06/phishing-resistant', 
+	'pape-multi' => 'http://schemas.openid.net/pape/policies/2007/06/multi-factor', 
+	'pape-physical' => 'http://schemas.openid.net/pape/policies/2007/06/multi-factor-physical',
+);
+
+
+$providers = array(
+	'claimid' => array(
+		'name' => 'ClaimID',
+		'url' => 'http://claimid.com/',
+		'example' => 'http://claimid.com/willnorris',
+	),
+	'claimid2' => array(
+		'name' => 'ClaimID 2',
+		'url' => 'http://claimid.com/',
+		'example' => 'http://openid.claimid.com/willnorris',
+	),
+	'crowd' => array(
+		'name' => 'Atlassian Crowd',
+		'url' => 'http://www.atlassian.com/software/crowd/',
+		'example' => 'https://openid.atlassian.com/users/jstepka',
+	),
+	'myopenid' => array(
+		'name' => 'MyOpenID',
+		'url' => 'http://myopenid.com/',
+		'example' => 'http://wnorris.myopenid.com/',
+	),
+	'verisign' => array(
+		'name' => 'Verisign PIP',
+		'url' => 'http://pip.verisignlabs.com/',
+		'example' => 'http://willnorris.pip.verisignlabs.com/',
+	),
+	'livejournal' => array(
+		'name' => 'LiveJournal',
+		'url' => 'http://livejournal.com/',
+		'example' => 'http://hugwill.livejournal.com/',
+	),
+	'aol' => array(
+		'name' => 'AOL',
+		'url' => 'http://openid.aol.com/',
+		'example' => 'http://openid.aol.com/wjn730',
+	),
+	'myvidoop' => array(
+		'name' => 'MyVidoop',
+		'url' => 'http://myvidoop.com/',
+		'example' => 'http://willnorris.myvidoop.com/',
+	),
+	'wordpress' => array(
+		'name' => 'Wordpress',
+		'url' => 'http://wordpress.com/',
+		'example' => 'http://willnorris.wordpress.com/',
+	),
+	'technorati' => array(
+		'name' => 'Technorati',
+		'url' => 'http://technorati.com/',
+		'example' => 'http://technorati.com/people/technorati/willnorris',
+	),
+	'myid' => array(
+		'name' => 'MyID',
+		'url' => 'http://myid.net/',
+		'example' => 'http://robse.myid.net/',
+	),
+	'protect' => array(
+		'name' => 'Protect Network',
+		'url' => 'http://protectnetwork.org/',
+		'example' => 'http://willnorris.protectnetwork.org/',
+	),
+	'typekey' => array(
+		'name' => 'TypeKey',
+		'url' => 'http://typekey.com/',
+		'example' => 'http://profile.typekey.com/wnorris/',
+	),
+	'sun' => array(
+		'name' => 'SUN',
+		'url' => 'http://openid.sun.com/',
+		'example' => 'http://openid.sun.com/bblfish/',
+	),
+	'signon' => array(
+		'name' => 'SignOn',
+		'url' => 'http://signon.com/',
+		'example' => 'http://willnorris.signon.com/',
+	),
+	'identt' => array(
+		'name' => 'Iden.tt',
+		'url' => 'http://www.iden.tt/',
+		'example' => 'https://iden.tt/identt',
+	),
+	'idtail' => array(
+		'name' => 'IDtail',
+		'url' => 'http://www.idtail.com/',
+		'example' => 'http://hojin.idtail.com/',
+	),
+	'linksafe' => array(
+		'name' => 'Linksafe',
+		'url' => 'http://www.linksafe.name/',
+		'example' => 'http://xri.net/=mike',
+	),
+	'2idi' => array(
+		'name' => '2idi',
+		'url' => 'http://www.2idi.com/',
+		'example' => 'http://xri.net/=will.norris',
+	),
+	'sxipper' => array(
+		'name' => 'Sxipper',
+		'url' => 'http://www.sxipper.com/',
+		'example' => 'http://johnny.sxipper.com/', 
+	),
+);
+usort($providers, create_function('$a,$b', 'return strcmp($a["name"], $b["name"]);'));
+
+
+?>
+		<table cellpadding="0" cellspacing="0" border="1">
+			<tr>
+				<th rowspan="2"></th>
+				<th colspan="<?php echo sizeof($discovery_specs); ?>">Discovery Support</th>
+				<th colspan="<?php echo sizeof($openid_specs); ?>">OpenID Protocol Support</th>
+				<th rowspan="2"></th>
+			</tr>
+			<tr>
+
+<?php
+foreach ($discovery_specs as $k => $v) {
+	// force line break since firefox won't break at a hyphen
+	$id = $k;
+	if (strlen($k) > 7) $k = ereg_replace('-', '- ', $k);
+	echo '
+				<th><a href="#'.$id.'" title="'.htmlentities($v).'">'.$k.'</a></th>';
+}
+foreach ($openid_specs as $k => $v) {
+	// force line break since firefox won't break at a hyphen
+	$id = $k;
+	if (substr($id, 0, 4) == 'pape') $id = 'pape';
+	if (strlen($k) > 7) $k = ereg_replace('-', '- ', $k);
+	echo '
+				<th><a href="#'.$id.'" title="'.htmlentities($v).'">'.$k.'</a></th>';
+}
+
+echo '
+			</tr>';
+
+foreach ($providers as $p) {
+	error_log('checking '.$p['name']);
+	$support = check_support($p['example']);
+	echo '
+			<tr>
+				<td><span class="openid_service"><a href="'.$p['url'].'">'.$p['name'].'</a> (<a href="'.$p['example'].'">x</a>)</span></td>';
+	foreach ($discovery_specs as $k => $v) {
+		echo '
+				<td'.(in_array($k, $support['discovery']) ? ' class="openid_supported">x' : '>&nbsp;').'</td>';
+	}
+	foreach ($openid_specs as $k => $v) {
+		if ($p['name'] == 'wp-yadis') { 
+			echo '<td>-</td>'; 
+		} else {
+			echo '
+				<td'.(in_array($v, $support['openid']) ? ' class="openid_supported">x' : '>&nbsp;').'</td>';
+		}
+	}
+	echo '
+				<td><span class="openid_service"><a href="'.$p['url'].'">'.$p['name'].'</a> (<a href="'.$p['example'].'">x</a>)</span></td>
+			</tr>';
+}
+?>
+
+			<tr>
+				<th>&nbsp;</th>
+
+<?php
+foreach ($discovery_specs as $k => $v) {
+	// force line break since firefox won't break at a hyphen
+	$id = $k;
+	if (strlen($k) > 7) $k = ereg_replace('-', '- ', $k);
+	echo '
+				<th><a href="#'.$id.'" title="'.htmlentities($v).'">'.$k.'</a></th>';
+}
+foreach ($openid_specs as $k => $v) {
+	// force line break since firefox won't break at a hyphen
+	$id = $k;
+	if (substr($id, 0, 4) == 'pape') $id = 'pape';
+	if (strlen($k) > 7) $k = ereg_replace('-', '- ', $k);
+	echo '
+				<th><a href="#'.$id.'" title="'.htmlentities($v).'">'.$k.'</a></th>';
+}
+?>
+				<th>&nbsp;</th>
+			</tr>
+		</table>
+<?php
+
+//---- functions
+
+function check_support($uri) {
+	$support = array(
+		'discovery' => array(),
+		'openid' => array()
+	);
+	$xrds_content = null;
+	$html_content = null;
+
+	$fetcher = Auth_Yadis_Yadis::getHTTPFetcher(20);
+
+	// check for response to "accept: application/xrds+xml"
+	//
+	$response = $fetcher->get($uri, array('Accept: '.Auth_Yadis_CONTENT_TYPE));
+
+	if ($response && ($response->status == 200)) {
+		$content_type = Auth_Yadis_Yadis::_getHeader( $response->headers, array('content-type'));
+
+		if ($content_type && (Auth_Yadis_Yadis::_getContentType($content_type) == Auth_Yadis_CONTENT_TYPE)) {
+			$support['discovery'][] = 'content-type';
+			$xrds_content = $response->body;
+		}
+	}
+
+
+	// new request without "accept" header
+	$response = $fetcher->get($uri);
+	$html_content = $response->body;
+
+	// check for X-XRDS-Location HTTP header
+	$yadis_location = Auth_Yadis_Yadis::_getHeader( $response->headers, array(Auth_Yadis_HEADER_NAME));
+	if ($yadis_location) {
+		$support['discovery'][] = 'xrds-header';
+	}
+
+
+	// check for XRDS and Yadis http-equiv
+	$parser = new Auth_Yadis_ParseHTML();
+	$meta_tags = $parser->getMetaTags($html_content);
+	if ($meta_tags) {
+		foreach ($meta_tags as $tag) {
+			//error_log(var_export($tag, true));
+			if (array_key_exists('http-equiv', $tag) && array_key_exists('content', $tag)) {
+				if (strtolower($tag['http-equiv']) == 'x-xrds-location') {
+					$support['discovery'][] = 'xrds-html';
+					$html_location = $tag['content'];
+				}
+				if (strtolower($tag['http-equiv']) == 'x-yadis-location') {
+					$support['discovery'][] = 'yadis-html';
+					if (!$html_location) {
+						$html_location = $tag['content'];
+					}
+				}
+			}
+		}
+	}
+
+	if (isset($html_location)) {
+		if (!$yadis_location) {
+			$yadis_location = $html_location;
+		}
+	}
+
+
+	if (!$xrds_content && $yadis_location) {
+		$response = $fetcher->get($yadis_location);
+		$xrds_content = $response->body;
+	}
+
+
+	$types = array();
+
+	// parse HTML document for supported Types
+
+	$p = new Auth_OpenID_Parse();
+	$link_attrs = $p->parseLinkAttrs($html_content);
+
+	$server_url = $p->findFirstHref($link_attrs, 'openid.server');
+	if ($server_url !== null) {
+		$support['discovery'][] = 'openid-html';
+		$types[] = Auth_OpenID_TYPE_1_1;
+	}
+
+	$server_url = $p->findFirstHref($link_attrs, 'openid2.provider');
+	if ($server_url !== null) {
+		$support['discovery'][] = 'openid2-html';
+		$types[] = Auth_OpenID_TYPE_2_0;
+	}
+
+
+	// parse XRDS document for supported Types
+	$endpoints = Auth_OpenID_ServiceEndpoint::fromXRDS($uri, $xrds_content);
+	if (sizeof($endpoints) > 0) {
+		foreach ($endpoints as $e) {
+			$types = array_merge($types, $e->type_uris);
+		}
+	}
+
+	$support['openid'] = array_unique($types);
+
+	return $support;
+}
+
+?>
