@@ -29,6 +29,14 @@ if ( defined('WP_HOME') ) {
   define('PLUGINDIR', '../wordpress-content/plugins');
 }
 
+// turn on host verification for OpenID
+define('Auth_OpenID_VERIFY_HOST', true);
+
+// use custom CA cert bundle if defined
+if (getenv('CURL_CA_BUNDLE')) {
+  define('Auth_OpenID_CAINFO', getenv('CURL_CA_BUNDLE'));
+}
+
 // turn off post revisions
 define('WP_POST_REVISIONS', false);
 
