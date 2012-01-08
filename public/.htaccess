@@ -23,6 +23,9 @@ Options +Multiviews
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
+  # Localhost redirects
+  #RewriteRule ^local/(.+) http://willnorris/$1 [L,R]
+
   # Google+ Redirect
   RewriteRule ^(plus|\+)/?(.*) http://profiles.google.com/wnorris/$2 [L,R]
 
