@@ -38,7 +38,9 @@ if (getenv('CURL_CA_BUNDLE')) {
 }
 
 // turn off post revisions
-define('WP_POST_REVISIONS', false);
+if ( !defined('WP_POST_REVISIONS') ) {
+  define('WP_POST_REVISIONS', false);
+}
 
 /**
  * WordPress Localized Language, defaults to English.
