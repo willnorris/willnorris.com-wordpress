@@ -8,10 +8,6 @@ public/wordpress-content/advanced-cache.php
 public/wordpress-content/wp-cache-config.php
 public/sitemap.xml
 
-# mint
-public/mint/config/db.php
-public/mint/pepper/ronaldheft/feedburner/cache/
-
 public/wedding/lib/local.php
 
 .sass-cache
