@@ -37,6 +37,9 @@ if (getenv('CURL_CA_BUNDLE')) {
   define('Auth_OpenID_CAINFO', getenv('CURL_CA_BUNDLE'));
 }
 
+// Google Analytics ID
+define('GOOGLE_ANALYTICS_ID', 'UA-620101-2');
+
 // turn off post revisions
 if ( !defined('WP_POST_REVISIONS') ) {
   define('WP_POST_REVISIONS', false);
