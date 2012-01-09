@@ -5,6 +5,7 @@
 
 require_once dirname( __FILE__ ) . '/willnorris/analytics.php';
 require_once dirname( __FILE__ ) . '/willnorris/debug.php';
+require_once dirname( __FILE__ ) . '/willnorris/license.php';
 require_once dirname( __FILE__ ) . '/willnorris/referral.php';
 
 /**

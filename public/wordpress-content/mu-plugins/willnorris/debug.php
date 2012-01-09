@@ -3,7 +3,7 @@
 /**
  * Log a backtrace for deprecation warnings to the PHP error log.
  */
-function willnorris_deprecated_backtrace($function, $message, $version) {
+function willnorris_deprecated_backtrace() {
   if ( WP_DEBUG ) {
     error_log(print_r(debug_backtrace(), true));
   }
