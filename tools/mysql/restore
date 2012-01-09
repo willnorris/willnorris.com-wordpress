@@ -7,7 +7,7 @@ if ( !is_readable("{$_SERVER['HOME']}/.my.cnf") ) {
 $local_config = dirname( dirname( dirname( __FILE__ ) ) ) . '/wp-local-config.php';
 require_once( $local_config );
 
-$backup_file = dirname( dirname( __FILE__ ) ) . '/var/database.sql';
+$backup_file = dirname( __FILE__ ) . '/var/database.sql';
 $mysql = 'mysql ' . DB_NAME . ' < "' . $backup_file .'"';
 
 system($mysql);

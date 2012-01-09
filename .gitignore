@@ -1,5 +1,5 @@
-# backups
-backup/var/
+# mysql backups
+tools/mysql/var/
 
 # wordpress
 wp-local-config.php
