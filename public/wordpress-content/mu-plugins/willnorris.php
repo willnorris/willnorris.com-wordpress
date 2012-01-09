@@ -3,6 +3,7 @@
  * Personal tweaks to WordPress I want to always be loaded, regardless of what theme I use.
  */
 
+require_once dirname( __FILE__ ) . '/willnorris/referral.php';
 
 /**
  * Instruct search engines not to index the secure version of the site.
