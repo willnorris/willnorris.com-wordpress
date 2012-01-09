@@ -40,6 +40,9 @@ if (getenv('CURL_CA_BUNDLE')) {
 // Google Analytics ID
 define('GOOGLE_ANALYTICS_ID', 'UA-620101-2');
 
+// Creative Commons License
+define('CC_LICENSE', 'http://creativecommons.org/licenses/by-nc-sa/3.0/');
+
 // turn off post revisions
 if ( !defined('WP_POST_REVISIONS') ) {
   define('WP_POST_REVISIONS', false);
