@@ -163,6 +163,11 @@ body {
   hr {
     margin: 0.75em 0;
   }
+
+  // add space after embedded Google charts
+  script[src='//ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js'] + div[id^='chart-'] {
+    margin-bottom: 1.5em;
+  }
 }
 
 #openid-support {
