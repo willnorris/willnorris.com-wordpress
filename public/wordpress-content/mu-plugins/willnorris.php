@@ -62,6 +62,12 @@ function willnorris_my_age() {
 add_shortcode('my_age', 'willnorris_my_age');
 
 
+function willnorris_no_amps($atts, $content) {
+  return preg_replace('/&#038;/', '&', $content);
+}
+add_shortcode('no_amps', 'willnorris_no_amps');
+
+
 /**
  * Use CURL_CA_BUNDLE environment variable to update libcurl's cacert bundle.
  */
@@ -71,6 +77,14 @@ function willnorris_http_api_curl($handle) {
   }
 }
 add_action('http_api_curl', 'willnorris_http_api_curl');
+
+
+function willnorris_rel_author() {
+?>
+  <link rel="author me" href="https://plus.google.com/111832530347449196055" />
+<?php
+}
+add_action('wp_head', 'willnorris_rel_author');
 
 
 // ensure proper redirect status code is returned
