@@ -42,13 +42,6 @@ body {
   kbd {
     @include fixed-width-text;
   }
-
-  a {
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 }
 
 
