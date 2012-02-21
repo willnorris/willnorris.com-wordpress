@@ -3,7 +3,7 @@
 ini_set('display_errors', false);
 error_reporting(E_ALL);
 
-$openid_path = dirname(dirname(dirname(__FILE__))) . '/plugins/openid/';
+$openid_path = dirname(dirname(dirname(__FILE__))) . '/plugins/openid/lib/';
 set_include_path( $openid_path . PATH_SEPARATOR . get_include_path() );
 
 require_once 'Auth/Yadis/Yadis.php';
