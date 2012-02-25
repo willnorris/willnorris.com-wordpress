@@ -128,3 +128,18 @@ function willnorris_plusone_button($post) {
   return '<div class="plusone-button"><g:plusone size="small" href="' . get_permalink($post) . '"></g:plusone></div>';
 }
 
+/**
+ * Limit which posts are included on the archives page.
+ */
+function willnorris_archives_include_post($include, $post) {
+  $format = get_post_format($post);
+
+  // only include standard posts (those without a post_format)
+  if ($format != '') {
+    $include = false;
+  }
+
+  return $include;
+}
+add_filter('pdx_archives_include_post', 'willnorris_archives_include_post', 10, 2);
+
