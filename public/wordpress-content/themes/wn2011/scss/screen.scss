@@ -6,6 +6,7 @@
 @import "compass/typography/lists/horizontal-list";
 
 @import "config";
+@import "colors";
 
 @import url('//fonts.googleapis.com/css?family=Alice|Inconsolata|Open+Sans');
 
@@ -27,6 +28,8 @@ body {
   @include blueprint-typography(true);
   @include blueprint-utilities;
   @include blueprint-interaction;
+
+  background: $base3;
 
   // debug grid
   &.showgrid {
@@ -165,7 +168,7 @@ body {
 
 #openid-support {
   table {
-    $border-color: #ddd;
+    $border-color: $base2;
 
     border: 1px solid $border-color;
     border-collapse: collapse;
@@ -174,7 +177,7 @@ body {
       border: 1px solid $border-color;
 
       &.openid_supported {
-        background: #3c3;
+        background: $cyan;
         text-indent: -9999em;
       }
     }

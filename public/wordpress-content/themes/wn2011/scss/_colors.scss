@@ -1,0 +1,49 @@
+// Setup color names (but not necessarily the colors themselves) based on
+// Solarized (http://ethanschoonover.com/solarized).  Colors can be overridden
+// by defining them in a file that is included prior to this file.
+
+$base03:          #000000 !default; //black
+$base02:          #333333 !default; //darkest black
+$base01:          #555555 !default; //dark gray
+$base00:          #666666 !default; //medium dark gray
+$base0:           #777777 !default; //medium gray
+$base1:           #999999 !default; //medium light gray
+$base2:           #dddddd !default; //light gray
+$base3:           #ffffff !default; //white
+$yellow:          #f0cc3c !default;
+$orange:          #f0843c !default;
+$red:             #f03c3c !default;
+$magenta:         #d53592 !default;
+$violet:          #9933cc !default;
+$blue:            #3373cc !default;
+$cyan:            #33a6cc !default;
+$green:           #33cc33 !default;
+
+$solarized: dark !default;
+
+@if $solarized == light {
+
+  $_base03: $base03;
+  $_base02: $base02;
+  $_base01: $base01;
+  $_base00: $base00;
+  $_base0:  $base0;
+  $_base1:  $base1;
+  $_base2:  $base2;
+  $_base3:  $base3;
+
+  $base03:  $_base3;
+  $base02:  $_base2;
+  $base01:  $_base1;
+  $base00:  $_base0;
+  $base0:   $_base00;
+  $base1:   $_base01;
+  $base2:   $_base02;
+  $base3:   $_base03;
+}
+
+/* non highlighted code colors */
+$pre-bg: $base03 !default;
+$pre-border: darken($base02, 5) !default;
+$pre-color: $base1 !default;
+
