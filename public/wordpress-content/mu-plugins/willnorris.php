@@ -68,6 +68,24 @@ function willnorris_no_amps($atts, $content) {
 add_shortcode('no_amps', 'willnorris_no_amps');
 
 
+function willnorris_recent_posts($atts, $content) {
+  $posts = '';
+  $args = array('posts_per_page' => 10, 'no_found_rows' => true, 'post_status' => 'publish', 'ignore_sticky_posts' => true);
+  $r = new WP_Query();
+  $r->query($args);
+  while ($r->have_posts()) {
+    $r->the_post();
+    $posts .= sprintf('
+      <li>
+        <a href="%1$s">%2$s</a>
+        <time datetime="%3$s">%4$s</time>
+        </li>',
+      get_permalink(), get_the_title(), get_the_date('c'), get_the_date());
+  }
+  return '<ul class="post-list">' . $posts . '</ul>';
+}
+add_shortcode('recent_posts', 'willnorris_recent_posts');
+
 /**
  * Use CURL_CA_BUNDLE environment variable to update libcurl's cacert bundle.
  */
