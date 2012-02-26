@@ -70,17 +70,22 @@ add_shortcode('no_amps', 'willnorris_no_amps');
 
 function willnorris_recent_posts($atts, $content) {
   $posts = '';
-  $args = array('posts_per_page' => 10, 'no_found_rows' => true, 'post_status' => 'publish', 'ignore_sticky_posts' => true);
+  $args = array('posts_per_page' => 20, 'no_found_rows' => true, 'post_status' => 'publish', 'ignore_sticky_posts' => true);
+  $count = 0;
   $r = new WP_Query();
   $r->query($args);
   while ($r->have_posts()) {
     $r->the_post();
+    if (get_post_format() != '') continue;
+
     $posts .= sprintf('
       <li>
         <a href="%1$s">%2$s</a>
         <time datetime="%3$s">%4$s</time>
         </li>',
       get_permalink(), get_the_title(), get_the_date('c'), get_the_date());
+
+    if (++$count >= 10) break;
   }
   return '<ul class="post-list">' . $posts . '</ul>';
 }
