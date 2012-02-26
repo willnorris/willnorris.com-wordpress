@@ -55,32 +55,41 @@ body {
 
 .skip-links { display: none; }
 
-#header {
+#header, #footer {
   background: $base03;
   color: $base3;
+  font-family: "Alice";
+  line-height: 3em;
+  padding: 0 1em;
+}
 
-  > hgroup {
-    line-height: 3em;
-    margin: 0 1em;
+.site-title {
+  font-size: 1.0em;
+  margin-bottom: 0;
+  display: inline;
 
-    > .site-title {
+  > a {
+    text-decoration: none;
+    color: $base3;
+    &:visited {
       color: $base3;
-      font-size: 1.0em;
-      margin-bottom: 0;
-      display: inline;
-
-      a {
-        text-decoration: none;
-        color: $base3;
-      }
     }
+  }
+}
 
-    > .site-description {
-      color: $base1;
-      display: none;
-      font-size: 1em;
-      margin-bottom: 1.25em;
-    }
+.site-description {
+  color: $base1;
+  display: none;
+  font-size: 1em;
+  margin-bottom: 1.25em;
+}
+
+#footer {
+  line-height: 2em;
+  text-align: center;
+
+  #copyright {
+    color: $base1;
   }
 }
 
