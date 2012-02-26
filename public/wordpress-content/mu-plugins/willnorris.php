@@ -110,6 +110,20 @@ function willnorris_rel_author() {
 add_action('wp_head', 'willnorris_rel_author');
 
 
+function willnorris_cleanup_plugins() {
+  // move SmartyPants filter after do_shortcodes
+  foreach( array('category_description', 'list_cats', 'comment_author', 'comment_text',
+                 'single_post_title', 'the_title', 'the_content', 'the_excerpt') as $filter ) {
+      $priority = has_filter($filter, 'SmartyPants');
+      if ( $priority !== false ) {
+        remove_filter($filter, 'SmartyPants', $priority);
+        add_filter($filter, 'SmartyPants', 12);
+      }
+  }
+}
+add_action('wp', 'willnorris_cleanup_plugins');
+
+
 // ensure proper redirect status code is returned
 add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
