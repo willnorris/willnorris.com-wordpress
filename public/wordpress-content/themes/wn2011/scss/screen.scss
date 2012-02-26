@@ -55,22 +55,30 @@ body {
 
 .skip-links { display: none; }
 
-#wrapper {
-  margin: 0 0.5em;
-}
-
 #header {
+  background: $base03;
+  color: $base3;
+
   > hgroup {
+    line-height: 3em;
+    margin: 0 1em;
+
     > .site-title {
-      font-size: 2.4em;
-      line-height: 1.25;
+      color: $base3;
+      font-size: 1.0em;
       margin-bottom: 0;
+      display: inline;
+
+      a {
+        text-decoration: none;
+        color: $base3;
+      }
     }
 
     > .site-description {
-      font-size: 1.25em;
-      font-style: italic;
-      line-height: 1.25;
+      color: $base1;
+      display: none;
+      font-size: 1em;
       margin-bottom: 1.25em;
     }
   }
@@ -200,11 +208,24 @@ body {
 #wrapper {
   @include transition-property("margin");
   @include transition-duration(0.3s);
+  margin: 0.5em;
 }
 
 @media (min-width: 480px) {
 }
 @media (min-width: 592px) {
+  #header {
+    > hgroup {
+      .site-title {
+        margin-right: 1em;
+        padding-right: 1em;
+        border-right: 1px solid $base3;
+      }
+      .site-description {
+        display: inline;
+      }
+    }
+  }
 }
 @media (min-width: 770px) and (min-height: 480px) {
   #wrapper {
