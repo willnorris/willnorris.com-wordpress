@@ -127,9 +127,9 @@ body {
 .hentry + .hentry {
   margin-top: 3em;
 }
-.plusone-button { 
-  display: inline-block; 
-  margin-left: 5px; 
+.plusone-button {
+  display: inline-block;
+  margin-left: 5px;
 }
 
 .navigation {
@@ -163,6 +163,16 @@ body {
   // add space after embedded Google charts
   script[src='//ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js'] + div[id^='chart-'] {
     margin-bottom: 1.5em;
+  }
+}
+
+.post-list {
+  @include no-bullets;
+  padding: 0;
+
+  time {
+    font-size: 90%;
+    color: $base0;
   }
 }
 
