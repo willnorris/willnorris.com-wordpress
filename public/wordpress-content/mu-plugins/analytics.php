@@ -1,5 +1,10 @@
 <?php
-// minimal Google Analytics code
+/*
+Plugin Name: Google Analytics
+Description: Minimal plugin for adding Google Analytics tracking code.
+Author: Will Norris
+Author URI: http://willnorris.com/
+*/
 
 function analytics_tracking_code() {
   if ( !defined('GOOGLE_ANALYTICS_ID') ) return;

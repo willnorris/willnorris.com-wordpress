@@ -1,11 +1,11 @@
 <?php
-/**
- * Personal tweaks to WordPress I want to always be loaded, regardless of what theme I use.
- */
+/*
+Plugin Name: willnorris.com
+Description: Personal tweaks to WordPress I want to always be loaded on willnorris.com, regardless of what theme I use.
+Author: Will Norris
+Author URI: http://willnorris.com/
+*/
 
-require_once dirname( __FILE__ ) . '/willnorris/analytics.php';
-require_once dirname( __FILE__ ) . '/willnorris/debug.php';
-require_once dirname( __FILE__ ) . '/willnorris/license.php';
 require_once dirname( __FILE__ ) . '/willnorris/referral.php';
 
 /**
