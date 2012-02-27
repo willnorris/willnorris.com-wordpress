@@ -17,6 +17,8 @@
             get_the_date()
           );
 
-          echo willnorris_plusone_button($post);
+          if ( function_exists('plusone_button') ) {
+            echo plusone_button($post);
+          }
         ?>
       </footer><!-- #entry-utility -->

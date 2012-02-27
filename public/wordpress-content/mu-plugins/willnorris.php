@@ -102,14 +102,6 @@ function willnorris_http_api_curl($handle) {
 add_action('http_api_curl', 'willnorris_http_api_curl');
 
 
-function willnorris_rel_author() {
-?>
-  <link rel="author me" href="https://plus.google.com/111832530347449196055" />
-<?php
-}
-add_action('wp_head', 'willnorris_rel_author');
-
-
 function willnorris_cleanup_plugins() {
   // move SmartyPants filter after do_shortcodes
   foreach( array('category_description', 'list_cats', 'comment_author', 'comment_text',

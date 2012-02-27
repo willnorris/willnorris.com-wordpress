@@ -37,6 +37,9 @@ if (getenv('CURL_CA_BUNDLE')) {
   define('Auth_OpenID_CAINFO', getenv('CURL_CA_BUNDLE'));
 }
 
+// Google+ ID
+define('GOOGLE_PLUS_ID', '111832530347449196055');
+
 // Google Analytics ID
 define('GOOGLE_ANALYTICS_ID', 'UA-620101-2');
 

@@ -107,28 +107,6 @@ add_filter('comments_open', 'willnorris_comments_open', 10, 2);
 
 
 /**
- * Add +1 button script.
- */
-function willnorris_plusone_script() {
-?>
-  <script>
-    (function() {
-      jQuery('<script>', {async:true, src:'https://apis.google.com/js/plusone.js'}).prependTo('script:first');
-    })();
-  </script>
-<?php
-}
-add_action('wp_footer', 'willnorris_plusone_script');
-
-
-/**
- * Return a +1 button for the specified post.
- */
-function willnorris_plusone_button($post) {
-  return '<div class="plusone-button"><g:plusone size="small" href="' . get_permalink($post) . '"></g:plusone></div>';
-}
-
-/**
  * Limit which posts are included on the archives page.
  */
 function willnorris_archives_include_post($include, $post) {
