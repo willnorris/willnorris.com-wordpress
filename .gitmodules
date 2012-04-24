@@ -6,7 +6,7 @@
 	url = git@github.com:diso/wordpress-openid.git
 [submodule "public/wordpress"]
 	path = public/wordpress
-	url = https://github.com/markjaquith/WordPress.git
+	url = https://github.com/WordPress/WordPress.git
 [submodule "public/wordpress-content/plugins/snowflake"]
 	path = public/wordpress-content/plugins/snowflake
 	url = git@github.com:willnorris/wordpress-snowflake.git
