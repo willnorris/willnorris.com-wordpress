@@ -24,9 +24,9 @@ if ( file_exists( dirname( dirname(__FILE__) ) . '/wp-local-config.php') ) {
 // setup local paths
 if ( defined('WP_HOME') ) {
   define('WP_SITEURL', WP_HOME . '/wordpress');
-  define('WP_CONTENT_DIR', dirname(__FILE__) . '/wordpress-content');
-  define('WP_CONTENT_URL', WP_HOME . '/wordpress-content');
-  define('PLUGINDIR', '../wordpress-content/plugins');
+  define('WP_CONTENT_DIR', dirname(__FILE__) . '/content');
+  define('WP_CONTENT_URL', WP_HOME . '/content');
+  define('PLUGINDIR', '../content/plugins');
 }
 
 // turn on host verification for OpenID

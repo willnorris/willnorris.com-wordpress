@@ -1,18 +1,18 @@
-[submodule "public/wordpress-content/plugins/hum"]
-	path = public/wordpress-content/plugins/hum
-	url = git@github.com:willnorris/wordpress-hum.git
-[submodule "public/wordpress-content/plugins/openid"]
-	path = public/wordpress-content/plugins/openid
-	url = git@github.com:diso/wordpress-openid.git
 [submodule "public/wordpress"]
 	path = public/wordpress
 	url = https://github.com/WordPress/WordPress.git
-[submodule "public/wordpress-content/plugins/snowflake"]
-	path = public/wordpress-content/plugins/snowflake
-	url = git@github.com:willnorris/wordpress-snowflake.git
-[submodule "public/wordpress-content/themes/pdx"]
-	path = public/wordpress-content/themes/pdx
-	url = git@github.com:willnorris/pdx-theme.git
-[submodule "public/wordpress-content/plugins/xrds-simple"]
-	path = public/wordpress-content/plugins/xrds-simple
-	url = git@github.com:diso/wordpress-xrds-simple.git
+[submodule "public/content/plugins/hum"]
+	path = public/content/plugins/hum
+	url = https://github.com/willnorris/wordpress-hum.git
+[submodule "public/content/plugins/openid"]
+	path = public/content/plugins/openid
+	url = https://github.com/diso/wordpress-openid.git
+[submodule "public/content/plugins/snowflake"]
+	path = public/content/plugins/snowflake
+	url = https://github.com/willnorris/wordpress-snowflake.git
+[submodule "public/content/plugins/xrds-simple"]
+	path = public/content/plugins/xrds-simple
+	url = https://github.com/diso/wordpress-xrds-simple.git
+[submodule "public/content/themes/pdx"]
+	path = public/content/themes/pdx
+	url = https://github.com/willnorris/pdx-theme.git
