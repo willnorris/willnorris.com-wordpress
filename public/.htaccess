@@ -44,7 +44,8 @@ Options +Multiviews
   RewriteRule xrds.xml$  /?xrds [L]
 
   # Many WordPress plugins still assume the location of wp-content
-  RewriteRule ^wordpress/wp-content/(.*)$  wordpress-content/$1 [R=301,L]
+  RewriteRule ^wordpress/wp-content/(.*)$  content/$1 [R=301,L]
+  RewriteRule ^wordpress-content/(.*)$  content/$1 [R=301,L]
 
   # Short URLs (before I had Hum installed)
   RewriteRule ^p/([a-z0-9]+)$  /?p=$1 [L,R=permanent]
