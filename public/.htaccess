@@ -43,6 +43,9 @@ Options +Multiviews
 
   RewriteRule xrds.xml$  /?xrds [L]
 
+  # easy images
+  RewriteRule ^(logo|photo).jpg$ /images/$0 [L,R]
+
   # Many WordPress plugins still assume the location of wp-content
   RewriteRule ^wordpress/wp-content/(.*)$  content/$1 [R=301,L]
   RewriteRule ^wordpress-content/(.*)$  content/$1 [R=301,L]
