@@ -60,7 +60,6 @@ body {
   color: $base3;
   font-family: "Alice";
   line-height: 3em;
-  padding: 0 1em;
 }
 
 .site-title {
@@ -95,7 +94,7 @@ body {
 
 #nav {
   clear: both;
-  margin-bottom: 1.5em;
+  //margin-bottom: 1.5em;
 
   > ul {
     @include horizontal-list;
@@ -214,10 +213,11 @@ body {
 
 // Responsive Design
 
-#wrapper {
-  @include transition-property("margin");
-  @include transition-duration(0.3s);
+#main {
   margin: 0.5em;
+}
+#header > hgroup {
+  padding: 0 0.5em;
 }
 
 @media (min-width: 480px) {
@@ -237,8 +237,11 @@ body {
   }
 }
 @media (min-width: 770px) and (min-height: 480px) {
-  #wrapper {
+  #main {
     margin: 1.5em;
+  }
+  #header > hgroup {
+    margin: 0 1.5em;
   }
 }
 @media (min-width: 1024px) {
