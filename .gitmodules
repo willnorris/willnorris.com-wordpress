@@ -1,18 +1,21 @@
 [submodule "public/wordpress"]
 	path = public/wordpress
-	url = https://github.com/WordPress/WordPress.git
+	url = git://github.com/WordPress/WordPress.git
 [submodule "public/content/plugins/hum"]
 	path = public/content/plugins/hum
-	url = https://github.com/willnorris/wordpress-hum.git
+	url = git://github.com/willnorris/wordpress-hum.git
 [submodule "public/content/plugins/openid"]
 	path = public/content/plugins/openid
-	url = https://github.com/diso/wordpress-openid.git
+	url = git://github.com/diso/wordpress-openid.git
 [submodule "public/content/plugins/snowflake"]
 	path = public/content/plugins/snowflake
-	url = https://github.com/willnorris/wordpress-snowflake.git
+	url = git://github.com/willnorris/wordpress-snowflake.git
 [submodule "public/content/plugins/xrds-simple"]
 	path = public/content/plugins/xrds-simple
-	url = https://github.com/diso/wordpress-xrds-simple.git
+	url = git://github.com/diso/wordpress-xrds-simple.git
 [submodule "public/content/themes/pdx"]
 	path = public/content/themes/pdx
-	url = https://github.com/willnorris/pdx-theme.git
+	url = git://github.com/willnorris/pdx-theme.git
+[submodule "public/content/plugins/opengraph"]
+	path = public/content/plugins/opengraph
+	url = git://github.com/willnorris/wordpress-opengraph.git
