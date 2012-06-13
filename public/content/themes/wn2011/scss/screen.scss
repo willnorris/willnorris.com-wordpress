@@ -104,6 +104,15 @@ body {
   }
 }
 
+// Home Page
+body.home {
+  .vcard {
+    .photo {
+      width: 128px;
+      height: 128px;
+    }
+  }
+}
 
 .alignleft, .alignright, .aligncenter {
   margin-bottom: 1.5em;
