@@ -16,7 +16,7 @@
           printf( $posted_in, get_the_category_list( ', ' ), $tag_list );
 
           if ( function_exists('plusone_button') ) {
-            echo plusone_button($post);
+            echo plusone_button($post, 'size=small');
           }
         ?>
       </footer><!-- #entry-utility -->

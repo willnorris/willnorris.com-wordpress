@@ -25,3 +25,6 @@
 [submodule "public/content/mu-plugins/license"]
 	path = public/content/mu-plugins/license
 	url = git://github.com/willnorris/wordpress-license.git
+[submodule "public/content/mu-plugins/google-plus"]
+	path = public/content/mu-plugins/google-plus
+	url = git://github.com/willnorris/wordpress-google-plus.git
