@@ -22,3 +22,6 @@
 [submodule "public/content/mu-plugins/analytics"]
 	path = public/content/mu-plugins/analytics
 	url = git://github.com/willnorris/wordpress-analytics.git
+[submodule "public/content/mu-plugins/license"]
+	path = public/content/mu-plugins/license
+	url = git://github.com/willnorris/wordpress-license.git
