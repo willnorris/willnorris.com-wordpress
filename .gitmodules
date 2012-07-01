@@ -19,3 +19,6 @@
 [submodule "public/content/plugins/opengraph"]
 	path = public/content/plugins/opengraph
 	url = git://github.com/willnorris/wordpress-opengraph.git
+[submodule "public/content/mu-plugins/analytics"]
+	path = public/content/mu-plugins/analytics
+	url = git://github.com/willnorris/wordpress-analytics.git
