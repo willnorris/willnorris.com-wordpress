@@ -11,7 +11,7 @@ Author URI: http://willnorris.com/
  * Add openid-support shortcode.
  */
 function openid_support_table($attrs, $content) {
-  $table_file = dirname(__FILE__) . '/openid-support/table.html';
+  $table_file = dirname(__FILE__) . '/table.html';
 
   $support_table = '
     <div id="openid-support">
