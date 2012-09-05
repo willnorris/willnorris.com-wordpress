@@ -6,6 +6,7 @@
  */
 function willnorris_setup() {
   add_theme_support( 'post-formats', array( 'aside', 'link', 'status' ) );
+  add_theme_support( 'post-thumbnails' );
 }
 add_action('after_setup_theme', 'willnorris_setup');
 
@@ -16,6 +17,7 @@ add_action('after_setup_theme', 'willnorris_setup');
 function willnorris_wp( $wp ) {
   wp_enqueue_script('jquery');
   //wp_enqueue_script('modernizr');
+  wp_enqueue_style('google-fonts', '//fonts.googleapis.com/css?family=Alice|Inconsolata|Open+Sans', null, null);
 }
 add_action('wp', 'willnorris_wp');
 
