@@ -1,10 +1,10 @@
 === Keyring ===
 
 Contributors: beaulebens, mdawaffe, jshreve, automattic
-Tags: authentication, security, oauth, http basic, key, token, authorization, twitter, facebook, delicious, foursquare, flickr
+Tags: authentication, security, oauth, http basic, key, token, authorization, delicious, facebook, flickr, foursquare, google contacts, instagram, linkedin, tumblr, twitter, yahoo
 Requires at least: 3.3
-Tested up to: 3.3
-Stable Tag: 1.0
+Tested up to: 3.5
+Stable Tag: 1.1
 
 An authentication framework that handles authorization with external web services.
 
@@ -16,17 +16,22 @@ Keyring provides a very hookable, completely customizable framework for connecti
 
 Out of the box, Keyring currently comes with base Service definitions for webservices which use:
 
-* OAuth1 and OAuth2
+* OAuth1
+* OAuth2
 * HTTP Basic
 
-And specific extensions for connecting to:
+And includes an example service implementation (services/extended/example.php) plus specific definitions for:
 
 * [Delicious](http://delicious.com/)
 * [Facebook](http://facebook.com/)
 * [Flickr](http://flickr.com/)
 * [Foursquare](http://foursquare.com/)
+* [Google Contacts](http://google.com/)
+* [Instagram](http://instagram.com/)
+* [LinkedIn](http://linkedin.com/)
+* [Tumblr](http://tumblr.com/)
 * [Twitter](http://twitter.com/)
-* [Tumblr](http://tumblr.om/)
+* [Yahoo! Updates](http://yahoo.com/)
 
 You can very easily write your own Service definitions and then use all the power of Keyring to hook into that authentication flow (tutorial/code samples coming soon).
 
@@ -76,3 +81,5 @@ Keyring just provides a framework for handling connections to external services.
 Add files to includes/services/extended/ that either implement one of the includes/services/core/ service foundations, or start from scratch. Follow one of the existing service definitions for a template, and see service.php in the root of Keyring for some detail on methods you need to define, and optional ones that might make your life easier.
 
 == Changelog ==
+= 1.1 =
+* First tagged version
