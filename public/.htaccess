@@ -27,7 +27,7 @@ Options +Multiviews
   #RewriteRule ^local/(.+) http://willnorris/$1 [L,R]
 
   # Google+ Redirect
-  RewriteRule ^(plus|\+)/?(.*) http://profiles.google.com/wnorris/$2 [L,R]
+  RewriteRule ^(plus|\+)/?(.*) https://www.google.com/+willnorris/$2 [L,R]
 
   RewriteRule ^photos/?(.*) http://www.flickr.com/photos/wnorris/$1 [L,R]
   RewriteRule ^contact/?$ /about/ [L,R]
