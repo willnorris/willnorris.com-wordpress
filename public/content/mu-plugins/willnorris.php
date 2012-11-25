@@ -120,7 +120,6 @@ add_action('wp', 'willnorris_cleanup_plugins');
 add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
 // Hum Extensions
-add_filter('hum_shortlink_base', create_function('', 'return "http://wjn.me/";'));
 add_filter('hum_redirect_base_c', create_function('', 'return "http://code.willnorris.com/";'));
 add_filter('hum_redirect_base_w', create_function('', 'return "http://wiki.willnorris.com/";'));
 add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));

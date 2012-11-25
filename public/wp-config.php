@@ -46,6 +46,11 @@ define('GOOGLE_ANALYTICS_ID', 'UA-620101-2');
 // Creative Commons License
 define('CC_LICENSE', 'http://creativecommons.org/licenses/by-nc-sa/3.0/');
 
+// Custom domain for shortlinks
+if ( !defined('HUM_SHORTLINK_BASE') ) {
+  define('HUM_SHORTLINK_BASE', 'http://wjn.me');
+}
+
 // turn off post revisions
 if ( !defined('WP_POST_REVISIONS') ) {
   define('WP_POST_REVISIONS', false);
