@@ -31,3 +31,6 @@
 [submodule "public/content/plugins/markdown-on-save"]
 	path = public/content/plugins/markdown-on-save
 	url = git://github.com/markjaquith/markdown-on-save.git
+[submodule "public/content/themes/publish"]
+	path = public/content/themes/publish
+	url = git://github.com/kovshenin/publish.git
