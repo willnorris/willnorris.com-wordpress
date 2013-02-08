@@ -95,6 +95,30 @@ function willnorris_safe_email($atts, $content=null) {
 add_shortcode('safe_email', 'willnorris_safe_email');
 
 
+/**
+ * Remove standard image sizes so that these sizes are not
+ * created during the Media Upload process
+ *
+ * Tested with WP 3.2.1
+ *
+ * Hooked to intermediate_image_sizes_advanced filter
+ * See wp_generate_attachment_metadata( $attachment_id, $file ) in wp-admin/includes/image.php
+ *
+ * @param $sizes, array of default and added image sizes
+ * @return $sizes, modified array of image sizes
+ * @author Ade Walker http://www.studiograsshopper.ch
+ */
+function sgr_filter_image_sizes( $sizes) {
+
+  unset( $sizes['thumbnail']);
+  unset( $sizes['medium']);
+  unset( $sizes['large']);
+
+  return $sizes;
+}
+add_filter('intermediate_image_sizes_advanced', 'sgr_filter_image_sizes');
+
+
 // ensure proper redirect status code is returned
 add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
