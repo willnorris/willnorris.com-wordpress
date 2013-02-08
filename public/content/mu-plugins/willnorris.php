@@ -9,44 +9,6 @@ Author URI: http://willnorris.com/
 require_once dirname( __FILE__ ) . '/willnorris/referral.php';
 
 /**
- * Instruct search engines not to index the secure version of the site.
- *
- * @see http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=35302
- */
-function willnorris_robots_txt($output) {
-  if ( is_ssl() ) {
-    $output = "User-agent: *\nDisallow: /\n";
-  }
-
-  return $output;
-}
-add_filter('robots_txt', 'willnorris_robots_txt', 99);
-
-
-/**
- * Prevent plugins from modifying robots.txt for SSL traffic.
- */
-function willnorris_do_robots() {
-  if ( is_ssl() ) {
-    do_robots();
-    exit();
-  }
-}
-add_filter('do_robots', 'willnorris_do_robots', 1);
-
-
-/**
- * Prevent HTTPS requests from being cached.
- */
-function willnorris_prevent_https_cache() {
-  if ( is_ssl() ) {
-    define('DONOTCACHEPAGE', true);
-  }
-}
-add_action('wp', 'willnorris_prevent_https_cache');
-
-
-/**
  * Shortcode for displaying my age, in years.
  */
 function willnorris_my_age() {
@@ -114,6 +76,23 @@ function willnorris_cleanup_plugins() {
   }
 }
 add_action('wp', 'willnorris_cleanup_plugins');
+
+
+/**
+ * Handle 'safe_email' shortcode which converts email address into spambot-safe link.
+ */
+function willnorris_safe_email($atts, $content=null) {
+  $attr = '';
+  if ($atts) {
+    foreach($atts as $k => $v) {
+      if ($v) {
+        $attr .= ' ' . $k . '="' . esc_attr($v) .'"';
+      }
+    }
+  }
+  return '<a' . $attr . ' href="mailto:' . antispambot($content) . '">' . antispambot($content) . '</a>';
+}
+add_shortcode('safe_email', 'willnorris_safe_email');
 
 
 // ensure proper redirect status code is returned
