@@ -29,7 +29,6 @@ Options +Multiviews
   # Google+ Redirect
   RewriteRule ^(plus|\+)/?(.*) https://www.google.com/+willnorris/$2 [L,R]
 
-  RewriteRule ^photos/?(.*) http://www.flickr.com/photos/wnorris/$1 [L,R]
   RewriteRule ^contact/?$ /about/ [L,R]
   RewriteRule ^tags/?(.*) /tag/$1 [L,R]
 
@@ -49,9 +48,6 @@ Options +Multiviews
   # Many WordPress plugins still assume the location of wp-content
   RewriteRule ^wordpress/wp-content/(.*)$  content/$1 [R=301,L]
   RewriteRule ^wordpress-content/(.*)$  content/$1 [R=301,L]
-
-  # Short URLs (before I had Hum installed)
-  RewriteRule ^p/([a-z0-9]+)$  /?p=$1 [L,R=permanent]
 </IfModule>
 
 
