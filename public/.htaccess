@@ -26,6 +26,11 @@ Options +Multiviews
   # Localhost redirects
   #RewriteRule ^local/(.+) http://willnorris/$1 [L,R]
 
+  # Require HTTPS in production
+  RewriteCond %{HTTP_HOST} "willnorris.com"
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=permanent]
+
   RewriteRule ^contact/?$ /about/ [L,R]
   RewriteRule ^tags/?(.*) /tag/$1 [L,R]
 
