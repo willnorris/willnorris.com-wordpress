@@ -32,6 +32,7 @@ class WJN_Personal {
     add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
     // Hum Extensions
+    add_filter('hum_redirect', array($this, 'hum_google_analytics'), 99, 2);
     add_filter('hum_redirect_base_c', create_function('', 'return "http://code.willnorris.com/";'));
     add_filter('hum_redirect_base_w', create_function('', 'return "http://wiki.willnorris.com/";'));
     add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));
@@ -174,6 +175,22 @@ class WJN_Personal {
         exit;
       }
     }
+  }
+
+  /**
+   * Append Google Analytics tracking codes for shortlink redirects to local content.
+   */
+  function hum_google_analytics($url, $type) {
+    $local_types = Hum::local_types();
+    if ( in_array($type, $local_types) && GOOGLE_ANALYTICS_ID ) {
+      $ga_codes = array(
+        'utm_source' => 'hum',
+        'utm_medium' => 'shortlink',
+        'utm_campaign' => 'willnorris'
+      );
+      $url = add_query_arg($ga_codes, $url);
+    }
+    return $url;
   }
 }
 
