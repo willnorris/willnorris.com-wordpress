@@ -33,10 +33,12 @@ class WJN_Personal {
 
     // Hum Extensions
     add_filter('hum_redirect', array($this, 'hum_google_analytics'), 99, 2);
+    add_filter('hum_legacy_redirect', array($this, '_add_google_analytics'), 99, 2);
     add_filter('hum_redirect_base_c', create_function('', 'return "http://code.willnorris.com/";'));
     add_filter('hum_redirect_base_w', create_function('', 'return "http://wiki.willnorris.com/";'));
     add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));
     add_filter('hum_legacy_id', array($this, 'legacy_shortlinks'), 10, 2);
+
     add_filter('template_redirect', array($this, 'googleplus_shortlinks'), 0);
   }
 
@@ -138,7 +140,7 @@ class WJN_Personal {
   }
 
   function legacy_shortlinks($post_id, $path) {
-    list($subtype, $id) = preg_split('|/|', $path, 2);
+    list($subtype, $id) = explode('/', $path, 2);
     if ( $subtype == 'p' ) {
       $post_id = $id;
     }
@@ -182,15 +184,19 @@ class WJN_Personal {
    */
   function hum_google_analytics($url, $type) {
     $local_types = Hum::local_types();
-    if ( in_array($type, $local_types) && GOOGLE_ANALYTICS_ID ) {
-      $ga_codes = array(
-        'utm_source' => 'hum',
-        'utm_medium' => 'shortlink',
-        'utm_campaign' => 'willnorris'
-      );
-      $url = add_query_arg($ga_codes, $url);
+    if ( $url && in_array($type, $local_types) && GOOGLE_ANALYTICS_ID ) {
+      $url = $this->_add_google_analytics($url);
     }
     return $url;
+  }
+
+  function _add_google_analytics($url) {
+    $ga_codes = array(
+      'utm_source' => 'hum',
+      'utm_medium' => 'shortlink',
+      'utm_campaign' => 'willnorris'
+    );
+    return add_query_arg($ga_codes, $url);
   }
 }
 
