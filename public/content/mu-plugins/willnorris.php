@@ -26,7 +26,6 @@ class WJN_Personal {
 
     add_action('http_api_curl', array($this, 'http_api_curl'));
     add_action('wp', array($this, 'cleanup_plugins'));
-    add_filter('hum_legacy_id', array($this, 'wjn_legacy_shortlinks'), 10, 2);
     add_filter('intermediate_image_sizes_advanced', array($this, 'filter_image_sizes'));
 
     // ensure proper redirect status code is returned
@@ -36,6 +35,8 @@ class WJN_Personal {
     add_filter('hum_redirect_base_c', create_function('', 'return "http://code.willnorris.com/";'));
     add_filter('hum_redirect_base_w', create_function('', 'return "http://wiki.willnorris.com/";'));
     add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));
+    add_filter('hum_legacy_id', array($this, 'legacy_shortlinks'), 10, 2);
+    add_filter('template_redirect', array($this, 'googleplus_shortlinks'), 0);
   }
 
   /**
@@ -141,6 +142,38 @@ class WJN_Personal {
       $post_id = $id;
     }
     return $post_id;
+  }
+
+  /**
+   * Handle shortlinks to Google+ content.  URLs that begin with the path segment '+' or 'plus' and
+   * which have not already been handled by WordPress are redirected to Google+.  If the remaning
+   * path looks like a Google+ post ID, construct a permalink URL.  Otherwise, just append the
+   * remaining path.
+   */
+  function googleplus_shortlinks() {
+    if ( is_404() ) {
+      global $wp;
+
+      if ( strpos($wp->request, '/') !== false ) {
+        list($type, $id) = @explode('/', $wp->request, 2);
+      } else {
+        $type = $wp->request;
+        $id = null;
+      }
+
+      if ( $type == '+' || $type == 'plus' ) {
+        $url = 'https://plus.google.com/' . GOOGLE_PLUS_ID;
+        if ( $id ) {
+          if ( strpos('/', $id) === false && preg_match('/[0-9A-Z]/', $id) ) {
+            $url .= '/posts/' . $id;
+          } else {
+            $url .= '/' . $id;
+          }
+        }
+        wp_redirect($url, 301);
+        exit;
+      }
+    }
   }
 }
 

@@ -38,7 +38,7 @@ if (getenv('CURL_CA_BUNDLE')) {
 }
 
 // Google+ ID
-define('GOOGLE_PLUS_ID', '111832530347449196055');
+define('GOOGLE_PLUS_ID', '+willnorris');
 
 // Google Analytics ID
 define('GOOGLE_ANALYTICS_ID', 'UA-620101-2');

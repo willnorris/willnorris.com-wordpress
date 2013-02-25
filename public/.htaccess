@@ -26,9 +26,6 @@ Options +Multiviews
   # Localhost redirects
   #RewriteRule ^local/(.+) http://willnorris/$1 [L,R]
 
-  # Google+ Redirect
-  RewriteRule ^(plus|\+)/?(.*) https://www.google.com/+willnorris/$2 [L,R]
-
   RewriteRule ^contact/?$ /about/ [L,R]
   RewriteRule ^tags/?(.*) /tag/$1 [L,R]
 
