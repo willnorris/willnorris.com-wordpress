@@ -31,9 +31,11 @@ class WJN_Personal {
     // ensure proper redirect status code is returned
     add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
+    add_action('analytics_tracking_js', array($this, 'analytics_tracking_js'));
+
     // Hum Extensions
-    add_filter('hum_redirect', array($this, 'hum_google_analytics'), 99, 2);
-    add_filter('hum_legacy_redirect', array($this, '_add_google_analytics'), 99, 2);
+    add_filter('hum_redirect', array($this, 'hum_google_analytics'), 99, 3);
+    add_filter('hum_legacy_redirect', array($this, '_add_google_analytics'), 99);
     add_filter('hum_redirect_base_c', create_function('', 'return "http://code.willnorris.com/";'));
     add_filter('hum_redirect_base_w', create_function('', 'return "http://wiki.willnorris.com/";'));
     add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));
@@ -179,24 +181,38 @@ class WJN_Personal {
     }
   }
 
+  function analytics_tracking_js() {
+    echo "  _gaq.push(['_setAllowAnchor', true]);\n";
+  }
+
   /**
    * Append Google Analytics tracking codes for shortlink redirects to local content.
    */
-  function hum_google_analytics($url, $type) {
+  function hum_google_analytics($url, $type, $id) {
     $local_types = Hum::local_types();
     if ( $url && in_array($type, $local_types) && GOOGLE_ANALYTICS_ID ) {
-      $url = $this->_add_google_analytics($url);
+      $url = $this->_add_google_analytics($url, "$type/$id");
     }
     return $url;
   }
 
-  function _add_google_analytics($url) {
+  function _add_google_analytics($url, $id=null) {
+    if ( $id ) {
+      $source = 'hum';
+    } else {
+      global $wp;
+      $id = $wp->request;
+      $source = 'hum_legacy';
+    }
+
     $ga_codes = array(
-      'utm_source' => 'hum',
-      'utm_medium' => 'shortlink',
-      'utm_campaign' => 'willnorris'
+      'utm_source' => $source,
+      'utm_medium' => $id,
+      'utm_campaign' => 'hum'
     );
-    return add_query_arg($ga_codes, $url);
+
+    $query = build_query($ga_codes);
+    return $url . '#' . $query;
   }
 }
 
