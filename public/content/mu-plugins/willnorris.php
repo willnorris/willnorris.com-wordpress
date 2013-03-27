@@ -12,6 +12,7 @@ class WJN_Personal {
 
   public function __construct() {
     add_action('init', array( $this, 'init' ));
+    add_action('init', array( $this, 'cleanup_wp' ));
   }
 
   /**
@@ -44,6 +45,19 @@ class WJN_Personal {
     add_filter('hum_legacy_id', array($this, 'legacy_shortlinks'), 10, 2);
 
     add_filter('template_redirect', array($this, 'googleplus_shortlinks'), 0);
+  }
+
+  /**
+   * Cleanup filters that shouldn't run.
+   */
+  function cleanup_wp() {
+    // remove 'capital_P_dangit'
+    foreach ( array( 'the_content', 'the_title', 'comment_text' ) as $filter ) {
+      $priority = has_filter($filter, 'capital_P_dangit');
+      if ( $priority !== false ) {
+        remove_filter( $filter, 'capital_P_dangit', $priority );
+      }
+    }
   }
 
   /**
