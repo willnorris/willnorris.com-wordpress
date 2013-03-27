@@ -144,9 +144,11 @@ class WJN_Personal {
   }
 
   function legacy_shortlinks($post_id, $path) {
-    list($subtype, $id) = explode('/', $path, 2);
-    if ( $subtype == 'p' ) {
-      $post_id = $id;
+    if ( strpos($path, '/') !== false ) {
+      list($subtype, $id) = explode('/', $path, 2);
+      if ( $subtype == 'p' ) {
+        $post_id = $id;
+      }
     }
     return $post_id;
   }
