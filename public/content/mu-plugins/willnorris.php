@@ -28,6 +28,8 @@ class WJN_Personal {
     add_action('wp', array($this, 'cleanup_plugins'));
     add_filter('intermediate_image_sizes_advanced', array($this, 'filter_image_sizes'));
 
+    add_filter('robots_txt', array($this, 'robots_txt'));
+
     // ensure proper redirect status code is returned
     add_filter('wp_redirect_status', create_function('$s', 'status_header($s); return $s;'));
 
@@ -179,6 +181,20 @@ class WJN_Personal {
         exit;
       }
     }
+  }
+
+  /** Don't crawl plugins or themes directories. */
+  function robots_txt($output) {
+    $plugins_url = parse_url( plugins_url() );
+    $output .= 'Disallow: ' . trailingslashit($plugins_url['path']) . "\n";
+
+    $mu_plugins_url = parse_url( content_url('mu-plugins') );
+    $output .= 'Disallow: ' . trailingslashit($mu_plugins_url['path']) . "\n";
+
+    $themes_url = parse_url( content_url('themes') );
+    $output .= 'Disallow: ' . trailingslashit($themes_url['path']) . "\n";
+
+    return $output;
   }
 
   function analytics_tracking_js() {
