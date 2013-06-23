@@ -43,12 +43,6 @@
 [submodule "public/content/plugins/debug-bar-console"]
 	path = public/content/plugins/debug-bar-console
 	url = git://github.com/willnorris/wordpress-debug-bar-console.git
-[submodule "public/content/plugins/keyring"]
-	path = public/content/plugins/keyring
-	url = git://github.com/willnorris/wordpress-keyring.git
-[submodule "public/content/plugins/wp-super-cache"]
-	path = public/content/plugins/wp-super-cache
-	url = git://github.com/willnorris/wordpress-super-cache.git
 [submodule "public/content/plugins/clean-options"]
 	path = public/content/plugins/clean-options
 	url = git://github.com/willnorris/wordpress-clean-options.git
