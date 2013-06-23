@@ -55,6 +55,3 @@
 [submodule "public/content/plugins/nice-search"]
 	path = public/content/plugins/nice-search
 	url = git://github.com/willnorris/wordpress-nice-search.git
-[submodule "public/content/plugins/mp6"]
-	path = public/content/plugins/mp6
-	url = git://github.com/willnorris/wordpress-mp6.git
