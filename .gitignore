@@ -1,3 +1,6 @@
+# server logs
+log
+
 # mysql backups
 tools/mysql/var/
 
