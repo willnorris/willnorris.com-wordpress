@@ -49,3 +49,9 @@
 [submodule "public/content/plugins/nice-search"]
 	path = public/content/plugins/nice-search
 	url = git://github.com/willnorris/wordpress-nice-search.git
+[submodule "public/content/slides/io-slides"]
+	path = public/content/slides/io-slides
+	url = git@github.com:willnorris/io-slides.git
+[submodule "public/content/slides/wcsf2013"]
+	path = public/content/slides/wcsf2013
+	url = git@github.com:willnorris/slides-wcsf2013.git
