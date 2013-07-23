@@ -4,8 +4,7 @@ class WJN_Publish {
 
   public function __construct() {
     add_action('after_setup_theme', array($this, 'setup'));
-    // add_action('wp_enqueue_scripts', array($this, 'js'), 20);
-    // add_action('author_link', array($this, 'author_link'), 10, 3);
+    add_action('wp', array($this, 'style'), 20);
   }
 
   /**
@@ -22,6 +21,12 @@ class WJN_Publish {
     $stylesheet_dir_uri = get_stylesheet_directory_uri();
     $stylesheet_uri = $stylesheet_dir_uri . '/css/style.css';
     return $stylesheet_uri;
+  }
+
+  public function style() {
+    wp_enqueue_style('font-awesome',
+      '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css',
+      false, null);
   }
 
 }

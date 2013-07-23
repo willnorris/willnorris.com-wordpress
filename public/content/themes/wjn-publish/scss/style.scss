@@ -1,2 +1,12 @@
 @import "publish";
 
+.social-icons {
+	font-size: 2em;
+	> a {
+		color: #999;
+
+		&:hover {
+			color: #1E8AB6;
+		}
+	}
+}
