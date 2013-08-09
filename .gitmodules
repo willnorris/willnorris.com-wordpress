@@ -47,6 +47,9 @@
 [submodule "public/content/plugins/snowflake"]
 	path = public/content/plugins/snowflake
 	url = https://github.com/willnorris/wordpress-snowflake.git
+[submodule "public/content/plugins/uf2"]
+	path = public/content/plugins/uf2
+	url = https://github.com/pfefferle/wordpress-uf2.git
 [submodule "public/content/plugins/webfinger"]
 	path = public/content/plugins/webfinger
 	url = https://github.com/willnorris/wordpress-webfinger.git
