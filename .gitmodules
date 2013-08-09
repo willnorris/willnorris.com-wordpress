@@ -36,7 +36,7 @@
 	url = git://github.com/kovshenin/publish.git
 [submodule "public/content/plugins/jetpack"]
 	path = public/content/plugins/jetpack
-	url = git://github.com/willnorris/wordpress-jetpack.git
+	url = git://github.com/willnorris/jetpack.git
 [submodule "public/content/plugins/debug-bar"]
 	path = public/content/plugins/debug-bar
 	url = git://github.com/willnorris/wordpress-debug-bar.git
