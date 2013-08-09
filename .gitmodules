@@ -55,3 +55,6 @@
 [submodule "public/content/slides/wcsf2013"]
 	path = public/content/slides/wcsf2013
 	url = git@github.com:willnorris/slides-wcsf2013.git
+[submodule "public/content/plugins/akismet"]
+	path = public/content/plugins/akismet
+	url = https://github.com/wp-plugins/akismet.git
