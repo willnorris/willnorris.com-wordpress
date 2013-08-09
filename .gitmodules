@@ -1,24 +1,8 @@
 [submodule "public/wordpress"]
 	path = public/wordpress
 	url = https://github.com/WordPress/WordPress.git
-[submodule "public/content/plugins/hum"]
-	path = public/content/plugins/hum
-	url = https://github.com/willnorris/wordpress-hum.git
-[submodule "public/content/plugins/openid"]
-	path = public/content/plugins/openid
-	url = https://github.com/diso/wordpress-openid.git
-[submodule "public/content/plugins/snowflake"]
-	path = public/content/plugins/snowflake
-	url = https://github.com/willnorris/wordpress-snowflake.git
-[submodule "public/content/plugins/xrds-simple"]
-	path = public/content/plugins/xrds-simple
-	url = https://github.com/diso/wordpress-xrds-simple.git
-[submodule "public/content/themes/pdx"]
-	path = public/content/themes/pdx
-	url = https://github.com/willnorris/pdx-theme.git
-[submodule "public/content/plugins/opengraph"]
-	path = public/content/plugins/opengraph
-	url = https://github.com/willnorris/wordpress-opengraph.git
+
+# WordPress "must-use" plugins
 [submodule "public/content/mu-plugins/analytics"]
 	path = public/content/mu-plugins/analytics
 	url = https://github.com/willnorris/wordpress-analytics.git
@@ -28,33 +12,57 @@
 [submodule "public/content/mu-plugins/google-plus"]
 	path = public/content/mu-plugins/google-plus
 	url = https://github.com/willnorris/wordpress-google-plus.git
-[submodule "public/content/plugins/markdown-on-save"]
-	path = public/content/plugins/markdown-on-save
-	url = https://github.com/markjaquith/markdown-on-save.git
-[submodule "public/content/themes/publish"]
-	path = public/content/themes/publish
-	url = https://github.com/kovshenin/publish.git
+
+# WordPress plugins
+[submodule "public/content/plugins/akismet"]
+	path = public/content/plugins/akismet
+	url = https://github.com/wp-plugins/akismet.git
+[submodule "public/content/plugins/clean-options"]
+	path = public/content/plugins/clean-options
+	url = https://github.com/wp-plugins/clean-options.git
+[submodule "public/content/plugins/debug-bar"]
+	path = public/content/plugins/debug-bar
+	url = https://github.com/wp-plugins/debug-bar.git
+[submodule "public/content/plugins/debug-bar-console"]
+	path = public/content/plugins/debug-bar-console
+	url = https://github.com/wp-plugins/debug-bar-console.git
+[submodule "public/content/plugins/hum"]
+	path = public/content/plugins/hum
+	url = https://github.com/willnorris/wordpress-hum.git
 [submodule "public/content/plugins/jetpack"]
 	path = public/content/plugins/jetpack
 	url = https://github.com/willnorris/jetpack.git
-[submodule "public/content/plugins/debug-bar"]
-	path = public/content/plugins/debug-bar
-	url = https://github.com/willnorris/wordpress-debug-bar.git
-[submodule "public/content/plugins/debug-bar-console"]
-	path = public/content/plugins/debug-bar-console
-	url = https://github.com/willnorris/wordpress-debug-bar-console.git
-[submodule "public/content/plugins/clean-options"]
-	path = public/content/plugins/clean-options
-	url = https://github.com/willnorris/wordpress-clean-options.git
+[submodule "public/content/plugins/markdown-on-save"]
+	path = public/content/plugins/markdown-on-save
+	url = https://github.com/markjaquith/markdown-on-save.git
 [submodule "public/content/plugins/nice-search"]
 	path = public/content/plugins/nice-search
-	url = https://github.com/willnorris/wordpress-nice-search.git
+	url = https://github.com/wp-plugins/nice-search.git
+[submodule "public/content/plugins/opengraph"]
+	path = public/content/plugins/opengraph
+	url = https://github.com/willnorris/wordpress-opengraph.git
+[submodule "public/content/plugins/openid"]
+	path = public/content/plugins/openid
+	url = https://github.com/diso/wordpress-openid.git
+[submodule "public/content/plugins/snowflake"]
+	path = public/content/plugins/snowflake
+	url = https://github.com/willnorris/wordpress-snowflake.git
+[submodule "public/content/plugins/xrds-simple"]
+	path = public/content/plugins/xrds-simple
+	url = https://github.com/diso/wordpress-xrds-simple.git
+
+# WordPress themes
+[submodule "public/content/themes/pdx"]
+	path = public/content/themes/pdx
+	url = https://github.com/willnorris/pdx-theme.git
+[submodule "public/content/themes/publish"]
+	path = public/content/themes/publish
+	url = https://github.com/kovshenin/publish.git
+
+# Slide decks
 [submodule "public/content/slides/io-slides"]
 	path = public/content/slides/io-slides
 	url = git@github.com:willnorris/io-slides.git
 [submodule "public/content/slides/wcsf2013"]
 	path = public/content/slides/wcsf2013
 	url = git@github.com:willnorris/slides-wcsf2013.git
-[submodule "public/content/plugins/akismet"]
-	path = public/content/plugins/akismet
-	url = https://github.com/wp-plugins/akismet.git
