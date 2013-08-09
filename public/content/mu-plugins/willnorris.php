@@ -210,6 +210,9 @@ class WJN_Personal {
     $themes_url = parse_url( content_url('themes') );
     $output .= 'Disallow: ' . trailingslashit($themes_url['path']) . "\n";
 
+    // don't crawl OpenID endpoints
+    $output .= 'Disallow: /wordpress/index.php/openid/';
+
     return $output;
   }
 
