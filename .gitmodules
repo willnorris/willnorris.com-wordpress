@@ -75,3 +75,9 @@
 [submodule "public/content/slides/wcsf2013"]
 	path = public/content/slides/wcsf2013
 	url = git@github.com:willnorris/slides-wcsf2013.git
+[submodule "public/content/plugins/menu-humility"]
+	path = public/content/plugins/menu-humility
+	url = https://github.com/wp-plugins/menu-humility.git
+[submodule "public/content/plugins/manual-control"]
+	path = public/content/plugins/manual-control
+	url = https://github.com/wp-plugins/manual-control.git
