@@ -56,6 +56,9 @@ if ( !defined('WP_POST_REVISIONS') ) {
   define('WP_POST_REVISIONS', false);
 }
 
+// disable file editing
+define('DISALLOW_FILE_EDIT', TRUE);
+
 /**
  * WordPress Localized Language, defaults to English.
  *
