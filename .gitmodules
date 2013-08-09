@@ -47,6 +47,12 @@
 [submodule "public/content/plugins/snowflake"]
 	path = public/content/plugins/snowflake
 	url = https://github.com/willnorris/wordpress-snowflake.git
+[submodule "public/content/plugins/webfinger"]
+	path = public/content/plugins/webfinger
+	url = https://github.com/willnorris/wordpress-webfinger.git
+[submodule "public/content/plugins/webmention"]
+	path = public/content/plugins/webmention
+	url = https://github.com/willnorris/wordpress-webmention.git
 [submodule "public/content/plugins/xrds-simple"]
 	path = public/content/plugins/xrds-simple
 	url = https://github.com/diso/wordpress-xrds-simple.git
