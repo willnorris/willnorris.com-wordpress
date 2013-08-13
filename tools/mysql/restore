@@ -1,14 +1,25 @@
 #!/usr/bin/env php
 <?php
 
-if ( !is_readable("{$_SERVER['HOME']}/.my.cnf") ) {
-  die("must setup mysql connection information in ~/.my.cnf\n");
-}
 $local_config = dirname( dirname( dirname( __FILE__ ) ) ) . '/wp-local-config.php';
 require_once( $local_config );
 
-$backup_file = dirname( __FILE__ ) . '/var/database.sql';
-$mysql = 'mysql ' . DB_NAME . ' < "' . $backup_file .'"';
+// create temporary config file with connection options
+$config_file = dirname( __FILE__ ) . '/.my.cnf';
+touch($config_file);
+chmod($config_file, 0600);
+file_put_contents($config_file, "[client]
+  host = " . DB_HOST . "
+  user = " . DB_USER . "
+  password = " . DB_PASSWORD . "
+");
 
+$backup_file = dirname( __FILE__ ) . '/var/database.sql';
+$mysql = sprintf('mysql --defaults-file=%s %s < "%s"',
+  $config_file, DB_NAME, $backup_file);
+
+echo "restoring database from file: $backup_file\n";
 system($mysql);
-?>
+
+// cleanup config file
+unlink($config_file);
