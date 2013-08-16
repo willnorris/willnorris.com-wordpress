@@ -32,9 +32,15 @@
 [submodule "public/content/plugins/jetpack"]
 	path = public/content/plugins/jetpack
 	url = https://github.com/willnorris/jetpack.git
+[submodule "public/content/plugins/manual-control"]
+	path = public/content/plugins/manual-control
+	url = https://github.com/wp-plugins/manual-control.git
 [submodule "public/content/plugins/markdown-on-save"]
 	path = public/content/plugins/markdown-on-save
 	url = https://github.com/markjaquith/markdown-on-save.git
+[submodule "public/content/plugins/menu-humility"]
+	path = public/content/plugins/menu-humility
+	url = https://github.com/wp-plugins/menu-humility.git
 [submodule "public/content/plugins/nice-search"]
 	path = public/content/plugins/nice-search
 	url = https://github.com/wp-plugins/nice-search.git
@@ -61,6 +67,9 @@
 	url = https://github.com/diso/wordpress-xrds-simple.git
 
 # WordPress themes
+[submodule "public/content/themes/genesis"]
+	path = public/content/themes/genesis
+	url = git@github.com:willnorris/genesis-theme.git
 [submodule "public/content/themes/pdx"]
 	path = public/content/themes/pdx
 	url = https://github.com/willnorris/pdx-theme.git
@@ -75,9 +84,3 @@
 [submodule "public/content/slides/wcsf2013"]
 	path = public/content/slides/wcsf2013
 	url = git@github.com:willnorris/slides-wcsf2013.git
-[submodule "public/content/plugins/menu-humility"]
-	path = public/content/plugins/menu-humility
-	url = https://github.com/wp-plugins/menu-humility.git
-[submodule "public/content/plugins/manual-control"]
-	path = public/content/plugins/manual-control
-	url = https://github.com/wp-plugins/manual-control.git
