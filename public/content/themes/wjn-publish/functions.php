@@ -5,6 +5,7 @@ class WJN_Publish {
   public function __construct() {
     add_action('after_setup_theme', array($this, 'setup'));
     add_action('wp', array($this, 'style'), 20);
+    add_action('wp', array($this, 'wp'));
   }
 
   /**
@@ -27,6 +28,10 @@ class WJN_Publish {
     wp_enqueue_style('font-awesome',
       '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css',
       false, null);
+  }
+
+  public function wp() {
+    remove_filter( 'the_author', 'uf2_the_author', 1, 99 );
   }
 
 }
