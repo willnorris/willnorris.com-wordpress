@@ -57,7 +57,8 @@ if ( !defined('WP_POST_REVISIONS') ) {
 }
 
 // disable file editing
-define('DISALLOW_FILE_EDIT', TRUE);
+define( 'DISALLOW_FILE_EDIT', true);
+define( 'DISALLOW_FILE_MODS', true);
 
 /**
  * WordPress Localized Language, defaults to English.
