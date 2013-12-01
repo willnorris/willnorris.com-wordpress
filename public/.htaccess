@@ -56,7 +56,8 @@ Options +Multiviews
   RewriteRule ^wordpress-content/(.*)$  content/$1 [L,R=permanent]
 </IfModule>
 
-
+# HSTS Header
+Header add Strict-Transport-Security "max-age=16070400"
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
 RewriteEngine On
