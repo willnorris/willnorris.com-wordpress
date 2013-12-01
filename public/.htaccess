@@ -26,6 +26,10 @@ Options +Multiviews
   # Localhost redirects
   #RewriteRule ^local/(.+) http://willnorris/$1 [L,R]
 
+  # hostname redirect
+  RewriteCond %{HTTP_HOST} "wjn.me"
+  RewriteRule (.*) https://willnorris.com%{REQUEST_URI} [L,R=permanent]
+
   # Require HTTPS in production
   RewriteCond %{HTTP_HOST} "willnorris.com"
   RewriteCond %{HTTPS} off
@@ -48,8 +52,8 @@ Options +Multiviews
   RewriteRule ^(logo|photo).jpg$ /images/$0 [L,R]
 
   # Many WordPress plugins still assume the location of wp-content
-  RewriteRule ^wordpress/wp-content/(.*)$  content/$1 [R=301,L]
-  RewriteRule ^wordpress-content/(.*)$  content/$1 [R=301,L]
+  RewriteRule ^wordpress/wp-content/(.*)$  content/$1 [L,R=permanent]
+  RewriteRule ^wordpress-content/(.*)$  content/$1 [L,R=permanent]
 </IfModule>
 
 
