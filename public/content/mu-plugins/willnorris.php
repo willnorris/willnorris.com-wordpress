@@ -201,17 +201,18 @@ class WJN_Personal {
 
   /** Don't crawl plugins or themes directories. */
   function robots_txt($output) {
-    $plugins_url = parse_url( plugins_url() );
-    $output .= 'Disallow: ' . trailingslashit($plugins_url['path']) . "\n";
+    $output = "User-agent: *\n";
 
-    $mu_plugins_url = parse_url( content_url('mu-plugins') );
-    $output .= 'Disallow: ' . trailingslashit($mu_plugins_url['path']) . "\n";
-
-    $themes_url = parse_url( content_url('themes') );
-    $output .= 'Disallow: ' . trailingslashit($themes_url['path']) . "\n";
-
-    // don't crawl OpenID endpoints
-    $output .= 'Disallow: /wordpress/index.php/openid/';
+    $disallow = array(
+        site_url(),                // wordpress system directory
+        plugins_url(),             // plugins
+        content_url('mu-plugins'), // must-use plugins
+        content_url('themes'),     // themes
+        content_url('cache'),      // w3 total cache
+    );
+    foreach($disallow as $url) {
+      $output .= 'Disallow: ' . trailingslashit(parse_url($url, PHP_URL_PATH)) . "\n";
+    }
 
     return $output;
   }
