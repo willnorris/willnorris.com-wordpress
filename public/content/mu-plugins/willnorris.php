@@ -37,14 +37,19 @@ class WJN_Personal {
     add_action('analytics_tracking_js', array($this, 'analytics_tracking_js'));
 
     // Hum Extensions
-    add_filter('hum_redirect', array($this, 'hum_google_analytics'), 99, 3);
-    add_filter('hum_legacy_redirect', array($this, '_add_google_analytics'), 99);
+    //add_filter('hum_redirect', array($this, 'hum_google_analytics'), 99, 3);
+    //add_filter('hum_legacy_redirect', array($this, '_add_google_analytics'), 99);
     add_filter('hum_redirect_base_c', create_function('', 'return "http://code.willnorris.com/";'));
     add_filter('hum_redirect_base_w', create_function('', 'return "http://wiki.willnorris.com/";'));
     add_filter('amazon_affiliate_id', create_function('', 'return "willnorris-20";'));
     add_filter('hum_legacy_id', array($this, 'legacy_shortlinks'), 10, 2);
 
     add_filter('template_redirect', array($this, 'googleplus_shortlinks'), 0);
+
+    add_filter('webfinger_user_query', array($this, 'webfinger_user_query'), 10, 3);
+    add_filter('webfinger_user_resource', array($this, 'webfinger_user_subject'), 10, 2);
+    add_filter('webfinger_user_resources', array($this, 'webfinger_user_resources'), 10, 2);
+    add_filter('webfinger_data', array($this, 'webfinger_data'), 10, 2);
   }
 
   /**
@@ -249,6 +254,43 @@ class WJN_Personal {
 
     $query = build_query($ga_codes);
     return $url . '#' . $query;
+  }
+
+  function webfinger_user_query($args, $uri, $scheme) {
+    if ($uri == "acct:will@willnorris.com") {
+      $args = array(
+        'search' => 'willnorris',
+        'search_columns' => array('user_login'),
+        'meta_compare' => '=',
+      );
+    }
+
+    return $args;
+  }
+
+  function webfinger_user_subject($url, $user) {
+    if ($user->user_login == 'willnorris') {
+      $url = 'acct:will@willnorris.com';
+    }
+    return $url;
+  }
+
+  function webfinger_user_resources($resources, $user) {
+    $skip = array('https://willnorris.com/author/willnorris', 'acct:will@willnorris.com');
+    $resources =  array_values(array_diff($resources, $skip));
+    $resources[] = 'https://willnorris.com/';
+    return $resources;
+  }
+
+  function webfinger_data($webfinger, $resoure) {
+    $links = array();
+    foreach($webfinger['links'] as $link) {
+      if ($link['href'] != 'https://willnorris.com/author/willnorris') {
+        $links[] = $link;
+      }
+    }
+    $webfinger['links'] = $links;
+    return $webfinger;
   }
 }
 
