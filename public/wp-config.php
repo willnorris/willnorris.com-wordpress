@@ -48,7 +48,7 @@ define('CC_LICENSE', 'http://creativecommons.org/licenses/by-nc-sa/3.0/');
 
 // Custom domain for shortlinks
 if ( !defined('HUM_SHORTLINK_BASE') ) {
-  define('HUM_SHORTLINK_BASE', 'http://wjn.me');
+  define('HUM_SHORTLINK_BASE', 'https://wjn.me');
 }
 
 // turn off post revisions
