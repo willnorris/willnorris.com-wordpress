@@ -2,12 +2,65 @@
 Media Queries
 ---------------------------------------------------------------------------------------------------- */
 
-@media only screen and (max-width: 1139px) {
-
-	.site-inner,
-	.wrap {
-		max-width: 960px;
+@media only screen and (min-width: 640px) {
+	.title-area {
+		border-bottom: 0;
+		float: left;
+		text-align: left;
 	}
+
+	.site-title {
+		margin: 0 0 8px;
+		margin: 0 0 0.8rem;
+	}
+
+	.site-description {
+		display: block;
+	}
+
+	.site-header .widget-area {
+		float: right;
+		text-align: right;
+	}
+
+	.genesis-nav-menu .menu-item {
+		display: inline-block;
+	}
+
+	.genesis-nav-menu,
+	.genesis-nav-menu .sub-menu {
+		text-align: left;
+	}
+	.genesis-nav-menu a {
+		padding: 16px;
+		padding: 1.6rem;
+	}
+}
+
+@media only screen and (min-width: 800px) {
+	.site-title {
+		display: inline-block;
+	}
+
+	.site-title:after {
+		content: '|';
+		padding: 0 5px;
+	}
+
+	.site-description {
+		display: inline-block;
+	}
+}
+
+@media only screen and (min-width: 1080px) {
+	.site-inner, .wrap {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+/*
+@media only screen and (max-width: 1139px) {
 
 	.content-sidebar-sidebar .content-sidebar-wrap,
 	.sidebar-content-sidebar .content-sidebar-wrap,
@@ -38,10 +91,6 @@ Media Queries
 
 @media only screen and (max-width: 1023px) {
 
-	body {
-		background-color: #fff;
-	}
-
 	.content,
 	.content-sidebar-sidebar .content,
 	.content-sidebar-sidebar .content-sidebar-wrap,
@@ -59,20 +108,6 @@ Media Queries
 	.title-area,
 	.wrap {
 		width: 100%;
-	}
-
-	.site-header .wrap {
-		padding: 20px 0;
-		padding: 2rem 0;
-	}
-
-	.header-image .site-header .wrap {
-		background-position: center top;
-	}
-
-	.site-inner {
-		padding-left: 5%;
-		padding-right: 5%;
 	}
 
 	.archive-description,
@@ -141,24 +176,4 @@ Media Queries
 		margin: 0;
 	}
 
-}
-
-@media only screen and (max-width: 767px) {
-
-	.five-sixths,
-	.four-sixths,
-	.one-fourth,
-	.one-half,
-	.one-sixth,
-	.one-third,
-	.three-fourths,
-	.three-sixths,
-	.two-fourths,
-	.two-sixths,
-	.two-thirds {
-		margin: 0;
-		width: 100%;
-	}
-
-}
-
+*/

@@ -37,3 +37,7 @@ function wjn2014_theme_setup() {
 add_filter( 'stylesheet_uri', function() {
 	return get_stylesheet_directory_uri() . '/css/style.css';
 });
+
+add_filter( 'genesis_footer_creds_text', function( $text ) {
+	return '[footer_copyright] Will Norris.  Powered by [footer_wordpress_link].';
+});

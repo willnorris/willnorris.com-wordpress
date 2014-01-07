@@ -5,14 +5,15 @@ Site Navigation
 .genesis-nav-menu {
 	clear: both;
 	color: #999;
-	font-family: "Open Sans", Arial, sans-serif;
 	line-height: 1.5;
 	width: 100%;
 }
 
-.genesis-nav-menu .menu-item {
-	display: inline-block;
-	text-align: left;
+.genesis-nav-menu,
+.genesis-nav-menu .sub-menu {
+	list-style: none;
+	margin-left: 0;
+	text-align: center;
 }
 
 .genesis-nav-menu a {
@@ -22,8 +23,8 @@ Site Navigation
 	font-size: 18px;
 	font-size: 1.8rem;
 	line-height: 1.8;
-	padding: 16px;
-	padding: 1.6rem;
+	padding: 8px;
+	padding: 0.8rem;
 	position: relative;
 }
 

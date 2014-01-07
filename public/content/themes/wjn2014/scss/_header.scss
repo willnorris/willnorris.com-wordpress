@@ -11,11 +11,11 @@ Site Header
 --------------------------------------------- */
 
 .title-area {
-	float: left;
-	font-family: "Open Sans", Arial, sans-serif;
+	border-bottom: 1px solid #ddd;
 	font-weight: 700;
 	padding: 16px 0;
 	padding: 1.6rem 0;
+	text-align: center;
 	//width: 320px;
 }
 
@@ -24,13 +24,11 @@ Site Header
 }
 
 .site-title {
-	display: inline-block;
 	font-size: 18px;
 	font-size: 1.8rem;
 	font-weight: normal;
 	line-height: 1;
-	margin: 0 0 8px;
-	margin: 0 0 0.8rem;
+	margin: 0;
 }
 
 .site-title a,
@@ -38,14 +36,9 @@ Site Header
 	color: #333;
 }
 
-.site-title:after {
-	content: '|';
-	padding: 0 5px;
-}
-
 .site-description {
 	color: #999;
-	display: inline-block;
+	display: none;
 	font-size: 18px;
 	font-size: 1.8rem;
 	font-weight: 300;
@@ -79,11 +72,6 @@ Site Header
 
 .widget-area {
 	word-wrap: break-word;
-}
-
-.site-header .widget-area {
-	float: right;
-	text-align: right;
 }
 
 .header-image .site-header .widget-area {
