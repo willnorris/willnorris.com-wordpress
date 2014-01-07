@@ -15,11 +15,15 @@ function wjn2014_theme_setup() {
 	// Add viewport meta tag for mobile browsers
 	add_theme_support( 'genesis-responsive-viewport' );
 
-	// Add support for custom background
-	add_theme_support( 'custom-background' );
-
-	// Add support for 3-column footer widgets
-	add_theme_support( 'genesis-footer-widgets', 3 );
+	//* Add support for structural wraps
+	add_theme_support( 'genesis-structural-wraps', array(
+		'header',
+		'nav',
+		'subnav',
+		'site-inner',
+		'footer-widgets',
+		'footer',
+	) );
 
 	// Unregister layout settings
 	genesis_unregister_layout( 'content-sidebar-sidebar' );
@@ -31,7 +35,16 @@ function wjn2014_theme_setup() {
 
 	// Remove Edit link
 	add_filter( 'genesis_edit_post_link', '__return_false' );
+
+	remove_action( 'genesis_footer', 'genesis_do_footer' );
 }
+
+// add footer widgets
+add_action( 'after_setup_theme', function() {
+	// Add support for 3-column footer widgets
+	add_theme_support( 'genesis-footer-widgets', 3 );
+}, 5);
+
 
 // Return {theme_dir}/css/style.css as the stylesheet_uri.
 add_filter( 'stylesheet_uri', function() {
