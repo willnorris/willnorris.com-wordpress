@@ -176,7 +176,6 @@ select,
 textarea {
 	background-color: #fff;
 	border: 1px solid #ddd;
-	border-radius: 3px;
 	box-shadow: 1px 1px 3px #eee inset;
 	color: #999;
 	font-size: 14px;
@@ -214,7 +213,6 @@ input[type="submit"],
 	cursor: pointer;
 	padding: 16px 24px;
 	padding: 1.6rem 2.4rem;
-	text-transform: uppercase;
 	width: auto;
 }
 
@@ -232,7 +230,6 @@ input:hover[type="submit"],
 }
 
 .button {
-	border-radius: 3px;
 	display: inline-block;
 }
 
@@ -264,7 +261,6 @@ td {
 
 th {
 	font-weight: bold;
-	text-transform: uppercase;
 }
 
 td {
