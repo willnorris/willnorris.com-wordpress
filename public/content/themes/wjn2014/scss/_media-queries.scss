@@ -50,6 +50,11 @@ Media Queries
 	.site-description {
 		display: inline-block;
 	}
+
+	.footer-widgets .widget-area {
+		float: left;
+		width: 33.33%;
+	}
 }
 
 @media only screen and (min-width: 1080px) {
