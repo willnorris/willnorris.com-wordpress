@@ -5,7 +5,7 @@ Site Navigation
 .genesis-nav-menu {
 	clear: both;
 	color: #999;
-	font-family: Lato, sans-serif;
+	font-family: "Open Sans", Arial, sans-serif;
 	line-height: 1.5;
 	width: 100%;
 }
@@ -19,8 +19,11 @@ Site Navigation
 	border: none;
 	color: #999;
 	display: block;
-	padding: 28px 24px;
-	padding: 2.8rem 2.4rem;
+	font-size: 18px;
+	font-size: 1.8rem;
+	line-height: 1.8;
+	padding: 16px;
+	padding: 1.6rem;
 	position: relative;
 }
 
@@ -51,8 +54,8 @@ Site Navigation
 	background-color: #fff;
 	border: 1px solid #eee;
 	border-top: none;
-	font-size: 14px;
-	font-size: 1.4rem;
+	font-size: 16px;
+	font-size: 1.6rem;
 	padding: 16px 20px;
 	padding: 1.6rem 2rem;
 	position: relative;
@@ -99,8 +102,8 @@ Site Navigation
 }
 
 .genesis-nav-menu > .search {
-	padding: 14px 0 0;
-	padding: 1.4rem 0 0;
+	padding: 16px 0 0;
+	padding: 1.6rem 0 0;
 }
 
 /* Site Header Navigation

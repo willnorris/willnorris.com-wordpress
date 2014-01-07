@@ -28,12 +28,10 @@ function wjn2014_theme_setup() {
 
 	// Unregister secondary sidebar
 	unregister_sidebar( 'sidebar-alt' );
-}
 
-// Enqueue Lato Google font
-add_action( 'wp_enqueue_scripts', function() {
-	wp_enqueue_style( 'google-font-lato', '//fonts.googleapis.com/css?family=Lato:300,700', array(), null );
-});
+	// Remove Edit link
+	add_filter( 'genesis_edit_post_link', '__return_false' );
+}
 
 // Return {theme_dir}/css/style.css as the stylesheet_uri.
 add_filter( 'stylesheet_uri', function() {
