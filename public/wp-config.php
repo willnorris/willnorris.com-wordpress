@@ -44,7 +44,7 @@ define('GOOGLE_PLUS_ID', '+willnorris');
 define('GOOGLE_ANALYTICS_ID', 'UA-620101-2');
 
 // Creative Commons License
-define('CC_LICENSE', 'http://creativecommons.org/licenses/by-nc-sa/3.0/');
+define('CC_LICENSE', 'http://creativecommons.org/licenses/by-nc-sa/4.0/');
 
 // Custom domain for shortlinks
 if ( !defined('HUM_SHORTLINK_BASE') ) {
