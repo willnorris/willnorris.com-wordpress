@@ -54,3 +54,10 @@ add_filter( 'stylesheet_uri', function() {
 add_filter( 'genesis_footer_creds_text', function( $text ) {
 	return '[footer_copyright] Will Norris.  Powered by [footer_wordpress_link].';
 });
+
+add_filter( 'wp_head', function() { ?>
+<script>
+  // Chrome occasionally has issues applying this properly in CSS
+  (function() { document.documentElement.style.fontSize = "62.5%"; })();
+</script>
+<?php });
