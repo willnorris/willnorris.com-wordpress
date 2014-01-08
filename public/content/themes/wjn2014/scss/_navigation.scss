@@ -13,7 +13,11 @@ Site Navigation
 .genesis-nav-menu .sub-menu {
 	list-style: none;
 	margin-left: 0;
-	text-align: center;
+	text-align: left;
+}
+
+.genesis-nav-menu .menu-item {
+	display: inline-block;
 }
 
 .genesis-nav-menu a {

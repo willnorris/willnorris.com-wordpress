@@ -2,13 +2,7 @@
 Media Queries
 ---------------------------------------------------------------------------------------------------- */
 
-@media only screen and (min-width: 640px) {
-	.title-area {
-		border-bottom: 0;
-		float: left;
-		text-align: left;
-	}
-
+@media only screen and (min-width: 480px) {
 	.site-title {
 		margin: 0 0 8px;
 		margin: 0 0 0.8rem;
@@ -17,24 +11,9 @@ Media Queries
 	.site-description {
 		display: block;
 	}
+}
 
-	.site-header .widget-area {
-		float: right;
-		text-align: right;
-	}
-
-	.genesis-nav-menu .menu-item {
-		display: inline-block;
-	}
-
-	.genesis-nav-menu,
-	.genesis-nav-menu .sub-menu {
-		text-align: left;
-	}
-	.genesis-nav-menu a {
-		padding: 16px;
-		padding: 1.6rem;
-	}
+@media only screen and (min-width: 640px) {
 }
 
 @media only screen and (min-width: 800px) {
@@ -49,6 +28,11 @@ Media Queries
 
 	.site-description {
 		display: inline-block;
+	}
+
+	.genesis-nav-menu a {
+		padding: 16px;
+		padding: 1.6rem;
 	}
 
 	.footer-widgets .widget-area {
