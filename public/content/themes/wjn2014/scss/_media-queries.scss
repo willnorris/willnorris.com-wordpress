@@ -55,6 +55,12 @@ Media Queries
 		float: left;
 		width: 33.33%;
 	}
+
+	.comment-respond input[type="email"],
+	.comment-respond input[type="text"],
+	.comment-respond input[type="url"] {
+		width: 50%
+	}
 }
 
 @media only screen and (min-width: 1080px) {
