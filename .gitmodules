@@ -60,7 +60,7 @@
 # WordPress themes
 [submodule "public/content/themes/genesis"]
 	path = public/content/themes/genesis
-	url = git@github.com:willnorris/genesis-theme.git
+	url = git@bitbucket.org:willnorris/genesis.git
 [submodule "public/content/themes/pdx"]
 	path = public/content/themes/pdx
 	url = https://github.com/willnorris/pdx-theme.git
