@@ -25,6 +25,16 @@ function wjn2014_theme_setup() {
 		'footer',
 	) );
 
+	add_theme_support( 'post-formats', array(
+		'aside',
+		'link',
+		'gallery',
+		'status',
+		'quote',
+		'image',
+		'video'
+	) );
+
 	// Unregister layout settings
 	genesis_unregister_layout( 'content-sidebar-sidebar' );
 	genesis_unregister_layout( 'sidebar-content-sidebar' );
@@ -36,6 +46,12 @@ function wjn2014_theme_setup() {
 	// Remove Edit link
 	add_filter( 'genesis_edit_post_link', '__return_false' );
 
+	// use author link instead of author posts link
+	add_filter( 'genesis_post_info', function( $info) {
+		return '[post_date] ' . __( 'by', 'genesis' ) . ' [post_author_link] [post_comments] [post_edit]';
+	});
+
+	// remove footer content
 	remove_action( 'genesis_footer', 'genesis_do_footer' );
 }
 
