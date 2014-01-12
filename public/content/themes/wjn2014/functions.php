@@ -51,6 +51,8 @@ function wjn2014_theme_setup() {
 		return '[post_date] ' . __( 'by', 'genesis' ) . ' [post_author_link] [post_comments] [post_edit]';
 	});
 
+	add_filter( 'comment_author_says_text', '__return_empty_string');
+
 	// remove footer content
 	remove_action( 'genesis_footer', 'genesis_do_footer' );
 }
