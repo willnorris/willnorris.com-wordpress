@@ -23,3 +23,33 @@ Widgets
 .featured-content .entry-title a {
 	border: none;
 }
+
+#menu-social {
+	font-family: 'wjn2014';
+
+	li {
+		display: inline-block;
+		margin: 0 10px;
+		margin: 0 1rem;
+
+		a {
+			border-bottom-width: 0;
+			color: transparent;
+			font-size: 1px;
+			letter-spacing: -1px;
+
+			&::before {
+				color: #777;
+				font-size: 32px;
+				font-size: 3.2rem;
+				line-height: 32px;
+				line-height: 3.2rem;
+			}
+
+			&[href*="plus.google.com"]::before { content: '\f206'; }
+			&[href*="github.com"]::before      { content: '\f200'; }
+			&[href*="twitter.com"]::before     { content: '\f202'; }
+			&[href*="app.net"]::before         { content: '\e801'; }
+		}
+	}
+}

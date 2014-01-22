@@ -46,7 +46,11 @@
 
 */
 
+@import "compass/css3";
+
 @import url('//fonts.googleapis.com/css?family=Open+Sans:400,700');
+
+@include font-face("wjn2014", font-files("wjn2014.eot", "wjn2014.woff", "wjn2014.ttf", "wjn2014.svg"));
 
 @import "reset";
 @import "defaults";

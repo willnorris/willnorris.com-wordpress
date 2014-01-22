@@ -25,6 +25,8 @@ class WJN_Personal {
     add_shortcode('no_amps', array($this, 'no_amps'));
     add_shortcode('recent_posts', array($this, 'recent_posts'));
 
+    add_filter('wp_nav_menu_objects', array($this, 'nav_menu_objects'), 10, 2);
+
     add_action('http_api_curl', array($this, 'http_api_curl'));
     add_action('wp', array($this, 'cleanup_plugins'));
     add_filter('intermediate_image_sizes_advanced', array($this, 'filter_image_sizes'));
@@ -291,6 +293,17 @@ class WJN_Personal {
     }
     $webfinger['links'] = $links;
     return $webfinger;
+  }
+
+  /** Add rel="me" to social menu items. */
+  function nav_menu_objects($items, $args) {
+    if ( 'social' == $args->menu->name ) {
+      $items = array_map(function($i) {
+        $i->xfn = 'me'; return $i;
+      }, $items);
+    }
+
+    return $items;
   }
 }
 
