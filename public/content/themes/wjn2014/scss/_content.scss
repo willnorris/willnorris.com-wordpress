@@ -210,7 +210,9 @@ li.comment {
 	display: none;
 }
 
-.bypostauthor .avatar {
+// highlight comments by the post author.  We need this crazy-long selector so
+// that nested comments don't also get highlighted.
+.bypostauthor > .h-entry > .comment-header > .comment-author > .avatar {
 	border: 2px solid #e15144;
 }
 
