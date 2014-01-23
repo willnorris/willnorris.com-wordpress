@@ -7,10 +7,6 @@ Media Queries
 		margin: 0 0 8px;
 		margin: 0 0 0.8rem;
 	}
-
-	.site-description {
-		display: block;
-	}
 }
 
 @media only screen and (min-width: 640px) {
@@ -28,6 +24,9 @@ Media Queries
 
 	.site-description {
 		display: inline-block;
+		font-size: 18px;
+		font-size: 1.8rem;
+		margin: 0;
 	}
 
 	.genesis-nav-menu a {
