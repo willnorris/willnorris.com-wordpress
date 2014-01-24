@@ -78,3 +78,6 @@
 [submodule "public/content/plugins/jetpack-galleries"]
 	path = public/content/plugins/jetpack-galleries
 	url = https://github.com/wp-plugins/tiled-gallery-carousel-without-jetpack.git
+[submodule "public/content/plugins/wp-highlightjs"]
+	path = public/content/plugins/wp-highlightjs
+	url = https://github.com/wp-plugins/wp-highlightjs.git
