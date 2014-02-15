@@ -5,7 +5,7 @@ function twitter_metadata($metadata) {
   $metadata['twitter:creator'] = '@willnorris';
 
   foreach (array('url', 'title', 'description', 'image') as $attr) {
-    if (array_key_exists("og:$attr", $metadata)) {
+    if ( array_key_exists("og:$attr", $metadata) && $metadata["og:$attr"] ) {
       $metadata["twitter:$attr"] = $metadata["og:$attr"];
     }
   }
