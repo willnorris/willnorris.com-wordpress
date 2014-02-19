@@ -81,3 +81,9 @@
 [submodule "public/content/plugins/wp-highlightjs"]
 	path = public/content/plugins/wp-highlightjs
 	url = https://github.com/wp-plugins/wp-highlightjs.git
+[submodule "public/content/mu-plugins/rename-wp-login"]
+	path = public/content/mu-plugins/rename-wp-login
+	url = https://github.com/avryl/rename-wp-login.git
+[submodule "public/content/mu-plugins/wp-fail2ban"]
+	path = public/content/mu-plugins/wp-fail2ban
+	url = https://github.com/wp-plugins/wp-fail2ban.git

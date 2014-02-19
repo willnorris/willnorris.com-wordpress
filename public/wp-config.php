@@ -46,6 +46,10 @@ define('GOOGLE_ANALYTICS_ID', 'UA-620101-2');
 // Creative Commons License
 define('CC_LICENSE', 'http://creativecommons.org/licenses/by-nc-sa/4.0/');
 
+// WP fail2ban
+define('WP_FAIL2BAN_BLOCKED_USERS','^admin$');
+define('WP_FAIL2BAN_BLOCK_USER_ENUMERATION',true);
+
 // Custom domain for shortlinks
 if ( !defined('HUM_SHORTLINK_BASE') ) {
   define('HUM_SHORTLINK_BASE', 'https://wjn.me');

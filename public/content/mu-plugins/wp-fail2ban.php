@@ -1,0 +1,1 @@
+wp-fail2ban/wp-fail2ban.php
