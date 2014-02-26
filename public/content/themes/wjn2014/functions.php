@@ -43,6 +43,10 @@ function wjn2014_theme_setup() {
   // Unregister secondary sidebar
   unregister_sidebar( 'sidebar-alt' );
 
+  register_nav_menus( array(
+    'social' => 'Social Menu',
+  ) );
+
   // Remove Edit link
   add_filter( 'genesis_edit_post_link', '__return_false' );
 

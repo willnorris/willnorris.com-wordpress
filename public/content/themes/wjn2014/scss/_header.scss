@@ -3,8 +3,12 @@ Site Header
 ---------------------------------------------------------------------------------------------------- */
 
 .site-header {
-	background-color: #f5f5f5;
+	background-color: #333;
 	border-bottom: 1px solid #ddd;
+}
+#wpadminbar {
+	background-color: #333;
+	border-bottom: 1px solid #444;
 }
 
 /* Title Area
@@ -24,9 +28,10 @@ Site Header
 	margin: 0;
 }
 
+.site-title:after,
 .site-title a,
 .site-title a:hover {
-	color: #333;
+	color: #f5f5f5;
 }
 
 .site-description {

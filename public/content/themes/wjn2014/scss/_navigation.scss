@@ -32,14 +32,14 @@ Site Navigation
 	position: relative;
 }
 
-.genesis-nav-menu a:hover,
-.genesis-nav-menu .current-menu-item > a,
-.genesis-nav-menu .sub-menu .current-menu-item > a:hover {
-	color: #333;
+.genesis-nav-menu a:hover {
+//.genesis-nav-menu .current-menu-item > a,
+//.genesis-nav-menu .sub-menu .current-menu-item > a:hover {
+	color: #aaa;
 }
 
 .genesis-nav-menu .sub-menu .current-menu-item > a {
-	color: #999;
+	//color: #999;
 }
 
 .genesis-nav-menu .sub-menu {

@@ -23,6 +23,17 @@ Content Area
 	}
 }
 
+.home-top {
+	background: #f5f5f5;
+	border-bottom: 1px solid #ddd;
+	padding-top: 1em;
+
+	a {
+		border-bottom: 1px solid #ddd;
+		color: #e15144;
+	}
+}
+
 .entry.page {
 	border: none;
 }
@@ -31,6 +42,7 @@ Content Area
 	border-bottom: 1px solid #ddd;
 	color: #e15144;
 }
+
 
 .entry-content a:hover {
 	color: #333;
