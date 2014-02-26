@@ -83,3 +83,14 @@ add_filter( 'wp_head', function() { ?>
   (function() { document.documentElement.style.fontSize = "62.5%"; })();
 </script>
 <?php });
+
+// Add microformats to links in social menu.
+add_filter( 'nav_menu_link_attributes', function( $atts, $item, $args ) {
+  if( $args->theme_location == 'social' ) {
+    if ( !array_key_exists('class', $atts) ) {
+      $atts['class'] = '';
+    }
+    $atts['class'] .= ' u-url url';
+  }
+  return $atts;
+}, 10, 3);
