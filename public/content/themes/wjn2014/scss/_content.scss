@@ -28,9 +28,27 @@ Content Area
 	border-bottom: 1px solid #ddd;
 	padding-top: 1em;
 
-	a {
-		border-bottom: 1px solid #ddd;
-		color: #e15144;
+	h2 {
+		font-size: 20px;
+		font-size: 2rem;
+		margin-bottom: 0;
+	}
+
+	p {
+		margin: 5px 0;
+		margin: 0.5rem 0;
+
+		a {
+			border-bottom: 1px solid #ddd;
+			color: #e15144;
+		}
+	}
+
+	.menu-social-container > .menu li {
+		a::before {
+			font-size: 28px;
+			font-size: 2.8rem;
+		}
 	}
 }
 

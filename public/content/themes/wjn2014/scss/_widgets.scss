@@ -32,6 +32,10 @@ Widgets
 		margin: 0 10px;
 		margin: 0 1rem;
 
+		&:first-child {
+			margin-left: 0;
+		}
+
 		a {
 			border-bottom-width: 0;
 			color: transparent;
