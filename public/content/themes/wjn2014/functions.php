@@ -78,6 +78,9 @@ add_filter( 'genesis_footer_creds_text', function( $text ) {
 });
 
 add_filter( 'wp_head', function() { ?>
+<link rel="apple-touch-icon" sizes="128x128" href="/logo.jpg" />
+<link rel="apple-touch-icon-precomposed" sizes="128x128" href="/logo.jpg" />
+<meta name="mobile-web-app-capable" content="yes" />
 <script>
   // Chrome occasionally has issues applying this properly in CSS
   (function() { document.documentElement.style.fontSize = "62.5%"; })();
@@ -121,8 +124,10 @@ add_shortcode( 'post_syndication', function( $atts ) {
     }
     $syns[] = '<a rel="syndication" class="u-syndication" href="' . $url . '">' . $name . '</a>';
   }
-  $syn = $atts['before'] . join($atts['sep'], $syns) . $atts['after'];
-  return sprintf( '<span %s>', genesis_attr( 'entry-syndication' ) ) . $syn . '</span>';
+  if ( $syn ) {
+    $syn = $atts['before'] . join($atts['sep'], $syns) . $atts['after'];
+    return sprintf( '<span %s>', genesis_attr( 'entry-syndication' ) ) . $syn . '</span>';
+  }
 });
 
 add_filter( 'genesis_post_meta', function( $meta ) {
