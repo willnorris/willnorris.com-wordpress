@@ -133,3 +133,10 @@ add_shortcode( 'post_syndication', function( $atts ) {
 add_filter( 'genesis_post_meta', function( $meta ) {
   return $meta . ' [post_syndication]';
 });
+
+add_filter( 'genesis_comments', function() {
+  global $wp_query;
+  if ( array_key_exists('webmention', $wp_query->comments_by_type) ) {
+    $wp_query->comments_by_type['comment'] = array_merge($wp_query->comments_by_type['comment'], $wp_query->comments_by_type['webmention']);
+  }
+}, 0);
