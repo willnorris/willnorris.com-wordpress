@@ -50,9 +50,10 @@ function wjn2014_theme_setup() {
   // Remove Edit link
   add_filter( 'genesis_edit_post_link', '__return_false' );
 
-  // use author link instead of author posts link
-  add_filter( 'genesis_post_info', function( $info) {
-    return '[post_date] ' . __( 'by', 'genesis' ) . ' [post_author_link] [post_comments] [post_edit]';
+  add_filter( 'genesis_post_info', '__return_false' );
+
+  add_filter( 'genesis_post_meta', function( $meta ) {
+    return '[post_date] ' . __( 'by', 'genesis' ) . ' [post_author_link] [post_comments] ' . $meta;
   });
 
   add_filter( 'comment_author_says_text', '__return_empty_string');
@@ -140,3 +141,12 @@ add_filter( 'genesis_comments', function() {
     $wp_query->comments_by_type['comment'] = array_merge($wp_query->comments_by_type['comment'], $wp_query->comments_by_type['webmention']);
   }
 }, 0);
+
+// Hide post title for some formats.
+add_filter( 'genesis_post_title_output', function( $title ) {
+  switch ( get_post_format() ) {
+    case 'aside':
+      $title = ''; break;
+  }
+  return $title;
+}, 20);
