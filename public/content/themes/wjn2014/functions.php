@@ -124,7 +124,7 @@ add_shortcode( 'post_syndication', function( $atts ) {
     }
     $syns[] = '<a rel="syndication" class="u-syndication" href="' . $url . '">' . $name . '</a>';
   }
-  if ( $syn ) {
+  if ( $syns ) {
     $syn = $atts['before'] . join($atts['sep'], $syns) . $atts['after'];
     return sprintf( '<span %s>', genesis_attr( 'entry-syndication' ) ) . $syn . '</span>';
   }
