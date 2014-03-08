@@ -71,7 +71,7 @@
 	url = git@github.com:willnorris/slides-wcsf2013.git
 [submodule "public/content/plugins/quiz"]
 	path = public/content/plugins/quiz
-	url = https://github.com/wp-plugins/quiz.git
+	url = https://github.com/willnorris/wordpress-quiz.git
 [submodule "public/content/plugins/pushover-notifications"]
 	path = public/content/plugins/pushover-notifications
 	url = https://github.com/wp-plugins/pushover-notifications.git

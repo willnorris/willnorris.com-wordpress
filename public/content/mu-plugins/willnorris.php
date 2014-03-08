@@ -55,6 +55,8 @@ class WJN_Personal {
     remove_filter('pre_user_description', 'wp_filter_kses');
     //add sanitization for WordPress posts
     add_filter( 'pre_user_description', 'wp_filter_post_kses');
+
+    add_filter( 'quiz_required', array($this, 'quiz_required'), 10, 2 );
   }
 
   /**
@@ -296,6 +298,13 @@ class WJN_Personal {
     }
     $webfinger['links'] = $links;
     return $webfinger;
+  }
+
+  function quiz_required($required, $commentdata) {
+    if ( $commentdata['comment_type'] == 'webmention' ) {
+      $required = false;
+    }
+    return $required;
   }
 }
 
