@@ -87,3 +87,9 @@
 [submodule "public/content/mu-plugins/wp-fail2ban"]
 	path = public/content/mu-plugins/wp-fail2ban
 	url = https://github.com/wp-plugins/wp-fail2ban.git
+[submodule "public/content/plugins/subscribe-to-comments-reloaded"]
+	path = public/content/plugins/subscribe-to-comments-reloaded
+	url = https://github.com/wp-plugins/subscribe-to-comments-reloaded.git
+[submodule "public/content/plugins/wordpress-semantic-linkbacks"]
+	path = public/content/plugins/wordpress-semantic-linkbacks
+	url = https://github.com/pfefferle/wordpress-semantic-linkbacks.git
