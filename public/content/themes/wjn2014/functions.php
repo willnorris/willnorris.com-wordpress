@@ -57,9 +57,6 @@ function wjn2014_theme_setup() {
   });
 
   add_filter( 'comment_author_says_text', '__return_empty_string');
-
-  // remove footer content
-  remove_action( 'genesis_footer', 'genesis_do_footer' );
 }
 
 // add footer widgets
@@ -75,7 +72,7 @@ add_filter( 'stylesheet_uri', function() {
 });
 
 add_filter( 'genesis_footer_creds_text', function( $text ) {
-  return '[footer_copyright] Will Norris.  Powered by [footer_wordpress_link].';
+  return '[footer_copyright first="2002"] Will Norris';
 });
 
 add_filter( 'wp_head', function() { ?>
