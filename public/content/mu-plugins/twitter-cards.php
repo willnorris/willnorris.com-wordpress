@@ -1,6 +1,7 @@
 <?php
 
-function twitter_metadata($metadata) {
+// add metadata for twitter cards.
+add_filter( 'opengraph_metadata', function( $metadata ) {
   $metadata['twitter:card'] = 'summary';
   $metadata['twitter:creator'] = '@willnorris';
 
@@ -16,5 +17,4 @@ function twitter_metadata($metadata) {
   }
 
   return $metadata;
-}
-add_filter('opengraph_metadata', 'twitter_metadata');
+});
