@@ -42,3 +42,17 @@ add_shortcode( 'post_syndication', function( $atts ) {
   }
 });
 
+/**
+ * Adds microformats v2 support to the post author image.
+ * This is quite ugly.
+ */
+function uf2_genesis_attr_entry_author_image( $output, $atts ) {
+  $email_hash = md5( strtolower( trim( get_the_author_meta( 'email' ) ) ) );
+  $url = 'https://secure.gravatar.com/avatar/' . $email_hash . '?s=128';
+  $data = '<data class="p-photo" value="' . $url . '" />';
+
+  $pos = strrpos( $output, '</' );
+  return substr( $output, 0, $pos ) . $data . substr( $output, $pos );
+}
+add_filter( 'genesis_post_author_link_shortcode', 'uf2_genesis_attr_entry_author_image', 20, 2 );
+
