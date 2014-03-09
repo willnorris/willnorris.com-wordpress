@@ -7,6 +7,7 @@ Author URI: https://willnorris.com/
 */
 
 require_once dirname( __FILE__ ) . '/willnorris/referral.php';
+require_once dirname( __FILE__ ) . '/willnorris/genesis.php';
 
 // Cleanup filters that shouldn't run.
 add_action( 'init', function() {
