@@ -310,3 +310,8 @@ class WJN_Personal {
 
 new WJN_Personal;
 
+// Disable trackbacks globally (but leave pingbacks alone)
+// Taken from https://wordpress.org/plugins/disable-trackbacks/
+add_action( 'pings_open', function( $open ) {
+  return ( '1' == get_query_var('tb') ) ? FALSE : $open;
+});
