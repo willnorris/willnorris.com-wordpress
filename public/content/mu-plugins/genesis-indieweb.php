@@ -1,14 +1,85 @@
 <?php
-// Indie Web related customizations to Genesis.  These should probably be 
+// Indie Web related customizations to Genesis.  These should probably be
 // eventually moved into the appropriate indie web plugin.
 
 // Display webmentions as normal comments.
 add_filter( 'genesis_comments', function() {
   global $wp_query;
   if ( array_key_exists('webmention', $wp_query->comments_by_type) ) {
-    $wp_query->comments_by_type['comment'] = array_merge($wp_query->comments_by_type['comment'], $wp_query->comments_by_type['webmention']);
+    foreach ( $wp_query->comments_by_type['webmention'] as $webmention ) {
+      $wm_type = get_comment_meta($webmention->comment_ID, 'semantic_linkbacks_type', true);
+      if ( 'reply' == $wm_type ) {
+        $wp_query->comments_by_type['comment'][] = $webmention;
+      }
+    }
   }
 }, 0);
+
+function webmention_facepile( $type ) {
+  global $wp_query;
+  if ( array_key_exists('webmention', $wp_query->comments_by_type) ) {
+    $webmentions = array();
+
+    foreach ( $wp_query->comments_by_type['webmention'] as $webmention ) {
+      $wm_type = get_comment_meta($webmention->comment_ID, 'semantic_linkbacks_type', true);
+      if ( $type == $wm_type ) {
+        $webmentions[] = $webmention;
+      }
+    }
+
+    $defaults = array(
+      'type'        => 'webmention',
+      'avatar_size' => 30,
+      'format'      => 'html5', //* Not necessary, but a good example
+      'callback'    => 'webmention_facepile_comment_callback',
+    );
+
+    $args = apply_filters( 'genesis_comment_list_args', $defaults );
+    wp_list_comments( $args, $webmentions );
+  }
+}
+
+function webmention_facepile_comment_callback( $comment, array $args, $depth ) {
+  $GLOBALS['comment'] = $comment;
+
+  $author = get_comment_author();
+  $url    = get_comment_author_url();
+  $face   = get_avatar( $comment, $args['avatar_size'], '', $author );
+
+  if ( ! empty( $url ) && 'http://' !== $url ) {
+    $face = sprintf( '<a href="%s" rel="external nofollow" title="%s">%s</a>', esc_url( $url ), $author, $face );
+  }
+
+  echo '<li id="comment-' . get_comment_ID() . '">' . $face;
+}
+
+add_action( 'genesis_comments', function() {
+  global $wp_query;
+
+  if ( array_key_exists('webmention', $wp_query->comments_by_type) && sizeof($wp_query->comments_by_type['webmention'])>0 ) {
+    echo '<h3>Likes and Reposts</h3>';
+
+    genesis_markup( array(
+      'html5'   => '<div %s>',
+      'xhtml'   => '<div id="comments">',
+      'context' => 'entry-likes',
+    ) );
+    echo '<ul class="facepile">';
+    webmention_facepile('like');
+    echo '</ul>';
+    echo '</div>';
+
+    genesis_markup( array(
+      'html5'   => '<div %s>',
+      'xhtml'   => '<div id="comments">',
+      'context' => 'entry-reposts',
+    ) );
+    echo '<ul class="facepile">';
+    webmention_facepile('repost');
+    echo '</ul>';
+    echo '</div>';
+  }
+});
 
 add_shortcode( 'post_syndication', function( $atts ) {
   global $post;

@@ -236,6 +236,11 @@ li.comment, li.webmention {
 	margin: 0 1.6rem 2.4rem 0;
 }
 
+.facepile li {
+	display: inline-block;
+	list-style: none;
+}
+
 .entry-pings .reply {
 	display: none;
 }
