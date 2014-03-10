@@ -171,7 +171,7 @@ add_filter( 'intermediate_image_sizes_advanced', function( $sizes ) {
 
 // WebFinger hooks
 
-// Since my WordPress username is "willnorris", webfinger will expect lookups of 
+// Since my WordPress username is "willnorris", webfinger will expect lookups of
 // "acct:willnorris@willnorris.com".  Also allow queries for "acct:will@willnorris.com".
 add_filter( 'webfinger_user_query', function( $args, $uri, $scheme ) {
   if ($uri == "acct:will@willnorris.com") {
@@ -223,3 +223,10 @@ add_filter( 'quiz_required', function( $required, $commentdata ) {
 add_action( 'pings_open', function( $open ) {
   return ( '1' == get_query_var('tb') ) ? false : $open;
 });
+
+// Always approve webmentions.  I wonder how long it will take until this
+// becomes a problem.  At that point, I might switch to auto-approve likes and
+// reposts, but hold replies for moderation.
+add_filter( 'pre_comment_approved', function( $approved , $commentdata ) {
+  return ( 'webmention' == $commentdata['comment_type'] ) ? true : $approved;
+}, 99, 2);
