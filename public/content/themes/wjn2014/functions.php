@@ -93,6 +93,7 @@ add_filter( 'genesis_post_meta', function( $meta ) {
 add_filter( 'genesis_post_title_output', function( $title ) {
   switch ( get_post_format() ) {
     case 'aside':
+    case 'link':
       $title = ''; break;
   }
   return $title;
