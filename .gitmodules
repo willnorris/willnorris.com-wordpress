@@ -96,3 +96,6 @@
 [submodule "public/content/plugins/phaser"]
 	path = public/content/plugins/phaser
 	url = git@bitbucket.org:willnorris/phaser.git
+[submodule "public/content/plugins/w3-total-cache"]
+	path = public/content/plugins/w3-total-cache
+	url = https://github.com/willnorris/w3-total-cache.git
