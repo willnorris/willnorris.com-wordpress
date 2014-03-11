@@ -230,3 +230,16 @@ add_action( 'pings_open', function( $open ) {
 add_filter( 'pre_comment_approved', function( $approved , $commentdata ) {
   return ( 'webmention' == $commentdata['comment_type'] ) ? true : $approved;
 }, 99, 2);
+
+// Exclude some plugins from being activated on development workstation.
+// TODO(willnorris): switch WP_HOME check to some new constant like DEV_SERVER
+add_filter( 'option_active_plugins', function( $options ) {
+  if ( 'https://willnorris.com' != WP_HOME ) {
+    $exclude = array(
+      'pushover-notifications/pushover-notifications.php',
+      'w3-total-cache/w3-total-cache.php',
+    );
+    $options = array_diff($options, $exclude);
+  }
+  return $options;
+});
