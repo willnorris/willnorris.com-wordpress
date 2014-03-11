@@ -93,3 +93,6 @@
 [submodule "public/content/plugins/wordpress-semantic-linkbacks"]
 	path = public/content/plugins/wordpress-semantic-linkbacks
 	url = https://github.com/pfefferle/wordpress-semantic-linkbacks.git
+[submodule "public/content/plugins/phaser"]
+	path = public/content/plugins/phaser
+	url = git@bitbucket.org:willnorris/phaser.git
