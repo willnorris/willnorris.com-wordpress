@@ -232,9 +232,8 @@ add_filter( 'pre_comment_approved', function( $approved , $commentdata ) {
 }, 99, 2);
 
 // Exclude some plugins from being activated on development workstation.
-// TODO(willnorris): switch WP_HOME check to some new constant like DEV_SERVER
 add_filter( 'option_active_plugins', function( $options ) {
-  if ( 'https://willnorris.com' != WP_HOME ) {
+  if ( WP_LOCAL_DEV ) {
     $exclude = array(
       'pushover-notifications/pushover-notifications.php',
       'w3-total-cache/w3-total-cache.php',

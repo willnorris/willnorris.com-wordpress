@@ -81,14 +81,21 @@ define('WPLANG', '');
  * It is strongly recommended that plugin and theme developers use WP_DEBUG
  * in their development environments.
  */
-if ( !defined('WP_DEBUG') )
+if ( !defined('WP_DEBUG') ) {
   define('WP_DEBUG', false);
+}
+
+if ( !defined('WP_LOCAL_DEV') ) {
+	define('WP_LOCAL_DEV', false);
+}
+
 
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
-if ( !defined('ABSPATH') )
+if ( !defined('ABSPATH') ) {
   define('ABSPATH', dirname(__FILE__) . '/wordpress/');
+}
 
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
