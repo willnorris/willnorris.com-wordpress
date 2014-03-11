@@ -11,6 +11,14 @@ public/wordpress-content/advanced-cache.php
 public/wordpress-content/wp-cache-config.php
 public/sitemap.xml
 
+# w3 total cache
+public/content/advanced-cache.php
+public/content/cache/
+public/content/object-cache.php
+public/content/plugins/w3tc-wp-loader.php
+public/content/w3tc-config/
+
+
 public/wedding/lib/local.php
 
 public/.htaccess
