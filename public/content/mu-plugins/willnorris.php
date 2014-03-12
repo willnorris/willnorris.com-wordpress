@@ -243,3 +243,8 @@ add_filter( 'option_active_plugins', function( $options ) {
   }
   return $options;
 });
+
+add_filter( 'opengraph_metadata', function( $metadata ) {
+  $metadata['twitter:creator'] = '@willnorris';
+  return $metadata;
+});
