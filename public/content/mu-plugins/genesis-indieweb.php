@@ -30,16 +30,15 @@ function webmention_facepile( $type ) {
     $defaults = array(
       'type'        => 'webmention',
       'avatar_size' => 30,
-      'format'      => 'html5', //* Not necessary, but a good example
-      'callback'    => 'webmention_facepile_comment_callback',
+      'callback'    => 'webmention_facepile_callback',
     );
 
-    $args = apply_filters( 'genesis_comment_list_args', $defaults );
+    $args = apply_filters( 'webmention_facepile_args', $defaults );
     wp_list_comments( $args, $webmentions );
   }
 }
 
-function webmention_facepile_comment_callback( $comment, array $args, $depth ) {
+function webmention_facepile_callback( $comment, array $args, $depth ) {
   $GLOBALS['comment'] = $comment;
 
   $author = get_comment_author();
