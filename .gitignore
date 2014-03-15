@@ -2,21 +2,18 @@
 log
 
 # mysql backups
-tools/mysql/var/
+tools/mysql/var
 
 # wordpress
 wp-local-config.php
-public/wordpress-content/cache
-public/wordpress-content/advanced-cache.php
-public/wordpress-content/wp-cache-config.php
-public/sitemap.xml
+public/content/uploads
 
 # w3 total cache
 public/content/advanced-cache.php
-public/content/cache/
+public/content/cache
 public/content/object-cache.php
 public/content/plugins/w3tc-wp-loader.php
-public/content/w3tc-config/
+public/content/w3tc-config
 
 
 public/wedding/lib/local.php
