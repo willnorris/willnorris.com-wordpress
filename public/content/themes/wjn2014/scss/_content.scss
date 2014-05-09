@@ -239,6 +239,9 @@ li.comment, li.webmention {
 .facepile li {
 	display: inline-block;
 	list-style: none;
+	img {
+		max-height: 48px;
+	}
 }
 
 .entry-pings .reply {
